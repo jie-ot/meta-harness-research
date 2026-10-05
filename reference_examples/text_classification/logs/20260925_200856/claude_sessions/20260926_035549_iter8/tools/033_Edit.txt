@@ -1,0 +1,80 @@
+Edit: agents\confusion_normalized_bfs_memory.py
+
+replace_all: False
+old_string:
+import json
+import re
+from collections import defaultdict
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+
+{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Follow the patterns shown in the examples above
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+MAX_CHARS = 30000
+_TOP_CANDIDATE_LABELS = 3
+_DISAMBIG_PER_CONFUSION = 2
+
+# CJK Unicode ranges: CJK Unified, Hiragana, Katakana, Fullwidth/Halfwidth
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+
+new_string:
+import json
+import re
+from collections import defaultdict, deque
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+
+{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Follow the patterns shown in the examples above
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+MAX_CHARS = 30000
+_TOP_CANDIDATE_LABELS = 3
+_BFS_MAX_DEPTH = 2
+_BFS_MAX_NODES = 8
+
+# CJK Unicode ranges: CJK Unified, Hiragana, Katakana, Fullwidth/Halfwidth
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+
+# Format wrapper patterns added by various prompt templates, e.g. [TAG]answer<eoa>
+_WRAP_PREFIX = re.compile(r'^\[[^\]]+\]')
+_WRAP_SUFFIX_EOA = re.compile(r'<eoa>$')
+_WRAP_SUFFIX_CLOSE = re.compile(r'\[/[^\]]+\]$')
+
+
+def _normalize_label(s: str) -> str:
+    """Strip common output-format wrappers so confusion keys match ground-truth labels."""
+    s = s.strip()
+    s = _WRAP_PREFIX.sub('', s)
+    s = _WRAP_SUFFIX_EOA.sub('', s)
+    s = _WRAP_PREFIX.sub('', s)          # second pass for nested wrappers
+    s = _WRAP_SUFFIX_CLOSE.sub('', s)
+    return s.strip()
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\confusion_normalized_bfs_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

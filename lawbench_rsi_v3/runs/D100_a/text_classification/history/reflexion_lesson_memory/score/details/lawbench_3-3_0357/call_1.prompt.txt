@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the facts describe an unintentional fire caused by negligence (e.g., accidental ignition during a ritual or domestic activity) that results in forest or property damage, the appropriate charge is
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- If the facts describe the use of a false or deceptive contract (e.g., a sale, lease, transfer agreement) to obtain money or property, classify the offense as “合同诈骗” rather than the generic “诈骗”.
+- When the facts describe a production‑safety accident in which the defendant’s failure to implement required safety measures directly caused a death, the correct charge is the crime of ‘重大责任事故’ rather 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:天津市和平区人民检察院指控，2016年2月22日10时许，被告人王1某为驱赶老鼠在其住处天津市和平区曲阜道65号一楼楼道内燃放二枚二踢脚，引燃楼道内杂物导致火灾发生，造成曲阜道65号地上一至三层过火，过火面积45平方米，烧毁（损）部分家具、日常用品等，其他住户屋内受到烟熏、水渍、破拆损失，造成王某背部烫伤。经鉴定，天津市和平区曲阜道59号至71号（单号）受损房屋修缮工程造价为1728502.08元。案发后，被告人王1某要求其子王某报警，后被传唤至公安机关。
+公诉机关当庭宣读、出示了相关证据，认为被告人王1某过失引起火灾，使公私财产遭受重大损失，应当以××追究其刑事责任。鉴于其具有自首情节，已赔偿部分被害人经济损失，建议判处其××至三年六个月，是否适用××由法院酌定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

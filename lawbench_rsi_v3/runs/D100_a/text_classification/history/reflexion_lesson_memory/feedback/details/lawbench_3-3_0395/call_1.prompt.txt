@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual scenario describes fraud that is carried out through the creation, signing, or performance of a contract (e.g., false representation of a business role, fictitious project, or fabricate
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- If the facts describe the use of a false or deceptive contract (e.g., a sale, lease, transfer agreement) to obtain money or property, classify the offense as “合同诈骗” rather than the generic “诈骗”.
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，被告人齐某在科尔沁左翼中旗花胡硕苏木团结屯嘎查经营管理其父亲齐某甲承包的草牧场55.8亩，被告人齐某将其父亲齐某甲及连同包某、马某、齐某乙共150多亩草牧场进行围封，于2015年开垦123.237亩草牧场并种植农作物。
+上述事实，被告人齐某在开庭审理过程中亦无异议，且有公诉机关当庭列举的案件移送函，证人佟某、包某的证言，被告人齐某的供述，现场勘查笔录、现场图、现场照片，哲理木盟耕地承包合同书、草牧场承包合同书、证明，户籍信息、无前科劣迹证明，归案经过等证据证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

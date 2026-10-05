@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- When the factual description includes multiple distinct actions related to prostitution (e.g., organizing, forcing, enticing, harboring, introducing), list each applicable charge separately rather tha
+- If the factual scenario describes fraud that is carried out through the creation, signing, or performance of a contract (e.g., false representation of a business role, fictitious project, or fabricate
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:扬州经济技术开发区人民检察院指控，2015年1月27日15时许，被告人仇某在其经营的扬州市开发区金寅浴池内，容留何某向徐某卖淫一次。
+2015年1月27日16时许，被告人仇某在其经营的扬州市开发区金寅浴池内，容留何某向宋某卖淫一次。
+2015年1月27日下午，公安机关在对扬州市开发区金寅浴池进行检查时，被告人仇某主动到现场表明其身份并且配合公安机关的检查，并如实供述自己的犯罪事实。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

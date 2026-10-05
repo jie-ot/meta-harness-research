@@ -1,0 +1,72 @@
+{
+  "call_id": "237b373ee42e4b7daf2ce9793c22ea9a",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017174-MsVWVJCiLPaBo7bJORDK",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the factual narrative describes that the defendant organized or led a crowd to disturb the order of a public place or traffic, the charge of 聚众扰乱公共场所秩序、交通秩序 must be added in addition to any other crimes identified.\",\n  \"keywords\": [\n    \"聚众\",\n    \"扰乱公共场所秩序\",\n    \"交通秩序\",\n    \"组织人群\",\n    \"公共场所\",\n    \"扰乱交通\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a rule to prevent misclassifying crimes. The AI predicted only \"诈骗\" but correct answer includes \"诈骗;聚众扰乱公共场所秩序、交通秩序\". So the error is missing additional charge of \"聚众扰乱公共场所秩序、交通秩序\". The rule should ensure that when facts mention \"聚众\" (gathering people) and \"扰乱公共场所秩序\" or \"交通秩序\", we include that crime. Also need to consider that classification should include multiple crimes if facts contain distinct illegal conduct. So rule: If the factual description includes actions of organizing a crowd to disrupt public place or traffic order, add the corresponding offense of \"聚众扰乱公共场所秩序、交通秩序\". Keywords: \"聚众\", \"扰乱公共场所秩序\", \"交通秩序\", \"组织\", \"人群\", \"公共场所\". Provide JSON.\n\n",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a rule to prevent misclassifying crimes. The AI predicted only \"诈骗\" but correct answer includes \"诈骗;聚众扰乱公共场所秩序、交通秩序\". So the error is missing additional charge of \"聚众扰乱公共场所秩序、交通秩序\". The rule should ensure that when facts mention \"聚众\" (gathering people) and \"扰乱公共场所秩序\" or \"交通秩序\", we include that crime. Also need to consider that classification should include multiple crimes if facts contain distinct illegal conduct. So rule: If the factual description includes actions of organizing a crowd to disrupt public place or traffic order, add the corresponding offense of \"聚众扰乱公共场所秩序、交通秩序\". Keywords: \"聚众\", \"扰乱公共场所秩序\", \"交通秩序\", \"组织\", \"人群\", \"公共场所\". Provide JSON.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a rule to prevent misclassifying crimes. The AI predicted only \"诈骗\" but correct answer includes \"诈骗;聚众扰乱公共场所秩序、交通秩序\". So the error is missing additional charge of \"聚众扰乱公共场所秩序、交通秩序\". The rule should ensure that when facts mention \"聚众\" (gathering people) and \"扰乱公共场所秩序\" or \"交通秩序\", we include that crime. Also need to consider that classification should include multiple crimes if facts contain distinct illegal conduct. So rule: If the factual description includes actions of organizing a crowd to disrupt public place or traffic order, add the corresponding offense of \"聚众扰乱公共场所秩序、交通秩序\". Keywords: \"聚众\", \"扰乱公共场所秩序\", \"交通秩序\", \"组织\", \"人群\", \"公共场所\". Provide JSON.\n\n",
+            "reasoning_content": "We need to produce a rule to prevent misclassifying crimes. The AI predicted only \"诈骗\" but correct answer includes \"诈骗;聚众扰乱公共场所秩序、交通秩序\". So the error is missing additional charge of \"聚众扰乱公共场所秩序、交通秩序\". The rule should ensure that when facts mention \"聚众\" (gathering people) and \"扰乱公共场所秩序\" or \"交通秩序\", we include that crime. Also need to consider that classification should include multiple crimes if facts contain distinct illegal conduct. So rule: If the factual description includes actions of organizing a crowd to disrupt public place or traffic order, add the corresponding offense of \"聚众扰乱公共场所秩序、交通秩序\". Keywords: \"聚众\", \"扰乱公共场所秩序\", \"交通秩序\", \"组织\", \"人群\", \"公共场所\". Provide JSON.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 326,
+      "prompt_tokens": 595,
+      "total_tokens": 921,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 212,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 7.327e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 7.327e-05,
+        "upstream_inference_prompt_cost": 1.785e-05,
+        "upstream_inference_completions_cost": 5.542e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

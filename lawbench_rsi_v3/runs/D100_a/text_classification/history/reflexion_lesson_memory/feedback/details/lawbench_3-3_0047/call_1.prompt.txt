@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- When the facts describe a person performing any medical diagnosis, treatment, or related procedure without a valid medical license, classify the conduct under the statutory offense of “非法行医” rather th
+- When the factual description contains multiple distinct criminal acts (e.g., a traffic offense and a separate economic crime), the model must list every applicable charge, separating them with semicol
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:贵州省毕节市七星关区人民检察院指控：2016年11月8日15时，被告人徐某在毕节市七星关区第十五小学值班室内，趁被害人燕某临时有事出值班室之机，将燕某放在回风炉上的一部OPPOR9手机盗走。经毕节市七星关区价格认证中心评估，该手机价值人民币2630元。
+公诉机关向本院提供了：1、被告人徐某的供述及辩解；2、被害人燕某的陈述；3、证人陈某、张某证实；4、户籍信息；5、抓获经过；6、现场指认笔录；7、视频截图指认笔录；8、指认记录；9、龙腾通讯手机保修凭证；10、扣押物品文件清单；11、发还清单；12、鉴定聘请书；13、价格认定书；14、鉴定意见通知书；15、现场勘验笔录；16、现场方位示意图；17、刑事判决书；18、释放证明书；19、执行通知书等证据，以此指控被告人徐某的行为，已触犯刑律，构成××，故提请本院对被告人徐某定罪科刑。
+被告人徐某对公诉机关指控的事实及罪名无意见。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

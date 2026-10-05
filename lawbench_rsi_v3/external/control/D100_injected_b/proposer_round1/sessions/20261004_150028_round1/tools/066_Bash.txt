@@ -1,0 +1,27 @@
+Bash [ERROR]
+
+command: python .prototypes/label_lexicon_snap_memory.py
+description: Validate agent A mechanisms end to end
+
+--- output ---
+Exit code 1
+PASS  snap: [罪名]破坏电力设施<eoa>                            -> 破坏电力设备
+PASS  snap: [罪名]非法种植罂粟<eoa>                            -> 非法种植毒品原植物
+PASS  snap: [罪名]拐骗儿童罪<eoa>                             -> 拐骗儿童
+PASS  snap: [罪名]盗窃<eoa>                                -> 盗窃
+PASS  snap: [罪名]受贿<eoa>                                -> 受贿
+PASS  snap: [罪名]行贿<eoa>                                -> 行贿
+PASS  snap: [罪名]盗窃;破坏电力设施<eoa>                         -> 盗窃;破坏电力设备
+PASS  snap: [罪名]掩饰、隐瞒犯罪所得<eoa>                         -> 掩饰、隐瞒犯罪所得、犯罪所得收益
+PASS  snap: [罪名]掩饰、隐瞒犯罪所得、犯罪所得收益<eoa>                  -> 掩饰、隐瞒犯罪所得、犯罪所得收益
+PASS  snap: [罪名]非法持有、私藏枪支、弹药<eoa>                      -> 非法持有、私藏枪支、弹药
+
+bigram signal: related=0.471 unrelated=0.308
+
+cold-start predict -> '失火' | examples: 0 | lexicon: 0
+post-learn predict -> '破坏电力设备' | repaired: True | lexicon: 2
+Traceback (most recent call last):
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\.prototypes\label_lexicon_snap_memory.py", line 81, in <module>
+    assert ans2 == "盗窃;破坏电力设备", ans2
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 破坏电力设备

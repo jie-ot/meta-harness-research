@@ -1,0 +1,49 @@
+Bash
+
+command:
+cd "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification" && uv run python -c "
+import json, os
+from collections import defaultdict
+
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+
+# Check memory state to understand confusion matrix at end of run
+for ds in ['LawBench', 'USPTO']:
+    mem_path = os.path.join(base, ds, 'adaptive_tokenizer_confusion_memory', 'gpt-oss-120b', 'memory.json')
+    if os.path.exists(mem_path):
+        state = json.loads(open(mem_path, encoding='utf-8').read())
+        confusion = state.get('confusion', {})
+        # top confusion pairs
+        pairs = []
+        for pred, actuals in confusion.items():
+            for actual, cnt in actuals.items():
+                pairs.append((cnt, pred[:30], actual[:30]))
+        pairs.sort(reverse=True)
+        print(f'=== {ds} top confusion pairs ({len(pairs)} total):')
+        for cnt, pred, actual in pairs[:8]:
+            print(f'  {cnt:3d}x  {pred:30s} -> {actual}')
+    else:
+        print(f'{ds}: no memory.json')
+" 2>&1
+
+description: Read confusion matrix from saved memory states
+
+--- output ---
+=== LawBench top confusion pairs (133 total):
+    3x  [罪名]诈骗<eoa>                    -> 合同诈骗
+    2x  [罪名]行贿<eoa>                    -> 单位行贿
+    2x  [罪名]盗窃<eoa>                    -> 盗窃;掩饰、隐瞒犯罪所得、犯罪所得收益
+    2x  [罪名]生产、销售假药<eoa>               -> 生产、销售有毒、有害食品
+    2x  [罪名]故意伤害<eoa>                  -> 虐待被监管人
+    2x  [罪名]强制猥亵妇女<eoa>                -> 强制猥亵、侮辱妇女
+    2x  [罪名]受贿<eoa>                    -> 非国家工作人员受贿
+    2x  [罪名]受贿;滥用职权<eoa>               -> 受贿
+=== USPTO top confusion pairs (45 total):
+    1x  Oc1ccc(COc2cnn(C(C)(C)C)c(=O)c -> CC(C)(C)n1ncc(O)c(Cl)c1=O.CCOC
+    1x  OCC1=CC=CC=C1c1ccc2cc(CNCc3ccc -> COc1ccc2cc(CNCc3ccc(C(F)(F)F)c
+    1x  O=C1C(c2ccc(Br)cc2O)c2ccccc2N1 -> O=C1N(C(c2ccccc2)c2ccccc2)c2cc
+    1x  O=C(NCC(=O)N1CCN(C(=O)c2ccccc2 -> O=C(NCC(=O)N1CCN(C(=O)c2ccccc2
+    1x  N#Cc1cccc(I)c1.C#CC2(O)CCN(C(= -> C#CC1(O)CCN(C(=O)Cc2ccc(-n3cnn
+    1x  N#Cc1cccc(-c2nc(N)nc3c2nnn3CB( -> N#Cc1cccc(B(O)O)c1.Nc1nc(Cl)c2
+    1x  N#Cc1ccc(C)cc1Br.O=C1CCC(=O)N1 -> Cc1ccc(C#N)c(Br)c1.O=C1CCC(=O)
+    1x  Clc1ncncc1.c1ccccc1C#C         -> C#Cc1ccccc1.Clc1ncncc1I

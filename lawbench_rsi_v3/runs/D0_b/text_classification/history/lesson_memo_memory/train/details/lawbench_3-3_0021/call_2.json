@@ -1,0 +1,72 @@
+{
+  "call_id": "f1c86a737b1041d583ceed18e0362812",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791028572-52vRuYbbvpkgB63gFLOi",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"lesson\": \"- 当事实描述中出现多个并列的违法行为（如用逗号、顿号或“和”等连接）时，必须逐一对应列出所有罪名，而不是只选取其中一个。\\n- 注意事实中的限定词或主体词（如“单位”“非法”“生产、销售”等），它们决定了罪名的具体形式（如“单位行贿”“非法行医”“生产、销售不符合安全标准的食品”），不要仅凭单一关键词（如“行贿”“销售”）作出简化。\\n- 当出现类似“公诉机关指控，2”或“指控：2”之类的数字标记时，通常表示有两个以上的指控，需要在后文中寻找对应的第二（或更多）罪名并全部列出。\\n- 对于涉及特定行业或专业的行为（如医疗、食品、金融等），应结合行业属性与违法性质形成完整罪名（如“非法行医”“生产、销售不符合安全标准的食品”“妨害信用卡管理”），避免只使用行业通用词汇。\\n- 在判断罪名时，必须依据完整的法律术语匹配，而不是仅凭片段关键词推断；若事实中出现完整的法定罪名表述（即使顺序或标点不同），应直接采用该表述，防止出现“帮助诈骗罪”之类的误读。\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model often picks wrong or incomplete crimes, misinterprets partial text, fails to capture multiple charges, misidentifies specific crime types (e.g., \"行贿\" vs \"单位行贿\"), misreads \"2\" as something else, misinterprets \"生产、销售\" as only \"销售\", etc. Need to base on observable signals in facts: presence of \"单位\", \"生产、销售\", \"2\" indicating multiple charges, \"公诉机关指控\" followed by list, \"再审中\" indicating multiple charges, etc.\n\nFormulate rules: 1) When fact contains multiple distinct illegal actions separated by commas or conjunctions, output multiple charges accordingly. 2) Pay attention to qualifiers like \"单位\", \"非法行医\", \"生产、销售\" to select specific statutory crime rather than generic. 3) Numbers like \"2\" after \"指控\" often indicate two charges; need to parse subsequent text for each. 4) If the fact mentions a specific professional activity (e.g., medical, food production) combine with \"非法\" to form crime (非法行医, 生产、销售不符合安全标准的食品). 5) Avoid overgeneralizing from partial keywords; require full phrase matching to legal term.\n\nProvide JSON format.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model often picks wrong or incomplete crimes, misinterprets partial text, fails to capture multiple charges, misidentifies specific crime types (e.g., \"行贿\" vs \"单位行贿\"), misreads \"2\" as something else, misinterprets \"生产、销售\" as only \"销售\", etc. Need to base on observable signals in facts: presence of \"单位\", \"生产、销售\", \"2\" indicating multiple charges, \"公诉机关指控\" followed by list, \"再审中\" indicating multiple charges, etc.\n\nFormulate rules: 1) When fact contains multiple distinct illegal actions separated by commas or conjunctions, output multiple charges accordingly. 2) Pay attention to qualifiers like \"单位\", \"非法行医\", \"生产、销售\" to select specific statutory crime rather than generic. 3) Numbers like \"2\" after \"指控\" often indicate two charges; need to parse subsequent text for each. 4) If the fact mentions a specific professional activity (e.g., medical, food production) combine with \"非法\" to form crime (非法行医, 生产、销售不符合安全标准的食品). 5) Avoid overgeneralizing from partial keywords; require full phrase matching to legal term.\n\nProvide JSON format.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model often picks wrong or incomplete crimes, misinterprets partial text, fails to capture multiple charges, misidentifies specific crime types (e.g., \"行贿\" vs \"单位行贿\"), misreads \"2\" as something else, misinterprets \"生产、销售\" as only \"销售\", etc. Need to base on observable signals in facts: presence of \"单位\", \"生产、销售\", \"2\" indicating multiple charges, \"公诉机关指控\" followed by list, \"再审中\" indicating multiple charges, etc.\n\nFormulate rules: 1) When fact contains multiple distinct illegal actions separated by commas or conjunctions, output multiple charges accordingly. 2) Pay attention to qualifiers like \"单位\", \"非法行医\", \"生产、销售\" to select specific statutory crime rather than generic. 3) Numbers like \"2\" after \"指控\" often indicate two charges; need to parse subsequent text for each. 4) If the fact mentions a specific professional activity (e.g., medical, food production) combine with \"非法\" to form crime (非法行医, 生产、销售不符合安全标准的食品). 5) Avoid overgeneralizing from partial keywords; require full phrase matching to legal term.\n\nProvide JSON format.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model often picks wrong or incomplete crimes, misinterprets partial text, fails to capture multiple charges, misidentifies specific crime types (e.g., \"行贿\" vs \"单位行贿\"), misreads \"2\" as something else, misinterprets \"生产、销售\" as only \"销售\", etc. Need to base on observable signals in facts: presence of \"单位\", \"生产、销售\", \"2\" indicating multiple charges, \"公诉机关指控\" followed by list, \"再审中\" indicating multiple charges, etc.\n\nFormulate rules: 1) When fact contains multiple distinct illegal actions separated by commas or conjunctions, output multiple charges accordingly. 2) Pay attention to qualifiers like \"单位\", \"非法行医\", \"生产、销售\" to select specific statutory crime rather than generic. 3) Numbers like \"2\" after \"指控\" often indicate two charges; need to parse subsequent text for each. 4) If the fact mentions a specific professional activity (e.g., medical, food production) combine with \"非法\" to form crime (非法行医, 生产、销售不符合安全标准的食品). 5) Avoid overgeneralizing from partial keywords; require full phrase matching to legal term.\n\nProvide JSON format."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 614,
+      "prompt_tokens": 933,
+      "total_tokens": 1547,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000149339,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000149339,
+        "upstream_inference_prompt_cost": 3.4521e-05,
+        "upstream_inference_completions_cost": 0.000114818
+      }
+    }
+  },
+  "raw_response_missing": false
+}

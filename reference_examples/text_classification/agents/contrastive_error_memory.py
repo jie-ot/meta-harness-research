@@ -1,0 +1,146 @@
+"""Contrastive Error Memory - prioritize recent mistakes with explicit contrast.
+
+Stores both correct and incorrect predictions. For errors, shows:
+  Q: [question]
+    ✗ Wrong: [wrong prediction]
+    ✓ Correct: [correct answer]
+
+For successes, shows plain Q/A. Prioritizes errors (60%) over successes (40%).
+"""
+
+import hashlib
+import json
+import random
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+PROMPT_TEMPLATE = """Solve the problem below. Learn from the mistakes shown.
+
+{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Avoid the wrong patterns shown above
+- Follow successful patterns
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+MAX_CHARS = 30000
+
+
+def _seed_for_input(input: str) -> int:
+    """Return a stable per-input seed."""
+    return int.from_bytes(hashlib.sha256(input.encode()).digest()[:8], "big")
+
+
+class ContrastiveErrorMemory(MemorySystem):
+    """Contrastive memory: show errors with wrong/correct contrast."""
+
+    def __init__(self, llm: LLMCallable):
+        super().__init__(llm)
+        self.errors: list[dict[str, str]] = []
+        self.successes: list[dict[str, str]] = []
+
+    def _format_examples_section(self, seed: int | None = None) -> str:
+        """Format with contrastive error examples + plain success examples."""
+        if not self.errors and not self.successes:
+            return ""
+
+        # Use stable seed for shuffling
+        rng = random.Random(seed) if seed is not None else random.Random(42)
+
+        # Prioritize recent errors (60%), then recent successes (40%)
+        max_errors = 15
+        max_successes = 8
+
+        selected_errors = self.errors[-max_errors:]
+        selected_successes = self.successes[-max_successes:]
+
+        # Shuffle order for diversity
+        if seed is not None:
+            selected_errors = list(selected_errors)
+            selected_successes = list(selected_successes)
+            rng.shuffle(selected_errors)
+            rng.shuffle(selected_successes)
+
+        parts = []
+        total_chars = 0
+
+        # Format errors with contrastive structure
+        for ex in selected_errors:
+            question = ex.get("raw_question", ex["input"])
+            part = (
+                f"Q: {question}\n"
+                f"  ✗ Wrong: {ex['prediction']}\n"
+                f"  ✓ Correct: {ex['target']}"
+            )
+            if total_chars + len(part) > MAX_CHARS:
+                break
+            parts.append(part)
+            total_chars += len(part) + 2
+
+        # Format successes as plain Q/A
+        for ex in selected_successes:
+            question = ex.get("raw_question", ex["input"])
+            part = f"Q: {question}\nA: {ex['target']}"
+            if total_chars + len(part) > MAX_CHARS:
+                break
+            parts.append(part)
+            total_chars += len(part) + 2
+
+        return "\n\n".join(parts)
+
+    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+        """Generate prediction using contrastive error examples."""
+        seed = _seed_for_input(input)
+        examples_section = self._format_examples_section(seed=seed)
+        prompt = PROMPT_TEMPLATE.format(
+            examples_section=examples_section,
+            input=input,
+        )
+
+        response = self.call_llm(prompt)
+        answer = extract_json_field(response, "final_answer")
+
+        return answer, {
+            "full_response": response,
+            "num_errors": len(self.errors),
+            "num_successes": len(self.successes),
+        }
+
+    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+        """Store examples, separating errors from successes."""
+        for r in batch_results:
+            ex = {
+                "input": r["input"],
+                "target": r["ground_truth"],
+                "prediction": r["prediction"],
+            }
+            if "raw_question" in r:
+                ex["raw_question"] = r["raw_question"]
+
+            if r["was_correct"]:
+                self.successes.append(ex)
+            else:
+                self.errors.append(ex)
+
+    def get_context_length(self) -> int:
+        """Return length of examples section actually injected."""
+        return len(self._format_examples_section())
+
+    def get_state(self) -> str:
+        """Serialize memory state."""
+        return json.dumps(
+            {"errors": self.errors, "successes": self.successes}, indent=2
+        )
+
+    def set_state(self, state: str) -> None:
+        """Restore memory state from JSON."""
+        data = json.loads(state)
+        self.errors = data.get("errors", [])
+        self.successes = data.get("successes", [])

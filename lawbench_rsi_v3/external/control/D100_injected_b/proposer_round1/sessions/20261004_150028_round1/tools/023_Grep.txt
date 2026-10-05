@@ -1,0 +1,73 @@
+Grep
+
+-C: 6
+output_mode: content
+path:
+D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/lawbench_rsi_v3/runs/D100_injected_b/text_classification/inner_loop.py
+
+pattern: check_answer|was_correct
+head_limit: 60
+
+--- output ---
+51-
+52-def _unpack_eval_result(raw) -> tuple[bool, dict]:
+53-    """Normalize evaluator output to (ok, metrics).
+54-
+55-    Evaluators return either:
+56-    - bool: simple correct/incorrect
+57:    - dict: {"was_correct": bool, "metrics": {...}}
+58-    """
+59-    if isinstance(raw, dict):
+60:        return raw["was_correct"], raw.get("metrics", {})
+61-    return bool(raw), {}
+62-
+63-
+64-def compute_micro_f1(predictions: list[dict]) -> float:
+65-    """Compute Micro-F1 from predictions with tp/fp/fn metrics.
+66-
+--
+84-        return 0.0
+85-    return 2 * precision * recall / (precision + recall)
+86-
+87-
+88-def make_result(preds: list[dict]) -> dict:
+89-    """Build result dict from predictions, including micro_f1/avg_f1 when available."""
+90:    correct = sum(1 for p in preds if p["was_correct"])
+91-    result = {
+92-        "accuracy": correct / len(preds) if preds else 0.0,
+93-        "correct": correct,
+94-        "total": len(preds),
+95-    }
+96-    # Compute rich metrics if any prediction has them
+--
+106-    return result
+107-
+108-
+109-def _run_offline_loop(
+110-    memory: MemorySystem,
+111-    examples: list[dict[str, Any]],
+112:    check_answer: Callable[..., bool],
+113-    num_epochs: int = 1,
+114-    batch_size: int = 1,
+115-    max_workers: int = 32,
+116-    logger: JSONLLogger | None = None,
+117-    step_offset: int = 0,
+118-    collect_trajectory: bool = True,
+--
+147-            batch_results = []
+148-            for ex in batch:
+149-                r = {
+150-                    "input": ex["input"],
+151-                    "prediction": ex["target"],  # Ground truth visible
+152-                    "ground_truth": ex["target"],
+153:                    "was_correct": True,
+154-                }
+155-                # Forward extra fields (e.g. raw_question) for memory systems
+156-                for k, v in ex.items():
+157-                    if k not in ("input", "target") and k not in r:
+158-                        r[k] = v
+159-                batch_results.append(r)
+--
+175-
+
+[Showing results with pagination = limit: 60]

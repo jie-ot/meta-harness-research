@@ -1,0 +1,154 @@
+Bash [ERROR]
+
+command:
+REPORTS="D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/reports"
+
+cat > "$REPORTS/iter_09.md" << 'EOF'
+# Iteration 9 Report
+
+## What changed
+- **fixed_confusion_memory**: applied prediction normalization (strip format wrappers) before storing confusion keys — the minimal fix to unlock the disambiguation phase.
+- **idf_confusion_memory**: added IDF-weighted Jaccard on top of normalization, down-weighting tokens common across all stored examples.
+
+## Results
+| System | Avg val | Delta |
+|--------|---------|-------|
+| fixed_confusion_memory | 50.9% | -0.7 |
+| idf_confusion_memory | 48.4% | -3.2 |
+
+fixed_confusion_memory nearly matched the frontier (50.9% vs 51.6%). IDF weighting regressed.
+
+## Why
+Normalization alone reached 50.9%, confirming it was the right fix. It didn't beat adaptive_tokenizer_confusion_memory because that system incorporated normalization implicitly via its full tokenizer rework. IDF weighting hurt because at small pool sizes (~50–200 examples), IDF estimates are noisy and high-IDF tokens are often typos or one-off strings that mislead retrieval.
+
+## Takeaway
+Prediction normalization is confirmed essential and sufficient — all future systems must include it. IDF at small corpus sizes adds noise; skip weighted similarity variants.
+EOF
+
+cat > "$REPORTS/iter_10.md" << 'EOF'
+# Iteration 10 Report
+
+## What changed
+- **anchor_last_memory**: placed the single best-matching example per top candidate label at the very end of the context (immediately before the question), filling the rest of the budget normally.
+- **utility_weighted_memory**: tracked per-example utility scores (+1 when the example was in context and the prediction was correct, -1 otherwise), then used sigmoid-scaled utility as a retrieval weight.
+
+## Results
+| System | Avg val | Delta |
+|--------|---------|-------|
+| anchor_last_memory | 46.0% | -5.6 |
+| utility_weighted_memory | 45.8% | -5.8 |
+
+Both regressed sharply from the 51.6% frontier.
+
+## Why
+Anchor placement assumes recency bias strong enough to overcome all other retrieval quality — not true for these models at these context lengths. Injecting a fixed anchor displaces examples that would have been higher quality by similarity.
+
+Utility weighting is too noisy at batch_size=1: each example gets very few feedback signals, utility scores converge slowly, and early accidents (lucky/unlucky context positions) permanently bias scores up or down.
+
+## Takeaway
+Prompt ordering effects exist but aren't large enough to warrant displacing quality examples. Per-example feedback signals need more aggregation before they're reliable — utility tracking requires larger batches or a different feedback formulation.
+EOF
+
+cat > "$REPORTS/iter_11.md" << 'EOF'
+# Iteration 11 Report
+
+## What changed
+- **contrastive_boundary_memory**: rendered disambiguation examples in a dedicated "Common Confusions" section with explicit "[NOT: wrong_label]" annotations, splitting the prompt into two sections.
+- **cluster_confusion_memory**: expanded top candidate labels to their full connected component in the undirected confusion graph (BFS over both directions), injecting one representative per cluster member.
+
+## Results
+| System | Avg val | Delta |
+|--------|---------|-------|
+| contrastive_boundary_memory | 46.7% | -4.9 |
+| cluster_confusion_memory | 50.2% | -1.4 |
+
+Contrastive annotation regressed. Cluster confusion tied but fell short of the frontier.
+
+## Why
+Explicit "[NOT: wrong_label]" annotations appear to confuse the model by surfacing the wrong label prominently. The model reads the section header as an instruction to avoid the wrong label, but seeing both the wrong and correct answer side-by-side with a negation marker is harder to process than a plain positive example.
+
+Cluster BFS expansion found transitively confused labels but the signal was too diluted — transitively confused labels (A↔B and B↔C) share fewer tokens than direct confusions, so the disambiguation examples don't help as much and consume budget.
+
+## Takeaway
+Negative annotations in prompts hurt more than they help. Confusion graph expansion should stay at depth 1 (direct confusions only). The frontier's single-hop approach is already near-optimal for the confusion mechanism.
+EOF
+
+cat > "$REPORTS/iter_12.md" << 'EOF'
+# Iteration 12 Report
+
+## What changed
+- **anchor_recency_confusion_memory**: replaced unbounded pool with one anchor (most-recent example per label) plus an 80-example recency window, on top of confusion disambiguation.
+- **discriminative_similarity_memory**: replaced Jaccard with label-discriminativeness-weighted Jaccard, where w(t) = 1 / num_distinct_labels_containing_t.
+
+## Results
+| System | Avg val | Delta |
+|--------|---------|-------|
+| anchor_recency_confusion_memory | 45.6% | -6.0 |
+| discriminative_similarity_memory | 47.8% | -3.8 |
+
+Both regressed from the 52.2% frontier.
+
+## Why
+Bounded pool (80 examples) truncates the LawBench training set, losing examples seen early. LawBench has 116 labels and trains on ~300 examples — an 80-example window covers only the last ~25% of the label space, under-representing early labels. The anchor guarantees one example per label but that single example may be low-quality.
+
+Discriminativeness weighting at small pool sizes produces noisy weights — a token that appears in only one label's examples gets maximum weight even if it's an artifact of that label's formatting, not its semantic content.
+
+## Takeaway
+Pool size bounds hurt on datasets where label coverage requires a larger history. Discriminativeness weighting has the same small-corpus noise problem as IDF. Stick with the full unbounded pool and plain adaptive Jaccard.
+EOF
+
+cat > "$REPORTS/iter_13.md" << 'EOF'
+# Iteration 13 Report
+
+## What changed
+- **unified_confusion_retrieval_memory**: merged the two-phase (confusion slots + similarity fill) into a single unified ranking: score(ex) = jaccard(q, ex) + α·log(1 + confusion_affinity(ex.label)).
+- **decayed_confusion_memory**: multiplied all confusion counts by 0.95 after each learn_from_batch call, pruning entries below 0.05, so recent errors dominate over historical ones.
+
+## Results
+| System | Avg val | Delta |
+|--------|---------|-------|
+| unified_confusion_retrieval_memory | 49.6% | -2.6 |
+| decayed_confusion_memory | 52.2% | ±0.0 |
+
+decayed_confusion_memory matched the frontier exactly and became the new Pareto leader at 52.2%.
+
+## Why
+Unified scoring fell short because the additive confusion bonus promotes examples for confused labels even when they're topically unrelated — the bonus fires for the wrong label on a given query. The two-phase approach is better because confusion slots are filled only if topically relevant examples for those labels exist.
+
+Decay worked because LawBench prediction patterns shift over training: early confusions get corrected but remain in the matrix with high counts, displacing currently-active confusions. Decay recency-weights the confusion matrix without any additional retrieval overhead.
+
+## Takeaway
+decayed_confusion_memory is the new frontier. Decay is a free improvement — always include it. Unified scoring is conceptually appealing but empirically worse than the two-phase approach on these datasets.
+EOF
+
+cat > "$REPORTS/iter_14.md" << 'EOF'
+# Iteration 14 Report
+
+## What changed
+- **missed_component_memory**: split compound labels on semicolons and tracked per-atomic-component miss counts; added a log-scaled component-overlap bonus to Jaccard scoring to surface chronically-missed sub-components.
+- **recent_error_hint_memory**: prepended a compact rolling window of the last 10 distinct (wrong→correct) pairs as explicit "Recent corrections" section above retrieved examples.
+
+## Results
+| System | Avg val | Delta |
+|--------|---------|-------|
+| missed_component_memory | 46.9% | -5.3 |
+| recent_error_hint_memory | 45.6% | -6.6 |
+
+Both regressed significantly from the 52.2% frontier.
+
+## Why
+Compound label splitting is dataset-specific — it's relevant only for datasets with semicolon-separated compound labels. On USPTO (SMILES with semicolons as formula delimiters) and LawBench (single string labels), splitting produces nonsensical sub-components, corrupting the scoring signal.
+
+Recent error hints put wrong answers explicitly in the prompt context before the examples. The model reads the correction list as part of the problem description and anchors on the wrong-answer tokens, which hurts rather than helps prediction for the current query.
+
+## Takeaway
+Dataset-specific mechanisms (compound label parsing) must be validated as general before inclusion. Explicit error history in the prompt context is harmful at this task — the model uses example Q/A pairs better than it uses meta-commentary about past failures.
+EOF
+
+echo "iter_09..14 done"
+
+description: Write iteration 9-14 reports
+
+--- output ---
+Exit code 2
+/usr/bin/bash: -c: line 121: unexpected EOF while looking for matching `''

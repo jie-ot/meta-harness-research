@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When extracting the crime name, output the exact statutory offense term (e.g., “行贿”) without adding descriptive prefixes or qualifiers such as “对国家工作人员”。
+- When the factual scenario involves a defendant biting or otherwise assaulting a police officer while resisting law‑enforcement duties, charge only 妨害公务 (obstruction of official duties) unless there is
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，2016年12月27日13时许，被告人蒲某与王某1等人一起喝酒，18时许蒲某送王某1回到恭门镇"龙腾"婚纱摄影店，王某1之妻李某2因喝酒责骂王某1时，蒲某便与李某2发生争吵，在争吵过程中蒲某对李某2拳打脚踢，王某见状后便拨打110报警；张家川县公安局恭门派出所接到110指挥中心指令后，所长尚某指派民警麻某、锁某、周某、苏某着警服、开警车赶赴现场处警。在民警向蒲某了解情况时，蒲某不予配合，辱骂民警锁某，并在锁某腿上踏了一脚、右眼部击打一拳，民警麻某在拉劝时被蒲某在胸部连击两拳，民警口头传唤蒲某到恭门派出所接受调查，遭到蒲某的拒绝，并继续威胁、辱骂民警，后尚某与民警马某2、王某2赶到现场，对蒲某做思想工作时，蒲某又辱骂尚某，后民警将蒲某强行带至恭门派出所接受调查。
+经张家川公安司法鉴定中心鉴定：麻某因钝性外力作用致"左胸部外伤"之损伤属轻微伤；锁某因钝性外力作用致"右眶部外伤"之损伤属轻微伤。
+上述事实，被告人在开庭审理过程中亦无异议，且有书证受案登记表、110接警记录单、到案经过、张家川县第一人民医院诊断证明，证人王某3、李某2、王某1、李某3、周某、苏某、马某2、王某2、尚某、李某1、马某3的证言，被害人锁某、麻某的陈述，审前社会调查报告、警官证复印件，鉴定意见、现场勘验笔录、现场指认笔录、辨认笔录、视听资料以及被告人的供述等证据证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

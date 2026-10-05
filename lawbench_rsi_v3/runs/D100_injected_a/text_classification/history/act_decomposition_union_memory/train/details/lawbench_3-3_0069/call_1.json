@@ -1,0 +1,72 @@
+{
+  "call_id": "14d9d87a589240b19551890380e3acd2",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791128795-w0BogM1CsDY4jbZClpQI",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "[罪名]<eoa>",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to read the user request: They gave a partial case facts, but they didn't actually include the facts. The prompt says \"下面是一起案件事实的其中一部分。请只针对这部分列出它构成的罪名。\" Then they show placeholders: **这部分事实:** \"请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" But they didn't provide actual facts. The user gave examples but not the actual facts. So we have no facts to analyze. We must respond accordingly: maybe indicate that no facts provided, cannot determine crimes. According to instruction, we must only list crimes directly supported by the facts. Since no facts, we should output empty? Probably we should respond with no crimes: maybe just \"[罪名]<eoa>\"? But format expects something between [罪名] and <eoa>. Could be empty. But better to say cannot determine. However policy: we should not fabricate. So we should respond that insufficient information. But the instruction says \"只写这部分事实直接支持的罪名；不要补充其他部分可能涉及的罪名。\" If no facts, then no crimes. So output empty? Could output \"[罪名]<eoa>\" with nothing between. That matches format? Might be acceptable.\n\nI'll output empty.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to read the user request: They gave a partial case facts, but they didn't actually include the facts. The prompt says \"下面是一起案件事实的其中一部分。请只针对这部分列出它构成的罪名。\" Then they show placeholders: **这部分事实:** \"请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" But they didn't provide actual facts. The user gave examples but not the actual facts. So we have no facts to analyze. We must respond accordingly: maybe indicate that no facts provided, cannot determine crimes. According to instruction, we must only list crimes directly supported by the facts. Since no facts, we should output empty? Probably we should respond with no crimes: maybe just \"[罪名]<eoa>\"? But format expects something between [罪名] and <eoa>. Could be empty. But better to say cannot determine. However policy: we should not fabricate. So we should respond that insufficient information. But the instruction says \"只写这部分事实直接支持的罪名；不要补充其他部分可能涉及的罪名。\" If no facts, then no crimes. So output empty? Could output \"[罪名]<eoa>\" with nothing between. That matches format? Might be acceptable.\n\nI'll output empty.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to read the user request: They gave a partial case facts, but they didn't actually include the facts. The prompt says \"下面是一起案件事实的其中一部分。请只针对这部分列出它构成的罪名。\" Then they show placeholders: **这部分事实:** \"请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" But they didn't provide actual facts. The user gave examples but not the actual facts. So we have no facts to analyze. We must respond accordingly: maybe indicate that no facts provided, cannot determine crimes. According to instruction, we must only list crimes directly supported by the facts. Since no facts, we should output empty? Probably we should respond with no crimes: maybe just \"[罪名]<eoa>\"? But format expects something between [罪名] and <eoa>. Could be empty. But better to say cannot determine. However policy: we should not fabricate. So we should respond that insufficient information. But the instruction says \"只写这部分事实直接支持的罪名；不要补充其他部分可能涉及的罪名。\" If no facts, then no crimes. So output empty? Could output \"[罪名]<eoa>\" with nothing between. That matches format? Might be acceptable.\n\nI'll output empty.",
+            "reasoning_content": "We need to read the user request: They gave a partial case facts, but they didn't actually include the facts. The prompt says \"下面是一起案件事实的其中一部分。请只针对这部分列出它构成的罪名。\" Then they show placeholders: **这部分事实:** \"请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" But they didn't provide actual facts. The user gave examples but not the actual facts. So we have no facts to analyze. We must respond accordingly: maybe indicate that no facts provided, cannot determine crimes. According to instruction, we must only list crimes directly supported by the facts. Since no facts, we should output empty? Probably we should respond with no crimes: maybe just \"[罪名]<eoa>\"? But format expects something between [罪名] and <eoa>. Could be empty. But better to say cannot determine. However policy: we should not fabricate. So we should respond that insufficient information. But the instruction says \"只写这部分事实直接支持的罪名；不要补充其他部分可能涉及的罪名。\" If no facts, then no crimes. So output empty? Could output \"[罪名]<eoa>\" with nothing between. That matches format? Might be acceptable.\n\nI'll output empty."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 303,
+      "prompt_tokens": 605,
+      "total_tokens": 908,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 292,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 6.966e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 6.966e-05,
+        "upstream_inference_prompt_cost": 1.815e-05,
+        "upstream_inference_completions_cost": 5.151e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

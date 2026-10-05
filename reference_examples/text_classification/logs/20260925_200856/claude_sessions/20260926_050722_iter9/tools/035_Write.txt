@@ -1,0 +1,29 @@
+Write: logs\20260925_200856\pending_eval.json
+
+content:
+{
+  "iteration": 9,
+  "candidates": [
+    {
+      "name": "fixed_confusion_memory",
+      "file": "agents/fixed_confusion_memory.py",
+      "hypothesis": "Normalising raw model predictions before storing them as confusion-matrix keys (stripping wrappers like '[TAG]label<eoa>') will allow the disambiguation phase to fire for the first time in any confusion-based system, because prior systems stored keys in wrapped format that never matched the plain ground-truth label strings used during retrieval lookup, making the disambiguation phase permanently inactive.",
+      "axis": "exploitation",
+      "base_system": "adaptive_tokenizer_confusion_memory",
+      "components": ["prediction_normalization", "wrapper_stripping", "adaptive_tokenizer", "confusion_matrix", "disambiguation_phase", "similarity_fill"]
+    },
+    {
+      "name": "idf_confusion_memory",
+      "file": "agents/idf_confusion_memory.py",
+      "hypothesis": "Replacing plain Jaccard similarity with IDF-weighted Jaccard (weighting each token by its inverse document frequency across stored examples) will improve retrieval quality by down-weighting ubiquitous filler tokens and up-weighting rare discriminative terms, on top of the prediction normalisation fix that unlocks the disambiguation phase.",
+      "axis": "exploration",
+      "base_system": "adaptive_tokenizer_confusion_memory",
+      "components": ["idf_weighted_jaccard", "lazy_idf_recompute", "prediction_normalization", "adaptive_tokenizer", "confusion_matrix", "disambiguation_phase", "similarity_fill"]
+    }
+  ]
+}
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\pending_eval.json (file state is current in your context — no need to Read it back)

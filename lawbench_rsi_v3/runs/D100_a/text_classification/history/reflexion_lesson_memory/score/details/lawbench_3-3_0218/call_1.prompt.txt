@@ -1,0 +1,35 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the facts describe the misappropriation of money belonging to a private company or other non‑government entity (e.g., company funds, client payments) rather than state or public treasury funds, the
+- If the alleged bribery is committed by a legal entity (e.g., a company) or its legal representative, the correct charge is "单位行贿" rather than the individual offense "行贿".
+- If the factual description indicates that the offender used their official position or entrusted authority to appropriate property for personal gain, rather than physically taking or stealthily removi
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:福建省龙岩市新罗区人民检察院指控：
+2012年至2014年，被告人王某在担任龙岩市新罗区雁石镇岩星村党支部书记期间，利用职务便利收受龙岩市之州房地产开发综合有限公司法人代表兼董事长郑某甲在建设龙岩市新罗区雁石镇岩星新村过程中给予的人民币470000元。具体如下：
+1、2012年9月中秋节前，被告人王某收受郑某甲汇入被告人王某岳父赵某的银行账户的人民币50000元。
+2、2013年9月中秋节前，被告人王某在龙岩市新罗区西城明珠广场小区楼下收受郑某甲给予的人民币70000元。
+3、2013年2月，被告人王某在龙岩市新罗区雁石镇岩星村收受郑某甲通过龙岩市新罗区雁石镇岩星村村委会主任林某甲（另案处理）给予的人民币100000元。
+4、2013年7月，被告人王某在龙岩市新罗区雁石镇岩星村收受郑某甲通过林某甲给予的人民币100000元。
+5、2014年春节前，被告人王某在龙岩市新罗区雁石镇岩星村收受郑某甲通过林某甲给予的人民币150000元。
+2014年7月20日，被告人王某的亲属上缴中共龙岩市新罗区纪律检查委员会人民币100000元。
+2014年7月22日，中共龙岩市新罗区纪律检查委员会将涉嫌××的被告人王某移送龙岩市公安局新罗分局。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,21 @@
+Edit: agents\act_decomposition_union_memory.py
+
+replace_all: False
+old_string:
+        # number of detected acts -> {number of true charges: times observed}
+        self.size_by_acts: dict[int, dict[int, int]] = defaultdict(lambda: defaultdict(int))
+        # every observed |truth|, for facts whose act count was never seen
+        self.global_sizes: dict[int, int] = defaultdict(int)
+        self._size_obs = 0
+
+new_string:
+        # number of detected acts -> {number of true charges: times observed}
+        self.size_by_acts: dict[int, dict[int, int]] = defaultdict(lambda: defaultdict(int))
+        # every observed |truth|, reported for inspection only; never used to
+        # second-guess a union, since it pools single-act and multi-act facts
+        self.global_sizes: dict[int, int] = defaultdict(int)
+        self._size_obs = 0
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_a\text_classification\agents\act_decomposition_union_memory.py has been updated successfully.

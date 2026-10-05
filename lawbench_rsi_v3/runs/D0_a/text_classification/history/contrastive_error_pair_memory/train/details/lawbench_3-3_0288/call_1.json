@@ -1,0 +1,72 @@
+{
+  "call_id": "b17ceccb02af40c7a3d91de877e30303",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791027769-cHKPmMjXmsBTUdGicvWV",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"被告人徐某隐瞒已将房屋出售的事实，利用房屋转让合同向受害人卫某某虚构房屋所有权并收取款项，目的在于非法占有财物，数额较大，构成以合同形式实施的诈骗行为，符合《刑法》关于合同诈骗罪的规定。案件中未涉及其他犯罪行为，故仅适用合同诈骗罪。\",\n  \"final_answer\": \"[罪名]合同诈骗<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate criminal charge(s) for the described case.\n\nFacts: Defendant Xu sold a house that he had already sold to someone else, i.e., he no longer owned the property, but he concealed that fact and signed a transfer agreement with victim Wei for 550,000 RMB, then defrauded Wei of 480,000 RMB to repay personal debts. He later returned 50,000 RMB. Victim forgave.\n\nThis is classic fraud (诈骗罪) – deception to obtain property. However there is also possible \"contract fraud\" (合同诈骗) because he used a contract (house transfer agreement) to defraud. In Chinese criminal law, there is a specific offense \"合同诈骗罪\" (contract fraud) which is a type of fraud where the perpetrator uses a contract to defraud. The description: \"以非法占有为目的，采用虚构事实或者隐瞒真相的方法，骗取对方财物，数额较大\" – that's fraud. If the fraud is through a contract, it's called \"合同诈骗\". Many examples in dataset: For similar case of selling property they used \"合同诈骗\". Eg earlier example: \"张1某 ...签订发包合同，诈骗...\" answer: 合同诈骗. So here also a house sale contract. So likely \"合同诈骗\". Also could be \"诈骗\" generic, but dataset expects \"合同诈骗\". Let's see other similar: The case with labor contract? The earlier example: \"张1某 ...签订发包合同，诈骗...\" answer: 合同诈骗. So yes.\n\nThus answer: [罪名]合同诈骗<eoa>\n\nCheck if any other charge: maybe \"非法占有\" is part of fraud. No other. So single charge.\n\nReturn JSON with reasoning and final answer.\n\n",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to determine appropriate criminal charge(s) for the described case.\n\nFacts: Defendant Xu sold a house that he had already sold to someone else, i.e., he no longer owned the property, but he concealed that fact and signed a transfer agreement with victim Wei for 550,000 RMB, then defrauded Wei of 480,000 RMB to repay personal debts. He later returned 50,000 RMB. Victim forgave.\n\nThis is classic fraud (诈骗罪) – deception to obtain property. However there is also possible \"contract fraud\" (合同诈骗) because he used a contract (house transfer agreement) to defraud. In Chinese criminal law, there is a specific offense \"合同诈骗罪\" (contract fraud) which is a type of fraud where the perpetrator uses a contract to defraud. The description: \"以非法占有为目的，采用虚构事实或者隐瞒真相的方法，骗取对方财物，数额较大\" – that's fraud. If the fraud is through a contract, it's called \"合同诈骗\". Many examples in dataset: For similar case of selling property they used \"合同诈骗\". Eg earlier example: \"张1某 ...签订发包合同，诈骗...\" answer: 合同诈骗. So here also a house sale contract. So likely \"合同诈骗\". Also could be \"诈骗\" generic, but dataset expects \"合同诈骗\". Let's see other similar: The case with labor contract? The earlier example: \"张1某 ...签订发包合同，诈骗...\" answer: 合同诈骗. So yes.\n\nThus answer: [罪名]合同诈骗<eoa>\n\nCheck if any other charge: maybe \"非法占有\" is part of fraud. No other. So single charge.\n\nReturn JSON with reasoning and final answer.\n\n",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate criminal charge(s) for the described case.\n\nFacts: Defendant Xu sold a house that he had already sold to someone else, i.e., he no longer owned the property, but he concealed that fact and signed a transfer agreement with victim Wei for 550,000 RMB, then defrauded Wei of 480,000 RMB to repay personal debts. He later returned 50,000 RMB. Victim forgave.\n\nThis is classic fraud (诈骗罪) – deception to obtain property. However there is also possible \"contract fraud\" (合同诈骗) because he used a contract (house transfer agreement) to defraud. In Chinese criminal law, there is a specific offense \"合同诈骗罪\" (contract fraud) which is a type of fraud where the perpetrator uses a contract to defraud. The description: \"以非法占有为目的，采用虚构事实或者隐瞒真相的方法，骗取对方财物，数额较大\" – that's fraud. If the fraud is through a contract, it's called \"合同诈骗\". Many examples in dataset: For similar case of selling property they used \"合同诈骗\". Eg earlier example: \"张1某 ...签订发包合同，诈骗...\" answer: 合同诈骗. So here also a house sale contract. So likely \"合同诈骗\". Also could be \"诈骗\" generic, but dataset expects \"合同诈骗\". Let's see other similar: The case with labor contract? The earlier example: \"张1某 ...签订发包合同，诈骗...\" answer: 合同诈骗. So yes.\n\nThus answer: [罪名]合同诈骗<eoa>\n\nCheck if any other charge: maybe \"非法占有\" is part of fraud. No other. So single charge.\n\nReturn JSON with reasoning and final answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to determine appropriate criminal charge(s) for the described case.\n\nFacts: Defendant Xu sold a house that he had already sold to someone else, i.e., he no longer owned the property, but he concealed that fact and signed a transfer agreement with victim Wei for 550,000 RMB, then defrauded Wei of 480,000 RMB to repay personal debts. He later returned 50,000 RMB. Victim forgave.\n\nThis is classic fraud (诈骗罪) – deception to obtain property. However there is also possible \"contract fraud\" (合同诈骗) because he used a contract (house transfer agreement) to defraud. In Chinese criminal law, there is a specific offense \"合同诈骗罪\" (contract fraud) which is a type of fraud where the perpetrator uses a contract to defraud. The description: \"以非法占有为目的，采用虚构事实或者隐瞒真相的方法，骗取对方财物，数额较大\" – that's fraud. If the fraud is through a contract, it's called \"合同诈骗\". Many examples in dataset: For similar case of selling property they used \"合同诈骗\". Eg earlier example: \"张1某 ...签订发包合同，诈骗...\" answer: 合同诈骗. So here also a house sale contract. So likely \"合同诈骗\". Also could be \"诈骗\" generic, but dataset expects \"合同诈骗\". Let's see other similar: The case with labor contract? The earlier example: \"张1某 ...签订发包合同，诈骗...\" answer: 合同诈骗. So yes.\n\nThus answer: [罪名]合同诈骗<eoa>\n\nCheck if any other charge: maybe \"非法占有\" is part of fraud. No other. So single charge.\n\nReturn JSON with reasoning and final answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 497,
+      "prompt_tokens": 24067,
+      "total_tokens": 24564,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 429,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0012175,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0012175,
+        "upstream_inference_prompt_cost": 0.001081070405184924,
+        "upstream_inference_completions_cost": 0.00013642959481507597
+      }
+    }
+  },
+  "raw_response_missing": false
+}

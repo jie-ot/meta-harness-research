@@ -1,0 +1,104 @@
+Bash
+
+command:
+REPORTS="D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/reports"
+
+cat > "$REPORTS/iter_05.md" << 'EOF'
+# Iteration 5 Report
+
+## What changed
+Both candidates tried to recover the LawBench drop seen in confusion_disambiguation_memory:
+- **confusion_mmr_memory**: replaced the similarity-rank fill phase with MMR fill after the disambiguation slots.
+- **difficulty_weighted_mmr_memory**: added a per-label difficulty boost (error_rate × β) inside the MMR relevance term.
+
+## Results
+| System | Avg val | Delta |
+|--------|---------|-------|
+| confusion_mmr_memory | 46.9% | -0.7 |
+| difficulty_weighted_mmr_memory | 40.9% | -6.7 |
+
+Both regressed. MMR fill hurt Symptom2Disease because diversity penalty removes useful near-duplicate examples for that dataset. Difficulty weighting compounded the damage.
+
+## Why
+MMR is fundamentally mismatched here: for tasks where many valid examples share tokens (Symptom2Disease has ~24 symptom clusters), penalizing redundancy removes examples that would reinforce the correct label, not examples that are wasteful. Difficulty weighting on top introduces a second confounding factor.
+
+## Takeaway
+MMR is harmful on tasks with correlated-vocabulary label clusters. The fill phase should be pure similarity. The confusion mechanism is still not firing due to the prediction normalization bug.
+EOF
+
+cat > "$REPORTS/iter_06.md" << 'EOF'
+# Iteration 6 Report
+
+## What changed
+Two experiments with tokenization and prompt architecture:
+- **ngram_confusion_memory**: replaced ASCII word tokenizer with character bigrams universally.
+- **label_grouped_memory**: organized retrieved examples into per-label sections with explicit section headers in the prompt.
+
+## Results
+| System | Avg val | Delta |
+|--------|---------|-------|
+| ngram_confusion_memory | 47.3% | -0.5 |
+| label_grouped_memory | 47.8% | ±0.0 |
+
+Both tied or marginally fell short of the frontier. Bigrams helped LawBench (CJK characters) but hurt USPTO (ASCII SMILES strings where word tokens work well). Grouped prompt tied the frontier.
+
+## Why
+A single tokenizer can't be optimal across both ASCII and CJK scripts. Bigrams degrade USPTO retrieval because SMILES notation contains meaningful ASCII token boundaries ("CH3", "NH2") that bigrams fragment into noise.
+
+Label grouping doesn't help because GPT-class models already infer structure from flat Q/A lists — the grouped headers add tokens without adding signal.
+
+## Takeaway
+Tokenizer must be adaptive (CJK → bigrams, ASCII → words). This was the missing piece; iteration 7 implemented it correctly.
+EOF
+
+cat > "$REPORTS/iter_07.md" << 'EOF'
+# Iteration 7 Report
+
+## What changed
+- **adaptive_tokenizer_confusion_memory**: CJK text routes to character bigrams; ASCII/Latin routes to word tokens. Applied on top of confusion disambiguation.
+- **llm_rule_synthesis_memory**: after each error batch, call LLM to generate pairwise decision rules for high-confusion label pairs; inject rules above examples in the prompt.
+
+## Results
+| System | Avg val | Delta |
+|--------|---------|-------|
+| adaptive_tokenizer_confusion_memory | 51.6% | ±0.0 |
+| llm_rule_synthesis_memory | 44.0% | -7.6 |
+
+Adaptive tokenizer jumped to 51.6%, matching the new frontier. Rule synthesis regressed badly.
+
+## Why
+Adaptive tokenizer correctly fixed the mutual degradation: USPTO and Symptom2Disease (ASCII) benefit from word tokens, LawBench (CJK) benefits from bigrams. The +4% jump from 47.8% confirms this was the bottleneck.
+
+Rule synthesis failed because synthesized rules can be wrong or overly general, and they consume context budget that raw examples use more reliably. Also the confusion matrix is still broken (normalization bug), so rules were synthesized for wrong label pairs.
+
+## Takeaway
+Adaptive tokenizer is now a required component of every future system. Rule synthesis is too noisy without a reliable confusion signal upstream.
+EOF
+
+cat > "$REPORTS/iter_08.md" << 'EOF'
+# Iteration 8 Report
+
+## What changed
+- **confusion_normalized_bfs_memory**: strip format wrappers from predictions before storing confusion keys; then traverse the confusion graph to depth 2 (BFS) with count/depth weight decay to find transitively confused labels.
+- **label_prototype_memory**: maintain one LLM-written discriminative prototype per label; inject the top-K most query-similar prototypes above few-shot examples.
+
+## Results
+| System | Avg val | Delta |
+|--------|---------|-------|
+| confusion_normalized_bfs_memory | 48.9% | -2.7 |
+| label_prototype_memory | 48.2% | -3.4 |
+
+Both regressed from the 51.6% frontier.
+
+## Why
+BFS depth-2 traversal floods the disambiguation slots with transitively-similar labels that are too distant to be useful. The normalization fix was correct but BFS added noise that offset the gain. Label prototypes competed with raw examples for context budget — they use tokens but provide less signal than a concrete example for this problem size.
+
+## Takeaway
+Prediction normalization is confirmed necessary and correct — it's the reason the confusion phase never fired before. But the retrieval change on top (BFS) hurt. Apply normalization alone on the base system.
+EOF
+echo "iter_05..08 done"
+
+description: Write iteration 5-8 reports
+
+--- output ---
+iter_05..08 done

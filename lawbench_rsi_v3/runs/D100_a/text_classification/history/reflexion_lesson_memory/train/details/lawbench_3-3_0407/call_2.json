@@ -1,0 +1,72 @@
+{
+  "call_id": "692b447b3cf543a6a94f8e0755f4f753",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791018353-7ExSwQowtTLdZeL50wQG",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"If the factual description involves unapproved plowing, clearing, or sowing of crops on forest land, thereby converting the forest area into agricultural use, classify the offense as illegal occupation of farmland rather than forest resource destruction.\",\n  \"keywords\": [\n    \"未取得审批\",\n    \"耙倒\",\n    \"播种黄豆\",\n    \"林地转为农用\",\n    \"非法占用农用地\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a correction rule to avoid misclassifying \"破坏森林资源\" when correct is \"非法占用农用地\". The error: misclassifying the crime. The rule should guide classification: distinguish between forest resource destruction vs illegal occupation of farmland. So rule: When facts involve conversion of forest land to agricultural use (plowing, sowing crops) without approval, the appropriate charge is illegal occupation of farmland, not forest resource destruction. Keywords: \"未取得审批\", \"拖拉机拉着草原耙\", \"耙倒\", \"播种黄豆\", \"破坏林地面积\", \"林业局\", \"农用地\", \"占用\". Provide JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a correction rule to avoid misclassifying \"破坏森林资源\" when correct is \"非法占用农用地\". The error: misclassifying the crime. The rule should guide classification: distinguish between forest resource destruction vs illegal occupation of farmland. So rule: When facts involve conversion of forest land to agricultural use (plowing, sowing crops) without approval, the appropriate charge is illegal occupation of farmland, not forest resource destruction. Keywords: \"未取得审批\", \"拖拉机拉着草原耙\", \"耙倒\", \"播种黄豆\", \"破坏林地面积\", \"林业局\", \"农用地\", \"占用\". Provide JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a correction rule to avoid misclassifying \"破坏森林资源\" when correct is \"非法占用农用地\". The error: misclassifying the crime. The rule should guide classification: distinguish between forest resource destruction vs illegal occupation of farmland. So rule: When facts involve conversion of forest land to agricultural use (plowing, sowing crops) without approval, the appropriate charge is illegal occupation of farmland, not forest resource destruction. Keywords: \"未取得审批\", \"拖拉机拉着草原耙\", \"耙倒\", \"播种黄豆\", \"破坏林地面积\", \"林业局\", \"农用地\", \"占用\". Provide JSON.",
+            "reasoning_content": "We need to produce a correction rule to avoid misclassifying \"破坏森林资源\" when correct is \"非法占用农用地\". The error: misclassifying the crime. The rule should guide classification: distinguish between forest resource destruction vs illegal occupation of farmland. So rule: When facts involve conversion of forest land to agricultural use (plowing, sowing crops) without approval, the appropriate charge is illegal occupation of farmland, not forest resource destruction. Keywords: \"未取得审批\", \"拖拉机拉着草原耙\", \"耙倒\", \"播种黄豆\", \"破坏林地面积\", \"林业局\", \"农用地\", \"占用\". Provide JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 251,
+      "prompt_tokens": 669,
+      "total_tokens": 920,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 172,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 9.75e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 9.75e-05,
+        "upstream_inference_prompt_cost": 2.960998184202562e-05,
+        "upstream_inference_completions_cost": 6.789001815797438e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

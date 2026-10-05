@@ -1,0 +1,19 @@
+# Iteration 16 Report
+
+## What changed
+- **hard_buffer_memory**: separate bounded FIFO pool of error examples (max 60); similarity-gated injection of up to 3 hard-buffer examples before general fill.
+- **label_centroid_memory**: per-label frequency-threshold centroids used for coarse candidate-label routing, then within-label similarity fill before cross-label fallback.
+
+## Results
+| System | Avg val | Delta |
+|--------|---------|-------|
+| hard_buffer_memory | failed (0%) | -52.2 |
+| label_centroid_memory | 48.9% | -3.3 |
+
+## Why
+`hard_buffer_memory` crashed with an import error: the file uses `defaultdict` in `__init__` and `_confusion_targets_for` but omits `from collections import defaultdict`. Every call raised `NameError`, producing zero predictions. The underlying mechanism (error pool + similarity gate) was never actually tested.
+
+`label_centroid_memory` fell 3.3 points below the frontier. Within-label priority forces retrieval into the estimated top-3 candidate labels, discarding cross-label examples that happen to be more relevant to the query. The centroid frequency threshold (30%) is also fragile: rare labels with fewer than ~7 training examples never accumulate enough token co-occurrences to build a meaningful centroid, so the routing step silently degrades to random for those labels.
+
+## Takeaway
+Always validate imports before submission — a missing stdlib import kills the whole run at zero cost. Coarse routing that restricts the retrieval pool to a label subset regresses whenever the routing signal is noisier than raw Jaccard similarity, which it is for low-frequency labels.

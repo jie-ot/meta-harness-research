@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+- When the case facts explicitly describe separate actions of selling, buying, or transporting counterfeit currency, label each distinct offense (e.g., 出售假币, 购买假币, 运输假币) rather than using a generic term
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控，2012年1月至2013年1月，被告人郑某某先后向中国工商银行嘉兴分行、上海浦东发展银行、招商银行、广发银行上海分行和上海银行申领了信用卡，并在无归还能力的情况下持卡透支消费和取现，且变更住址和电话未通知银行，经多次催收超过三个月，仍未归还所欠款项。截至案发，累计透支上述银行本金人民币（以下币种均为“人民币”）62，281.95元，其中中国工商银行嘉兴分行本金32，213.62元、上海浦东发展银行本金4，916.34元、招商银行本金7，279.34元、广发银行上海分行本金4394.75元、上海银行本金13477.9元。
+经上海银行报案，被告人郑某某于2015年6月15日在本市桂林路一连锁酒店内被抓获，其到案后如实供述了恶意透支上海银行信用卡的事实并归还了全部本息，并主动供述了恶意透支中国工商银行嘉兴分行、上海浦东发展银行、招商银行、广发银行上海分行信用卡的事实。在法庭审理中，郑某某还在家属帮助下退出了其余违法所得。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

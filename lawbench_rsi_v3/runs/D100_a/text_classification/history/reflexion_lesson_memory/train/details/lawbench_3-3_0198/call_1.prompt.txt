@@ -1,0 +1,30 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the factual description involves providing a location for others to use narcotics, assign the statutory offense name "容留他人吸毒" rather than any longer descriptive phrase such as "容留他人吸食毒品".
+- When the statutory offense name in the facts contains multiple listed items separated by commas (e.g., “走私国家禁止进出口的货物、物品”), always output the complete official charge name including every listed item.
+- When the case facts describe multiple distinct criminal conduct or explicitly mention additional offenses (e.g., “数罪并罚”, “其他罪”, “并且…”， “同时” etc.), output every applicable charge separated by semicolon
+- If the defendant actively supplies a venue, equipment, or otherwise establishes a place for the operation of gambling activities as a business (e.g., renting premises for a gambling‑machine shop), the
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:浦江县人民检察院指控：
+1、2014年10月初的一天11点钟左右，被告人黄2某在其租于浦江县仙华街道项宅村的出租房内，容留唐某、“黄万金”（身份不明）吸食了毒品海洛因。
+2、2014年10月10日左右的一天下午，在其租于浦江县仙华街道项宅村的出租房内，容留唐某、“黄万金”（身份不明）吸食了毒品海洛因。
+针对上述事实，公诉机关提供了相应的证据。公诉机关认为被告人黄2某违反国家毒品××法规，容留他人吸食毒品，其行为已触犯《中华人民共和国刑法》第三百五十四之规定，应当以××依法追究其刑事责任。被告人黄2某在刑满释放后五年内再犯应当判处××以上刑罚之罪，系累犯，故还应同时适用《中华人民共和国刑法》××××之规定。提请本院依法惩处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

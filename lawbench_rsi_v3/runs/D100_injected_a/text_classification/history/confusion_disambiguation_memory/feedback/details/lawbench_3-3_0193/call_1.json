@@ -1,0 +1,72 @@
+{
+  "call_id": "2d81de040c414b9c9bff852c45d60403",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791008828-4zjR4Fhkva5aa8tqfezf",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendants accepted large sums of money in exchange for illegally registering non‑eligible candidates for the provincial college entrance examination, which constitutes bribery (受贿). Their actions of violating enrollment regulations to favor certain students constitute the crime of abusing official duties for personal gain, i.e., the \\\"徇私舞弊罪\\\" (abuse of power in student enrollment). Additionally, the defendant who fabricated official school and public security bureau seals and produced false academic and household registration certificates committed the crime of forging state documents, i.e., 伪造国家机关公文罪. Therefore, the appropriate charges are bribery, abuse of power in student enrollment, and forgery of state documents.\",\n  \"final_answer\": \"[罪名]受贿;徇私舞弊罪;伪造国家机关公文罪<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate crime(s) based on facts. The pattern: they list crimes like \"强制猥亵、侮辱妇女\" etc. For this case: violations of high school exam enrollment, bribery, falsification of official documents, and possibly \"招收学生徇私舞弊罪\" which is \"accepting bribes for student enrollment\" maybe \"徇私舞弊罪\" (abuse of power for personal gain). Also \"伪造国家机关公文罪\". So answer should list both crimes separated by semicolon.\n\nThus: [罪名]受贿;徇私舞弊罪;伪造国家机关公文罪<eoa>\n\nBut need to match style used earlier: they used \"受贿\" alone for bribery. For \"招收学生徇私舞弊罪\" they might phrase as \"徇私舞弊罪\". In examples, they used \"强制猥亵、侮辱妇女\" (multiple separated by comma). In other answers they used semicolon between multiple crimes. Eg: \"盗窃;掩饰、隐瞒犯罪所得、犯罪所得收益\". So use semicolon.\n\nThus final answer: [罪名]受贿;徇私舞弊罪;伪造国家机关公文罪<eoa>\n\nCheck if need \"受贿\" for both? Both took bribes, so both are guilty of受贿. Could also include \"行贿\" but they are recipients. So \"受贿\". Also \"伪造国家机关公文罪\" only for 邓某. But both are charged? The text says \"且被告人邓某伪造国家机关公文，还应当以伪造国家机关公文罪追究刑事责任\". So only 邓某. But answer likely includes both crimes overall: \"受贿;徇私舞弊罪;伪造国家机关公文罪\". That matches.\n\nReturn JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "reasoning": "We need to determine appropriate crime(s) based on facts. The pattern: they list crimes like \"强制猥亵、侮辱妇女\" etc. For this case: violations of high school exam enrollment, bribery, falsification of official documents, and possibly \"招收学生徇私舞弊罪\" which is \"accepting bribes for student enrollment\" maybe \"徇私舞弊罪\" (abuse of power for personal gain). Also \"伪造国家机关公文罪\". So answer should list both crimes separated by semicolon.\n\nThus: [罪名]受贿;徇私舞弊罪;伪造国家机关公文罪<eoa>\n\nBut need to match style used earlier: they used \"受贿\" alone for bribery. For \"招收学生徇私舞弊罪\" they might phrase as \"徇私舞弊罪\". In examples, they used \"强制猥亵、侮辱妇女\" (multiple separated by comma). In other answers they used semicolon between multiple crimes. Eg: \"盗窃;掩饰、隐瞒犯罪所得、犯罪所得收益\". So use semicolon.\n\nThus final answer: [罪名]受贿;徇私舞弊罪;伪造国家机关公文罪<eoa>\n\nCheck if need \"受贿\" for both? Both took bribes, so both are guilty of受贿. Could also include \"行贿\" but they are recipients. So \"受贿\". Also \"伪造国家机关公文罪\" only for 邓某. But both are charged? The text says \"且被告人邓某伪造国家机关公文，还应当以伪造国家机关公文罪追究刑事责任\". So only 邓某. But answer likely includes both crimes overall: \"受贿;徇私舞弊罪;伪造国家机关公文罪\". That matches.\n\nReturn JSON with reasoning and final answer.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate crime(s) based on facts. The pattern: they list crimes like \"强制猥亵、侮辱妇女\" etc. For this case: violations of high school exam enrollment, bribery, falsification of official documents, and possibly \"招收学生徇私舞弊罪\" which is \"accepting bribes for student enrollment\" maybe \"徇私舞弊罪\" (abuse of power for personal gain). Also \"伪造国家机关公文罪\". So answer should list both crimes separated by semicolon.\n\nThus: [罪名]受贿;徇私舞弊罪;伪造国家机关公文罪<eoa>\n\nBut need to match style used earlier: they used \"受贿\" alone for bribery. For \"招收学生徇私舞弊罪\" they might phrase as \"徇私舞弊罪\". In examples, they used \"强制猥亵、侮辱妇女\" (multiple separated by comma). In other answers they used semicolon between multiple crimes. Eg: \"盗窃;掩饰、隐瞒犯罪所得、犯罪所得收益\". So use semicolon.\n\nThus final answer: [罪名]受贿;徇私舞弊罪;伪造国家机关公文罪<eoa>\n\nCheck if need \"受贿\" for both? Both took bribes, so both are guilty of受贿. Could also include \"行贿\" but they are recipients. So \"受贿\". Also \"伪造国家机关公文罪\" only for 邓某. But both are charged? The text says \"且被告人邓某伪造国家机关公文，还应当以伪造国家机关公文罪追究刑事责任\". So only 邓某. But answer likely includes both crimes overall: \"受贿;徇私舞弊罪;伪造国家机关公文罪\". That matches.\n\nReturn JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": "We need to determine appropriate crime(s) based on facts. The pattern: they list crimes like \"强制猥亵、侮辱妇女\" etc. For this case: violations of high school exam enrollment, bribery, falsification of official documents, and possibly \"招收学生徇私舞弊罪\" which is \"accepting bribes for student enrollment\" maybe \"徇私舞弊罪\" (abuse of power for personal gain). Also \"伪造国家机关公文罪\". So answer should list both crimes separated by semicolon.\n\nThus: [罪名]受贿;徇私舞弊罪;伪造国家机关公文罪<eoa>\n\nBut need to match style used earlier: they used \"受贿\" alone for bribery. For \"招收学生徇私舞弊罪\" they might phrase as \"徇私舞弊罪\". In examples, they used \"强制猥亵、侮辱妇女\" (multiple separated by comma). In other answers they used semicolon between multiple crimes. Eg: \"盗窃;掩饰、隐瞒犯罪所得、犯罪所得收益\". So use semicolon.\n\nThus final answer: [罪名]受贿;徇私舞弊罪;伪造国家机关公文罪<eoa>\n\nCheck if need \"受贿\" for both? Both took bribes, so both are guilty of受贿. Could also include \"行贿\" but they are recipients. So \"受贿\". Also \"伪造国家机关公文罪\" only for 邓某. But both are charged? The text says \"且被告人邓某伪造国家机关公文，还应当以伪造国家机关公文罪追究刑事责任\". So only 邓某. But answer likely includes both crimes overall: \"受贿;徇私舞弊罪;伪造国家机关公文罪\". That matches.\n\nReturn JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 625,
+      "prompt_tokens": 25312,
+      "total_tokens": 25937,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 431,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 80,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.001053419,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.001053419,
+        "upstream_inference_prompt_cost": 0.000936544,
+        "upstream_inference_completions_cost": 0.000116875
+      }
+    }
+  },
+  "raw_response_missing": false
+}

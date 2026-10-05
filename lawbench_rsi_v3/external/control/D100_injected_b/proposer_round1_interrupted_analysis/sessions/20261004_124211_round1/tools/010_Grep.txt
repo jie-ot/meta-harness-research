@@ -1,0 +1,37 @@
+Grep
+
+pattern: def |eoa
+path:
+D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\benchmark.py
+
+output_mode: content
+head_limit: 40
+
+--- output ---
+15:def load_config() -> dict:
+22:def get_model_short_name(model_id: str) -> str:
+39:def discover_all_memory_systems() -> list[tuple[str, str]]:
+51:def get_dataset_sizes(dataset: str) -> tuple[int, int, int]:
+61:def _sanitize_filename(desc: str) -> str:
+65:def _print_failure(desc: str, log_path: Path) -> None:
+76:async def _run_with_retries(
+119:async def run_all_jobs(
+128:    async def run_one(idx: int, desc: str, cmd: list[str]) -> tuple[str, bool]:
+148:def run_dir(
+160:def parse_run_path(base: Path, filepath: Path) -> dict | None:
+180:def _has_usable_result(path: Path) -> bool:
+188:def load_results(base_dir: Path, filename: str = "val.json") -> dict:
+284:def compute_pareto_frontier(
+306:def _inner_loop_pythonpath() -> str:
+311:def _worker_env() -> dict[str, str]:
+327:def _inner_loop_command() -> list[str]:
+341:def print_results(results: dict, metric_label: str = "val", pareto_only: bool = False):
+406:        def print_row(avg_acc, mem, cells, ctx_tokens):
+418:        def print_ref_row(method, ctx_chars):
+493:def build_val_runs(
+563:def build_test_runs(
+640:def print_frontier(
+742:def update_summary(logs_dir: Path):
+762:def print_summary(logs_dir: Path, results_dir: Path):
+778:def print_missing(
+810:async def main():

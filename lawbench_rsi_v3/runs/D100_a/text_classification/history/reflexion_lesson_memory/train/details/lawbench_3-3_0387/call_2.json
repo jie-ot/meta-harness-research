@@ -1,0 +1,72 @@
+{
+  "call_id": "16d4a63321954574be696e262c6084e8",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791018577-0eJCvi7k1YwLEvrRqFbj",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the facts describe manufacturing or selling drugs without the required drug production license and using false or misleading packaging/labels (i.e., the product is a counterfeit or unapproved drug), the correct charge is \\\"生产、销售假药\\\" rather than the generic \\\"非法生产、销售药品\\\".\",\n  \"keywords\": [\n    \"未取得《药品生产许可证》\",\n    \"假药\",\n    \"伪造合格证\",\n    \"分装\",\n    \"标签\",\n    \"中药饮片\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with a rule to prevent misclassifying \"生产、销售假药\" as \"非法生产、销售药品\". The error is using a broader term \"非法生产、销售药品\" instead of the specific \"生产、销售假药\". The rule should state that when the facts indicate the product is counterfeit or unlicensed, the correct charge is \"生产、销售假药\" rather than generic illegal production/sale. Keywords: \"假药\", \"未取得药品生产许可证\", \"分装\", \"标签\", \"包装袋\", \"中药饮片\", \"产品合格证伪造\"? Actually the case is about selling unlicensed drug, not necessarily counterfeit? The correct answer given is \"生产、销售假药\". So rule: If the conduct involves manufacturing or selling drug without proper license and using false packaging/labels, charge is \"生产、销售假药\". Keywords: \"未取得《药品生产许可证》\", \"假药\", \"伪造合格证\", \"分装\", \"标签\", \"中药饮片\". Provide JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with a rule to prevent misclassifying \"生产、销售假药\" as \"非法生产、销售药品\". The error is using a broader term \"非法生产、销售药品\" instead of the specific \"生产、销售假药\". The rule should state that when the facts indicate the product is counterfeit or unlicensed, the correct charge is \"生产、销售假药\" rather than generic illegal production/sale. Keywords: \"假药\", \"未取得药品生产许可证\", \"分装\", \"标签\", \"包装袋\", \"中药饮片\", \"产品合格证伪造\"? Actually the case is about selling unlicensed drug, not necessarily counterfeit? The correct answer given is \"生产、销售假药\". So rule: If the conduct involves manufacturing or selling drug without proper license and using false packaging/labels, charge is \"生产、销售假药\". Keywords: \"未取得《药品生产许可证》\", \"假药\", \"伪造合格证\", \"分装\", \"标签\", \"中药饮片\". Provide JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with a rule to prevent misclassifying \"生产、销售假药\" as \"非法生产、销售药品\". The error is using a broader term \"非法生产、销售药品\" instead of the specific \"生产、销售假药\". The rule should state that when the facts indicate the product is counterfeit or unlicensed, the correct charge is \"生产、销售假药\" rather than generic illegal production/sale. Keywords: \"假药\", \"未取得药品生产许可证\", \"分装\", \"标签\", \"包装袋\", \"中药饮片\", \"产品合格证伪造\"? Actually the case is about selling unlicensed drug, not necessarily counterfeit? The correct answer given is \"生产、销售假药\". So rule: If the conduct involves manufacturing or selling drug without proper license and using false packaging/labels, charge is \"生产、销售假药\". Keywords: \"未取得《药品生产许可证》\", \"假药\", \"伪造合格证\", \"分装\", \"标签\", \"中药饮片\". Provide JSON.",
+            "reasoning_content": "We need to produce a JSON with a rule to prevent misclassifying \"生产、销售假药\" as \"非法生产、销售药品\". The error is using a broader term \"非法生产、销售药品\" instead of the specific \"生产、销售假药\". The rule should state that when the facts indicate the product is counterfeit or unlicensed, the correct charge is \"生产、销售假药\" rather than generic illegal production/sale. Keywords: \"假药\", \"未取得药品生产许可证\", \"分装\", \"标签\", \"包装袋\", \"中药饮片\", \"产品合格证伪造\"? Actually the case is about selling unlicensed drug, not necessarily counterfeit? The correct answer given is \"生产、销售假药\". So rule: If the conduct involves manufacturing or selling drug without proper license and using false packaging/labels, charge is \"生产、销售假药\". Keywords: \"未取得《药品生产许可证》\", \"假药\", \"伪造合格证\", \"分装\", \"标签\", \"中药饮片\". Provide JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 353,
+      "prompt_tokens": 657,
+      "total_tokens": 1010,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 289,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 8.325e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 8.325e-05,
+        "upstream_inference_prompt_cost": 1.971e-05,
+        "upstream_inference_completions_cost": 6.354e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

@@ -1,0 +1,298 @@
+Read: agents\canonical_charge_lexicon_memory.py
+
+
+--- output ---
+1	"""Canonical Charge Lexicon Memory — makes the model output a statutory *string*, not a concept.
+2	
+3	Diagnosis this addresses (largest failure bucket): the model identifies the right
+4	conduct but names it with a non-statutory paraphrase, and scoring is exact string
+5	match, so it scores zero.
+6	    model: 侵犯注册商标专用权罪   truth: 假冒注册商标
+7	    model: 非法种植罂粟           truth: 非法种植毒品原植物
+8	    model: 故意毁坏财物罪         truth: 故意毁坏财物
+9	    model: 非法制造枪支           truth: 非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物
+10	
+11	Mechanism (not a parameter change — an added stage the base system does not have):
+12	the system maintains a *lexicon* of exact statutory strings, harvested from every
+13	ground truth it is ever shown, and it rewrites its own answer into a lexicon member
+14	before returning it. Two independently learned rule layers feed that rewrite:
+15	
+16	  1. Verbatim payload rules — recorded whenever the model's answer differs from the
+17	     truth. This is the load-bearing layer, because the failure is often a *verbatim*
+18	     repeat with zero character overlap (开设赌场 vs 赌博); no similarity metric can
+19	     recover those, only the stored observation can.
+20	  2. Alignment rules — when the answer and truth have the same number of charges,
+21	     each answer part is aligned to the nearest truth part and that rewrite is stored.
+22	     Handles the paraphrase family (故意毁坏财物罪 -> 故意毁坏财物).
+23	
+24	Resolution order at output time is deterministic: lexicon hit, verbatim rule,
+25	alignment rule, trailing-"罪" strip, containment (statutory enumerations get
+26	truncated by the model), then a conservative character-bigram fallback. The lexicon
+27	also enters the *prompt* as an allowed vocabulary, so the model is asked to pick an
+28	exact string up front rather than being corrected only after the fact.
+29	
+30	Character bigrams (not `[A-Za-z0-9]+` tokens) are used throughout, because the base
+31	tokenizer leaves only years and amounts on Chinese text — see the retrieval note in
+32	the iteration-1 diagnosis.
+33	"""
+34	
+35	import json
+36	import re
+37	from collections import defaultdict
+38	from typing import Any
+39	
+40	from ..llm import LLMCallable
+41	from ..memory_system import MemorySystem, extract_json_field
+42	
+43	PROMPT_TEMPLATE = """Label the statutory charge(s) for the fact below.
+44	
+45	**Charge name lexicon — when a listed name applies, reproduce it verbatim:**
+46	{lexicon_section}
+47	{examples_section}
+48	**Fact:**
+49	{input}
+50	
+51	**Instructions:**
+52	- Name each charge by its exact statutory string as listed in the lexicon above.
+53	- If several charges apply, join them with ';' on one line.
+54	- Do not append or drop characters. A near-miss name scores as wrong.
+55	- If no listed name fits, use the correct statutory name anyway.
+56	- Put the charge(s) only inside [罪名] and <eoa>.
+57	
+58	{{"reasoning": "[brief reasoning]", "final_answer": "[罪名]<charge(s)><eoa>"}}"""
+59	
+60	# Terse retry used only when the first call returns nothing (long facts push the
+61	# answer into the truncated reasoning channel).
+62	RETRY_TEMPLATE = """Give the statutory charge(s) for this fact. Answer on one line.
+63	
+64	{input}
+65	
+66	Format: {{"final_answer": "[罪名]<charge(s)><eoa>"}}"""
+67	
+68	MAX_LEXICON_ENTRIES = 60
+69	MAX_EXAMPLES = 4
+70	MAX_EXAMPLE_CHARS = 220
+71	_FUZZY_THRESHOLD = 0.6
+72	_STATE_VERSION = 1
+73	
+74	
+75	def _clean(s: str) -> str:
+76	    return re.sub(r"\s+", "", s or "")
+77	
+78	
+79	def _split_charges(s: str) -> list[str]:
+80	    """Split on ';' only — '、' is internal to statutory names and must not split."""
+81	    return [p.strip() for p in re.split(r"[;；]", s or "") if p.strip()]
+82	
+83	
+84	def _payload(s: str) -> str:
+85	    """Everything between [罪名] and <eoa> (or the whole string if unmarked)."""
+86	    m = re.search(r"\[罪名\](.*?)(?:<eoa>|$)", s or "", re.S)
+87	    return (m.group(1) if m else (s or "")).strip()
+88	
+89	
+90	def _wrap(payload: str) -> str:
+91	    return f"[罪名]{payload}<eoa>" if payload else ""
+92	
+93	
+94	def _bigrams(s: str) -> frozenset[str]:
+95	    s = _clean(s)
+96	    if not s:
+97	        return frozenset()
+98	    if len(s) == 1:
+99	        return frozenset([s])
+100	    return frozenset(s[i : i + 2] for i in range(len(s) - 1))
+101	
+102	
+103	def _sim(a: str, b: str) -> float:
+104	    A, B = _bigrams(a), _bigrams(b)
+105	    if not A or not B:
+106	        return 0.0
+107	    return len(A & B) / len(A | B)
+108	
+109	
+110	class CanonicalChargeLexiconMemory(MemorySystem):
+111	    """Lexicon-constrained charge naming with learned rewrite rules."""
+112	
+113	    def __init__(self, llm: LLMCallable):
+114	        super().__init__(llm)
+115	        # canonical statutory string -> times observed as a ground truth
+116	        self.lexicon: dict[str, int] = {}
+117	        # whole answer payload -> {truth payload: count}
+118	        self.payload_rules: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+119	        # single answer part -> {truth part: count}
+120	        self.part_rules: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+121	        # (fact, exact truth string) pairs, most recent first
+122	        self.examples: list[dict[str, str]] = []
+123	        self._learned_items = 0
+124	
+125	    # ------------------------------------------------------------------
+126	    # Learning
+127	    # ------------------------------------------------------------------
+128	
+129	    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+130	        for r in batch_results:
+131	            truth = _clean(_payload(r.get("ground_truth", "")))
+132	            if not truth:
+133	                continue
+134	            for t in _split_charges(truth):
+135	                t = _clean(t)
+136	                if t:
+137	                    self.lexicon[t] = self.lexicon.get(t, 0) + 1
+138	
+139	            pred = _clean(_payload(r.get("prediction", "")))
+140	            if pred and pred != truth:
+141	                # Layer 1: the literal rewrite the model needed. Survives zero
+142	                # character overlap between the two strings.
+143	                self.payload_rules[pred][truth] += 1
+144	                # Layer 2: part-wise alignment when the two agree on charge count.
+145	                pred_parts = [_clean(p) for p in _split_charges(pred)]
+146	                truth_parts = [_clean(t) for t in _split_charges(truth)]
+147	                if len(pred_parts) == len(truth_parts) and len(pred_parts) > 1:
+148	                    for p in pred_parts:
+149	                        best, best_s = None, 0.0
+150	                        for t in truth_parts:
+151	                            s = _sim(p, t)
+152	                            if s > best_s:
+153	                                best, best_s = t, s
+154	                        if best and best != p:
+155	                            self.part_rules[p][best] += 1
+156	
+157	            raw_q = r.get("raw_question", r.get("input", ""))
+158	            self.examples.append({"fact": raw_q, "target": truth})
+159	            self._learned_items += 1
+160	
+161	        # Keep the example buffer small: it is a style hint, not the memory.
+162	        if len(self.examples) > MAX_EXAMPLES * 4:
+163	            self.examples = self.examples[-MAX_EXAMPLES * 4 :]
+164	
+165	    # ------------------------------------------------------------------
+166	    # Output normalization — deterministic, no LLM
+167	    # ------------------------------------------------------------------
+168	
+169	    def _resolve_part(self, cand: str) -> str:
+170	        c = _clean(cand)
+171	        if not c:
+172	            return ""
+173	        if c in self.lexicon:
+174	            return c
+175	        if c in self.part_rules and self.part_rules[c]:
+176	            return max(self.part_rules[c].items(), key=lambda kv: kv[1])[0]
+177	        if c.endswith("罪") and c[:-1] in self.lexicon:
+178	            return c[:-1]
+179	        contained = [t for t in self.lexicon if c in t or t in c]
+180	        if contained:
+181	            # Statutory enumerations are the long form; prefer the longest match.
+182	            return max(contained, key=len)
+183	        best, best_s = c, _FUZZY_THRESHOLD
+184	        for t in self.lexicon:
+185	            s = _sim(c, t)
+186	            if s > best_s:
+187	                best, best_s = t, s
+188	        return best
+189	
+190	    def _canonicalize(self, raw: str) -> str:
+191	        payload = _clean(_payload(raw))
+192	        if not payload:
+193	            return ""
+194	        # Whole-payload verbatim rule first: it can map names with no shared
+195	        # characters, which per-part similarity cannot.
+196	        if payload in self.payload_rules and self.payload_rules[payload]:
+197	            mapped = max(self.payload_rules[payload].items(), key=lambda kv: kv[1])[0]
+198	            if mapped:
+199	                return _wrap(mapped)
+200	        out, seen = [], set()
+201	        for p in _split_charges(payload):
+202	            c = self._resolve_part(p)
+203	            if c and c not in seen:
+204	                seen.add(c)
+205	                out.append(c)
+206	        return _wrap(";".join(out))
+207	
+208	    # ------------------------------------------------------------------
+209	    # Retrieval
+210	    # ------------------------------------------------------------------
+211	
+212	    def _lexicon_section(self, query: str) -> str:
+213	        if not self.lexicon:
+214	            return "(empty — name the charge as the statute does)"
+215	        entries = sorted(
+216	            self.lexicon.items(),
+217	            key=lambda kv: (-_sim(query, kv[0]), -kv[1], kv[0]),
+218	        )[:MAX_LEXICON_ENTRIES]
+219	        return "\n".join(f"- {name}" for name, _ in entries)
+220	
+221	    def _examples_section(self, query: str) -> str:
+222	        if not self.examples:
+223	            return ""
+224	        ranked = sorted(
+225	            self.examples,
+226	            key=lambda ex: -_sim(query, ex["fact"]),
+227	        )[:MAX_EXAMPLES]
+228	        blocks = []
+229	        for ex in ranked:
+230	            fact = _clean(ex["fact"])[:MAX_EXAMPLE_CHARS]
+231	            blocks.append(f"Example fact: {fact}\nCharge: {ex['target']}")
+232	        return "\n\n" + "\n\n".join(blocks) + "\n"
+233	
+234	    # ------------------------------------------------------------------
+235	    # MemorySystem interface
+236	    # ------------------------------------------------------------------
+237	
+238	    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+239	        prompt = PROMPT_TEMPLATE.format(
+240	            lexicon_section=self._lexicon_section(input),
+241	            examples_section=self._examples_section(input),
+242	            input=input,
+243	        )
+244	        response = self.call_llm(prompt)
+245	        answer = self._canonicalize(extract_json_field(response, "final_answer"))
+246	        retried = False
+247	        if not answer:
+248	            retried = True
+249	            retry_response = self.call_llm(RETRY_TEMPLATE.format(input=input))
+250	            answer = self._canonicalize(extract_json_field(retry_response, "final_answer"))
+251	            response = response + "\n" + retry_response
+252	        return answer, {
+253	            "full_response": response,
+254	            "num_lexicon": len(self.lexicon),
+255	            "num_payload_rules": sum(len(v) for v in self.payload_rules.values()),
+256	            "num_part_rules": sum(len(v) for v in self.part_rules.values()),
+257	            "num_examples": len(self.examples),
+258	            "retried": retried,
+259	        }
+260	
+261	    def get_context_length(self) -> int:
+262	        return len(self._lexicon_section("")) + MAX_EXAMPLES * (MAX_EXAMPLE_CHARS + 40)
+263	
+264	    # ------------------------------------------------------------------
+265	    # State
+266	    # ------------------------------------------------------------------
+267	
+268	    def get_state(self) -> str:
+269	        return json.dumps(
+270	            {
+271	                "version": _STATE_VERSION,
+272	                "lexicon": self.lexicon,
+273	                "payload_rules": {k: dict(v) for k, v in self.payload_rules.items()},
+274	                "part_rules": {k: dict(v) for k, v in self.part_rules.items()},
+275	                "examples": self.examples,
+276	                "learned_items": self._learned_items,
+277	            },
+278	            ensure_ascii=False,
+279	        )
+280	
+281	    def set_state(self, state: str) -> None:
+282	        data = json.loads(state)
+283	        self.lexicon = {k: int(v) for k, v in data.get("lexicon", {}).items()}
+284	        self.payload_rules = defaultdict(lambda: defaultdict(int))
+285	        for k, row in data.get("payload_rules", {}).items():
+286	            for target, cnt in row.items():
+287	                self.payload_rules[k][target] = int(cnt)
+288	        self.part_rules = defaultdict(lambda: defaultdict(int))
+289	        for k, row in data.get("part_rules", {}).items():
+290	            for target, cnt in row.items():
+291	                self.part_rules[k][target] = int(cnt)
+292	        self.examples = list(data.get("examples", []))
+293	        self._learned_items = int(data.get("learned_items", len(self.examples)))
+294	

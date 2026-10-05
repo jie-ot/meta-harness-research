@@ -1,0 +1,52 @@
+command: uv run --project D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification python -m text_classification.inner_loop --memory agents/no_memory.py --dataset LawBench --seed 42 --model openrouter/openai/gpt-oss-120b --mode online --val-output D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\LawBench\no_memory\gpt-oss-120b\val.json --save-memory D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\LawBench\no_memory\gpt-oss-120b\memory.json --log D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\LawBench\no_memory\gpt-oss-120b\log.jsonl --num-train 200 --num-val 50 --num-test 100 --temperature 0.0
+PYTHONPATH=D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples
+
+Loading dataset: LawBench
+Train: 200, Val: 50, Test: 100
+[0/200] mode=online 0.0s
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\inner_loop.py", line 720, in <module>
+    chunk_results = run_inner_loop(
+                    ^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\inner_loop.py", line 337, in run_inner_loop
+    pred_results = [predict_one(0, batch[0])]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\inner_loop.py", line 328, in predict_one
+    pred, meta = memory.predict(ex["input"])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\no_memory.py", line 28, in predict
+    response = self.call_llm(PROMPT.format(input=input))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\memory_system.py", line 79, in call_llm
+    return self._llm(prompt)
+           ^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\llm.py", line 402, in __call__
+    content = parse_harmony_response(content)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\llm.py", line 71, in parse_harmony_response
+    enc = _get_harmony_enc()
+          ^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\llm.py", line 62, in _get_harmony_enc
+    _HARMONY_ENC = load_harmony_encoding(HarmonyEncodingName.HARMONY_GPT_OSS)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\openai_harmony\__init__.py", line 699, in load_harmony_encoding
+    inner: _PyHarmonyEncoding = _load_harmony_encoding(name)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+openai_harmony.HarmonyError: invalid tiktoken vocab file: expected token and rank, could not split on ' ' at line 175729
+
+exit=1
+
+============================================================
+retry 1
+============================================================
+Loading dataset: LawBench
+Train: 200, Val: 50, Test: 100
+[0/200] mode=online 0.0s
+[200/200] 2541.6s
+Saved memory state to D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\LawBench\no_memory\gpt-oss-120b\memory.json
+Done: train=6% val=0% time=2594.0s cost=$0.0440
+Saved val results to D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\LawBench\no_memory\gpt-oss-120b\val.json
+
+exit=0

@@ -1,0 +1,50 @@
+Edit: .prototypes\act_decomposition_union_memory.py
+
+replace_all: False
+old_string:
+class UnionMemory:
+    """Per-act charging + system-side union + learned charge-count control.
+
+    Variants exercised below:
+      V1 whole-fact single call (the base behaviour, for contrast)
+      V2 + per-act segmentation and union
+      V3 + invention stripping and cardinality calibration (adopted)
+    """
+
+    def __init__(self, per_act=False, calibrate=False):
+        self.per_act = per_act
+        self.calibrate_on = calibrate
+        self.spurious = defaultdict(int)
+        self.confirmed = defaultdict(int)
+        self.size_by_acts = defaultdict(lambda: defaultdict(int))
+        self.global_sizes = defaultdict(int)
+        self.size_obs = 0
+
+new_string:
+class UnionMemory:
+    """Per-act charging + system-side union + learned charge-count control.
+
+    Variants exercised below:
+      V1 whole-fact single call (the base behaviour, for contrast)
+      V2 + per-act segmentation and union
+      V3 + invention stripping and cardinality calibration (adopted)
+
+    V3's calibration carries the two guards the shipped agent carries: a size
+    bucket needs MIN_BUCKET_OBS observations before it is consulted, and the prior
+    may never cut below the number of acts that actually produced a charge.
+    """
+
+    MIN_BUCKET_OBS = 5
+
+    def __init__(self, per_act=False, calibrate=False):
+        self.per_act = per_act
+        self.calibrate_on = calibrate
+        self.spurious = defaultdict(int)
+        self.confirmed = defaultdict(int)
+        self.size_by_acts = defaultdict(lambda: defaultdict(int))
+        self.global_sizes = defaultdict(int)
+        self.size_obs = 0
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_a\text_classification\.prototypes\act_decomposition_union_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

@@ -1,0 +1,7 @@
+Read: evolution_summary.jsonl
+
+
+--- output ---
+1	{"name": "bigram_confusion_memory", "file": "agents/bigram_confusion_memory.py", "hypothesis": "Replacing the ASCII-only tokenizer with Chinese character bigrams will make similarity retrieval actually semantic, causing the confusion-matrix disambiguation phase to operate on meaningful signal rather than random noise, improving score above 27/100.", "axis": "exploitation", "base_system": "confusion_disambiguation_memory", "components": ["bigram_tokenization", "confusion_matrix", "disambiguation_injection", "similarity_retrieval"], "code_hash": "f409926787937278e32368fd8e199969660860efb0cdeabf12bb62d84cb25bcd", "slot": "A", "iteration": 1, "system": "bigram_confusion_memory", "avg_val": 39.0, "score_correct": 39, "score_total": 100}
+2	{"name": "contrastive_correction_memory", "file": "agents/contrastive_correction_memory.py", "hypothesis": "Injecting a 'Mistakes to avoid' block of similar wrong→right correction pairs before the examples will steer the model away from fine-grained label boundary errors (e.g. 诈骗→合同诈骗, 行贿→单位行贿), improving score above 27/100 independently of confusion-matrix accumulation.", "axis": "exploration", "base_system": "confusion_disambiguation_memory", "components": ["bigram_tokenization", "correction_records", "contrastive_prompt_section", "similarity_retrieval"], "code_hash": "28e478a0be1521fac44384f547f2a43c22814f791c3bb3a7327351f13f8494f1", "slot": "B", "iteration": 1, "system": "contrastive_correction_memory", "avg_val": 37.0, "score_correct": 37, "score_total": 100}
+3	

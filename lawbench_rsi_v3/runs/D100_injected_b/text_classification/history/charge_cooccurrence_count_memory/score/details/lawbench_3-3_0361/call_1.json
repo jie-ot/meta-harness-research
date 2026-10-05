@@ -1,0 +1,72 @@
+{
+  "call_id": "6775717f7cc444668a23adad7cb065a4",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791128993-JykybITP1xWRtKHshZah",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The facts describe that the defendant sold shoes bearing counterfeit versions of the registered trademarks GIVENCHY, LOUIS VUITTON, and HERMES, with a total value exceeding six million RMB. This conduct constitutes the crime of selling counterfeit goods that infringe on registered trademarks, which under Chinese criminal law is charged as the offense of selling counterfeit registered‑trademark goods (a form of infringement of intellectual property rights). No other criminal conduct is described, so only this charge applies.\",\n  \"final_answer\": \"[罪名]销售假冒注册商标商品罪<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": " need to determine appropriate charge(s) based on facts. The facts: selling counterfeit goods with registered trademarks, large amount. That's \"侵犯商标权\" (counterfeiting trademark) maybe \"假冒注册商标的商品罪\". In Chinese criminal law, the crime is \"侵犯知识产权罪\" specifically \"假冒注册商标的商品罪\". The label used in prior examples: they used \"开设赌场\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"掩饰、隐瞒犯罪所得、犯罪所得收益\", \"走私珍贵动物、珍贵动物制品\", \"重大责任事故;诈骗\". So they use short labels like \"开设赌场\". For counterfeit trademark, likely label is \"侵犯注册商标专用权\" or \"假冒注册商标罪\". Need to infer from dataset. The co-occurrence summary didn't include this. But we need to output the correct label as per dataset. Could be \"侵犯知识产权\". Let's think: In Chinese criminal law, article 210 (2) deals with \"侵犯知识产权罪\" includes counterfeit goods. The typical charge phrase: \"侵犯知识产权罪（假冒注册商标的商品罪）\". In many Chinese legal QA datasets, they label as \"侵犯知识产权\". Might be \"侵犯商标专用权\". But we need to match label used in dataset. Look at prior examples: they used \"伪造、变造、买卖国家机关公文、证件、印章\". That's a long phrase. So they likely use full description. So for counterfeit trademark, they might use \"假冒注册商标的商品罪\". Let's choose that.\n\nAny other charges? He is a seller, not manufacturing. Could also be \"非法经营罪\"? But the main is counterfeit trademark. Also maybe \"销售假冒注册商标商品罪\". The description: \"销售假冒注册商标的商品\". So label could be \"销售假冒注册商标商品罪\". Need to decide.\n\nGiven pattern: \"伪造、变造、买卖国家机关公文、证件、印章\" includes multiple verbs. So they include \"买卖\". For counterfeit, they might include \"销售假冒注册商标的商品\". So I'll output that.\n\nThus final answer: single charge.\n\nReturn JSON with reasoning and final answer.\n\n",
+          "provider_specific_fields": {
+            "reasoning": " need to determine appropriate charge(s) based on facts. The facts: selling counterfeit goods with registered trademarks, large amount. That's \"侵犯商标权\" (counterfeiting trademark) maybe \"假冒注册商标的商品罪\". In Chinese criminal law, the crime is \"侵犯知识产权罪\" specifically \"假冒注册商标的商品罪\". The label used in prior examples: they used \"开设赌场\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"掩饰、隐瞒犯罪所得、犯罪所得收益\", \"走私珍贵动物、珍贵动物制品\", \"重大责任事故;诈骗\". So they use short labels like \"开设赌场\". For counterfeit trademark, likely label is \"侵犯注册商标专用权\" or \"假冒注册商标罪\". Need to infer from dataset. The co-occurrence summary didn't include this. But we need to output the correct label as per dataset. Could be \"侵犯知识产权\". Let's think: In Chinese criminal law, article 210 (2) deals with \"侵犯知识产权罪\" includes counterfeit goods. The typical charge phrase: \"侵犯知识产权罪（假冒注册商标的商品罪）\". In many Chinese legal QA datasets, they label as \"侵犯知识产权\". Might be \"侵犯商标专用权\". But we need to match label used in dataset. Look at prior examples: they used \"伪造、变造、买卖国家机关公文、证件、印章\". That's a long phrase. So they likely use full description. So for counterfeit trademark, they might use \"假冒注册商标的商品罪\". Let's choose that.\n\nAny other charges? He is a seller, not manufacturing. Could also be \"非法经营罪\"? But the main is counterfeit trademark. Also maybe \"销售假冒注册商标商品罪\". The description: \"销售假冒注册商标的商品\". So label could be \"销售假冒注册商标商品罪\". Need to decide.\n\nGiven pattern: \"伪造、变造、买卖国家机关公文、证件、印章\" includes multiple verbs. So they include \"买卖\". For counterfeit, they might include \"销售假冒注册商标的商品\". So I'll output that.\n\nThus final answer: single charge.\n\nReturn JSON with reasoning and final answer.\n\n",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": " need to determine appropriate charge(s) based on facts. The facts: selling counterfeit goods with registered trademarks, large amount. That's \"侵犯商标权\" (counterfeiting trademark) maybe \"假冒注册商标的商品罪\". In Chinese criminal law, the crime is \"侵犯知识产权罪\" specifically \"假冒注册商标的商品罪\". The label used in prior examples: they used \"开设赌场\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"掩饰、隐瞒犯罪所得、犯罪所得收益\", \"走私珍贵动物、珍贵动物制品\", \"重大责任事故;诈骗\". So they use short labels like \"开设赌场\". For counterfeit trademark, likely label is \"侵犯注册商标专用权\" or \"假冒注册商标罪\". Need to infer from dataset. The co-occurrence summary didn't include this. But we need to output the correct label as per dataset. Could be \"侵犯知识产权\". Let's think: In Chinese criminal law, article 210 (2) deals with \"侵犯知识产权罪\" includes counterfeit goods. The typical charge phrase: \"侵犯知识产权罪（假冒注册商标的商品罪）\". In many Chinese legal QA datasets, they label as \"侵犯知识产权\". Might be \"侵犯商标专用权\". But we need to match label used in dataset. Look at prior examples: they used \"伪造、变造、买卖国家机关公文、证件、印章\". That's a long phrase. So they likely use full description. So for counterfeit trademark, they might use \"假冒注册商标的商品罪\". Let's choose that.\n\nAny other charges? He is a seller, not manufacturing. Could also be \"非法经营罪\"? But the main is counterfeit trademark. Also maybe \"销售假冒注册商标商品罪\". The description: \"销售假冒注册商标的商品\". So label could be \"销售假冒注册商标商品罪\". Need to decide.\n\nGiven pattern: \"伪造、变造、买卖国家机关公文、证件、印章\" includes multiple verbs. So they include \"买卖\". For counterfeit, they might include \"销售假冒注册商标的商品\". So I'll output that.\n\nThus final answer: single charge.\n\nReturn JSON with reasoning and final answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": " need to determine appropriate charge(s) based on facts. The facts: selling counterfeit goods with registered trademarks, large amount. That's \"侵犯商标权\" (counterfeiting trademark) maybe \"假冒注册商标的商品罪\". In Chinese criminal law, the crime is \"侵犯知识产权罪\" specifically \"假冒注册商标的商品罪\". The label used in prior examples: they used \"开设赌场\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"掩饰、隐瞒犯罪所得、犯罪所得收益\", \"走私珍贵动物、珍贵动物制品\", \"重大责任事故;诈骗\". So they use short labels like \"开设赌场\". For counterfeit trademark, likely label is \"侵犯注册商标专用权\" or \"假冒注册商标罪\". Need to infer from dataset. The co-occurrence summary didn't include this. But we need to output the correct label as per dataset. Could be \"侵犯知识产权\". Let's think: In Chinese criminal law, article 210 (2) deals with \"侵犯知识产权罪\" includes counterfeit goods. The typical charge phrase: \"侵犯知识产权罪（假冒注册商标的商品罪）\". In many Chinese legal QA datasets, they label as \"侵犯知识产权\". Might be \"侵犯商标专用权\". But we need to match label used in dataset. Look at prior examples: they used \"伪造、变造、买卖国家机关公文、证件、印章\". That's a long phrase. So they likely use full description. So for counterfeit trademark, they might use \"假冒注册商标的商品罪\". Let's choose that.\n\nAny other charges? He is a seller, not manufacturing. Could also be \"非法经营罪\"? But the main is counterfeit trademark. Also maybe \"销售假冒注册商标商品罪\". The description: \"销售假冒注册商标的商品\". So label could be \"销售假冒注册商标商品罪\". Need to decide.\n\nGiven pattern: \"伪造、变造、买卖国家机关公文、证件、印章\" includes multiple verbs. So they include \"买卖\". For counterfeit, they might include \"销售假冒注册商标的商品\". So I'll output that.\n\nThus final answer: single charge.\n\nReturn JSON with reasoning and final answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 631,
+      "prompt_tokens": 1878,
+      "total_tokens": 2509,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0005033,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0005033,
+        "upstream_inference_prompt_cost": 0.0001878,
+        "upstream_inference_completions_cost": 0.0003155
+      }
+    }
+  },
+  "raw_response_missing": false
+}

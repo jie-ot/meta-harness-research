@@ -1,0 +1,42 @@
+Write: reports\iteration_1.md
+
+content:
+# Iteration 1 Report
+
+## What Changed
+- Slot A (`chinese_bigram_confusion_memory`): replaced ASCII-only tokenizer with Chinese
+  character bigrams + ASCII tokens. Confusion matrix + disambiguation retrieval unchanged.
+- Slot B (`reflexion_lesson_memory`): replaced raw example storage with LLM-distilled
+  correction rules in a rule bank, retrieved by keyword fingerprint overlap.
+
+## Results
+- `chinese_bigram_confusion_memory`: 38/100 (+12 vs 26/100 baseline). New frontier.
+- `reflexion_lesson_memory`: 23/100 (-3 vs baseline). Regressed.
+
+## Why A Improved
+The ASCII-only tokenizer produced near-zero Jaccard for all Chinese pairs, making retrieval
+random. Bigrams restore meaningful similarity so topically similar cases rank higher. The
+full +12 gain traces to this single fix.
+
+## Why B Regressed
+LLM-generated rules add noise and lose the concrete grounding of raw examples. Keyword
+fingerprints are brittle for Chinese vocabulary. Cold-start performance was also worse
+because rule generation requires prior errors before it contributes.
+
+## Remaining Error Modes (score + feedback traces)
+1. Label suffix hallucination: predicting "故意毁坏财物罪" when target is "故意毁坏财物" (~8 cases)
+2. Wrong specificity: "受贿" vs "非国家工作人员受贿", "挪用公款" vs "挪用资金" (~8 cases)
+3. Missing secondary charge: "故意伤害" alone vs "故意伤害;聚众哄抢" (~10 cases)
+4. Wrong crime category: "盗窃" vs "破坏电力设备", "非法采矿" vs "非法占用农用地" (~8 cases)
+5. Label format variants: "强迫他人吸食毒品" vs "强迫他人吸毒" (~4 cases)
+
+## Takeaway
+Bigram retrieval is now a solid base. The main remaining gap is that the LLM invents
+approximate label strings rather than exact canonical ones. Iteration 2 should ground the
+LLM in the exact labels observed in training (label vocabulary injection) and/or present
+explicit contrastive corrections showing wrong→right label pairs for similar cases.
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_a\text_classification\reports\iteration_1.md (file state is current in your context — no need to Read it back)

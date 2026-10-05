@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the facts describe a person performing any medical diagnosis, treatment, or related procedure without a valid medical license, classify the conduct under the statutory offense of “非法行医” rather th
+- When the factual scenario involves a defendant biting or otherwise assaulting a police officer while resisting law‑enforcement duties, charge only 妨害公务 (obstruction of official duties) unless there is
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控：2015年6月5日14时许，被告人刘某因债务纠纷邀约“二哥”等人（均在逃），在武汉市汉阳区玫瑰街加油站附近，将被害人张某控制带至武汉市硚口区天顺园十组团1单元1楼2号，并进行殴打，逼迫被害人张某写下人民币4.2万元的欠条后，于当晚20时许将其放走。经鉴定，被害人张某受损伤程度为轻微伤。
+2015年7月17日，被告人刘某赔偿张某医药费、营养费人民币20000元，并取得其谅解。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

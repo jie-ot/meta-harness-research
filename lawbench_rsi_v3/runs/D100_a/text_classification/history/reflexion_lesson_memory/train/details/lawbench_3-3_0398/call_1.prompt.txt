@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the facts describe a public official who, while performing administrative duties, deliberately fails to transfer a case that must be prosecuted criminally (e.g., to achieve personal or unit economi
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+- When the facts describe a production or workplace safety accident (e.g., operating equipment without proper certification) that results in death and is handled under safety‑production regulations rath
+- When the facts describe cutting or felling forest trees without a logging permit, the correct statutory charge is the specific offense “滥伐林木”, not a generic term like “非法采伐森林木材”.
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:上栗县人民检察院指控，2015年3月起，被告人张某在未取得制造烟花鞭炮的行政许可的情况下，在上栗县金山镇龙泉村欧某老屋内，用高氯酸钾、银粉、硫磺等材料配制点火药和过火药，并雇请赖某、叶某为擦炮上点火药和封尾，生产擦炮。同年11月10日公安人员在该屋内查获点火药11千克、过火药70千克、半成某擦炮998饼、成某擦炮1020饼。经鉴定，查获的点火药属于烟火药，擦炮成某和半成某中含有烟火药。
+针对指控的事实，公诉机关当庭出示并宣读了物证、书证、证人证言、被告人供述和辩解、鉴定意见、勘验笔录、辨认笔录等证据。公诉机关认为，被告人张某非法制造爆炸物，其行为触犯了《中华人民共和国刑法》××之规定，应当以非法制造爆炸物罪追究其刑事责任。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,31 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the factual description mentions distinct illegal tax‑related actions (e.g., falsifying VAT invoices, fraudulently obtaining export rebates, and using fake invoices for tax deduction), enumerate 
+- When the facts describe forged or false VAT invoices that were used to obtain export tax refunds or to offset tax liabilities, the charge must explicitly include the purpose clause (e.g., “用于骗取出口退税、抵扣
+- When extracting crimes from the facts, enumerate every distinct statutory offense mentioned, including any qualifying actions (e.g., 故意销毁, 用于骗取出口退税) and related financial documents, and separate each 
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，2015年6月份，被告人孙某在经营永嘉县万长鞋厂时，经朱某（另案处理）介绍，在没有真实货物交易的情况下，以支付手续费的方式取得济南澎勋商贸有限公司虚开的增值税专用发票五份，票面金额合计455982.9元，税额为77517.1元，价税合计为533500元，并已于2015年7月份将上述五份增值税专用发票向税务部门进行成功抵扣，骗取国家税款77517.1元。案发后，被告人孙某已补缴上述全部税款。
+2016年2月16日，被告人孙某主动向永嘉县公安局投案，并如实供述自己的犯罪事实。
+另查明，本院于2013年3月1日以（2013）温1某初字第60号刑事判决就被告人孙某犯××，判处××，××，××考验期限自2013年4月8日起至2015年10月7日止。被告人孙某因犯该罪未曾被羁押。
+上述事实，被告人孙某在开庭审理过程中亦无异议，并有证人赵某、古某、朱某、黄某的证言，企业法人营业执照、税务登记证、非公司企业法人基本情况、增值税纳税申报表、增值税专用发票抵扣联、转账凭证、入库凭单、出库凭单、领料汇总表、银行交易明细、税收缴款书、刑事判决书、刑事案件执行通知书、解除社区矫正证明书、到案经过、人口信息等证据证实，足以认定。
+被告人孙某的辩护人提出，一、对起诉书指控的犯罪事实与罪名没有异议；二、量刑情节：1、本案虚开增值税专用发票有特殊性，朱某负责联系济南澎勋商贸有限公司开具发票相关事宜，孙某与朱某之间存在真实货物交易，按孙某的供述货款有二三十万元，该部分孙某是善意取得增值税专用发票；2、孙某系自首；3、万厂鞋厂目前处于停产状态，遭受巨大损失。综上，被告人孙某虽然在××考验期内犯新罪，但请法庭在量刑时综合考虑以上罪轻辩护意见。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

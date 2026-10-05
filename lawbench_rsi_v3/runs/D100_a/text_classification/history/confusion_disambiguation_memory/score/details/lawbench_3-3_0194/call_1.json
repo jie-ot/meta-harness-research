@@ -1,0 +1,72 @@
+{
+  "call_id": "412fcff3875043dc9fb70eece5409295",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791008703-M4ct7ee1dtAoJwZH59r2",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The facts describe three distinct criminal conduct by the public official. First, he used his position to obtain cash, shopping cards and gold from companies and individuals in exchange for favorable treatment, which constitutes the crime of accepting bribes (受贿). Second, he unilaterally transferred public funds of the state‑owned housing construction company to a private individual without proper approval, which is the crime of embezzling public funds (挪用公款). Third, his personal assets far exceed his lawful income and a large portion cannot be explained, indicating the crime of receiving a huge amount of property that cannot be accounted for (收受巨额财物). Therefore the appropriate charges are: 受贿;挪用公款;收受巨额财物.\",\n  \"final_answer\": \"[罪名]受贿;挪用公款;收受巨额财物<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the crimes (罪名) based on facts. The pattern: list multiple crimes separated by semicolon. Need to infer from facts: (1) receiving bribes: 受贿. (2) embezzlement of public funds: 挪用公款 (or 受贿? Actually misappropriation of public funds: 挪用公款). (3) huge unexplained assets: 违法所得? Possibly “非法占有、收受巨额财产” but typical charge: “巨额财产来源不明” is a separate crime: “非法占有、收受巨额财产” maybe “收受巨额财产” or “非法占有、收受巨额财产”。 In Chinese criminal law, there is a crime of “收受巨额财产” for state functionaries. Actually the crime is “收受巨额财物” (accepting huge property). But they already have 受贿. The third is “巨额财产来源不明” which is a separate offense: “非法占有、收受巨额财产” maybe \"非法占有、收受巨额财产\" is the term used. In examples, they used \"单位行贿;利用影响力受贿\" etc. For unexplained assets, they used \"非法吸收公众存款\" earlier. Not same. In other examples, they used \"诽谤\". For \"巨额财产来源不明\", typical charge is \"收受巨额财产\" (accepting huge property) or \"非法占有、收受巨额财产\". Let's see similar case in dataset: earlier example: \"罗1某...利用影响力受贿...单位行贿\". They used \"单位行贿;利用影响力受贿\". For \"巨额财产来源不明\", maybe \"收受巨额财产\". Let's search memory: In Chinese criminal law, article 385: \"国家工作人员收受巨额财物\" is a crime. So they might list \"收受巨额财物\". In examples they used \"受贿\" for bribes. So third could be \"收受巨额财物\". But they already have 受贿 for bribes; the third is separate: \"巨额财产来源不明\" is a separate crime: \"非法占有、收受巨额财产\". Let's choose \"收受巨额财物\". Also need \"挪用公款\". So final answer: [罪名]受贿;挪用公款;收受巨额财物<eoa>\n\nCheck format: [罪名]受贿;挪用公款;收受巨额财物<eoa>\n\nReturn JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the crimes (罪名) based on facts. The pattern: list multiple crimes separated by semicolon. Need to infer from facts: (1) receiving bribes: 受贿. (2) embezzlement of public funds: 挪用公款 (or 受贿? Actually misappropriation of public funds: 挪用公款). (3) huge unexplained assets: 违法所得? Possibly “非法占有、收受巨额财产” but typical charge: “巨额财产来源不明” is a separate crime: “非法占有、收受巨额财产” maybe “收受巨额财产” or “非法占有、收受巨额财产”。 In Chinese criminal law, there is a crime of “收受巨额财产” for state functionaries. Actually the crime is “收受巨额财物” (accepting huge property). But they already have 受贿. The third is “巨额财产来源不明” which is a separate offense: “非法占有、收受巨额财产” maybe \"非法占有、收受巨额财产\" is the term used. In examples, they used \"单位行贿;利用影响力受贿\" etc. For unexplained assets, they used \"非法吸收公众存款\" earlier. Not same. In other examples, they used \"诽谤\". For \"巨额财产来源不明\", typical charge is \"收受巨额财产\" (accepting huge property) or \"非法占有、收受巨额财产\". Let's see similar case in dataset: earlier example: \"罗1某...利用影响力受贿...单位行贿\". They used \"单位行贿;利用影响力受贿\". For \"巨额财产来源不明\", maybe \"收受巨额财产\". Let's search memory: In Chinese criminal law, article 385: \"国家工作人员收受巨额财物\" is a crime. So they might list \"收受巨额财物\". In examples they used \"受贿\" for bribes. So third could be \"收受巨额财物\". But they already have 受贿 for bribes; the third is separate: \"巨额财产来源不明\" is a separate crime: \"非法占有、收受巨额财产\". Let's choose \"收受巨额财物\". Also need \"挪用公款\". So final answer: [罪名]受贿;挪用公款;收受巨额财物<eoa>\n\nCheck format: [罪名]受贿;挪用公款;收受巨额财物<eoa>\n\nReturn JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine the crimes (罪名) based on facts. The pattern: list multiple crimes separated by semicolon. Need to infer from facts: (1) receiving bribes: 受贿. (2) embezzlement of public funds: 挪用公款 (or 受贿? Actually misappropriation of public funds: 挪用公款). (3) huge unexplained assets: 违法所得? Possibly “非法占有、收受巨额财产” but typical charge: “巨额财产来源不明” is a separate crime: “非法占有、收受巨额财产” maybe “收受巨额财产” or “非法占有、收受巨额财产”。 In Chinese criminal law, there is a crime of “收受巨额财产” for state functionaries. Actually the crime is “收受巨额财物” (accepting huge property). But they already have 受贿. The third is “巨额财产来源不明” which is a separate offense: “非法占有、收受巨额财产” maybe \"非法占有、收受巨额财产\" is the term used. In examples, they used \"单位行贿;利用影响力受贿\" etc. For unexplained assets, they used \"非法吸收公众存款\" earlier. Not same. In other examples, they used \"诽谤\". For \"巨额财产来源不明\", typical charge is \"收受巨额财产\" (accepting huge property) or \"非法占有、收受巨额财产\". Let's see similar case in dataset: earlier example: \"罗1某...利用影响力受贿...单位行贿\". They used \"单位行贿;利用影响力受贿\". For \"巨额财产来源不明\", maybe \"收受巨额财产\". Let's search memory: In Chinese criminal law, article 385: \"国家工作人员收受巨额财物\" is a crime. So they might list \"收受巨额财物\". In examples they used \"受贿\" for bribes. So third could be \"收受巨额财物\". But they already have 受贿 for bribes; the third is separate: \"巨额财产来源不明\" is a separate crime: \"非法占有、收受巨额财产\". Let's choose \"收受巨额财物\". Also need \"挪用公款\". So final answer: [罪名]受贿;挪用公款;收受巨额财物<eoa>\n\nCheck format: [罪名]受贿;挪用公款;收受巨额财物<eoa>\n\nReturn JSON with reasoning and final answer.",
+            "reasoning_content": "We need to determine the crimes (罪名) based on facts. The pattern: list multiple crimes separated by semicolon. Need to infer from facts: (1) receiving bribes: 受贿. (2) embezzlement of public funds: 挪用公款 (or 受贿? Actually misappropriation of public funds: 挪用公款). (3) huge unexplained assets: 违法所得? Possibly “非法占有、收受巨额财产” but typical charge: “巨额财产来源不明” is a separate crime: “非法占有、收受巨额财产” maybe “收受巨额财产” or “非法占有、收受巨额财产”。 In Chinese criminal law, there is a crime of “收受巨额财产” for state functionaries. Actually the crime is “收受巨额财物” (accepting huge property). But they already have 受贿. The third is “巨额财产来源不明” which is a separate offense: “非法占有、收受巨额财产” maybe \"非法占有、收受巨额财产\" is the term used. In examples, they used \"单位行贿;利用影响力受贿\" etc. For unexplained assets, they used \"非法吸收公众存款\" earlier. Not same. In other examples, they used \"诽谤\". For \"巨额财产来源不明\", typical charge is \"收受巨额财产\" (accepting huge property) or \"非法占有、收受巨额财产\". Let's see similar case in dataset: earlier example: \"罗1某...利用影响力受贿...单位行贿\". They used \"单位行贿;利用影响力受贿\". For \"巨额财产来源不明\", maybe \"收受巨额财产\". Let's search memory: In Chinese criminal law, article 385: \"国家工作人员收受巨额财物\" is a crime. So they might list \"收受巨额财物\". In examples they used \"受贿\" for bribes. So third could be \"收受巨额财物\". But they already have 受贿 for bribes; the third is separate: \"巨额财产来源不明\" is a separate crime: \"非法占有、收受巨额财产\". Let's choose \"收受巨额财物\". Also need \"挪用公款\". So final answer: [罪名]受贿;挪用公款;收受巨额财物<eoa>\n\nCheck format: [罪名]受贿;挪用公款;收受巨额财物<eoa>\n\nReturn JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 805,
+      "prompt_tokens": 25856,
+      "total_tokens": 26661,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 600,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00149405,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00149405,
+        "upstream_inference_prompt_cost": 0.0012928,
+        "upstream_inference_completions_cost": 0.00020125
+      }
+    }
+  },
+  "raw_response_missing": false
+}

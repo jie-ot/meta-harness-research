@@ -1,0 +1,55 @@
+Bash
+
+command: python .prototypes/confusion_lesson_memory.py
+description: Run fixed confusion_lesson_memory prototype
+
+--- output ---
+=== ConfusionLessonMemory Prototype ===
+
+[cold start] prompt prefix: 
+
+**Problem:**
+被告人李某某带领十余人阻止施工，持顶托将刘B打伤，刘A刘B均轻伤。
+
+{"reasoning": "...", "final_answer": "..."}
+
+After learning:
+  examples stored: 3
+  lessons stored:  2
+  glossary size:   4
+
+  top lessons for assault+property query:
+    • When facts describe both physical assault causing injury AND property damage or 
+    • When the defendant gives money to a state official to obtain benefits, prefer 行贿
+  lesson Jaccard scores: [0.047, 0.233]
+
+[warm] prompt prefix: Q: 宋某持钢管殴打陈某甲，后打砸店铺内冰箱电脑等财物价值2609元。经鉴定陈某甲重伤六级。
+A: 故意伤害;故意毁坏财物
+
+Q: 被告人朱某某通过虚假充值，致被害单位损失人民币1316910元。
+A: 破坏计算机信息系统
+
+Q: 被告人黄某某…找到于某甲帮忙提高拆迁补偿款…将3万元送给于某甲。
+A: 行贿
+
+**Common mistakes to avoid:**
+- When facts describe both physical assault causing injury AND property damage or mob conduct, emit both charges separated by semicolon. Do not drop the secondary charge.
+- When the defendant gives money to a state official to obtain benefits, prefer 行贿 (bribery by the giver). 非国家工作人员受贿 applies when the recipient is NOT a state employee.
+
+**Problem:**
+被告人宋某持钢管殴打被害人并打砸店铺财物。
+
+**Canonical labels:**
+- 故意伤害
+- 故意毁坏财物
+- 破坏计算机信息系统
+- 行贿
+
+{"reasoning": "...", "final_answer": "..."}
+
+✓ All assertions passed
+
+--- Variant comparison ---
+Without lesson section: model sees only examples → may repeat prior confusion
+With lesson section:    model sees explicit 'prefer 行贿 when giver gives money'
+→ lesson injection is the novel mechanism; raw examples cannot encode this rule

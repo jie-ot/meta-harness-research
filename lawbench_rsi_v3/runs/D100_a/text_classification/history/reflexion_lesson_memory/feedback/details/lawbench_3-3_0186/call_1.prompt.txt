@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the facts describe any combination of manufacturing, buying, selling, transporting, mailing, or storing prohibited weapons, ammunition, or explosives, list all applicable offenses (e.g., illegal ma
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+- If the factual description involves the theft or misappropriation of a species that is designated as a nationally protected plant or animal, the classification must include both the theft charge and t
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:宜君县人民检察院指控，2010年9月至2013年12月，被告人王某某通过网络认识耿某，并应其要求在浙江省苍南县钱库镇伪造宜宾五粮液股份有限公司注册的“五粮液”、“五粮春”白酒注册商标标识等包装制品和陕西西凤股份有限公司注册的“六年西凤”白酒注册商标标识等包装制品，在先后五次收到耿某汇款87100元后，王某某将非法制造的商标标识等包装制品分六次以物流运输的方式销售给耿某。公诉机关认为，被告人王某某构成××，建议判处一年以下××或者××，并处罚金。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

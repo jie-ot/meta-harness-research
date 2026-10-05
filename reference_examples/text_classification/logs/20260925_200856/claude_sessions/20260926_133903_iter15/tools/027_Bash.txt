@@ -1,0 +1,173 @@
+Bash
+
+command:
+cat > /tmp/proto_coarse_cluster.py << 'PROTO'
+"""
+Prototype: coarse-cluster hierarchical retrieval.
+First extract a short prefix tag from the input (first sentence / first colon-delimited field).
+Group stored examples by this tag. At retrieval time:
+  1. Find all examples sharing the same tag as the query -> primary pool
+  2. Score within primary pool by Jaccard
+  3. Fall back to full pool if primary pool is empty/small
+This should help any task where the preamble encodes a category (reaction type, question domain, etc.)
+"""
+import json, re
+from collections import defaultdict
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+
+def _has_cjk(text):
+    return bool(_CJK_RE.search(text))
+
+def _tokenize_adaptive(text):
+    if _has_cjk(text):
+        t = re.sub(r'\s+', ' ', text.strip())
+        return frozenset(t[i:i+2] for i in range(len(t)-1)) if len(t) >= 2 else frozenset()
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+def _jaccard(a, b):
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+def _extract_prefix_tag(text, max_chars=60):
+    """Extract a short coarse tag from the input preamble.
+    Takes text up to first newline, first period, or max_chars,
+    lowercased and stripped — acts as a cluster key.
+    """
+    end = len(text)
+    for sep in ['\n', '.', '。']:
+        idx = text.find(sep)
+        if 0 < idx < end:
+            end = idx
+    tag = text[:min(end, max_chars)].strip().lower()
+    return tag
+
+# Load USPTO memory and log
+mem_path = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/USPTO/decayed_confusion_memory/gpt-oss-120b/memory.json'
+mem = json.load(open(mem_path, encoding='utf-8'))
+log_path = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/USPTO/decayed_confusion_memory/gpt-oss-120b/log.jsonl'
+steps = [json.loads(l) for l in open(log_path, encoding='utf-8') if json.loads(l).get('type')=='step']
+
+examples_raw = []
+for ex in mem['examples']:
+    restored = dict(ex)
+    if isinstance(restored.get('tokens'), list):
+        restored['tokens'] = frozenset(restored['tokens'])
+    else:
+        raw_q = restored.get('raw_question', restored.get('input', ''))
+        restored['tokens'] = _tokenize_adaptive(raw_q)
+    raw_q = restored.get('raw_question', restored.get('input', ''))
+    restored['prefix_tag'] = _extract_prefix_tag(raw_q)
+    examples_raw.append(restored)
+
+# Show distribution of prefix tags
+tag_counts = defaultdict(int)
+for ex in examples_raw:
+    tag_counts[ex['prefix_tag']] += 1
+print("Tag distribution:")
+for tag, cnt in sorted(tag_counts.items(), key=lambda x: -x[1])[:10]:
+    print(f"  {repr(tag)}: {cnt}")
+
+def get_top_k_clustered(query, pool, k=5, min_cluster_size=2):
+    tag = _extract_prefix_tag(query)
+    q_tok = _tokenize_adaptive(query)
+    # Primary: same tag
+    primary = [ex for ex in pool if ex['prefix_tag'] == tag]
+    if len(primary) >= min_cluster_size:
+        scored = sorted([(_jaccard(q_tok, ex['tokens']), i, ex) for i, ex in enumerate(primary)],
+                        key=lambda x: (-x[0], x[1]))
+        selected = [ex for _, _, ex in scored[:k]]
+        # Fill remainder from full pool if needed
+        if len(selected) < k:
+            used = set(id(ex) for ex in selected)
+            for _, _, ex in sorted([(_jaccard(q_tok, ex['tokens']), i, ex) for i, ex in enumerate(pool)],
+                                    key=lambda x: (-x[0], x[1])):
+                if id(ex) not in used:
+                    selected.append(ex)
+                    if len(selected) >= k:
+                        break
+        return selected
+    else:
+        # Fall back to flat similarity
+        scored = sorted([(_jaccard(q_tok, ex['tokens']), i, ex) for i, ex in enumerate(pool)],
+                        key=lambda x: (-x[0], x[1]))
+        return [ex for _, _, ex in scored[:k]]
+
+def get_top_k_flat(query, pool, k=5):
+    q_tok = _tokenize_adaptive(query)
+    scored = sorted([(_jaccard(q_tok, ex['tokens']), i, ex) for i, ex in enumerate(pool)],
+                    key=lambda x: (-x[0], x[1]))
+    return [ex for _, _, ex in scored[:k]]
+
+# Measure: same-tag hit rate vs flat hit rate
+print("\nTop-5 retrieval: flat vs clustered (all steps, k=5):")
+flat_hits = 0
+clust_hits = 0
+total = 0
+for s in steps:
+    step_num = s.get('step', -1)
+    pool = examples_raw[:step_num] if step_num > 0 else []
+    if not pool: continue
+    total += 1
+    query = s.get('input_preview', '')
+    target = s.get('tgt', '')
+    top_flat = get_top_k_flat(query, pool, k=5)
+    top_clust = get_top_k_clustered(query, pool, k=5)
+    if target in [ex['target'] for ex in top_flat]: flat_hits += 1
+    if target in [ex['target'] for ex in top_clust]: clust_hits += 1
+
+print(f"  Flat: {flat_hits}/{total} = {flat_hits/total*100:.1f}%")
+print(f"  Clustered: {clust_hits}/{total} = {clust_hits/total*100:.1f}%")
+
+# Check: how often does the query share a tag with at least 2 stored examples?
+print("\nTag cluster availability:")
+for s in steps:
+    step_num = s.get('step', -1)
+    if step_num < 5: continue
+    pool = examples_raw[:step_num]
+    query = s.get('input_preview', '')
+    tag = _extract_prefix_tag(query)
+    same_tag = [ex for ex in pool if ex['prefix_tag'] == tag]
+    break
+print(f"  (sample) step {step_num}: query tag={repr(tag)}, same-tag pool={len(same_tag)}")
+
+# Cluster size at training end
+print("\nCluster sizes at end of training:")
+for tag, cnt in sorted(tag_counts.items(), key=lambda x: -x[1]):
+    print(f"  {repr(tag)}: {cnt}")
+PROTO
+python /tmp/proto_coarse_cluster.py
+
+description: Prototype coarse-cluster hierarchical retrieval on USPTO
+
+--- output ---
+Tag distribution:
+  'context: the reaction type is protections': 5
+  'context: the reaction type is c-c bond formation': 5
+  'context: the reaction type is deprotections': 5
+  'context: the reaction type is reductions': 5
+  'context: the reaction type is heterocycle formation': 5
+  'context: the reaction type is oxidations': 5
+  'context: the reaction type is functional group addition (fga': 5
+  'context: the reaction type is functional group interconversi': 5
+  'context: the reaction type is heteroatom alkylation and aryl': 5
+  'context: the reaction type is acylation and related processe': 5
+
+Top-5 retrieval: flat vs clustered (all steps, k=5):
+  Flat: 0/49 = 0.0%
+  Clustered: 0/49 = 0.0%
+
+Tag cluster availability:
+  (sample) step 5: query tag='you are an expert organic chemist specializing in retrosynth', same-tag pool=0
+
+Cluster sizes at end of training:
+  'context: the reaction type is protections': 5
+  'context: the reaction type is c-c bond formation': 5
+  'context: the reaction type is deprotections': 5
+  'context: the reaction type is reductions': 5
+  'context: the reaction type is heterocycle formation': 5
+  'context: the reaction type is oxidations': 5
+  'context: the reaction type is functional group addition (fga': 5
+  'context: the reaction type is functional group interconversi': 5
+  'context: the reaction type is heteroatom alkylation and aryl': 5
+  'context: the reaction type is acylation and related processe': 5

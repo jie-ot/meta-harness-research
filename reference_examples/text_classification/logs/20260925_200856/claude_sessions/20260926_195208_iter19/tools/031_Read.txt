@@ -1,0 +1,25 @@
+Read: agents\symmetric_confusion_memory.py
+
+limit: 20
+
+--- output ---
+1	"""Temporally-Decayed Confusion Memory.
+2	
+3	Extends adaptive_tokenizer_confusion_memory with one structural change to the
+4	learning strategy (axis E): confusion counts decay exponentially after each
+5	training step, so the confusion matrix reflects the model's *current* error
+6	patterns rather than its entire accumulated history.
+7	
+8	Problem with the baseline: confusion counts are monotonically increasing integers.
+9	A label pair confused heavily early in training (when the model had few examples)
+10	accumulates a large count that permanently dominates disambiguation slot selection,
+11	even after the model has seen dozens of corrective examples and stopped making
+12	that mistake. The disambiguation phase keeps injecting examples for a boundary
+13	the model no longer needs.
+14	
+15	Fix: after each learn_from_batch call, multiply every existing confusion count by
+16	DECAY_FACTOR (< 1). New error events are added with weight 1.0. Counts that decay
+17	below a threshold are pruned to keep the matrix sparse. This gives recent errors
+18	higher relative weight without requiring explicit timestamps.
+19	
+20	Retrieval algorithm is identical to adaptive_tokenizer_confusion_memory (two-phase:

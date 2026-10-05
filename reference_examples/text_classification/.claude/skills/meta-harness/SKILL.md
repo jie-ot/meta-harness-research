@@ -11,10 +11,10 @@ Run ONE iteration of memory system evolution. Do all work in the main session �
 
 ## CRITICAL CONSTRAINTS
 
-- You MUST implement 3 new memory systems every iteration.
+- You MUST implement 2 new memory systems every iteration.
 - Do NOT write "the frontier is optimal" or "stop iterating", or abort early.
 - ALWAYS complete all steps including prototyping.
-- Design exactly 3 candidates per iteration: mix of exploitation and exploration.
+- Design exactly 2 candidates per iteration: mix of exploitation and exploration.
 
 ### Anti-parameter-tuning rules
 
@@ -55,7 +55,7 @@ Check the reports directory (path in the task prompt's "Run directories" section
    - `config.yaml` for current datasets and baselines
    - recent `logs/<dataset>/<agent>/<model>/log.jsonl` traces if they exist
 
-2. Formulate 3 hypotheses — each must be falsifiable and target a different mechanism.
+2. Formulate 2 hypotheses — each must be falsifiable and target a different mechanism.
 
 ### Step 2: Prototype — MANDATORY
 
@@ -70,7 +70,7 @@ For each candidate:
 
 ### Step 3: Implement
 
-For each of the 3 candidates:
+For each of the 2 candidates:
 
 1. Copy a top-performing base system to `agents/<name>.py`, then make targeted modifications. This copy-then-edit approach ensures correct imports and proven patterns.
 2. Implement the new mechanism according to your hypothesis.
@@ -99,7 +99,7 @@ Write to the path specified in the task prompt (NOT hardcoded — it may be in a
 }
 ```
 
-Output: `CANDIDATES: <name1>, <name2>, <name3>`
+Output: `CANDIDATES: <name1>, <name2>`
 
 ## MemorySystem Interface
 

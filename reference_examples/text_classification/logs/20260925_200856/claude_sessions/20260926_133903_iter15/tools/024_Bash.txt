@@ -1,0 +1,180 @@
+Bash
+
+command:
+cat > /tmp/proto_specificity.py << 'PROTO'
+"""
+Prototype: sub-label specificity boost.
+When pred is a substring of gt during errors, mark those stored gt examples
+as 'specificity-critical'. At retrieval time, boost their score by alpha.
+"""
+import json, re
+from collections import defaultdict
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+_WRAPPER_RE = re.compile(r'^\s*\[[^\]]*\]|<eoa>\s*$|\[[^\]]*\]\s*$', re.IGNORECASE)
+
+def _has_cjk(text):
+    return bool(_CJK_RE.search(text))
+
+def _tokenize_word(text):
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+def _tokenize_bigram(text):
+    t = re.sub(r'\s+', ' ', text.strip())
+    if len(t) < 2:
+        return frozenset([t]) if t else frozenset()
+    return frozenset(t[i:i+2] for i in range(len(t)-1))
+
+def _tokenize_adaptive(text):
+    return _tokenize_bigram(text) if _has_cjk(text) else _tokenize_word(text)
+
+def _jaccard(a, b):
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+def _normalize(pred):
+    if not pred: return pred
+    cleaned = _WRAPPER_RE.sub('', pred).strip()
+    return cleaned if cleaned else pred
+
+# Load LawBench memory
+mem_path = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/LawBench/decayed_confusion_memory/gpt-oss-120b/memory.json'
+mem = json.load(open(mem_path, encoding='utf-8'))
+
+examples = []
+for ex in mem['examples']:
+    restored = dict(ex)
+    if isinstance(restored.get('tokens'), list):
+        restored['tokens'] = frozenset(restored['tokens'])
+    else:
+        raw_q = restored.get('raw_question', restored.get('input', ''))
+        restored['tokens'] = _tokenize_adaptive(raw_q)
+    examples.append(restored)
+
+# Load LawBench log to replay the training
+log = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/LawBench/decayed_confusion_memory/gpt-oss-120b/log.jsonl'
+lines = open(log, encoding='utf-8').readlines()
+steps = [json.loads(l) for l in lines if json.loads(l).get('type')=='step']
+
+# Replay: find all (pred, gt) error pairs and identify substring relationships
+specificity_critical_labels = defaultdict(float)  # label -> boost score
+
+errors = [s for s in steps if s.get('type')=='step' and not s.get('ok')]
+substring_errors = 0
+for s in errors:
+    pred = _normalize(s.get('pred',''))
+    gt = s.get('tgt','')
+    if pred and gt and pred != gt:
+        # Substring check: if pred is in gt or gt is in pred (pred is parent)
+        if pred in gt:
+            specificity_critical_labels[gt] += 1.0
+            substring_errors += 1
+        elif gt in pred:
+            specificity_critical_labels[gt] += 0.5  # less confident direction
+            substring_errors += 1
+
+print(f"Total errors: {len(errors)}")
+print(f"Substring-relationship errors: {substring_errors} ({substring_errors/len(errors)*100:.1f}%)")
+print(f"\nTop specificity-critical labels:")
+for lbl, cnt in sorted(specificity_critical_labels.items(), key=lambda x: -x[1])[:15]:
+    print(f"  {repr(lbl)}: count={cnt:.1f}")
+
+# Now simulate: does boosting these labels improve top-8 hit rate on error cases?
+def get_top_k(query, pool, crit_labels, alpha, k=8):
+    q_tok = _tokenize_adaptive(query)
+    scored = []
+    for i, ex in enumerate(pool):
+        sim = _jaccard(q_tok, ex['tokens'])
+        boost = alpha * crit_labels.get(ex['target'], 0.0)
+        scored.append((sim + boost, i, ex))
+    scored.sort(key=lambda x: (x[0], x[1]), reverse=True)
+    return [ex for _, _, ex in scored[:k]]
+
+print("\nError hit rate at top-8 (with vs without specificity boost):")
+for alpha in [0.0, 0.05, 0.1, 0.2, 0.5]:
+    hits = 0
+    for s in errors:
+        query = s.get('input_preview', '')
+        target = s.get('tgt', '')
+        top_k = get_top_k(query, examples, specificity_critical_labels, alpha=alpha)
+        if target in [ex['target'] for ex in top_k]:
+            hits += 1
+    print(f"  alpha={alpha:.2f}: {hits}/{len(errors)} = {hits/len(errors)*100:.1f}%")
+
+# Also test: what's the combined effect — both specificity boost AND checking confusion for
+# the actual prediction as tentative?
+print("\nCombined: specificity boost (alpha=0.1) + confusion check:")
+confusion = defaultdict(lambda: defaultdict(float))
+for pred_lbl, actuals in mem.get('confusion', {}).items():
+    for actual, cnt in actuals.items():
+        confusion[pred_lbl][actual] = float(cnt)
+
+# For each error: check if either mechanism surfaces the target
+hits_either = 0
+hits_both = 0
+hits_spec_only = 0
+hits_conf_only = 0
+for s in errors:
+    query = s.get('input_preview', '')
+    target = s.get('tgt', '')
+    pred = _normalize(s.get('pred', ''))
+    
+    # Specificity boost
+    top8_spec = get_top_k(query, examples, specificity_critical_labels, alpha=0.1)
+    in_spec = target in [ex['target'] for ex in top8_spec]
+    
+    # Confusion-based
+    conf_targets = set(confusion.get(pred, {}).keys())
+    in_conf = target in conf_targets
+    
+    if in_spec or in_conf:
+        hits_either += 1
+    if in_spec and in_conf:
+        hits_both += 1
+    if in_spec and not in_conf:
+        hits_spec_only += 1
+    if in_conf and not in_spec:
+        hits_conf_only += 1
+
+print(f"  In specificity top-8 only: {hits_spec_only}")
+print(f"  In confusion targets only: {hits_conf_only}")
+print(f"  In both: {hits_both}")
+print(f"  In either: {hits_either}/{len(errors)}")
+PROTO
+python /tmp/proto_specificity.py
+
+description: Prototype specificity boost on LawBench errors
+
+--- output ---
+Total errors: 146
+Substring-relationship errors: 52 (35.6%)
+
+Top specificity-critical labels:
+  '合同诈骗': count=3.0
+  '非国家工作人员受贿': count=2.0
+  '盗窃;掩饰、隐瞒犯罪所得、犯罪所得收益': count=2.0
+  '单位行贿': count=2.0
+  '拐卖妇女、儿童': count=1.0
+  '诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫': count=1.0
+  '信用卡诈骗': count=1.0
+  '金融凭证诈骗': count=1.0
+  '虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯': count=1.0
+  '诈骗;聚众扰乱公共场所秩序、交通秩序': count=1.0
+  '对非国家工作人员行贿': count=1.0
+  '故意伤害;组织、强迫、引诱、容留、介绍卖淫;强迫卖淫': count=1.0
+  '徇私舞弊不移交刑事案件': count=1.0
+  '危险驾驶;窝藏、包庇': count=1.0
+  '盗窃;非法狩猎': count=1.0
+
+Error hit rate at top-8 (with vs without specificity boost):
+  alpha=0.00: 145/146 = 99.3%
+  alpha=0.05: 138/146 = 94.5%
+  alpha=0.10: 99/146 = 67.8%
+  alpha=0.20: 28/146 = 19.2%
+  alpha=0.50: 9/146 = 6.2%
+
+Combined: specificity boost (alpha=0.1) + confusion check:
+  In specificity top-8 only: 65
+  In confusion targets only: 14
+  In both: 34
+  In either: 113/146

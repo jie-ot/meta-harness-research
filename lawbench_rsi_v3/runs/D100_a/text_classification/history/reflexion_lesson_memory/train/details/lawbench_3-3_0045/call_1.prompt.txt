@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- If the facts only describe forging, altering, or selling state‑issued documents or certificates and do not contain any separate act of deceiving another party for financial gain, assign only the forge
+- When the defendant’s conduct primarily involves unauthorized remote locking, erasing, or otherwise disabling computer or mobile device functions—causing the device to become unusable—classify the act 
+- If the factual description indicates that any victim of a trafficking or forced marriage act is a minor (i.e., a child under the age of 14), the charge must include both “拐卖妇女罪” (if the victim is a wo
+- When the alleged offender holds a position in a private or non‑governmental entity (e.g., company executive, manager) rather than a public official, classify the offense as “非国家工作人员受贿” instead of the 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:黑龙江省巴彦县人民检察院指控，2012年6月9日，被告人张某某谎称以租车的名义将被害人李某某的轿车骗走后，张某某将骗得的轿车抵押给其朋友焦某某并借款人民币15,000元，此后李某某多次给张某某打电话要车时张某某拒不还车，之后张某某逃往外地。公诉机关认为，被告人张某某触犯了《中华人民共和国刑法》××的规定，构成××，应当以××追究其刑事责任。针对上述指控，公诉机关提供了相应的证据。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

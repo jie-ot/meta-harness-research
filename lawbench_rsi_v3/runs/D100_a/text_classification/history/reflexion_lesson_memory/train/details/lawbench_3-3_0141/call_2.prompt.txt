@@ -1,0 +1,23 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:江油市人民检察院指控：2013年11月22日凌晨，被告人张某某与被告人曹某某、肖某某、何某某、肖某某（均已判刑）预谋后，采用挖掘的方式，盗走位于江油市东安乡马鞍村的四川桂花种植有限公司种植园中的7棵桂花树，后将这些树栽种在肖某某的包产地里等待销赃。经鉴定，被盗桂花树价值5400元。案发后，桂花树已被追回并发还被害单位。2015年11月2日，张某某主动到公安机关投案。
+公诉机关称上述事实有被告人供述、被害人陈述、证人证言、书证、勘验笔录、检查笔录、辨认笔录、鉴定意见等证据证实。公诉机关认为，被告人张某某以非法占有为目的，秘密窃取他人财物，数额较大，应当以××追究其刑事责任。张某某系自首，可以从轻处罚。张某某在××考验期限内犯新罪，应当撤销××，数罪并罚。提请本院依照《中华人民共和国刑法》××、××、××之规定，对被告人张某某予以惩处。
+
+
+Wrong prediction: [罪名]盗窃<eoa>
+Correct answer: 盗窃;非法狩猎
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

@@ -1,0 +1,210 @@
+Write: agents\label_grouped_memory.py
+
+content:
+"""Label-Grouped Memory — organises retrieved examples by answer category in the prompt.
+
+All prior systems present retrieved examples as a flat Q/A list. This system
+changes the prompt architecture (axis A) in two ways:
+
+1. **Bigram retrieval** (same fix as ngram_confusion_memory): character bigrams
+   replace the ASCII word tokenizer, giving meaningful similarity scores for
+   any script or language.
+
+2. **Label-grouped prompt**: instead of a flat list, retrieved examples are
+   grouped by their ground-truth label and each group gets a section header
+   ("### Examples with answer: X"). The model sees a structured map of the
+   label-space boundaries rather than a sequence of disconnected Q/A pairs.
+
+Hypothesis: grouping examples by answer makes the label decision boundary
+explicit in the prompt structure, helping the model distinguish inputs that
+look similar but map to different labels — a complementary disambiguation
+signal to the confusion-matrix approach.
+
+Label groups are sorted by descending group size (most-exemplified labels
+first), so the strongest evidence appears early in the context window.
+Within each group, examples are ordered by descending similarity to the
+query. The char budget is respected across all groups.
+"""
+
+import json
+import re
+from collections import defaultdict
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+# Prompt with grouped sections instead of a flat list
+PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+
+{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- The examples above are grouped by their correct answer
+- Use the groupings to identify which answer category best fits the problem
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+# Cold-start fallback when no examples have been learned yet
+PROMPT_TEMPLATE_COLD = """Solve the problem below.
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+MAX_CHARS = 30000
+_NGRAM_SIZE = 2
+
+
+def _tokenize(text: str) -> frozenset:
+    """Character bigram tokenizer — language-agnostic."""
+    t = re.sub(r'\s+', ' ', text.strip())
+    n = _NGRAM_SIZE
+    if len(t) < n:
+        return frozenset([t]) if t else frozenset()
+    return frozenset(t[i:i + n] for i in range(len(t) - n + 1))
+
+
+def _jaccard(a: frozenset, b: frozenset) -> float:
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+class LabelGroupedMemory(MemorySystem):
+    """Bigram retrieval with label-grouped prompt architecture."""
+
+    def __init__(self, llm: LLMCallable):
+        super().__init__(llm)
+        self.examples: list[dict[str, Any]] = []
+
+    def _scored(self, query: str) -> list[tuple[float, int, dict]]:
+        """Return all stored examples sorted by descending bigram Jaccard similarity."""
+        q_tok = _tokenize(query)
+        result = [
+            (_jaccard(q_tok, ex["tokens"]), idx, ex)
+            for idx, ex in enumerate(self.examples)
+        ]
+        result.sort(key=lambda x: (x[0], x[1]), reverse=True)
+        return result
+
+    def _build_examples_section(self, query: str) -> str:
+        """Select examples and format them in label-grouped sections.
+
+        Algorithm:
+        1. Score all examples by bigram similarity to the query.
+        2. Greedily assign examples to per-label buckets, highest-similarity first,
+           until the char budget is exhausted.
+        3. Sort buckets by descending bucket size (most examples first), so the
+           model sees the most-represented labels early.
+        4. Render each bucket as a section with a label header.
+        """
+        if not self.examples:
+            return ""
+
+        ranked = self._scored(query)
+
+        # --- Greedy fill into per-label buckets within char budget ---
+        buckets: dict[str, list[str]] = defaultdict(list)
+        total_chars = 0
+
+        for _, _idx, ex in ranked:
+            label = ex["target"]
+            q = ex.get("raw_question", ex["input"])
+            entry = f"  Q: {q}\n  A: {label}"
+            # Account for section header overhead (written once per label)
+            header = f"\n### Examples with answer: {label}\n"
+            # If this is the first entry for this label, add header cost
+            header_cost = len(header) if label not in buckets else 0
+            cost = len(entry) + 2 + header_cost
+            if total_chars + cost > MAX_CHARS:
+                continue
+            buckets[label].append(entry)
+            total_chars += cost
+
+        if not buckets:
+            return ""
+
+        # --- Sort buckets: most examples first, then alphabetical for stability ---
+        sorted_labels = sorted(buckets.keys(), key=lambda lbl: (-len(buckets[lbl]), lbl))
+
+        sections = []
+        for label in sorted_labels:
+            entries = "\n\n".join(buckets[label])
+            sections.append(f"### Examples with answer: {label}\n{entries}")
+
+        return "\n\n".join(sections)
+
+    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+        examples_section = self._build_examples_section(input)
+
+        if examples_section:
+            prompt = PROMPT_TEMPLATE.format(
+                examples_section=examples_section,
+                input=input,
+            )
+        else:
+            prompt = PROMPT_TEMPLATE_COLD.format(input=input)
+
+        response = self.call_llm(prompt)
+        answer = extract_json_field(response, "final_answer")
+
+        # Count how many distinct labels appear in the context
+        num_label_groups = len(set(
+            ex["target"] for ex in self.examples
+        )) if self.examples else 0
+
+        return answer, {
+            "full_response": response,
+            "num_examples": len(self.examples),
+            "num_label_groups": num_label_groups,
+            "has_examples": bool(examples_section),
+        }
+
+    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+        for r in batch_results:
+            raw_q = r.get("raw_question", r["input"])
+            ex: dict[str, Any] = {
+                "input": r["input"],
+                "target": r["ground_truth"],
+                "tokens": _tokenize(raw_q),
+            }
+            if "raw_question" in r:
+                ex["raw_question"] = r["raw_question"]
+            self.examples.append(ex)
+
+    def get_context_length(self) -> int:
+        section = self._build_examples_section("")
+        return len(section)
+
+    def get_state(self) -> str:
+        serialisable = [
+            {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+            for ex in self.examples
+        ]
+        return json.dumps({"examples": serialisable}, indent=2)
+
+    def set_state(self, state: str) -> None:
+        data = json.loads(state)
+        self.examples = []
+        for ex in data.get("examples", []):
+            restored = dict(ex)
+            if "tokens" in restored and isinstance(restored["tokens"], list):
+                restored["tokens"] = frozenset(restored["tokens"])
+            else:
+                raw_q = restored.get("raw_question", restored.get("input", ""))
+                restored["tokens"] = _tokenize(raw_q)
+            self.examples.append(restored)
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\label_grouped_memory.py (file state is current in your context — no need to Read it back)

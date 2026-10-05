@@ -1,0 +1,109 @@
+Write: C:\Windows\Temp\proto_llm_rules.py
+
+content:
+"""Prototype: LLM rule synthesis prompt structure and rule injection logic."""
+import re
+from collections import defaultdict
+
+# Simulate the data structures
+confusion = defaultdict(lambda: defaultdict(int))
+rules = {}  # key: "pred|||actual", value: rule string
+examples = [
+    {"target": "typhoid", "raw_question": "fever diarrhea vomiting dehydration stomach pain"},
+    {"target": "typhoid", "raw_question": "prolonged fever headache weakness rose spots"},
+    {"target": "malaria", "raw_question": "fever chills sweating headache muscle pain cyclic"},
+    {"target": "malaria", "raw_question": "high fever shaking chills anemia fatigue"},
+    {"target": "dengue", "raw_question": "high fever severe headache pain behind eyes rash"},
+]
+
+# Simulate some confusion accumulation
+confusion["malaria"]["typhoid"] += 3   # model confused malaria→typhoid 3 times
+confusion["typhoid"]["malaria"] += 2
+confusion["dengue"]["typhoid"] += 1
+
+RULE_THRESHOLD = 2
+
+def _rule_key(pred: str, actual: str) -> str:
+    return f"{pred}|||{actual}"
+
+def _pairs_needing_rules():
+    pairs = []
+    for pred, row in confusion.items():
+        for actual, cnt in row.items():
+            if cnt >= RULE_THRESHOLD and _rule_key(pred, actual) not in rules:
+                pairs.append((pred, actual, cnt))
+    return sorted(pairs, key=lambda x: -x[2])
+
+def _build_synthesis_prompt(pred: str, actual: str) -> str:
+    actual_exs = [ex for ex in examples if ex["target"] == actual][:3]
+    pred_exs = [ex for ex in examples if ex["target"] == pred][:3]
+    actual_str = "\n".join(f"  - {ex['raw_question']}" for ex in actual_exs)
+    pred_str = "\n".join(f"  - {ex['raw_question']}" for ex in pred_exs)
+    return f"""A classifier has been confusing label "{pred}" with "{actual}".
+
+Examples correctly labeled "{actual}":
+{actual_str}
+
+Examples of "{pred}":
+{pred_str}
+
+Write a brief (1-2 sentence) decision rule that distinguishes when to choose "{actual}" vs "{pred}".
+Be concrete and focus on the most discriminating features.
+
+{{"rule": "Choose '{actual}' when ...; choose '{pred}' when ..."}}"""
+
+def _build_rules_section(candidate_labels: list[str]) -> str:
+    """Inject all stored rules involving the candidate labels."""
+    relevant = []
+    for key, rule in rules.items():
+        pred, actual = key.split("|||")
+        if pred in candidate_labels or actual in candidate_labels:
+            relevant.append(f'- "{actual}" vs "{pred}": {rule}')
+    if not relevant:
+        return ""
+    return "**Disambiguation Notes (high priority):**\n" + "\n".join(relevant) + "\n\n"
+
+# --- Test the synthesis prompt ---
+pairs = _pairs_needing_rules()
+print(f"Pairs needing rules: {[(p, a, c) for p,a,c in pairs]}")
+assert ("malaria", "typhoid", 3) in pairs or ("typhoid", "malaria", 2) in pairs
+
+prompt = _build_synthesis_prompt("malaria", "typhoid")
+print("\n--- Synthesis prompt (first 400 chars) ---")
+print(prompt[:400])
+
+# Simulate a rule being stored (mock LLM response)
+rules[_rule_key("malaria", "typhoid")] = (
+    "Choose 'typhoid' when symptoms include prolonged fever with headache and weakness; "
+    "choose 'malaria' when fever is cyclic/intermittent with chills and sweating."
+)
+rules[_rule_key("typhoid", "malaria")] = (
+    "Choose 'malaria' when there are cyclic fever patterns and chills; "
+    "choose 'typhoid' for sustained fever with gastrointestinal symptoms."
+)
+
+# --- Test rule injection ---
+candidate_labels = ["typhoid", "malaria", "dengue"]
+section = _build_rules_section(candidate_labels)
+print("\n--- Rules section injected into prompt ---")
+print(section)
+
+# Variant: test with no relevant candidates → empty section
+empty = _build_rules_section(["chicken pox", "diabetes"])
+print(f"Empty section for irrelevant labels: repr={repr(empty)}")
+assert empty == ""
+
+# --- Test serialization ---
+import json
+state = {"rules": rules, "confusion": {k: dict(v) for k, v in confusion.items()}}
+serialized = json.dumps(state)
+restored = json.loads(serialized)
+assert restored["rules"] == rules
+print("\nSerialization round-trip: PASSED")
+
+print("\nPrototype 2 PASSED: rule synthesis prompts build correctly, injection logic works")
+
+
+
+--- output ---
+File created successfully at: C:\Windows\Temp\proto_llm_rules.py (file state is current in your context — no need to Read it back)

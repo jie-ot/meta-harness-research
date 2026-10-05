@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the facts describe a person in a managerial or official position receiving money or valuables in exchange for using their职务便利, classify the crime simply as "受贿" unless the source explicitly states 
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- When the defendant was entrusted with another's money or a financial instrument and later unlawfully appropriates or withdraws the funds for personal use, the proper charge is theft (盗窃) or misappropr
+- If the factual description includes both the procurement of benefits through the abuse of official position (e.g., accepting bribes) **and** the misuse of that position to facilitate or conceal the wr
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控：2007年10月至2014年12月期间，被告人张某利用其担任广西昶明律师事务所内某的职务便利，多次采取修改支票数额、截留小部分律师费等方式，私自侵占广西昶明律师事务所账户里的资金共计人民币94897.64元。
+公诉机关认为，被告人张某的行为构成××，有自首情节，提请本院依法惩处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

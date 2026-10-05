@@ -1,0 +1,43 @@
+Edit: .prototypes\canonical_charge_lexicon_memory.py
+
+replace_all: False
+old_string:
+def part1() -> bool:
+    cz = Canonicalizer()
+    # Round 1: learn every truth, and the rewrite for each observed error.
+    for _iid, pred, truth in CASES:
+        cz.observe_truth(truth)
+        cz.learn(pred, truth)
+
+    print("inventory size:", len(cz.inventory))
+    print("learned aliases:", dict(cz.alias))
+
+    ok = True
+
+new_string:
+def _run_variant(name: str, use_payload: bool, payload_first: bool) -> tuple[int, "Canonicalizer"]:
+    cz = Canonicalizer(use_payload_rules=use_payload, payload_first=payload_first)
+    for _iid, pred, truth in CASES:
+        cz.observe_truth(truth)
+        cz.learn(pred, truth)
+    hits = sum(1 for _iid, pred, truth in CASES if cz.normalize(pred) == truth)
+    print(f"variant {name}: {hits}/{len(CASES)} exact")
+    return hits, cz
+
+
+def part1() -> bool:
+    # Variant comparison before settling on the shipped ordering.
+    v1_hits, _v1 = _run_variant("V1 similarity-only", False, False)
+    v2_hits, _v2 = _run_variant("V2 +verbatim payload", True, False)
+    v3_hits, cz = _run_variant("V3 verbatim-first (adopted)", True, True)
+    assert v3_hits >= v2_hits >= v1_hits, "variant ladder must not regress"
+
+    print("inventory size:", len(cz.inventory))
+    print("payload rules:", {k: dict(v) for k, v in cz.payload.items()})
+    print("learned aliases:", {k: dict(v) for k, v in cz.alias.items()})
+
+    ok = True
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_a\text_classification\.prototypes\canonical_charge_lexicon_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

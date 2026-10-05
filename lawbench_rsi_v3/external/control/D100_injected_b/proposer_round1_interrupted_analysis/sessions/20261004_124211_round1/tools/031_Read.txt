@@ -1,0 +1,36 @@
+Read: inner_loop.py
+
+limit: 30
+offset: 100
+
+--- output ---
+100	    if f1_values:
+101	        result["avg_f1"] = sum(f1_values) / len(f1_values)
+102	        result["micro_f1"] = compute_micro_f1(preds)
+103	    else:
+104	        result["avg_f1"] = None
+105	        result["micro_f1"] = None
+106	    return result
+107	
+108	
+109	def _run_offline_loop(
+110	    memory: MemorySystem,
+111	    examples: list[dict[str, Any]],
+112	    check_answer: Callable[..., bool],
+113	    num_epochs: int = 1,
+114	    batch_size: int = 1,
+115	    max_workers: int = 32,
+116	    logger: JSONLLogger | None = None,
+117	    step_offset: int = 0,
+118	    collect_trajectory: bool = True,
+119	    val_examples: list[dict[str, Any]] | None = None,
+120	    skip_train_eval: bool = False,
+121	) -> dict[str, Any]:
+122	    """Run offline training: train with ground truth visible, then evaluate.
+123	
+124	    In offline mode:
+125	    1. Train phase: batch examples → learn_from_batch, multiple epochs
+126	    2. If val_examples provided: eval on val after each epoch, keep best checkpoint
+127	    3. Eval phase: predict on all examples to measure final accuracy (no updates)
+128	       (skipped when skip_train_eval=True, e.g. val-only evolve runs)
+129	

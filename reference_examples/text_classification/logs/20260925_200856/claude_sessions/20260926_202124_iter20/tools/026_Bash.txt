@@ -1,0 +1,147 @@
+Bash
+
+command:
+python -c "
+import os, json, re
+from collections import defaultdict
+
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+
+_CJK_RE = re.compile(r'[\u4e00-\u9fff\u3040-\u30ff\uff00-\uffef]')
+_WRAPPER_RE = re.compile(r'^\s*\[[^\]]*\]|<eoa>\s*$|\[[^\]]*\]\s*$', re.IGNORECASE)
+
+def _normalize(pred):
+    c = _WRAPPER_RE.sub('', pred).strip()
+    return c if c else pred
+
+def _decompose(label):
+    return [p.strip() for p in label.split(';') if p.strip()] or [label]
+
+def _has_cjk(t): return bool(_CJK_RE.search(t))
+def _tok_bigram(t):
+    t = re.sub(r'\s+', ' ', t.strip())
+    return frozenset(t[i:i+2] for i in range(len(t)-1)) if len(t)>=2 else frozenset()
+def _tok_word(t): return frozenset(re.findall(r'[A-Za-z0-9]+', t.lower()))
+def _tok(t): return _tok_bigram(t) if _has_cjk(t) else _tok_word(t)
+def _jaccard(a,b):
+    if not a and not b: return 0.0
+    return len(a&b)/len(a|b)
+
+DECAY = 0.95
+PRUNE = 0.05
+
+def make_confusion():
+    return defaultdict(lambda: defaultdict(float))
+
+def learn_decomposed(confusion, pred_raw, gt):
+    pred = _normalize(pred_raw)
+    if not pred or pred == gt: return
+    pred_parts = _decompose(pred)
+    gt_parts = _decompose(gt)
+    for pp in pred_parts:
+        for gp in gt_parts:
+            if pp != gp:
+                confusion[pp][gp] += 1.0
+                confusion[gp][pp] += 0.5  # symmetric
+
+def learn_atomic(confusion, pred_raw, gt):
+    pred = _normalize(pred_raw)
+    if not pred or pred == gt: return
+    confusion[pred][gt] += 1.0
+    confusion[gt][pred] += 0.5
+
+def decay(confusion):
+    to_del = []
+    for k, vs in confusion.items():
+        inner_del = [j for j,v in vs.items() if v*DECAY < PRUNE]
+        for j in inner_del: del vs[j]
+        vs.update({j: v*DECAY for j,v in vs.items()})
+        if not vs: to_del.append(k)
+    for k in to_del: del confusion[k]
+
+def confusion_targets(confusion, labels):
+    label_set = set(labels)
+    counts = defaultdict(float)
+    for lbl in labels:
+        for actual, cnt in confusion.get(lbl, {}).items():
+            if actual not in label_set:
+                counts[actual] += cnt
+    return sorted(counts, key=lambda l: -counts[l])
+
+# Simulate online learning on LawBench
+log_path = os.path.join(base, 'LawBench', 'symmetric_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+lines = open(log_path, encoding='utf-8').readlines()
+steps = [json.loads(l) for l in lines if json.loads(l).get('type') == 'step']
+
+conf_atomic = make_confusion()
+conf_decomp = make_confusion()
+
+pool = []
+disambig_fires_atomic = 0
+disambig_fires_decomp = 0
+
+for s in steps:
+    q = s.get('input_preview', '')
+    gt = s['tgt']
+    pred = s['pred']
+    ok = s.get('ok', False)
+    
+    # Get top-3 candidate labels from current pool (by similarity)
+    q_tok = _tok(q)
+    scored = sorted(pool, key=lambda ex: -_jaccard(q_tok, ex['tok']))
+    top_labels = [ex['target'] for ex in scored[:3]]
+    
+    # Would disambiguation phase fire?
+    ct_atomic = confusion_targets(conf_atomic, top_labels) if top_labels else []
+    ct_decomp = confusion_targets(conf_decomp, top_labels) if top_labels else []
+    if ct_atomic: disambig_fires_atomic += 1
+    if ct_decomp: disambig_fires_decomp += 1
+    
+    # Learn
+    pool.append({'input': q, 'target': gt, 'tok': _tok(q)})
+    if not ok:
+        learn_atomic(conf_atomic, pred, gt)
+        learn_decomposed(conf_decomp, pred, gt)
+    decay(conf_atomic)
+    decay(conf_decomp)
+
+print(f'Disambiguation fires (atomic):   {disambig_fires_atomic}/200')
+print(f'Disambiguation fires (decomposed): {disambig_fires_decomp}/200')
+print(f'Confusion keys atomic: {len(conf_atomic)}, decomposed: {len(conf_decomp)}')
+
+# Check whether correct label appears in confusion targets for wrong steps
+errors = [s for s in steps if not s.get('ok')]
+hits_atomic = 0; hits_decomp = 0
+pool2 = []
+conf_a2 = make_confusion(); conf_d2 = make_confusion()
+for s in steps:
+    q_tok = _tok(s.get('input_preview',''))
+    scored = sorted(pool2, key=lambda ex: -_jaccard(q_tok, ex['tok']))
+    top_labels = [ex['target'] for ex in scored[:3]]
+    gt_parts = _decompose(s['tgt'])
+    ct_a = confusion_targets(conf_a2, top_labels)
+    ct_d = confusion_targets(conf_d2, top_labels)
+    if not s.get('ok') and top_labels:
+        if any(gp in ct_a for gp in gt_parts): hits_atomic += 1
+        if any(gp in ct_d for gp in gt_parts): hits_decomp += 1
+    pool2.append({'input': s.get('input_preview',''), 'target': s['tgt'], 'tok': _tok(s.get('input_preview',''))})
+    if not s.get('ok'):
+        learn_atomic(conf_a2, s['pred'], s['tgt'])
+        learn_decomposed(conf_d2, s['pred'], s['tgt'])
+    decay(conf_a2); decay(conf_d2)
+
+print(f'Error-step GT in confusion targets (atomic):    {hits_atomic}/{len(errors)}')
+print(f'Error-step GT in confusion targets (decomposed): {hits_decomp}/{len(errors)}')
+"
+
+
+description:
+Prototype decomposed confusion matrix: compare disambiguation activation and GT targeting
+
+
+--- output ---
+Disambiguation fires (atomic):   151/200
+Disambiguation fires (decomposed): 128/200
+Confusion keys atomic: 65, decomposed: 64
+Error-step GT in confusion targets (atomic):    3/149
+Error-step GT in confusion targets (decomposed): 3/149

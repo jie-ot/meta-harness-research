@@ -1,0 +1,129 @@
+Bash
+
+command:
+python -c "
+import os, json, re
+from collections import defaultdict
+
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+log_path = os.path.join(base, 'USPTO', 'symmetric_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+lines = open(log_path, encoding='utf-8').readlines()
+steps = [json.loads(l) for l in lines if json.loads(l).get('type') == 'step']
+
+# Current word tokenizer vs bigram tokenizer for SMILES
+def _tok_word(t): return frozenset(re.findall(r'[A-Za-z0-9]+', t.lower()))
+def _tok_bigram(t):
+    t2 = re.sub(r'\s+', ' ', t.strip())
+    return frozenset(t2[i:i+2] for i in range(len(t2)-1)) if len(t2)>=2 else frozenset()
+
+def _tok_notation_adaptive(t):
+    # If non-alphanumeric chars dominate (structured notation like SMILES), use bigrams
+    alnum = len(re.findall(r'[A-Za-z0-9]', t))
+    total = len(t.replace(' ',''))
+    if total > 0 and alnum / total < 0.7:   # >30% non-alnum → structured notation
+        return _tok_bigram(t)
+    return _tok_word(t)
+
+def _jaccard(a,b):
+    if not a and not b: return 0.0
+    return len(a&b)/len(a|b)
+
+# Sample some inputs
+for s in steps[1:6]:
+    inp = s.get('input_preview','')[:120]
+    wt = _tok_word(inp)
+    bt = _tok_bigram(inp)
+    nat = _tok_notation_adaptive(inp)
+    print(f'input: {repr(inp[:60])}')
+    print(f'  word tokens: {len(wt)} → {sorted(wt)[:5]}')
+    print(f'  bigram tokens: {len(bt)} → {sorted(bt)[:5]}')
+    print(f'  notation-adaptive: {len(nat)} tokens')
+    print()
+
+# Simulate retrieval quality: for error steps, does a similar training step
+# appear higher in notation-adaptive ranked list?
+pool = []
+word_rank_of_gt_label = []
+bigram_rank_of_gt_label = []
+notadap_rank_of_gt_label = []
+
+for s in steps:
+    q = s.get('input_preview','')
+    gt = s['tgt']
+    
+    if len(pool) >= 20 and not s.get('ok'):
+        q_word = _tok_word(q)
+        q_bigram = _tok_bigram(q)
+        q_notadap = _tok_notation_adaptive(q)
+        
+        # Find best rank at which GT label appears
+        def gt_rank(scored):
+            for i, (score, ex) in enumerate(scored):
+                if ex['target'] == gt: return i
+            return len(scored)
+        
+        scored_word = sorted([((_jaccard(q_word, ex['tok_word']), ), ex) for ex in pool],
+                              key=lambda x: -x[0][0])
+        scored_bigram = sorted([((_jaccard(q_bigram, ex['tok_bigram']), ), ex) for ex in pool],
+                                key=lambda x: -x[0][0])
+        scored_notadap = sorted([((_jaccard(q_notadap, ex['tok_notadap']), ), ex) for ex in pool],
+                                 key=lambda x: -x[0][0])
+        
+        word_rank_of_gt_label.append(gt_rank([(s[0][0], s[1]) for s in scored_word]))
+        bigram_rank_of_gt_label.append(gt_rank([(s[0][0], s[1]) for s in scored_bigram]))
+        notadap_rank_of_gt_label.append(gt_rank([(s[0][0], s[1]) for s in scored_notadap]))
+    
+    pool.append({
+        'target': gt,
+        'tok_word': _tok_word(q),
+        'tok_bigram': _tok_bigram(q),
+        'tok_notadap': _tok_notation_adaptive(q),
+    })
+
+if word_rank_of_gt_label:
+    def mrr(ranks): return sum(1/(r+1) for r in ranks)/len(ranks)
+    print(f'Error steps analyzed: {len(word_rank_of_gt_label)}')
+    print(f'MRR (word):             {mrr(word_rank_of_gt_label):.4f}')
+    print(f'MRR (bigram):           {mrr(bigram_rank_of_gt_label):.4f}')
+    print(f'MRR (notation-adaptive):{mrr(notadap_rank_of_gt_label):.4f}')
+    print(f'Top-3 hit rate (word):  {sum(1 for r in word_rank_of_gt_label if r<3)/len(word_rank_of_gt_label):.2%}')
+    print(f'Top-3 hit rate (bigram):{sum(1 for r in bigram_rank_of_gt_label if r<3)/len(bigram_rank_of_gt_label):.2%}')
+    print(f'Top-3 hit (notadap):    {sum(1 for r in notadap_rank_of_gt_label if r<3)/len(notadap_rank_of_gt_label):.2%}')
+"
+
+
+description: Prototype notation-adaptive tokenizer on USPTO SMILES inputs
+
+--- output ---
+input: 'You are an expert organic chemist specializing in retrosynth'
+  word tokens: 14 → ['an', 'analysis', 'are', 'chemist', 'context']
+  bigram tokens: 82 → [' C', ' P', ' R', ' T', ' a']
+  notation-adaptive: 14 tokens
+
+input: 'You are an expert organic chemist specializing in retrosynth'
+  word tokens: 14 → ['an', 'analysis', 'are', 'chemist', 'context']
+  bigram tokens: 82 → [' C', ' P', ' R', ' T', ' a']
+  notation-adaptive: 14 tokens
+
+input: 'You are an expert organic chemist specializing in retrosynth'
+  word tokens: 14 → ['an', 'analysis', 'are', 'chemist', 'context']
+  bigram tokens: 82 → [' C', ' P', ' R', ' T', ' a']
+  notation-adaptive: 14 tokens
+
+input: 'You are an expert organic chemist specializing in retrosynth'
+  word tokens: 14 → ['an', 'analysis', 'are', 'chemist', 'context']
+  bigram tokens: 82 → [' C', ' P', ' R', ' T', ' a']
+  notation-adaptive: 14 tokens
+
+input: 'You are an expert organic chemist specializing in retrosynth'
+  word tokens: 14 → ['an', 'analysis', 'are', 'chemist', 'context']
+  bigram tokens: 82 → [' C', ' P', ' R', ' T', ' a']
+  notation-adaptive: 14 tokens
+
+Error steps analyzed: 28
+MRR (word):             0.0297
+MRR (bigram):           0.0297
+MRR (notation-adaptive):0.0297
+Top-3 hit rate (word):  0.00%
+Top-3 hit rate (bigram):0.00%
+Top-3 hit (notadap):    0.00%

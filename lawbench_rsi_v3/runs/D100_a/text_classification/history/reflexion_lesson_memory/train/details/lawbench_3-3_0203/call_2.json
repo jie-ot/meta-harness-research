@@ -1,0 +1,72 @@
+{
+  "call_id": "89b81c495bfc4058953297dd06ad148c",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791016811-GU9CCnEOJRGr5XMj2Jwl",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the factual description involves possession of controlled substances (e.g., heroin, cocaine) and cites violation of drug control laws, always label the offense as “非法持有毒品” rather than the generic “持有毒品”.\",\n  \"keywords\": [\n    \"持有毒品\",\n    \"海洛因\",\n    \"十克以上\",\n    \"毒品管理法规\",\n    \"涉嫌贩卖毒品\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with a rule to prevent classification error: The AI predicted \"持有毒品\" but correct answer is \"非法持有毒品\". So the error is missing the \"非法\" qualifier. The rule: When the crime involves possession of controlled substances, ensure to include the term \"非法\" before \"持有毒品\". Keywords: \"持有毒品\", \"海洛因\", \"十克以上\", \"涉嫌贩卖\", \"毒品管理法规\". Provide rule and keywords.\n\nMake concise.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with a rule to prevent classification error: The AI predicted \"持有毒品\" but correct answer is \"非法持有毒品\". So the error is missing the \"非法\" qualifier. The rule: When the crime involves possession of controlled substances, ensure to include the term \"非法\" before \"持有毒品\". Keywords: \"持有毒品\", \"海洛因\", \"十克以上\", \"涉嫌贩卖\", \"毒品管理法规\". Provide rule and keywords.\n\nMake concise.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with a rule to prevent classification error: The AI predicted \"持有毒品\" but correct answer is \"非法持有毒品\". So the error is missing the \"非法\" qualifier. The rule: When the crime involves possession of controlled substances, ensure to include the term \"非法\" before \"持有毒品\". Keywords: \"持有毒品\", \"海洛因\", \"十克以上\", \"涉嫌贩卖\", \"毒品管理法规\". Provide rule and keywords.\n\nMake concise.",
+            "reasoning_content": "We need to produce a JSON with a rule to prevent classification error: The AI predicted \"持有毒品\" but correct answer is \"非法持有毒品\". So the error is missing the \"非法\" qualifier. The rule: When the crime involves possession of controlled substances, ensure to include the term \"非法\" before \"持有毒品\". Keywords: \"持有毒品\", \"海洛因\", \"十克以上\", \"涉嫌贩卖\", \"毒品管理法规\". Provide rule and keywords.\n\nMake concise."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 217,
+      "prompt_tokens": 475,
+      "total_tokens": 692,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 125,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00020145,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00020145,
+        "upstream_inference_prompt_cost": 7.125e-05,
+        "upstream_inference_completions_cost": 0.0001302
+      }
+    }
+  },
+  "raw_response_missing": false
+}

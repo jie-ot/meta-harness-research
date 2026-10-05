@@ -1,0 +1,72 @@
+{
+  "call_id": "e63d5c19fa8e40c9a6d5674d5911dfe0",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791036171-hAMlcjyfZy6S0BBEy6Cp",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant operated a Chinese medicine department, purchased raw medicinal materials, repackaged and labeled them for sale without obtaining a drug production license. This constitutes illegal manufacturing and sale of pharmaceutical products, which corresponds to the crime of illegal production and sale of drugs. No other companion charges are supported by the facts.\",\n  \"final_answer\": \"[罪名]非法生产、销售药品<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate charges based on facts. The case: Yang, operating a pharmacy's Chinese medicine department, without drug production license, purchased raw Chinese medicinal materials, repackaged and labeled, sold. This is illegal drug manufacturing/processing without license. Likely charge: “非法生产、销售假药、劣药” or “非法生产、销售药品” (illegal manufacturing of drugs). In Chinese criminal law, there is offense: “非法生产、销售药品罪”. Also possibly “非法经营罪” (illegal business). But the primary is illegal production of Chinese medicinal decoction pieces without license. The label list given earlier includes many charges but not all. We need to see which labels are in the taxonomy used in examples. Look at previous examples: they have labels like \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票\", \"破坏计算机信息系统\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"非法获取公民个人信息\", \"赌博\", \"猥亵儿童\", \"非法持有、私藏枪支、弹药;盗窃\", \"出售、购买、运输假币\", \"破坏广播电视设施、公用电信设施;盗窃\", \"过失以危险方法危害公共安全\", \"非法种植毒品原植物\", \"非法持有、私藏枪支、弹药\", \"非法占用农用地\", \"生产、销售不符合安全标准的食品\", \"强制猥亵、侮辱妇女\", \"拐骗儿童\", \"盗窃;非法持有毒品\", \"诈骗;聚众扰乱公共场所秩序、交通秩序\", \"拒不执行判决、裁定\", \"危险驾驶;妨害公务\", \"行贿\", \"单位行贿\", \"对非国家工作人员行贿\", \"非法占用农用地\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\", \"假冒注册商标\", \"非法占用农用地\", \"非法占用农用地\", etc.\n\nWe haven't seen a label for illegal drug manufacturing. Need to infer the correct label from known taxonomy. Possibly \"非法生产、销售假药、劣药\" or \"非法生产、销售药品\". Let's search memory: In Chinese criminal law, article 141: “非法生产、销售假药罪”. Also article 140: “非法生产、销售药品罪”. The difference: if the drug is not a fake but unlicensed. The facts: no production license, repackaging and selling. That is illegal manufacturing and selling of Chinese medicinal decoction pieces. Likely \"非法生产、销售药品罪\". The label may be \"非法生产、销售药品\". Let's see if any example includes similar. Not in given list. But we must use exact official label from dataset. Could be \"非法生产、销售药品\". Let's assume.\n\nAlso possibly \"非法经营罪\" (illegal business). But not in list.\n\nThus answer: [罪名]非法生产、销售药品<eoa>\n\nReturn JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate charges based on facts. The case: Yang, operating a pharmacy's Chinese medicine department, without drug production license, purchased raw Chinese medicinal materials, repackaged and labeled, sold. This is illegal drug manufacturing/processing without license. Likely charge: “非法生产、销售假药、劣药” or “非法生产、销售药品” (illegal manufacturing of drugs). In Chinese criminal law, there is offense: “非法生产、销售药品罪”. Also possibly “非法经营罪” (illegal business). But the primary is illegal production of Chinese medicinal decoction pieces without license. The label list given earlier includes many charges but not all. We need to see which labels are in the taxonomy used in examples. Look at previous examples: they have labels like \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票\", \"破坏计算机信息系统\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"非法获取公民个人信息\", \"赌博\", \"猥亵儿童\", \"非法持有、私藏枪支、弹药;盗窃\", \"出售、购买、运输假币\", \"破坏广播电视设施、公用电信设施;盗窃\", \"过失以危险方法危害公共安全\", \"非法种植毒品原植物\", \"非法持有、私藏枪支、弹药\", \"非法占用农用地\", \"生产、销售不符合安全标准的食品\", \"强制猥亵、侮辱妇女\", \"拐骗儿童\", \"盗窃;非法持有毒品\", \"诈骗;聚众扰乱公共场所秩序、交通秩序\", \"拒不执行判决、裁定\", \"危险驾驶;妨害公务\", \"行贿\", \"单位行贿\", \"对非国家工作人员行贿\", \"非法占用农用地\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\", \"假冒注册商标\", \"非法占用农用地\", \"非法占用农用地\", etc.\n\nWe haven't seen a label for illegal drug manufacturing. Need to infer the correct label from known taxonomy. Possibly \"非法生产、销售假药、劣药\" or \"非法生产、销售药品\". Let's search memory: In Chinese criminal law, article 141: “非法生产、销售假药罪”. Also article 140: “非法生产、销售药品罪”. The difference: if the drug is not a fake but unlicensed. The facts: no production license, repackaging and selling. That is illegal manufacturing and selling of Chinese medicinal decoction pieces. Likely \"非法生产、销售药品罪\". The label may be \"非法生产、销售药品\". Let's see if any example includes similar. Not in given list. But we must use exact official label from dataset. Could be \"非法生产、销售药品\". Let's assume.\n\nAlso possibly \"非法经营罪\" (illegal business). But not in list.\n\nThus answer: [罪名]非法生产、销售药品<eoa>\n\nReturn JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine appropriate charges based on facts. The case: Yang, operating a pharmacy's Chinese medicine department, without drug production license, purchased raw Chinese medicinal materials, repackaged and labeled, sold. This is illegal drug manufacturing/processing without license. Likely charge: “非法生产、销售假药、劣药” or “非法生产、销售药品” (illegal manufacturing of drugs). In Chinese criminal law, there is offense: “非法生产、销售药品罪”. Also possibly “非法经营罪” (illegal business). But the primary is illegal production of Chinese medicinal decoction pieces without license. The label list given earlier includes many charges but not all. We need to see which labels are in the taxonomy used in examples. Look at previous examples: they have labels like \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票\", \"破坏计算机信息系统\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"非法获取公民个人信息\", \"赌博\", \"猥亵儿童\", \"非法持有、私藏枪支、弹药;盗窃\", \"出售、购买、运输假币\", \"破坏广播电视设施、公用电信设施;盗窃\", \"过失以危险方法危害公共安全\", \"非法种植毒品原植物\", \"非法持有、私藏枪支、弹药\", \"非法占用农用地\", \"生产、销售不符合安全标准的食品\", \"强制猥亵、侮辱妇女\", \"拐骗儿童\", \"盗窃;非法持有毒品\", \"诈骗;聚众扰乱公共场所秩序、交通秩序\", \"拒不执行判决、裁定\", \"危险驾驶;妨害公务\", \"行贿\", \"单位行贿\", \"对非国家工作人员行贿\", \"非法占用农用地\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\", \"假冒注册商标\", \"非法占用农用地\", \"非法占用农用地\", etc.\n\nWe haven't seen a label for illegal drug manufacturing. Need to infer the correct label from known taxonomy. Possibly \"非法生产、销售假药、劣药\" or \"非法生产、销售药品\". Let's search memory: In Chinese criminal law, article 141: “非法生产、销售假药罪”. Also article 140: “非法生产、销售药品罪”. The difference: if the drug is not a fake but unlicensed. The facts: no production license, repackaging and selling. That is illegal manufacturing and selling of Chinese medicinal decoction pieces. Likely \"非法生产、销售药品罪\". The label may be \"非法生产、销售药品\". Let's see if any example includes similar. Not in given list. But we must use exact official label from dataset. Could be \"非法生产、销售药品\". Let's assume.\n\nAlso possibly \"非法经营罪\" (illegal business). But not in list.\n\nThus answer: [罪名]非法生产、销售药品<eoa>\n\nReturn JSON with reasoning and final answer.",
+            "refusal": null,
+            "reasoning_content": "We need to determine appropriate charges based on facts. The case: Yang, operating a pharmacy's Chinese medicine department, without drug production license, purchased raw Chinese medicinal materials, repackaged and labeled, sold. This is illegal drug manufacturing/processing without license. Likely charge: “非法生产、销售假药、劣药” or “非法生产、销售药品” (illegal manufacturing of drugs). In Chinese criminal law, there is offense: “非法生产、销售药品罪”. Also possibly “非法经营罪” (illegal business). But the primary is illegal production of Chinese medicinal decoction pieces without license. The label list given earlier includes many charges but not all. We need to see which labels are in the taxonomy used in examples. Look at previous examples: they have labels like \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票\", \"破坏计算机信息系统\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"非法获取公民个人信息\", \"赌博\", \"猥亵儿童\", \"非法持有、私藏枪支、弹药;盗窃\", \"出售、购买、运输假币\", \"破坏广播电视设施、公用电信设施;盗窃\", \"过失以危险方法危害公共安全\", \"非法种植毒品原植物\", \"非法持有、私藏枪支、弹药\", \"非法占用农用地\", \"生产、销售不符合安全标准的食品\", \"强制猥亵、侮辱妇女\", \"拐骗儿童\", \"盗窃;非法持有毒品\", \"诈骗;聚众扰乱公共场所秩序、交通秩序\", \"拒不执行判决、裁定\", \"危险驾驶;妨害公务\", \"行贿\", \"单位行贿\", \"对非国家工作人员行贿\", \"非法占用农用地\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\", \"假冒注册商标\", \"非法占用农用地\", \"非法占用农用地\", etc.\n\nWe haven't seen a label for illegal drug manufacturing. Need to infer the correct label from known taxonomy. Possibly \"非法生产、销售假药、劣药\" or \"非法生产、销售药品\". Let's search memory: In Chinese criminal law, article 141: “非法生产、销售假药罪”. Also article 140: “非法生产、销售药品罪”. The difference: if the drug is not a fake but unlicensed. The facts: no production license, repackaging and selling. That is illegal manufacturing and selling of Chinese medicinal decoction pieces. Likely \"非法生产、销售药品罪\". The label may be \"非法生产、销售药品\". Let's see if any example includes similar. Not in given list. But we must use exact official label from dataset. Could be \"非法生产、销售药品\". Let's assume.\n\nAlso possibly \"非法经营罪\" (illegal business). But not in list.\n\nThus answer: [罪名]非法生产、销售药品<eoa>\n\nReturn JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 790,
+      "prompt_tokens": 24412,
+      "total_tokens": 25202,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 698,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00086666,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00086666,
+        "upstream_inference_prompt_cost": 0.00073236,
+        "upstream_inference_completions_cost": 0.0001343
+      }
+    }
+  },
+  "raw_response_missing": false
+}

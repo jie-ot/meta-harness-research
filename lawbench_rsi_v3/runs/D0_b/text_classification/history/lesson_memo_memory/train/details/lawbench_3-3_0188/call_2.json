@@ -1,0 +1,72 @@
+{
+  "call_id": "d065a4291af84c79ade2f83ef93e423f",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791028195-bgu1xgI3GZNt2rEzlt01",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"lesson\": \"- 在事实描述中出现多种犯罪行为时，必须逐一识别并以分号分隔列出所有对应的罪名，避免遗漏或合并为单一罪名。\\n- 依据事实中的具体行为选择最精确的法律条文名称，避免使用过于宽泛或不符的罪名（如将“窝藏、包庇”误写为“制造毒品罪”。）\\n- 当事实中提及特定对象或类别（如“珍贵、濒危野生动物”），应使用对应的专门罪名，而不是笼统的“国家重点保护的野生动物”。\\n- 对于同义或近义的表述（如“耕地”与“农用地”），要统一映射到法律规定的标准罪名名称，防止因用词差异导致错误。\\n- 只使用法律条文中规定的标准罪名名称，不要自行添加额外的修饰词或主观判断（如“故意传播性病”），除非事实明确说明该要素。\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce up to 5 concise \"lessons\" (rules) to avoid similar errors. Based on examples, errors include:\n\n1. Missing multiple charges: model gave single or wrong charge, not capturing all applicable crimes. Need to detect multiple distinct crimes in fact text.\n\n2. Using overly generic or incorrect charge terms: e.g., \"制造毒品罪\" vs correct \"窝藏、包庇;包庇毒品犯罪分子\". So need to map specific language cues to correct legal categories.\n\n3. Over-specifying or misinterpreting scope: e.g., \"非法猎捕、杀害国家重点保护的野生动物罪;非法收购、运输、出售国家重点保护的野生动物罪\" vs correct \"非法猎捕、杀害珍贵、濒危野生动物\". So need to choose the most appropriate charge based on the fact's description, not list all possible statutes.\n\n4. Slight wording differences: \"非法占用耕地\" vs \"非法占用农用地\". Need to map synonyms.\n\n5. Including extra unrelated charges: e.g., \"盗窃;故意传播性病\" vs correct \"盗窃;传播性病\" (the \"故意\" is extra). So need to avoid adding qualifiers not present.\n\nThus rules:\n\n- Identify all distinct criminal conduct described; output each as separate charge, preserving order.\n\n- Use precise legal terminology matching the factual description; avoid generic or broader categories unless explicitly indicated.\n\n- When the fact mentions a specific protected class (e.g., \"珍贵、濒危野生动物\"), choose the corresponding charge rather than broader \"国家重点保护的野生动物\".\n\n- Map synonyms correctly (耕地 vs 农用地) to the standard charge term.\n\n- Do not add modifiers (故意) unless the fact explicitly states intent; keep charge names as standard legal terms.\n\nLet's craft JSON.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to produce up to 5 concise \"lessons\" (rules) to avoid similar errors. Based on examples, errors include:\n\n1. Missing multiple charges: model gave single or wrong charge, not capturing all applicable crimes. Need to detect multiple distinct crimes in fact text.\n\n2. Using overly generic or incorrect charge terms: e.g., \"制造毒品罪\" vs correct \"窝藏、包庇;包庇毒品犯罪分子\". So need to map specific language cues to correct legal categories.\n\n3. Over-specifying or misinterpreting scope: e.g., \"非法猎捕、杀害国家重点保护的野生动物罪;非法收购、运输、出售国家重点保护的野生动物罪\" vs correct \"非法猎捕、杀害珍贵、濒危野生动物\". So need to choose the most appropriate charge based on the fact's description, not list all possible statutes.\n\n4. Slight wording differences: \"非法占用耕地\" vs \"非法占用农用地\". Need to map synonyms.\n\n5. Including extra unrelated charges: e.g., \"盗窃;故意传播性病\" vs correct \"盗窃;传播性病\" (the \"故意\" is extra). So need to avoid adding qualifiers not present.\n\nThus rules:\n\n- Identify all distinct criminal conduct described; output each as separate charge, preserving order.\n\n- Use precise legal terminology matching the factual description; avoid generic or broader categories unless explicitly indicated.\n\n- When the fact mentions a specific protected class (e.g., \"珍贵、濒危野生动物\"), choose the corresponding charge rather than broader \"国家重点保护的野生动物\".\n\n- Map synonyms correctly (耕地 vs 农用地) to the standard charge term.\n\n- Do not add modifiers (故意) unless the fact explicitly states intent; keep charge names as standard legal terms.\n\nLet's craft JSON.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce up to 5 concise \"lessons\" (rules) to avoid similar errors. Based on examples, errors include:\n\n1. Missing multiple charges: model gave single or wrong charge, not capturing all applicable crimes. Need to detect multiple distinct crimes in fact text.\n\n2. Using overly generic or incorrect charge terms: e.g., \"制造毒品罪\" vs correct \"窝藏、包庇;包庇毒品犯罪分子\". So need to map specific language cues to correct legal categories.\n\n3. Over-specifying or misinterpreting scope: e.g., \"非法猎捕、杀害国家重点保护的野生动物罪;非法收购、运输、出售国家重点保护的野生动物罪\" vs correct \"非法猎捕、杀害珍贵、濒危野生动物\". So need to choose the most appropriate charge based on the fact's description, not list all possible statutes.\n\n4. Slight wording differences: \"非法占用耕地\" vs \"非法占用农用地\". Need to map synonyms.\n\n5. Including extra unrelated charges: e.g., \"盗窃;故意传播性病\" vs correct \"盗窃;传播性病\" (the \"故意\" is extra). So need to avoid adding qualifiers not present.\n\nThus rules:\n\n- Identify all distinct criminal conduct described; output each as separate charge, preserving order.\n\n- Use precise legal terminology matching the factual description; avoid generic or broader categories unless explicitly indicated.\n\n- When the fact mentions a specific protected class (e.g., \"珍贵、濒危野生动物\"), choose the corresponding charge rather than broader \"国家重点保护的野生动物\".\n\n- Map synonyms correctly (耕地 vs 农用地) to the standard charge term.\n\n- Do not add modifiers (故意) unless the fact explicitly states intent; keep charge names as standard legal terms.\n\nLet's craft JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to produce up to 5 concise \"lessons\" (rules) to avoid similar errors. Based on examples, errors include:\n\n1. Missing multiple charges: model gave single or wrong charge, not capturing all applicable crimes. Need to detect multiple distinct crimes in fact text.\n\n2. Using overly generic or incorrect charge terms: e.g., \"制造毒品罪\" vs correct \"窝藏、包庇;包庇毒品犯罪分子\". So need to map specific language cues to correct legal categories.\n\n3. Over-specifying or misinterpreting scope: e.g., \"非法猎捕、杀害国家重点保护的野生动物罪;非法收购、运输、出售国家重点保护的野生动物罪\" vs correct \"非法猎捕、杀害珍贵、濒危野生动物\". So need to choose the most appropriate charge based on the fact's description, not list all possible statutes.\n\n4. Slight wording differences: \"非法占用耕地\" vs \"非法占用农用地\". Need to map synonyms.\n\n5. Including extra unrelated charges: e.g., \"盗窃;故意传播性病\" vs correct \"盗窃;传播性病\" (the \"故意\" is extra). So need to avoid adding qualifiers not present.\n\nThus rules:\n\n- Identify all distinct criminal conduct described; output each as separate charge, preserving order.\n\n- Use precise legal terminology matching the factual description; avoid generic or broader categories unless explicitly indicated.\n\n- When the fact mentions a specific protected class (e.g., \"珍贵、濒危野生动物\"), choose the corresponding charge rather than broader \"国家重点保护的野生动物\".\n\n- Map synonyms correctly (耕地 vs 农用地) to the standard charge term.\n\n- Do not add modifiers (故意) unless the fact explicitly states intent; keep charge names as standard legal terms.\n\nLet's craft JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 656,
+      "prompt_tokens": 962,
+      "total_tokens": 1618,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 475,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000158266,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000158266,
+        "upstream_inference_prompt_cost": 3.5594e-05,
+        "upstream_inference_completions_cost": 0.000122672
+      }
+    }
+  },
+  "raw_response_missing": false
+}

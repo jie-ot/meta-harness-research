@@ -1,0 +1,36 @@
+Edit: agents\verbatim_label_memory.py
+
+replace_all: False
+old_string:
+PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+
+{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Follow the patterns shown in the examples above
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+new_string:
+PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+
+{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Follow the patterns shown in the examples above
+- Copy answer labels character-for-character from the examples — do not paraphrase, add suffixes, or alter the phrasing in any way
+- If the answer requires multiple labels, include every label separated by semicolons exactly as shown in the examples
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\verbatim_label_memory.py has been updated successfully.

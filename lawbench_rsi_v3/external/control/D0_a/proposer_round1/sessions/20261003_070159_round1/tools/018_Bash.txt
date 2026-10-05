@@ -1,0 +1,39 @@
+Bash
+
+command: python .prototypes/cjk_bigram_confusion_memory.py
+description: Run prototype A to verify CJK bigram tokenizer on Chinese legal text
+
+--- output ---
+============================================================
+Query (contract-fraud-like case):
+事实:被告人何某谎称出租车车主是自己，与被害人马某某签署了一份租车协议书，月租金3800元，租期一年，收取马某某一年的租金及车辆抵押金共计50600元。该出租车被车主郭某某从被害人马某某手中取回，被害人马某某多次向被告人何某索要租金及押金， ...
+
+--- Tokenizer: ASCII ---
+  sim(合同诈骗_train               ) = 0.0000  (tgt: 合同诈骗)
+  sim(普通诈骗_train               ) = 0.0000  (tgt: 诈骗)
+  sim(增值税_score                ) = 0.0000  (tgt: 虚开增值税专用发票、用于骗取出口退税、抵)
+
+--- Tokenizer: CJK-bigram ---
+  sim(合同诈骗_train               ) = 0.0658  (tgt: 合同诈骗)
+  sim(普通诈骗_train               ) = 0.0186  (tgt: 诈骗)
+  sim(增值税_score                ) = 0.0205  (tgt: 虚开增值税专用发票、用于骗取出口退税、抵)
+
+--- Tokenizer: CJK-uni+bi ---
+  sim(合同诈骗_train               ) = 0.1172  (tgt: 合同诈骗)
+  sim(普通诈骗_train               ) = 0.0662  (tgt: 诈骗)
+  sim(增值税_score                ) = 0.0636  (tgt: 虚开增值税专用发票、用于骗取出口退税、抵)
+
+============================================================
+Confusion-matrix retrieval with CJK bigrams
+
+Ranked by CJK-bigram Jaccard:
+  [0] sim=0.0658  target=合同诈骗
+  [2] sim=0.0205  target=虚开增值税专用发票、用于骗取出口退税、抵扣税款发票
+  [1] sim=0.0186  target=诈骗
+
+Top candidate labels: ['合同诈骗', '虚开增值税专用发票、用于骗取出口退税、抵扣税款发票']
+Confusion targets: []
+
+RESULT: CJK-bigram Jaccard correctly ranks the contract-fraud example
+        highest for a contract-fraud query (ASCII would see near-0 for all).
+PROTOTYPE A: PASS

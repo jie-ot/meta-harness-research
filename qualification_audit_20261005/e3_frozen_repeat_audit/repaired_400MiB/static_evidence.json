@@ -1,0 +1,135 @@
+{
+  "agents": {
+    "R4B": {
+      "candidate": "confusion_disambiguation_memory",
+      "code_path": "lawbench_rsi_v3/engine/text_classification/agents/confusion_disambiguation_memory.py",
+      "code_sha256": "29cfaead2ebda91a803daee6f2460e53707fc5b804fe3d2135859d350cd4ee8b",
+      "initial_memory_path": "reference_examples/text_classification/logs/20260925_200856/LawBench/confusion_disambiguation_memory/gpt-oss-120b/memory.json",
+      "initial_memory_sha256": "841af6631f324cf3297eb12826316ee73b484c329b6484ddba8df3c94c805f79",
+      "templates": {
+        "PROMPT_TEMPLATE": {
+          "line": 32,
+          "sha256": "ac0d4dbd23f200ce37f5692640ca766111df27f5109d1b260e571d4e32a032a7"
+        }
+      },
+      "functions": {
+        "_build_parts": {
+          "start": 103,
+          "end": 157
+        },
+        "predict": {
+          "start": 163,
+          "end": 179
+        },
+        "get_state": {
+          "start": 203,
+          "end": 213
+        },
+        "set_state": {
+          "start": 215,
+          "end": 230
+        }
+      },
+      "direct_self_assignments_in_prediction_helpers": []
+    },
+    "R7A": {
+      "candidate": "adaptive_tokenizer_confusion_memory",
+      "code_path": "lawbench_rsi_v3/engine/text_classification/agents/adaptive_tokenizer_confusion_memory.py",
+      "code_sha256": "ef40013f165eb4bd244ec656e624ee30020ab0ddbdcf94a3e9b2ca32c5a567d2",
+      "initial_memory_path": "reference_examples/text_classification/logs/20260925_200856/LawBench/adaptive_tokenizer_confusion_memory/gpt-oss-120b/memory.json",
+      "initial_memory_sha256": "a78b0deb2605e55972c9b801425aed3c1ff86f5302e5241593735e4a417c4a20",
+      "templates": {
+        "PROMPT_TEMPLATE": {
+          "line": 29,
+          "sha256": "ac0d4dbd23f200ce37f5692640ca766111df27f5109d1b260e571d4e32a032a7"
+        }
+      },
+      "functions": {
+        "_build_parts": {
+          "start": 103,
+          "end": 148
+        },
+        "predict": {
+          "start": 150,
+          "end": 164
+        },
+        "get_state": {
+          "start": 184,
+          "end": 190
+        },
+        "set_state": {
+          "start": 192,
+          "end": 206
+        }
+      },
+      "direct_self_assignments_in_prediction_helpers": []
+    },
+    "R12B": {
+      "candidate": "discriminative_similarity_memory",
+      "code_path": "lawbench_rsi_v3/engine/text_classification/agents/discriminative_similarity_memory.py",
+      "code_sha256": "59ae86c5b23477aa2e5144a9879b6ebb3dee49eb01d44ae34893a3ce0c134b13",
+      "initial_memory_path": "reference_examples/text_classification/logs/20260925_200856/LawBench/discriminative_similarity_memory/gpt-oss-120b/memory.json",
+      "initial_memory_sha256": "7be7de6409a793dbc7201880521e7feab469b2f90c2f0f8d80c410b9f3bf7f0d",
+      "templates": {
+        "PROMPT_TEMPLATE": {
+          "line": 40,
+          "sha256": "ac0d4dbd23f200ce37f5692640ca766111df27f5109d1b260e571d4e32a032a7"
+        }
+      },
+      "functions": {
+        "_build_parts": {
+          "start": 129,
+          "end": 175
+        },
+        "predict": {
+          "start": 177,
+          "end": 192
+        },
+        "get_state": {
+          "start": 218,
+          "end": 234
+        },
+        "set_state": {
+          "start": 236,
+          "end": 255
+        }
+      },
+      "direct_self_assignments_in_prediction_helpers": []
+    }
+  },
+  "framework_sha256": {
+    "llm.py": "79da09bb0dc762c3328a1e8339bd29adaa892e4760a0f76f96974e83f5e42ffd",
+    "inner_loop.py": "2aca87cc999eb65c916ef4ff1a1f0b62eadbd66f2c5d36681d7776fee5a5886e",
+    "memory_system.py": "e644067282c51ca46f109d2d218b67d2c1c144c873948f36017d5417d3c1b866",
+    "pilot_observation.py": "0c121cfe20d9889c0e6b167ba56f03b95a016a788c2ca8ecea082be7bf93f241",
+    "data/api.py": "a7c8633fc6aa65fa7141393a2abeb5731c7aeaae0af92157eb5a0fdc48815271",
+    "data/loaders.py": "dff63cd8173b3f6a856ce401c43a836316e9b30269f4e0e3f4f19039795d0a13",
+    "data/evaluators.py": "5b2f2357342a74c37e99d1d80c3517cd71196378f87516642d04780fc528c784"
+  },
+  "schema": {
+    "prepared_question": "raw split question; wrapper literal prefix added independently",
+    "runtime_input": "trace.input, checked against wrapper + question",
+    "actual_prompt": "trace.prompt_text, last captured api_result/cache_hit prompt according to inner_loop.py:454-456",
+    "constructed_prompt": "trace.constructed_prompt_text, memory-system constructed request before captured actual prompt override",
+    "prediction": "trace.prediction, extracted answer; not metadata.full_response",
+    "correct": "trace.was_correct, saved boolean; no new evaluation",
+    "canonical": "derived from saved prediction using verified evaluator text parsing only; not persisted provider label"
+  },
+  "canonical_rule_source": {
+    "path": "lawbench_rsi_v3/engine/text_classification/data/evaluators.py",
+    "sha256": "5b2f2357342a74c37e99d1d80c3517cd71196378f87516642d04780fc528c784",
+    "extract_final_answer_lines": [
+      12,
+      55
+    ],
+    "parse_charges_lines": [
+      100,
+      111
+    ]
+  },
+  "provider_seed": "unknown; training_seed 42 is not an API seed",
+  "upstream_model_version_cache_independence": "unknown; no raw calls/backend identity verification",
+  "reset": "worker.py:107-125 loads same hashed memory independently and resumes only signature-matched saved items; no learning.",
+  "persistent_state": "result boolean only; does not observe every transient field",
+  "cross_harness_repetition_blocks": "not established; noise() version-qualified run IDs; rankings omitted"
+}

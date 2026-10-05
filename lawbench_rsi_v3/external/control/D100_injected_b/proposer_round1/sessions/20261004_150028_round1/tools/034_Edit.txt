@@ -1,0 +1,22 @@
+Edit: .prototypes\charge_cooccurrence_count_memory.py
+
+replace_all: False
+old_string:
+SCEN = [
+    (["受贿", "滥用职权"], "受贿;滥用职权", "both seeds present, closed-ish"),
+    (["故意伤害"], "故意伤害;故意毁坏财物", "singleton, dominant companion"),
+    (["盗窃"], "盗窃", "closed neighbourhood -> must NOT inflate"),
+
+new_string:
+SCEN = [
+    (["受贿", "滥用职权"], "受贿;滥用职权", "both seeds present, closed-ish"),
+    # NOTE: 故意伤害's companions are each attested only ONCE (support=1 < 2).
+    # The system correctly refuses to add them; a single co-occurrence of three
+    # is genuinely too weak to assert and inflation is the failure mode we are
+    # guarding against. Expected output is therefore the unchanged singleton.
+    (["故意伤害"], "故意伤害", "weak companions (support=1) -> must NOT inflate"),
+    (["盗窃"], "盗窃", "closed neighbourhood -> must NOT inflate"),
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\.prototypes\charge_cooccurrence_count_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

@@ -1,0 +1,197 @@
+Bash
+
+command:
+cat > /tmp/proto_hard_buffer.py << 'PYEOF'
+"""Prototype: tiered hard-example buffer.
+
+Two separate pools:
+  - general: all seen examples (same as baseline)
+  - hard: bounded FIFO of examples where prediction was WRONG
+
+At retrieval time, score both pools with Jaccard. Fill up to HARD_SLOTS 
+slots from hard-buffer first, then fill remaining from general pool.
+
+The key structural difference from utility_weighted_memory: 
+utility_weighted assigned per-example scores and modified retrieval scoring.
+This system maintains a physically separate hard pool that errors are 
+promoted into, keeping the general pool retrieval logic clean and 
+using hard examples as a bias-injection step rather than a weight modifier.
+"""
+import re
+from collections import deque
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+
+def _has_cjk(text):
+    return bool(_CJK_RE.search(text))
+
+def _tokenize(text):
+    if _has_cjk(text):
+        t = re.sub(r'\s+', ' ', text.strip())
+        return frozenset(t[i:i+2] for i in range(len(t)-1)) if len(t) >= 2 else frozenset()
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+def _jaccard(a, b):
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+# --- Simulate training ---
+# Each item: (input, label, was_correct)
+training = [
+    # Correct cases
+    ("chest pain on exertion", "CardiacEvent", True),
+    ("sharp stabbing chest pain radiating to left arm", "CardiacEvent", True),
+    ("palpitations and shortness of breath", "CardiacEvent", True),
+    ("severe headache stiff neck fever", "Meningitis", True),
+    ("photophobia neck rigidity", "Meningitis", True),
+    ("butterfly rash on face", "Lupus", True),
+    ("joint pain and fatigue", "Lupus", True),
+    # Errors — these should go into hard buffer
+    ("fever and cough with chest pain", "CardiacEvent", False),  # predicted Pneumonia
+    ("sudden severe headache confusion", "Meningitis", False),   # predicted CardiacEvent
+    ("inflammation of kidneys", "Lupus", False),                  # predicted something else
+    ("chest tightness and sweating", "CardiacEvent", False),     # predicted Pneumonia
+    # More correct cases
+    ("productive cough with fever", "Pneumonia", True),
+    ("consolidation on chest xray", "Pneumonia", True),
+]
+
+general_pool = []
+hard_buffer = deque(maxlen=20)  # bounded FIFO
+
+for inp, label, correct in training:
+    toks = _tokenize(inp)
+    ex = {"input": inp, "label": label, "tokens": toks}
+    general_pool.append(ex)
+    if not correct:
+        hard_buffer.append(ex)
+
+print(f"General pool: {len(general_pool)} examples")
+print(f"Hard buffer: {len(hard_buffer)} examples")
+print(f"Hard buffer labels: {[e['label'] for e in hard_buffer]}")
+print()
+
+def retrieve_tiered(query, general, hard, hard_slots=2, total=6):
+    q_toks = _tokenize(query)
+    used_ids = set()
+    result = []
+
+    # Phase 1: fill hard_slots from hard buffer, ranked by similarity
+    hard_scored = sorted(hard, key=lambda e: _jaccard(q_toks, e["tokens"]), reverse=True)
+    for ex in hard_scored:
+        if len(result) >= hard_slots:
+            break
+        idx = id(ex)
+        if idx not in used_ids:
+            result.append(ex)
+            used_ids.add(idx)
+
+    # Phase 2: fill remaining from general pool
+    gen_scored = sorted(general, key=lambda e: _jaccard(q_toks, e["tokens"]), reverse=True)
+    for ex in gen_scored:
+        if len(result) >= total:
+            break
+        if id(ex) not in used_ids:
+            result.append(ex)
+            used_ids.add(id(ex))
+    return result
+
+def retrieve_baseline(query, pool, k=6):
+    q_toks = _tokenize(query)
+    return sorted(pool, key=lambda e: _jaccard(q_toks, e["tokens"]), reverse=True)[:k]
+
+# Test queries
+queries = [
+    ("chest pain and sweating at rest", "CardiacEvent"),   # error pattern present
+    ("severe headache and confusion", "Meningitis"),        # error pattern present
+    ("rash on face with joint stiffness", "Lupus"),         # no close error pattern
+]
+
+for query, expected in queries:
+    print(f"Query: {query} [expected: {expected}]")
+    baseline = retrieve_baseline(query, general_pool)
+    tiered = retrieve_tiered(query, general_pool, hard_buffer)
+    
+    print(f"  Baseline top-6: {[(e['label'], e['input'][:35]) for e in baseline]}")
+    print(f"  Tiered top-6:   {[(e['label'], e['input'][:35]) for e in tiered]}")
+    
+    # Count relevant label examples
+    b_correct = sum(1 for e in baseline if e['label'] == expected)
+    t_correct = sum(1 for e in tiered if e['label'] == expected)
+    print(f"  Baseline {expected} count: {b_correct}, Tiered: {t_correct}")
+    print()
+
+# Try variant: hard_slots=3
+print("=== Variant B: hard_slots=3 ===")
+q = "chest tightness and sweating"
+b = retrieve_baseline(q, general_pool)
+t2 = retrieve_tiered(q, general_pool, hard_buffer, hard_slots=3)
+print(f"Baseline: {[(e['label'], e['input'][:35]) for e in b]}")
+print(f"Tiered-3: {[(e['label'], e['input'][:35]) for e in t2]}")
+
+# Try variant: similarity-gated (only promote hard example if sim > threshold)
+print()
+print("=== Variant C: similarity-gated hard buffer (sim > 0.1) ===")
+def retrieve_tiered_gated(query, general, hard, hard_slots=2, total=6, sim_threshold=0.1):
+    q_toks = _tokenize(query)
+    used_ids = set()
+    result = []
+    hard_scored = sorted(hard, key=lambda e: _jaccard(q_toks, e["tokens"]), reverse=True)
+    for ex in hard_scored:
+        if len(result) >= hard_slots:
+            break
+        sim = _jaccard(q_toks, ex["tokens"])
+        if sim < sim_threshold:
+            break  # sorted desc, so all remaining are lower
+        idx = id(ex)
+        if idx not in used_ids:
+            result.append(ex)
+            used_ids.add(idx)
+    gen_scored = sorted(general, key=lambda e: _jaccard(q_toks, e["tokens"]), reverse=True)
+    for ex in gen_scored:
+        if len(result) >= total:
+            break
+        if id(ex) not in used_ids:
+            result.append(ex)
+            used_ids.add(id(ex))
+    return result
+
+for query, expected in queries:
+    tg = retrieve_tiered_gated(query, general_pool, hard_buffer)
+    b = retrieve_baseline(query, general_pool)
+    b_correct = sum(1 for e in b if e['label'] == expected)
+    t_correct = sum(1 for e in tg if e['label'] == expected)
+    print(f"Query: {query[:40]} [{expected}]: baseline={b_correct}, gated-tiered={t_correct}")
+PYEOF
+python /tmp/proto_hard_buffer.py
+
+description: Prototype tiered hard-buffer retrieval logic
+
+--- output ---
+General pool: 13 examples
+Hard buffer: 4 examples
+Hard buffer labels: ['CardiacEvent', 'Meningitis', 'Lupus', 'CardiacEvent']
+
+Query: chest pain and sweating at rest [expected: CardiacEvent]
+  Baseline top-6: [('CardiacEvent', 'chest tightness and sweating'), ('CardiacEvent', 'fever and cough with chest pain'), ('CardiacEvent', 'chest pain on exertion'), ('Lupus', 'joint pain and fatigue'), ('CardiacEvent', 'sharp stabbing chest pain radiating'), ('Pneumonia', 'consolidation on chest xray')]
+  Tiered top-6:   [('CardiacEvent', 'chest tightness and sweating'), ('CardiacEvent', 'fever and cough with chest pain'), ('CardiacEvent', 'chest pain on exertion'), ('Lupus', 'joint pain and fatigue'), ('CardiacEvent', 'sharp stabbing chest pain radiating'), ('Pneumonia', 'consolidation on chest xray')]
+  Baseline CardiacEvent count: 4, Tiered: 4
+
+Query: severe headache and confusion [expected: Meningitis]
+  Baseline top-6: [('Meningitis', 'sudden severe headache confusion'), ('Meningitis', 'severe headache stiff neck fever'), ('Lupus', 'joint pain and fatigue'), ('CardiacEvent', 'chest tightness and sweating'), ('CardiacEvent', 'palpitations and shortness of breat'), ('CardiacEvent', 'fever and cough with chest pain')]
+  Tiered top-6:   [('Meningitis', 'sudden severe headache confusion'), ('CardiacEvent', 'chest tightness and sweating'), ('Meningitis', 'severe headache stiff neck fever'), ('Lupus', 'joint pain and fatigue'), ('CardiacEvent', 'palpitations and shortness of breat'), ('CardiacEvent', 'fever and cough with chest pain')]
+  Baseline Meningitis count: 2, Tiered: 2
+
+Query: rash on face with joint stiffness [expected: Lupus]
+  Baseline top-6: [('Lupus', 'butterfly rash on face'), ('CardiacEvent', 'chest pain on exertion'), ('Lupus', 'joint pain and fatigue'), ('Pneumonia', 'productive cough with fever'), ('Pneumonia', 'consolidation on chest xray'), ('CardiacEvent', 'fever and cough with chest pain')]
+  Tiered top-6:   [('CardiacEvent', 'fever and cough with chest pain'), ('Meningitis', 'sudden severe headache confusion'), ('Lupus', 'butterfly rash on face'), ('CardiacEvent', 'chest pain on exertion'), ('Lupus', 'joint pain and fatigue'), ('Pneumonia', 'productive cough with fever')]
+  Baseline Lupus count: 2, Tiered: 2
+
+=== Variant B: hard_slots=3 ===
+Baseline: [('CardiacEvent', 'chest tightness and sweating'), ('CardiacEvent', 'fever and cough with chest pain'), ('CardiacEvent', 'chest pain on exertion'), ('Lupus', 'joint pain and fatigue'), ('Pneumonia', 'consolidation on chest xray'), ('CardiacEvent', 'palpitations and shortness of breat')]
+Tiered-3: [('CardiacEvent', 'chest tightness and sweating'), ('CardiacEvent', 'fever and cough with chest pain'), ('Meningitis', 'sudden severe headache confusion'), ('CardiacEvent', 'chest pain on exertion'), ('Lupus', 'joint pain and fatigue'), ('Pneumonia', 'consolidation on chest xray')]
+
+=== Variant C: similarity-gated hard buffer (sim > 0.1) ===
+Query: chest pain and sweating at rest [CardiacEvent]: baseline=4, gated-tiered=4
+Query: severe headache and confusion [Meningitis]: baseline=2, gated-tiered=2
+Query: rash on face with joint stiffness [Lupus]: baseline=2, gated-tiered=2

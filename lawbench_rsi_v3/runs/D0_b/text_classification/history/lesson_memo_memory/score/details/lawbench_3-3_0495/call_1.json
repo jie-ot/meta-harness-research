@@ -1,0 +1,72 @@
+{
+  "call_id": "e95f7fc679424a9095aa0d9524dc3b79",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791028685-beRSnH6A5hKpaGBvIkkE",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"事实中被告人郭某向他人出售假冒中华等品牌的卷烟，属于销售假冒注册商标的商品的行为。根据《刑法》相关规定，销售假冒注册商标的商品构成犯罪，应以‘销售假冒注册商标的商品’定罪。\",\n  \"final_answer\": \"[罪名]销售假冒注册商标的商品<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the crime(s) based on facts. Fact: selling counterfeit cigarettes (fake branded cigarettes). That's \"假冒注册商标的商品\" maybe \"假冒注册商标的商品罪\" which is \"假冒注册商标罪\" (counterfeiting trademark). Also transportation of counterfeit goods? The act is selling counterfeit cigarettes. The crime is \"假冒注册商标的商品罪\" (selling counterfeit goods). The Chinese legal term: \"假冒注册商标的商品罪\" is under Criminal Law article 210? Actually article 210: \"生产、销售假冒注册商标的商品\" is a crime. So the crime is \"生产、销售假冒注册商标的商品\". The fact mentions selling counterfeit cigarettes. So the crime: \"销售假冒注册商标的商品\". Should we include \"走私\" no. So single crime.\n\nWe must output format: [罪名]假冒注册商标的商品罪<eoa> maybe they want \"假冒注册商标的商品罪\". In examples they used \"开设赌场\" for opening casino. They didn't add \"罪\". They just wrote \"开设赌场\". For \"盗窃\" they wrote \"盗窃\". So we should output the phrase exactly as the crime name without \"罪\". The rule: output \"[罪名]罪名<eoa>\" where 罪名 is the name. In examples: \"[罪名]盗窃<eoa>\" they didn't add \"罪\". So we output \"假冒注册商标的商品\". But maybe they want \"假冒注册商标的商品罪\". In examples they used \"非法拘禁\" (no \"罪\"). So we should output \"假冒注册商标的商品\". However the key rule says: \"模型应直接复用原文用词，避免自行添加或替换为类似但不完全等同的词汇\". The fact says \"假冒中华等品牌卷烟\". Not the exact crime phrase. But we need to map to legal term. The phrase \"假冒中华等品牌卷烟\" is counterfeit cigarettes. The crime is \"假冒注册商标的商品罪\". The phrase \"假冒注册商标的商品\" is not in fact. But it's the legal term. The rule says if fact includes specific crime wording, reuse. Here it doesn't. So we can use appropriate legal term. Should we include \"销售\" part? The crime is \"生产、销售假冒注册商标的商品\". The fact includes selling. So maybe \"销售假冒注册商标的商品\". The examples: For \"非法拘禁\" they used that phrase. For \"走私珍贵动物、珍贵动物制品\" they used \"走私珍贵动物、珍贵动物制品\". So they include both. So we can output \"销售假冒注册商标的商品\". That seems appropriate.\n\nThus final answer: [罪名]销售假冒注册商标的商品<eoa>\n\nNow produce JSON with reasoning and final_answer.",
+          "provider_specific_fields": {
+            "reasoning": "We need to determine the crime(s) based on facts. Fact: selling counterfeit cigarettes (fake branded cigarettes). That's \"假冒注册商标的商品\" maybe \"假冒注册商标的商品罪\" which is \"假冒注册商标罪\" (counterfeiting trademark). Also transportation of counterfeit goods? The act is selling counterfeit cigarettes. The crime is \"假冒注册商标的商品罪\" (selling counterfeit goods). The Chinese legal term: \"假冒注册商标的商品罪\" is under Criminal Law article 210? Actually article 210: \"生产、销售假冒注册商标的商品\" is a crime. So the crime is \"生产、销售假冒注册商标的商品\". The fact mentions selling counterfeit cigarettes. So the crime: \"销售假冒注册商标的商品\". Should we include \"走私\" no. So single crime.\n\nWe must output format: [罪名]假冒注册商标的商品罪<eoa> maybe they want \"假冒注册商标的商品罪\". In examples they used \"开设赌场\" for opening casino. They didn't add \"罪\". They just wrote \"开设赌场\". For \"盗窃\" they wrote \"盗窃\". So we should output the phrase exactly as the crime name without \"罪\". The rule: output \"[罪名]罪名<eoa>\" where 罪名 is the name. In examples: \"[罪名]盗窃<eoa>\" they didn't add \"罪\". So we output \"假冒注册商标的商品\". But maybe they want \"假冒注册商标的商品罪\". In examples they used \"非法拘禁\" (no \"罪\"). So we should output \"假冒注册商标的商品\". However the key rule says: \"模型应直接复用原文用词，避免自行添加或替换为类似但不完全等同的词汇\". The fact says \"假冒中华等品牌卷烟\". Not the exact crime phrase. But we need to map to legal term. The phrase \"假冒中华等品牌卷烟\" is counterfeit cigarettes. The crime is \"假冒注册商标的商品罪\". The phrase \"假冒注册商标的商品\" is not in fact. But it's the legal term. The rule says if fact includes specific crime wording, reuse. Here it doesn't. So we can use appropriate legal term. Should we include \"销售\" part? The crime is \"生产、销售假冒注册商标的商品\". The fact includes selling. So maybe \"销售假冒注册商标的商品\". The examples: For \"非法拘禁\" they used that phrase. For \"走私珍贵动物、珍贵动物制品\" they used \"走私珍贵动物、珍贵动物制品\". So they include both. So we can output \"销售假冒注册商标的商品\". That seems appropriate.\n\nThus final answer: [罪名]销售假冒注册商标的商品<eoa>\n\nNow produce JSON with reasoning and final_answer.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the crime(s) based on facts. Fact: selling counterfeit cigarettes (fake branded cigarettes). That's \"假冒注册商标的商品\" maybe \"假冒注册商标的商品罪\" which is \"假冒注册商标罪\" (counterfeiting trademark). Also transportation of counterfeit goods? The act is selling counterfeit cigarettes. The crime is \"假冒注册商标的商品罪\" (selling counterfeit goods). The Chinese legal term: \"假冒注册商标的商品罪\" is under Criminal Law article 210? Actually article 210: \"生产、销售假冒注册商标的商品\" is a crime. So the crime is \"生产、销售假冒注册商标的商品\". The fact mentions selling counterfeit cigarettes. So the crime: \"销售假冒注册商标的商品\". Should we include \"走私\" no. So single crime.\n\nWe must output format: [罪名]假冒注册商标的商品罪<eoa> maybe they want \"假冒注册商标的商品罪\". In examples they used \"开设赌场\" for opening casino. They didn't add \"罪\". They just wrote \"开设赌场\". For \"盗窃\" they wrote \"盗窃\". So we should output the phrase exactly as the crime name without \"罪\". The rule: output \"[罪名]罪名<eoa>\" where 罪名 is the name. In examples: \"[罪名]盗窃<eoa>\" they didn't add \"罪\". So we output \"假冒注册商标的商品\". But maybe they want \"假冒注册商标的商品罪\". In examples they used \"非法拘禁\" (no \"罪\"). So we should output \"假冒注册商标的商品\". However the key rule says: \"模型应直接复用原文用词，避免自行添加或替换为类似但不完全等同的词汇\". The fact says \"假冒中华等品牌卷烟\". Not the exact crime phrase. But we need to map to legal term. The phrase \"假冒中华等品牌卷烟\" is counterfeit cigarettes. The crime is \"假冒注册商标的商品罪\". The phrase \"假冒注册商标的商品\" is not in fact. But it's the legal term. The rule says if fact includes specific crime wording, reuse. Here it doesn't. So we can use appropriate legal term. Should we include \"销售\" part? The crime is \"生产、销售假冒注册商标的商品\". The fact includes selling. So maybe \"销售假冒注册商标的商品\". The examples: For \"非法拘禁\" they used that phrase. For \"走私珍贵动物、珍贵动物制品\" they used \"走私珍贵动物、珍贵动物制品\". So they include both. So we can output \"销售假冒注册商标的商品\". That seems appropriate.\n\nThus final answer: [罪名]销售假冒注册商标的商品<eoa>\n\nNow produce JSON with reasoning and final_answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": "We need to determine the crime(s) based on facts. Fact: selling counterfeit cigarettes (fake branded cigarettes). That's \"假冒注册商标的商品\" maybe \"假冒注册商标的商品罪\" which is \"假冒注册商标罪\" (counterfeiting trademark). Also transportation of counterfeit goods? The act is selling counterfeit cigarettes. The crime is \"假冒注册商标的商品罪\" (selling counterfeit goods). The Chinese legal term: \"假冒注册商标的商品罪\" is under Criminal Law article 210? Actually article 210: \"生产、销售假冒注册商标的商品\" is a crime. So the crime is \"生产、销售假冒注册商标的商品\". The fact mentions selling counterfeit cigarettes. So the crime: \"销售假冒注册商标的商品\". Should we include \"走私\" no. So single crime.\n\nWe must output format: [罪名]假冒注册商标的商品罪<eoa> maybe they want \"假冒注册商标的商品罪\". In examples they used \"开设赌场\" for opening casino. They didn't add \"罪\". They just wrote \"开设赌场\". For \"盗窃\" they wrote \"盗窃\". So we should output the phrase exactly as the crime name without \"罪\". The rule: output \"[罪名]罪名<eoa>\" where 罪名 is the name. In examples: \"[罪名]盗窃<eoa>\" they didn't add \"罪\". So we output \"假冒注册商标的商品\". But maybe they want \"假冒注册商标的商品罪\". In examples they used \"非法拘禁\" (no \"罪\"). So we should output \"假冒注册商标的商品\". However the key rule says: \"模型应直接复用原文用词，避免自行添加或替换为类似但不完全等同的词汇\". The fact says \"假冒中华等品牌卷烟\". Not the exact crime phrase. But we need to map to legal term. The phrase \"假冒中华等品牌卷烟\" is counterfeit cigarettes. The crime is \"假冒注册商标的商品罪\". The phrase \"假冒注册商标的商品\" is not in fact. But it's the legal term. The rule says if fact includes specific crime wording, reuse. Here it doesn't. So we can use appropriate legal term. Should we include \"销售\" part? The crime is \"生产、销售假冒注册商标的商品\". The fact includes selling. So maybe \"销售假冒注册商标的商品\". The examples: For \"非法拘禁\" they used that phrase. For \"走私珍贵动物、珍贵动物制品\" they used \"走私珍贵动物、珍贵动物制品\". So they include both. So we can output \"销售假冒注册商标的商品\". That seems appropriate.\n\nThus final answer: [罪名]销售假冒注册商标的商品<eoa>\n\nNow produce JSON with reasoning and final_answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 743,
+      "prompt_tokens": 5115,
+      "total_tokens": 5858,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 775,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00028719,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00028719,
+        "upstream_inference_prompt_cost": 0.00015345,
+        "upstream_inference_completions_cost": 0.00013374
+      }
+    }
+  },
+  "raw_response_missing": false
+}

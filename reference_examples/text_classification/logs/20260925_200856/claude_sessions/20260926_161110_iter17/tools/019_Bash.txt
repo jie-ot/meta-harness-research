@@ -1,0 +1,41 @@
+Bash
+
+command: cd /c/tmp && python proto_rrf.py
+description: Run RRF prototype
+
+--- output ---
+Column affinity (label is a confusion target): {'pharmacology': 6.0, 'contract_law': 3.0}
+
+Similarity ranking:
+  rank 0: organic_chem (sim=0.200)
+  rank 1: organic_chem (sim=0.167)
+  rank 2: pharmacology (sim=0.167)
+  rank 3: contract_law (sim=0.000)
+  rank 4: inorganic_chem (sim=0.000)
+  rank 5: tort_law (sim=0.000)
+
+Affinity ranking:
+  rank 0: pharmacology (aff=6.0)
+  rank 1: contract_law (aff=3.0)
+  rank 2: organic_chem (aff=0.0)
+  rank 3: inorganic_chem (aff=0.0)
+  rank 4: tort_law (aff=0.0)
+  rank 5: organic_chem (aff=0.0)
+
+RRF ranking:
+  rank 0: pharmacology (rrf=0.03280, sim_r=2, aff_r=0)
+  rank 1: organic_chem (rrf=0.03252, sim_r=1, aff_r=2)
+  rank 2: contract_law (rrf=0.03227, sim_r=3, aff_r=1)
+  rank 3: organic_chem (rrf=0.03205, sim_r=0, aff_r=5)
+  rank 4: inorganic_chem (rrf=0.03150, sim_r=4, aff_r=3)
+  rank 5: tort_law (rrf=0.03101, sim_r=5, aff_r=4)
+
+pharmacolgy: sim_rank=2 -> rrf_rank=0
+organic_chem(0): sim_rank=1 -> rrf_rank=1
+organic_chem(5): sim_rank=0 -> rrf_rank=3
+
+--- Cold start (empty confusion) ---
+Cold start RRF order: ['organic_chem', 'contract_law', 'pharmacology', 'organic_chem', 'inorganic_chem', 'tort_law']
+Pure sim order: ['organic_chem', 'organic_chem', 'pharmacology', 'contract_law', 'inorganic_chem', 'tort_law']
+Effectively same? Sim+0 vs Sim+tiny ~ same ordering for uniform aff
+Shell cwd was reset to D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification

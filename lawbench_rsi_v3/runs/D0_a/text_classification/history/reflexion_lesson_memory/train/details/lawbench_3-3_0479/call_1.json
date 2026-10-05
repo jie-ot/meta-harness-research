@@ -1,0 +1,72 @@
+{
+  "call_id": "d66008ac3508478f957572f9dacad9af",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791012576-oyhwfMClGglwTGd7uQRh",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant captured more than 200 protected black‑water chickens using prohibited methods (playback and sticky nets) and sold them for profit. This constitutes illegal hunting, buying, transporting, and selling of a nationally protected wild animal, which is defined as a specific crime under Chinese criminal law. No other crimes are indicated in the facts, so the appropriate charge is the wildlife protection offense.\",\n  \"final_answer\": \"[罪名]非法捕猎、收购、运输、出售国家重点保护的野生动物<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate crime label(s) based on facts. The case: illegal capture of protected wildlife (black water chicken) using prohibited methods (粘网, playback). This is a wildlife protection violation. The Chinese criminal law has a specific crime: “非法捕猎、收购、运输、出售国家重点保护的野生动物罪” or “非法捕猎、收购、运输、出售国家重点保护的野生动物罪”. The label likely is something like “非法捕猎、收购、运输、出售国家重点保护的野生动物”. However we need to see the list of possible labels from the correction lessons. The lessons list many labels, but not this one explicitly. However we need to infer the correct label from the dataset. The dataset likely includes a label for wildlife crimes. Let's think of typical Chinese criminal law categories: \"非法捕猎、收购、运输、出售国家重点保护的野生动物罪\". The label might be \"非法捕猎、收购、运输、出售国家重点保护的野生动物\". Or maybe \"非法捕猎、收购、运输、出售国家重点保护野生动物\". The dataset may have a shorter label like \"非法捕猎\". But we need to see if any similar examples appear in training. Not given. However we can guess.\n\nThe correction lessons didn't mention wildlife. So we just need to output the appropriate crime label. The fact: captured protected wildlife using prohibited methods, sold them. So crime: illegal hunting of protected wildlife. In Chinese law, article 341 of Criminal Law: \"非法捕猎、收购、运输、出售国家重点保护的野生动物或者利用野生动物制品的，处三年以下有期徒刑或者拘役，并处罚金；情节严重的，处三年以上七年以下有期徒刑，并处罚金或者没收财产。\" So the crime is \"非法捕猎、收购、运输、出售国家重点保护的野生动物罪\". The label likely exactly that.\n\nThus final answer: [罪名]非法捕猎、收购、运输、出售国家重点保护的野生动物<eoa>\n\nCheck format: need semicolon if multiple, but only one.\n\nReturn JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate crime label(s) based on facts. The case: illegal capture of protected wildlife (black water chicken) using prohibited methods (粘网, playback). This is a wildlife protection violation. The Chinese criminal law has a specific crime: “非法捕猎、收购、运输、出售国家重点保护的野生动物罪” or “非法捕猎、收购、运输、出售国家重点保护的野生动物罪”. The label likely is something like “非法捕猎、收购、运输、出售国家重点保护的野生动物”. However we need to see the list of possible labels from the correction lessons. The lessons list many labels, but not this one explicitly. However we need to infer the correct label from the dataset. The dataset likely includes a label for wildlife crimes. Let's think of typical Chinese criminal law categories: \"非法捕猎、收购、运输、出售国家重点保护的野生动物罪\". The label might be \"非法捕猎、收购、运输、出售国家重点保护的野生动物\". Or maybe \"非法捕猎、收购、运输、出售国家重点保护野生动物\". The dataset may have a shorter label like \"非法捕猎\". But we need to see if any similar examples appear in training. Not given. However we can guess.\n\nThe correction lessons didn't mention wildlife. So we just need to output the appropriate crime label. The fact: captured protected wildlife using prohibited methods, sold them. So crime: illegal hunting of protected wildlife. In Chinese law, article 341 of Criminal Law: \"非法捕猎、收购、运输、出售国家重点保护的野生动物或者利用野生动物制品的，处三年以下有期徒刑或者拘役，并处罚金；情节严重的，处三年以上七年以下有期徒刑，并处罚金或者没收财产。\" So the crime is \"非法捕猎、收购、运输、出售国家重点保护的野生动物罪\". The label likely exactly that.\n\nThus final answer: [罪名]非法捕猎、收购、运输、出售国家重点保护的野生动物<eoa>\n\nCheck format: need semicolon if multiple, but only one.\n\nReturn JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to determine appropriate crime label(s) based on facts. The case: illegal capture of protected wildlife (black water chicken) using prohibited methods (粘网, playback). This is a wildlife protection violation. The Chinese criminal law has a specific crime: “非法捕猎、收购、运输、出售国家重点保护的野生动物罪” or “非法捕猎、收购、运输、出售国家重点保护的野生动物罪”. The label likely is something like “非法捕猎、收购、运输、出售国家重点保护的野生动物”. However we need to see the list of possible labels from the correction lessons. The lessons list many labels, but not this one explicitly. However we need to infer the correct label from the dataset. The dataset likely includes a label for wildlife crimes. Let's think of typical Chinese criminal law categories: \"非法捕猎、收购、运输、出售国家重点保护的野生动物罪\". The label might be \"非法捕猎、收购、运输、出售国家重点保护的野生动物\". Or maybe \"非法捕猎、收购、运输、出售国家重点保护野生动物\". The dataset may have a shorter label like \"非法捕猎\". But we need to see if any similar examples appear in training. Not given. However we can guess.\n\nThe correction lessons didn't mention wildlife. So we just need to output the appropriate crime label. The fact: captured protected wildlife using prohibited methods, sold them. So crime: illegal hunting of protected wildlife. In Chinese law, article 341 of Criminal Law: \"非法捕猎、收购、运输、出售国家重点保护的野生动物或者利用野生动物制品的，处三年以下有期徒刑或者拘役，并处罚金；情节严重的，处三年以上七年以下有期徒刑，并处罚金或者没收财产。\" So the crime is \"非法捕猎、收购、运输、出售国家重点保护的野生动物罪\". The label likely exactly that.\n\nThus final answer: [罪名]非法捕猎、收购、运输、出售国家重点保护的野生动物<eoa>\n\nCheck format: need semicolon if multiple, but only one.\n\nReturn JSON with reasoning and final answer.",
+            "reasoning_content": "We need to determine appropriate crime label(s) based on facts. The case: illegal capture of protected wildlife (black water chicken) using prohibited methods (粘网, playback). This is a wildlife protection violation. The Chinese criminal law has a specific crime: “非法捕猎、收购、运输、出售国家重点保护的野生动物罪” or “非法捕猎、收购、运输、出售国家重点保护的野生动物罪”. The label likely is something like “非法捕猎、收购、运输、出售国家重点保护的野生动物”. However we need to see the list of possible labels from the correction lessons. The lessons list many labels, but not this one explicitly. However we need to infer the correct label from the dataset. The dataset likely includes a label for wildlife crimes. Let's think of typical Chinese criminal law categories: \"非法捕猎、收购、运输、出售国家重点保护的野生动物罪\". The label might be \"非法捕猎、收购、运输、出售国家重点保护的野生动物\". Or maybe \"非法捕猎、收购、运输、出售国家重点保护野生动物\". The dataset may have a shorter label like \"非法捕猎\". But we need to see if any similar examples appear in training. Not given. However we can guess.\n\nThe correction lessons didn't mention wildlife. So we just need to output the appropriate crime label. The fact: captured protected wildlife using prohibited methods, sold them. So crime: illegal hunting of protected wildlife. In Chinese law, article 341 of Criminal Law: \"非法捕猎、收购、运输、出售国家重点保护的野生动物或者利用野生动物制品的，处三年以下有期徒刑或者拘役，并处罚金；情节严重的，处三年以上七年以下有期徒刑，并处罚金或者没收财产。\" So the crime is \"非法捕猎、收购、运输、出售国家重点保护的野生动物罪\". The label likely exactly that.\n\nThus final answer: [罪名]非法捕猎、收购、运输、出售国家重点保护的野生动物<eoa>\n\nCheck format: need semicolon if multiple, but only one.\n\nReturn JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 595,
+      "prompt_tokens": 27117,
+      "total_tokens": 27712,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 611,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0015046,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0015046,
+        "upstream_inference_prompt_cost": 0.00135585,
+        "upstream_inference_completions_cost": 0.00014875
+      }
+    }
+  },
+  "raw_response_missing": false
+}

@@ -1,0 +1,50 @@
+Edit: agents\cluster_confusion_memory.py
+
+replace_all: False
+old_string:
+"""Adaptive-Tokenizer Confusion Disambiguation Memory.
+
+Combines the confusion-matrix retrieval of confusion_disambiguation_memory with a
+language-adaptive tokenizer that routes to character bigrams for CJK text and to
+word tokens for ASCII/Latin text.
+
+Problem identified in iter6: a single tokenizer cannot be optimal for all scripts.
+Bigrams fix near-zero similarity on CJK inputs but degrade English retrieval where
+word tokens are better calibrated. This system detects the script of each text at
+tokenization time and applies the right strategy automatically, avoiding the
+accuracy trade-off that forced ngram_confusion_memory to sacrifice English datasets
+in order to fix CJK similarity.
+
+Retrieval algorithm (same as confusion_disambiguation_memory):
+1. Score all stored examples with adaptive Jaccard against the query.
+2. Identify confusion targets from the top-3 candidate labels.
+3. Inject one disambiguation example per confused label (round-robin, 2 rounds).
+4. Fill remaining budget with similarity-ranked examples.
+"""
+
+new_string:
+"""Cluster Confusion Memory.
+
+Extends adaptive_tokenizer_confusion_memory with a transitive confusion-cluster
+graph. The frontier system only looks at direct confusions (predicted→actual
+one hop). This system computes connected components of the confusion graph at
+retrieval time and guarantees one representative per *cluster member*, not just
+per directly-confused label.
+
+Mechanism:
+1. Same adaptive tokenizer as the frontier.
+2. During learning, confusion edges are stored as usual: predicted→actual.
+3. At predict time, build a graph from all confusion edges (both directions),
+   compute the connected component containing any top-3 candidate label, and
+   use ALL members of that cluster as the disambiguation target set.
+4. Select the most query-similar example for each cluster member (one pass,
+   similarity-ranked), then fill remaining budget with regular examples.
+
+The hypothesis: on tasks with chained label confusions (A→B→C where the model
+also confuses B with C), the frontier misses C entirely. Surfacing the whole
+cluster gives the model examples of all transitively-confused boundaries.
+"""
+
+
+--- output ---
+The file D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/agents/cluster_confusion_memory.py has been updated successfully.

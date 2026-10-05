@@ -1,0 +1,63 @@
+Write: reports\iteration_1.md
+
+content:
+# Iteration 1 — run D100_injected_b (LawBench, D=100)
+
+## State read
+- `evolution_summary.jsonl`: EMPTY — this is iteration 1, nothing previously evaluated.
+- `frontier_val.json`: `confusion_disambiguation_memory`, 27/100 (score set).
+- `history/confusion_disambiguation_memory/`: train 200 items, score 100 items
+  (27 correct, avg_f1 0.4267), feedback 100 items (20 correct, avg_f1 0.3853).
+- Evidence used: score/diagnostics.jsonl (lines 1-6 full), train/diagnostics.jsonl
+  (steps 4-52), the serialized checkpoint in train/log.jsonl, and `data/evaluators.py`.
+  The feedback records were read earlier in this session; not re-read here.
+
+## Two diagnosed defects in the inherited mechanism
+1. `_tokenize` = `re.findall(r"[A-Za-z0-9]+", ...)`. On Chinese case text this
+   yields the empty set (confirmed in the step-0 checkpoint: tokens for a Chinese
+   case were only `{"2012","2013","73"}`). Jaccard is 0.0 for every stored pair,
+   so retrieval ranking is purely stored order.
+2. The confusion table is keyed on the RAW prediction string (`[罪名]…<eoa>`)
+   while lookups pass clean labels, so the disambiguation stage never fires.
+
+## Scoring contract that drives both candidates
+`eval_lawbench` compares charge SETS for exact equality — no partial credit.
+Separators `; ； , ， 、` all split; a wrong variant, a stray `罪`, or a wrong
+cardinality each zeroes the item. Note `、` also occurs INSIDE single labels,
+so it must be treated as a weak separator.
+
+## Error taxonomy from the visible traces
+- near-miss / invented statutory names (largest bucket),
+- cardinality errors both directions, under-generation dominant,
+- sibling confusion, spurious `罪` suffix,
+- the `××` mask runs mark blanked charge slots (a structural count signal).
+
+## Candidates
+- **A `label_lexicon_snap_memory`** (exploitation): replaces the retrieval signal
+  with character-bigram Dice, and adds a guarded longest-common-substring snap
+  of each predicted charge unit against the accumulated statute lexicon.
+  Guards: run >= 4 chars, coverage >= 0.6, unique maximal match.
+- **B `charge_cooccurrence_count_memory`** (exploration): memory becomes a
+  weighted charge co-occurrence graph; the `××` mask-group size plans the
+  cardinality, and one-hop expansion fills the planned slots from matched seeds
+  then graph companions, all support-gated.
+
+## Prototype outcome (`.prototypes/`, fake LLM)
+- A: 10/10 snap cases correct, including the crucial negatives — `盗窃`, `受贿`,
+  `行贿`, `诈骗` are NOT dragged into longer labels, and a long mis-cased unit is
+  not snapped when coverage is low. Bigram signal separates related/unrelated
+  (0.471 vs 0.308) where the inherited tokenizer gave 0.00 for both.
+- B: mask-group cardinality exact on 6/6 structural cases; expansion repairs
+  under-generation (`受贿` -> `受贿;滥用职权`) and refuses to inflate closed or
+  weakly-attested neighbourhoods.
+
+## Takeaway for future iterations
+Both candidates fix the same latent infrastructure (retrieval) but diverge
+after it: A repairs the *wording* of what the model said, B repairs the *size*
+of the set. They are complementary, so if either wins, combining A's snap with
+B's cardinality planning is the natural next step.
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\reports\iteration_1.md (file state is current in your context — no need to Read it back)

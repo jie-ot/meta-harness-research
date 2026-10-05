@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- When the alleged offender holds a position in a private or non‑governmental entity (e.g., company executive, manager) rather than a public official, classify the offense as “非国家工作人员受贿” instead of the 
+- If the facts describe a person in a managerial or official position receiving money or valuables in exchange for using their职务便利, classify the crime simply as "受贿" unless the source explicitly states 
+- If the facts only describe forging, altering, or selling state‑issued documents or certificates and do not contain any separate act of deceiving another party for financial gain, assign only the forge
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:北京市人民检察院第三分院起诉书指控：
+被告人张2某于2014年4月22日从莫桑比克共和国马普陀出发，经南非共和国约翰内斯堡、阿拉伯联合酋长国迪拜转机后乘坐EK308航班，于次日22时许抵达北京首都国际机场T3航站楼，携带装有41件犀牛角制品的行李箱选择无申报通道通关，被海关工作人员当场查获。经中华人民共和国濒危物种科学委员会鉴定，上述疑似犀牛角制品均为现代犀科动物角，净重6.2千克。经中华人民共和国濒危物种进出口管理办公室北京办事处鉴定，上述犀牛角制品价值人民币155万元。
+针对指控的事实，公诉机关向本院移送了被告人供述、证人证言、书证、鉴定意见等证据，认为被告人张2某无视国家法律，走私国家禁止进出口的珍贵动物制品，情节特别严重，其行为触犯了《中华人民共和国刑法》××××之规定，应当以走私珍贵动物制品罪追究被告人张2某的刑事责任。提请本院依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

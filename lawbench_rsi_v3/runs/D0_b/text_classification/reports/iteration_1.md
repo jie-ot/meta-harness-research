@@ -1,0 +1,42 @@
+# Iteration 1 Report
+
+**bigram_confusion_memory (A, exploitation):** 39/100 (+12 vs baseline 27)
+**contrastive_correction_memory (B, exploration):** 37/100 (+10 vs baseline 27)
+
+## What changed
+Both systems replaced the ASCII-only tokenizer in confusion_disambiguation_memory with
+Chinese character bigrams + ASCII words. The original tokenizer captured only years and
+numbers from Chinese legal text (e.g. "2016", "50600"), yielding near-zero similarity
+for all pairs — retrieval was essentially random.
+
+bigram_confusion kept the confusion matrix + disambiguation injection intact.
+contrastive_correction dropped the confusion matrix and instead built a correction
+pool of (wrong, right) pairs injected as a "Mistakes to avoid" section.
+
+## What worked / didn't
+The bigram tokenizer fix produced the largest gain (+12). It unlocked meaningful
+semantic retrieval on Chinese legal text and let the confusion matrix operate on
+real signal rather than noise.
+
+Contrastive correction (37) underperformed bigram (39) despite a richer prompt:
+- 60-char previews are often too short to identify the specific charge category
+- "Mistakes to avoid" framing may anchor on wrong labels rather than steering right
+- Lacks the confusion-matrix disambiguation phase that bigram benefits from
+
+## Remaining error classes (score diagnostics)
+1. Suffix format: model outputs "故意毁坏财物罪" vs correct "故意毁坏财物" — exact
+   match fails even when the conceptual answer is right
+2. Modifier-dropping: "受贿" vs "非国家工作人员受贿"; "行贿" vs "单位行贿"
+3. Missing co-charges: predicts one of multiple correct charges (e.g., "盗窃"
+   vs "盗窃;掩饰、隐瞒犯罪所得、犯罪所得收益")
+4. Wrong sub-category: "破坏公共设施" vs "破坏电力设备"; "侵犯注册商标专用权"
+   vs "销售假冒注册商标的商品"
+
+## Takeaway for iteration 2
+The tokenizer fix was the right first move and is now the shared foundation. The
+remaining errors are qualitatively different: the model knows the general charge
+domain but uses the wrong canonical string. Strategies to try: (a) LLM-synthesized
+rule memos during training that encode exact label formats seen in errors, and (b)
+label-cluster organized retrieval that shows the model proportional coverage of
+the most likely charge categories rather than collapsing to the highest-similarity
+flat set.

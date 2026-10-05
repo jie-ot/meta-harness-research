@@ -1,0 +1,48 @@
+Bash [ERROR]
+
+command:
+powershell -Command "
+$base = 'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+# Check val.json for iter9 systems
+$datasets = @('USPTO','Symptom2Disease','LawBench')
+$systems = @('fixed_confusion_memory','idf_confusion_memory')
+foreach (\$d in \$datasets) {
+  foreach (\$s in \$systems) {
+    \$p = Join-Path \$base \"\$d\\\$s\"
+    \$valfiles = Get-ChildItem \$p -Recurse -Filter 'val.json' -ErrorAction SilentlyContinue
+    if (\$valfiles) {
+      Write-Host \"=== \$d / \$s ===\"
+      Get-Content \$valfiles[0].FullName
+    }
+  }
+}
+"
+
+
+description: Read val.json for iter9 systems across all datasets
+
+--- output ---
+Exit code 1
+= : �޷�����=����ʶ��Ϊ cmdlet���������ű��ļ�������г�������ơ��������Ƶ�ƴд���������·������ȷ��·����ȷ��Ȼ������һ
+�Ρ�
+����λ�� ��:2 �ַ�: 2
++  = 'D:\�ҵ��ļ�\���пƼ���ѧ\����ʦ�������о�����\meta-harness\reference_examples\text_cl ...
++  ~
+    + CategoryInfo          : ObjectNotFound: (=:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 
+= : �޷�����=����ʶ��Ϊ cmdlet���������ű��ļ�������г�������ơ��������Ƶ�ƴд���������·������ȷ��·����ȷ��Ȼ������һ
+�Ρ�
+����λ�� ��:4 �ַ�: 2
++  = @('USPTO','Symptom2Disease','LawBench')
++  ~
+    + CategoryInfo          : ObjectNotFound: (=:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 
+= : �޷�����=����ʶ��Ϊ cmdlet���������ű��ļ�������г�������ơ��������Ƶ�ƴд���������·������ȷ��·����ȷ��Ȼ������һ
+�Ρ�
+����λ�� ��:5 �ַ�: 2
++  = @('fixed_confusion_memory','idf_confusion_memory')
++  ~
+    + CategoryInfo          : ObjectNotFound: (=:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException

@@ -1,0 +1,72 @@
+{
+  "call_id": "d7c7395ca929409d96f932fb1a7208d6",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791018664-u2zqZIc3mA5LGxofsyzy",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"If the factual scenario describes an employer or contractor who has completed work but fails to pay the owed wages or labor remuneration to workers, the appropriate charge is \\\"拒不支付劳动报酬\\\" rather than fraud or other crimes.\",\n  \"keywords\": [\n    \"拖欠劳动报酬\",\n    \"拒不支付\",\n    \"劳动报酬\",\n    \"欠薪\",\n    \"雇用\",\n    \"人力资源和社会保障局责令支付\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with rule and keywords. The error: AI predicted \"诈骗\" (fraud) but correct is \"拒不支付劳动报酬\" (refusal to pay labor remuneration). So rule: distinguish between fraud vs refusal to pay labor wages. The classification error likely due to misinterpreting \"拖欠劳动报酬\" as fraud. So rule: When facts involve employer failing to pay owed wages after contract, not deception for financial gain, the appropriate charge is \"拒不支付劳动报酬\" not fraud. Keywords: \"拖欠劳动报酬\", \"拒不支付\", \"劳动报酬\", \"雇用\", \"工人\", \"欠薪\", \"人力资源和社会保障局责令支付\". Provide 3-6.\n\nWrite JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with rule and keywords. The error: AI predicted \"诈骗\" (fraud) but correct is \"拒不支付劳动报酬\" (refusal to pay labor remuneration). So rule: distinguish between fraud vs refusal to pay labor wages. The classification error likely due to misinterpreting \"拖欠劳动报酬\" as fraud. So rule: When facts involve employer failing to pay owed wages after contract, not deception for financial gain, the appropriate charge is \"拒不支付劳动报酬\" not fraud. Keywords: \"拖欠劳动报酬\", \"拒不支付\", \"劳动报酬\", \"雇用\", \"工人\", \"欠薪\", \"人力资源和社会保障局责令支付\". Provide 3-6.\n\nWrite JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with rule and keywords. The error: AI predicted \"诈骗\" (fraud) but correct is \"拒不支付劳动报酬\" (refusal to pay labor remuneration). So rule: distinguish between fraud vs refusal to pay labor wages. The classification error likely due to misinterpreting \"拖欠劳动报酬\" as fraud. So rule: When facts involve employer failing to pay owed wages after contract, not deception for financial gain, the appropriate charge is \"拒不支付劳动报酬\" not fraud. Keywords: \"拖欠劳动报酬\", \"拒不支付\", \"劳动报酬\", \"雇用\", \"工人\", \"欠薪\", \"人力资源和社会保障局责令支付\". Provide 3-6.\n\nWrite JSON.",
+            "reasoning_content": "We need to produce a JSON with rule and keywords. The error: AI predicted \"诈骗\" (fraud) but correct is \"拒不支付劳动报酬\" (refusal to pay labor remuneration). So rule: distinguish between fraud vs refusal to pay labor wages. The classification error likely due to misinterpreting \"拖欠劳动报酬\" as fraud. So rule: When facts involve employer failing to pay owed wages after contract, not deception for financial gain, the appropriate charge is \"拒不支付劳动报酬\" not fraud. Keywords: \"拖欠劳动报酬\", \"拒不支付\", \"劳动报酬\", \"雇用\", \"工人\", \"欠薪\", \"人力资源和社会保障局责令支付\". Provide 3-6.\n\nWrite JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 284,
+      "prompt_tokens": 525,
+      "total_tokens": 809,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 174,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 6.403e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 6.403e-05,
+        "upstream_inference_prompt_cost": 1.575e-05,
+        "upstream_inference_completions_cost": 4.828e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

@@ -1,0 +1,36 @@
+Read: benchmark.py
+
+limit: 30
+offset: 306
+
+--- output ---
+306	def _inner_loop_pythonpath() -> str:
+307	    """Directory that must be on PYTHONPATH so `text_classification` imports."""
+308	    return str(Path(__file__).resolve().parent.parent)
+309	
+310	
+311	def _worker_env() -> dict[str, str]:
+312	    """Environment for inner-loop workers.
+313	
+314	    The package is not installed (`package = false`), so workers need the
+315	    reference_examples directory on PYTHONPATH. Passing that through the
+316	    process environment works on Windows; the Unix `env VAR=value command`
+317	    prefix does not, because CreateProcess looks for an executable named env.
+318	    """
+319	    env = os.environ.copy()
+320	    root = _inner_loop_pythonpath()
+321	    previous = env.get("PYTHONPATH")
+322	    env["PYTHONPATH"] = root if not previous else root + os.pathsep + previous
+323	    env["PYTHONUTF8"] = "1"
+324	    return env
+325	
+326	
+327	def _inner_loop_command() -> list[str]:
+328	    """Return a cwd-independent command prefix for inner-loop workers."""
+329	    project_dir = Path(__file__).resolve().parent
+330	    return [
+331	        "uv",
+332	        "run",
+333	        "--project",
+334	        str(project_dir),
+335	        "python",

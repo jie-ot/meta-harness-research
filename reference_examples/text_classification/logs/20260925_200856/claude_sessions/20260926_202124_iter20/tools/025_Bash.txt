@@ -1,0 +1,130 @@
+Bash
+
+command:
+python -c "
+import os, json, re
+from collections import defaultdict
+
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+log_path = os.path.join(base, 'LawBench', 'symmetric_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+lines = open(log_path, encoding='utf-8').readlines()
+steps = [json.loads(l) for l in lines if json.loads(l).get('type') == 'step']
+
+# Prototype candidate 2: Prospective Confusion - at query time, find labels
+# whose examples are close to the query in similarity. When two labels both
+# have examples near the query, they are likely confusors regardless of history.
+# Strategy: among top-K similar examples, find the top-2 most-represented labels
+# (by similarity-weighted count) and ensure those labels are represented distinctly.
+
+_CJK_RE = re.compile(r'[\u4e00-\u9fff\u3040-\u30ff\uff00-\uffef]')
+def _has_cjk(text):
+    return bool(_CJK_RE.search(text))
+def _tokenize_bigram(text):
+    t = re.sub(r'\s+', ' ', text.strip())
+    return frozenset(t[i:i+2] for i in range(len(t)-1)) if len(t) >= 2 else frozenset()
+def _tokenize_word(text):
+    return frozenset(re.findall(r'[A-Za-z0-9]+', text.lower()))
+def _tokenize(text):
+    return _tokenize_bigram(text) if _has_cjk(text) else _tokenize_word(text)
+def _jaccard(a, b):
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+# Build a pool of examples from the trace (simulate what we have after training)
+# Use first 150 steps as 'training' pool
+train = steps[:150]
+pool = []
+for s in train:
+    raw = s.get('input_preview', '')
+    pool.append({'input': raw, 'target': s['tgt'], 'tokens': _tokenize(raw)})
+
+# Test on next 50 steps
+test = steps[150:200]
+
+def prospective_retrieve(query, pool, budget=30000, top_k_sim=6, top_candidate_labels=3):
+    q_tok = _tokenize(query)
+    # Score all examples
+    scored = [((_jaccard(q_tok, ex['tokens']), i), ex) for i, ex in enumerate(pool)]
+    scored.sort(key=lambda x: (-x[0][0], x[0][1]))
+    
+    # Find competing labels via similarity-weighted vote
+    label_scores = defaultdict(float)
+    for (sim, _), ex in scored[:20]:
+        label_scores[ex['target']] += sim
+    
+    # Top competing labels
+    top_labels = sorted(label_scores, key=lambda l: -label_scores[l])[:top_candidate_labels]
+    
+    parts = []
+    used = set()
+    total = 0
+    
+    # Phase 1: Inject examples for each competing label (prospective disambiguation)
+    for lbl in top_labels:
+        count = 0
+        for (_, idx), ex in scored:
+            if idx in used: continue
+            if ex['target'] != lbl: continue
+            part = f'Q: {ex[\"input\"][:200]}\nA: {ex[\"target\"]}'
+            if total + len(part) + 2 > budget: break
+            parts.append(part)
+            used.add(idx)
+            total += len(part) + 2
+            count += 1
+            if count >= 2: break
+    
+    # Phase 2: Fill with similarity-ranked examples
+    for (_, idx), ex in scored:
+        if total >= budget: break
+        if idx in used: continue
+        part = f'Q: {ex[\"input\"][:200]}\nA: {ex[\"target\"]}'
+        if total + len(part) + 2 > budget: break
+        parts.append(part)
+        used.add(idx)
+        total += len(part) + 2
+    
+    return parts, top_labels
+
+# Variant A: top_candidate_labels=3, 2 examples per label
+correct_a = 0
+for s in test:
+    parts, top_labels = prospective_retrieve(s.get('input_preview', ''), pool, top_candidate_labels=3)
+    # Can't actually call LLM, just count coverage
+    gt = s['tgt']
+    label_parts = [p for p in parts if gt in p.split('\nA: ')[1] if '\nA: ' in p]
+    if label_parts: correct_a += 1
+
+# Variant B: top_candidate_labels=5  
+correct_b = 0
+for s in test:
+    parts, top_labels = prospective_retrieve(s.get('input_preview', ''), pool, top_candidate_labels=5)
+    gt = s['tgt']
+    label_parts = [p for p in parts if '\nA: ' in p and gt in p.split('\nA: ')[1]]
+    if label_parts: correct_b += 1
+
+print(f'GT coverage in context - variant A (k=3): {correct_a}/50')
+print(f'GT coverage in context - variant B (k=5): {correct_b}/50')
+
+# Also check how prospective labels compare to symmetric confusion labels
+sample_queries = [(s.get('input_preview',''), s['tgt']) for s in test[:10]]
+print()
+print('Prospective competing labels for 5 sample queries:')
+for inp, gt in sample_queries[:5]:
+    _, top_labels = prospective_retrieve(inp, pool, top_candidate_labels=3)
+    in_top = gt in top_labels
+    print(f'  gt={repr(gt[:30])}, in_top3={in_top}, top={[l[:20] for l in top_labels]}')
+"
+
+
+description: Prototype candidate 2: prospective confusion via query-time similarity profile
+
+--- output ---
+GT coverage in context - variant A (k=3): 25/50
+GT coverage in context - variant B (k=5): 25/50
+
+Prospective competing labels for 5 sample queries:
+  gt='非法拘禁', in_top3=False, top=['容留他人吸毒', '故意毁坏财物', '玩忽职守']
+  gt='非法猎捕、杀害珍贵、濒危野生动物', in_top3=False, top=['贪污', '故意毁坏财物', '提供侵入、非法控制计算机信息系统程序、工']
+  gt='非法占用农用地', in_top3=False, top=['故意毁坏财物', '滥伐林木', '玩忽职守']
+  gt='盗窃;传播性病', in_top3=False, top=['容留他人吸毒', '挪用资金', '非法转让、倒卖土地使用权;故意伤害']
+  gt='组织、强迫、引诱、容留、介绍卖淫;协助组织卖淫', in_top3=False, top=['非法转让、倒卖土地使用权;故意伤害', '出售、购买、运输假币', '信用卡诈骗']

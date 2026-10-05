@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the case facts explicitly describe separate actions of selling, buying, or transporting counterfeit currency, label each distinct offense (e.g., 出售假币, 购买假币, 运输假币) rather than using a generic term
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+- When multiple descriptors (e.g., illegal possession and concealment) refer to the same statutory offense concerning firearms or ammunition, merge them into a single combined charge phrase instead of l
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:北京市丰台区人民检察院指控：2013年6月至2014年6月，被告人于×伙同徐×、尤×（二人另案处理）在本市丰台区丹陛华小商品批发市场摊位内，非法买卖警服，后被民警查获，在其摊位及仓库中起获警便帽266顶，训练服142套，冬训练服11套。
+被告人于×于2014年6月4日被北京市公安局丰台分局大红门商城派出所抓获。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

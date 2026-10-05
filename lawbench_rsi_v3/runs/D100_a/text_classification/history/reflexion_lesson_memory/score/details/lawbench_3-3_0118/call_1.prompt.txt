@@ -1,0 +1,30 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the factual description mentions distinct illegal tax‑related actions (e.g., falsifying VAT invoices, fraudulently obtaining export rebates, and using fake invoices for tax deduction), enumerate 
+- When the facts describe forged or false VAT invoices that were used to obtain export tax refunds or to offset tax liabilities, the charge must explicitly include the purpose clause (e.g., “用于骗取出口退税、抵扣
+- When extracting crimes from the facts, enumerate every distinct statutory offense mentioned, including any qualifying actions (e.g., 故意销毁, 用于骗取出口退税) and related financial documents, and separate each 
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，2010年9月至2012年2月期间，被告人王某某为非法牟利，以收取开票费的形式，介绍他人多次为顾某某（另行处理）经营的上海惠依莎服饰有限公司（以下简称惠依莎公司）虚开了上海展孟实业有限公司等7家公司共计46份增值税专用发票，价税合计人民币1，244，526元，税额为人民币180，828.63元，上述发票均已被惠依莎公司抵扣，造成国家税款流失。
+2014年1月22日，被告人王某某在其暂住处被公安人员抓获，公安人员从其住处当场查获上海市国家税务局通用机打发票390份、上海增值税普通发票70份。经鉴定，其中294份上海市国家税务局通用机打发票、70份上海增值税普通发票均系伪造的发票。
+被告人王某某被公安人员抓获后，如实交待相关犯罪事实。案发后，惠依莎公司已退缴全部涉案税款。
+上述事实，被告人王某某在开庭审理过程中亦无异议，并有经庭审质证属实的证人顾某某的证言笔录、相关增值税专用发票复印件、上海市浦东新区国家税务局稽查局出具的抵扣证明，上海市浦东新区人民法院判决书、公安机关扣押笔录、扣押决定书、扣押清单、上海市浦东新区国家（地方）税务局征收管理处出具的鉴定证明、发票清单，上海市青浦区国家税务局出具的情况说明及附件，公安机关出具的案发经过等证据证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

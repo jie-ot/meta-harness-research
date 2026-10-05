@@ -1,0 +1,72 @@
+{
+  "call_id": "feab68ee9a48409bbfdf86a6fd621f0c",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791042200-ZhFf2hV12Fx3IZL4mRVB",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant was found transporting large quantities of poppy shells and poppy seeds, which are raw materials for narcotics. The applicable statutory offenses are transport of narcotics and illegal transport of drug plant seeds. However, the provided label list does not contain a specific charge for transporting narcotics. The closest matching label is “非法持有毒品”, which covers possession of controlled drug substances. No other listed charges (e.g., smuggling, cultivation) fit the facts.\",\n  \"final_answer\": \"[罪名]非法持有毒品<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate charge(s) for the case.\n\nFacts: Defendant Li transported poppy shells and poppy seeds (opium poppy plant parts) from Ruili to Kunming. Seized 680.08 kg poppy shells and 1185.1 kg poppy seeds. The prosecution says charges: transport of narcotics (运输毒品罪) and illegal transport of drug plant seeds (非法运输毒品原植物种子罪). In the label list, we have \"非法持有毒品\" etc. But we need to find label for transporting drug raw plant material. The list includes \"非法种植毒品原植物\" (illegal cultivation of drug raw plants) but not transport. There's \"非法运输毒品\" maybe? Let's scan list: I see \"非法持有毒品\", \"非法种植毒品原植物\", \"非法买卖制毒物品\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\". For drug transport, there is not explicit label. However earlier examples: For transporting poppy seeds, they used \"运输毒品罪、非法运输毒品原植物种子罪\". The label list may have \"非法运输毒品原植物种子罪\"? Not present. But maybe they use \"非法运输毒品\" as a label? Not in list. Let's examine list again: It includes \"非法持有毒品\", \"非法种植毒品原植物\", \"非法买卖制毒物品\". No transport. Could be \"走私国家禁止进出口的货物、物品\" but that's for smuggling across borders. This is internal transport, not smuggling. Could be \"非法运输毒品\" but not in list.\n\nMaybe they categorize as \"非法持有毒品\" (since they have large amount). But they are transporting, not just possessing. However the list may not have a specific transport label, so they might use \"非法持有毒品\". In earlier examples, they used \"非法持有毒品\" for possession. For transport, maybe they use \"非法运输毒品\" but not in list. Let's search list: I see \"非法运输毒品原植物种子罪\" not present. So we need to choose best matching label from list.\n\nThe list includes \"非法持有毒品\". That seems appropriate as they had large quantity. Also \"非法种植毒品原植物\" is about cultivation, not transport. So likely answer: \"非法持有毒品\". But also maybe \"走私国家禁止进出口的货物、物品\" because poppy seeds are controlled and crossing border? They were moving from Ruili (border area) to Kunming, but within China. Not crossing international border. So not smuggling.\n\nThus final answer: [罪名]非法持有毒品<eoa>\n\nCheck if any other label needed: maybe \"非法运输毒品\" not in list, so only one.\n\nReturn JSON with reasoning and final answer.\n\n",
+          "provider_specific_fields": {
+            "reasoning": "We need to determine appropriate charge(s) for the case.\n\nFacts: Defendant Li transported poppy shells and poppy seeds (opium poppy plant parts) from Ruili to Kunming. Seized 680.08 kg poppy shells and 1185.1 kg poppy seeds. The prosecution says charges: transport of narcotics (运输毒品罪) and illegal transport of drug plant seeds (非法运输毒品原植物种子罪). In the label list, we have \"非法持有毒品\" etc. But we need to find label for transporting drug raw plant material. The list includes \"非法种植毒品原植物\" (illegal cultivation of drug raw plants) but not transport. There's \"非法运输毒品\" maybe? Let's scan list: I see \"非法持有毒品\", \"非法种植毒品原植物\", \"非法买卖制毒物品\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\". For drug transport, there is not explicit label. However earlier examples: For transporting poppy seeds, they used \"运输毒品罪、非法运输毒品原植物种子罪\". The label list may have \"非法运输毒品原植物种子罪\"? Not present. But maybe they use \"非法运输毒品\" as a label? Not in list. Let's examine list again: It includes \"非法持有毒品\", \"非法种植毒品原植物\", \"非法买卖制毒物品\". No transport. Could be \"走私国家禁止进出口的货物、物品\" but that's for smuggling across borders. This is internal transport, not smuggling. Could be \"非法运输毒品\" but not in list.\n\nMaybe they categorize as \"非法持有毒品\" (since they have large amount). But they are transporting, not just possessing. However the list may not have a specific transport label, so they might use \"非法持有毒品\". In earlier examples, they used \"非法持有毒品\" for possession. For transport, maybe they use \"非法运输毒品\" but not in list. Let's search list: I see \"非法运输毒品原植物种子罪\" not present. So we need to choose best matching label from list.\n\nThe list includes \"非法持有毒品\". That seems appropriate as they had large quantity. Also \"非法种植毒品原植物\" is about cultivation, not transport. So likely answer: \"非法持有毒品\". But also maybe \"走私国家禁止进出口的货物、物品\" because poppy seeds are controlled and crossing border? They were moving from Ruili (border area) to Kunming, but within China. Not crossing international border. So not smuggling.\n\nThus final answer: [罪名]非法持有毒品<eoa>\n\nCheck if any other label needed: maybe \"非法运输毒品\" not in list, so only one.\n\nReturn JSON with reasoning and final answer.\n\n",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate charge(s) for the case.\n\nFacts: Defendant Li transported poppy shells and poppy seeds (opium poppy plant parts) from Ruili to Kunming. Seized 680.08 kg poppy shells and 1185.1 kg poppy seeds. The prosecution says charges: transport of narcotics (运输毒品罪) and illegal transport of drug plant seeds (非法运输毒品原植物种子罪). In the label list, we have \"非法持有毒品\" etc. But we need to find label for transporting drug raw plant material. The list includes \"非法种植毒品原植物\" (illegal cultivation of drug raw plants) but not transport. There's \"非法运输毒品\" maybe? Let's scan list: I see \"非法持有毒品\", \"非法种植毒品原植物\", \"非法买卖制毒物品\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\". For drug transport, there is not explicit label. However earlier examples: For transporting poppy seeds, they used \"运输毒品罪、非法运输毒品原植物种子罪\". The label list may have \"非法运输毒品原植物种子罪\"? Not present. But maybe they use \"非法运输毒品\" as a label? Not in list. Let's examine list again: It includes \"非法持有毒品\", \"非法种植毒品原植物\", \"非法买卖制毒物品\". No transport. Could be \"走私国家禁止进出口的货物、物品\" but that's for smuggling across borders. This is internal transport, not smuggling. Could be \"非法运输毒品\" but not in list.\n\nMaybe they categorize as \"非法持有毒品\" (since they have large amount). But they are transporting, not just possessing. However the list may not have a specific transport label, so they might use \"非法持有毒品\". In earlier examples, they used \"非法持有毒品\" for possession. For transport, maybe they use \"非法运输毒品\" but not in list. Let's search list: I see \"非法运输毒品原植物种子罪\" not present. So we need to choose best matching label from list.\n\nThe list includes \"非法持有毒品\". That seems appropriate as they had large quantity. Also \"非法种植毒品原植物\" is about cultivation, not transport. So likely answer: \"非法持有毒品\". But also maybe \"走私国家禁止进出口的货物、物品\" because poppy seeds are controlled and crossing border? They were moving from Ruili (border area) to Kunming, but within China. Not crossing international border. So not smuggling.\n\nThus final answer: [罪名]非法持有毒品<eoa>\n\nCheck if any other label needed: maybe \"非法运输毒品\" not in list, so only one.\n\nReturn JSON with reasoning and final answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": "We need to determine appropriate charge(s) for the case.\n\nFacts: Defendant Li transported poppy shells and poppy seeds (opium poppy plant parts) from Ruili to Kunming. Seized 680.08 kg poppy shells and 1185.1 kg poppy seeds. The prosecution says charges: transport of narcotics (运输毒品罪) and illegal transport of drug plant seeds (非法运输毒品原植物种子罪). In the label list, we have \"非法持有毒品\" etc. But we need to find label for transporting drug raw plant material. The list includes \"非法种植毒品原植物\" (illegal cultivation of drug raw plants) but not transport. There's \"非法运输毒品\" maybe? Let's scan list: I see \"非法持有毒品\", \"非法种植毒品原植物\", \"非法买卖制毒物品\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\". For drug transport, there is not explicit label. However earlier examples: For transporting poppy seeds, they used \"运输毒品罪、非法运输毒品原植物种子罪\". The label list may have \"非法运输毒品原植物种子罪\"? Not present. But maybe they use \"非法运输毒品\" as a label? Not in list. Let's examine list again: It includes \"非法持有毒品\", \"非法种植毒品原植物\", \"非法买卖制毒物品\". No transport. Could be \"走私国家禁止进出口的货物、物品\" but that's for smuggling across borders. This is internal transport, not smuggling. Could be \"非法运输毒品\" but not in list.\n\nMaybe they categorize as \"非法持有毒品\" (since they have large amount). But they are transporting, not just possessing. However the list may not have a specific transport label, so they might use \"非法持有毒品\". In earlier examples, they used \"非法持有毒品\" for possession. For transport, maybe they use \"非法运输毒品\" but not in list. Let's search list: I see \"非法运输毒品原植物种子罪\" not present. So we need to choose best matching label from list.\n\nThe list includes \"非法持有毒品\". That seems appropriate as they had large quantity. Also \"非法种植毒品原植物\" is about cultivation, not transport. So likely answer: \"非法持有毒品\". But also maybe \"走私国家禁止进出口的货物、物品\" because poppy seeds are controlled and crossing border? They were moving from Ruili (border area) to Kunming, but within China. Not crossing international border. So not smuggling.\n\nThus final answer: [罪名]非法持有毒品<eoa>\n\nCheck if any other label needed: maybe \"非法运输毒品\" not in list, so only one.\n\nReturn JSON with reasoning and final answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 760,
+      "prompt_tokens": 17788,
+      "total_tokens": 18548,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 631,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0032382,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0032382,
+        "upstream_inference_prompt_cost": 0.0026682,
+        "upstream_inference_completions_cost": 0.00057
+      }
+    }
+  },
+  "raw_response_missing": false
+}

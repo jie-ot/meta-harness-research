@@ -1,0 +1,72 @@
+{
+  "call_id": "301ee623a867486cb5b9f9f0812b2727",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791018802-RJdkOfEazGeGRimB0av0",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When extracting the crime name, output the exact statutory offense term (e.g., “行贿”) without adding descriptive prefixes or qualifiers such as “对国家工作人员”。\",\n  \"keywords\": [\n    \"对国家工作人员行贿\",\n    \"行贿罪\",\n    \"罪名提取\",\n    \"简洁罪名\",\n    \"法律条文名称\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with a rule to prevent the classification error. The error: The AI predicted \"[罪名]对国家工作人员行贿<eoa>\" but correct answer is \"行贿\". The issue is that the AI added extra words \"对国家工作人员行贿\" which is not the correct label; the correct label is just \"行贿\". So rule: Use the exact statutory crime name without extra qualifiers like \"对国家工作人员\". Also ensure to match the term used in Chinese criminal law: \"行贿\" vs \"对国家工作人员行贿\". So rule: When extracting the crime, select the concise legal term as used in the law, not a descriptive phrase.\n\nKeywords: \"对国家工作人员行贿\", \"行贿罪\", \"犯罪名称\", \"简洁罪名\", \"法律条文名称\", \"去除前置词\".\n\nLet's craft JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with a rule to prevent the classification error. The error: The AI predicted \"[罪名]对国家工作人员行贿<eoa>\" but correct answer is \"行贿\". The issue is that the AI added extra words \"对国家工作人员行贿\" which is not the correct label; the correct label is just \"行贿\". So rule: Use the exact statutory crime name without extra qualifiers like \"对国家工作人员\". Also ensure to match the term used in Chinese criminal law: \"行贿\" vs \"对国家工作人员行贿\". So rule: When extracting the crime, select the concise legal term as used in the law, not a descriptive phrase.\n\nKeywords: \"对国家工作人员行贿\", \"行贿罪\", \"犯罪名称\", \"简洁罪名\", \"法律条文名称\", \"去除前置词\".\n\nLet's craft JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with a rule to prevent the classification error. The error: The AI predicted \"[罪名]对国家工作人员行贿<eoa>\" but correct answer is \"行贿\". The issue is that the AI added extra words \"对国家工作人员行贿\" which is not the correct label; the correct label is just \"行贿\". So rule: Use the exact statutory crime name without extra qualifiers like \"对国家工作人员\". Also ensure to match the term used in Chinese criminal law: \"行贿\" vs \"对国家工作人员行贿\". So rule: When extracting the crime, select the concise legal term as used in the law, not a descriptive phrase.\n\nKeywords: \"对国家工作人员行贿\", \"行贿罪\", \"犯罪名称\", \"简洁罪名\", \"法律条文名称\", \"去除前置词\".\n\nLet's craft JSON.",
+            "reasoning_content": "We need to produce a JSON with a rule to prevent the classification error. The error: The AI predicted \"[罪名]对国家工作人员行贿<eoa>\" but correct answer is \"行贿\". The issue is that the AI added extra words \"对国家工作人员行贿\" which is not the correct label; the correct label is just \"行贿\". So rule: Use the exact statutory crime name without extra qualifiers like \"对国家工作人员\". Also ensure to match the term used in Chinese criminal law: \"行贿\" vs \"对国家工作人员行贿\". So rule: When extracting the crime, select the concise legal term as used in the law, not a descriptive phrase.\n\nKeywords: \"对国家工作人员行贿\", \"行贿罪\", \"犯罪名称\", \"简洁罪名\", \"法律条文名称\", \"去除前置词\".\n\nLet's craft JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 285,
+      "prompt_tokens": 643,
+      "total_tokens": 928,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 7.7086e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 7.7086e-05,
+        "upstream_inference_prompt_cost": 2.3791e-05,
+        "upstream_inference_completions_cost": 5.3295e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

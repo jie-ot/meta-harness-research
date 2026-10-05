@@ -1,0 +1,27 @@
+Grep
+
+-n: True
+output_mode: content
+path:
+D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_a\text_classification\meta_harness.py
+
+pattern: run-name|run_name|EVOLVE_DIR =|reports
+
+--- output ---
+7:    uv run python meta_harness.py --iterations 10 --run-name my-run
+8:    uv run python meta_harness.py --run-name my-run --test
+31:EVOLVE_DIR = Path(__file__).parent
+36:# These are updated per-run if --run-name is set
+192:            "Use reports/ for short diagnosis. Stay within this run's working directory.\n"
+202:        f"- `{LOGS_DIR / 'reports'}/` — post-eval reports\n"
+474:    # Isolate run outputs under run-name subdirs
+475:    if args.run_name:
+476:        run_name = args.run_name
+478:        run_name = datetime.now().strftime("%Y%m%d_%H%M%S")
+479:    LOGS_DIR = EVOLVE_DIR / "logs" / run_name
+505:            f"ERROR: run '{run_name}' is finalized; use a new --run-name to continue evolution"
+514:        f"run={_cyan(run_name)}  model={_cyan(args.model)}  "
+726:        f"Finalize once with: uv run python meta_harness.py --run-name {run_name} --test"
+748:        "--run-name",
+777:    if args.test and not args.run_name:
+778:        parser.error("--test requires --run-name")

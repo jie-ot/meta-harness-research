@@ -1,0 +1,29 @@
+Write: logs\20260925_200856\pending_eval.json
+
+content:
+{
+  "iteration": 1,
+  "candidates": [
+    {
+      "name": "contrastive_error_memory",
+      "file": "agents/contrastive_error_memory.py",
+      "hypothesis": "Showing errors with explicit wrong/correct contrast (✗ Wrong / ✓ Correct) will outperform plain Q/A fewshot, because the model can learn what to avoid rather than only what to imitate.",
+      "axis": "exploitation",
+      "base_system": "fewshot_memory",
+      "components": ["contrastive_pairs", "error_priority", "separated_pools"]
+    },
+    {
+      "name": "reflexion_memory",
+      "file": "agents/reflexion_memory.py",
+      "hypothesis": "LLM-distilled lessons from error batches will provide denser, more transferable guidance than raw fewshot examples, improving accuracy especially when the label space is large and examples are sparse per class.",
+      "axis": "exploration",
+      "base_system": "no_memory",
+      "components": ["llm_synthesis", "lesson_distillation", "deduplication", "lesson_plus_examples"]
+    }
+  ]
+}
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\pending_eval.json (file state is current in your context — no need to Read it back)

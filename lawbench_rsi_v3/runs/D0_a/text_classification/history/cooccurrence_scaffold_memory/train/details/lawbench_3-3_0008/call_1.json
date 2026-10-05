@@ -1,0 +1,72 @@
+{
+  "call_id": "4aa31a6479564a6f98a419399f1d58b5",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791035549-qsVmMYbx7kHpOV94EnMW",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant broke into the victim's residence with the intent to steal but did not obtain any property. This constitutes the crime of theft (盗窃) and, because the theft was not completed, it is an attempted theft (盗窃未遂). The appropriate charge label used in the dataset for theft, including attempted theft, is \\\"盗窃\\\". No other facts support additional charges.\",\n  \"final_answer\": \"[罪名]盗窃<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the charge(s) for this case. Facts: burglary (breaking and entering) with intent to steal, but no property taken. This is theft attempt (盗窃未遂). In Chinese criminal law, the crime is 盗窃罪 (theft) and if attempted, it's 盗窃未遂. The label used in examples: they use \"盗窃\" for theft. For attempted, they still label as \"盗窃\". In earlier examples, for attempted theft they used \"盗窃\". Example: earlier case with \"盗窃;非法狩猎\" they had theft. For attempted, they said \"犯罪未遂，依法可比照既遂犯从轻处罚\". The label likely \"盗窃\". No other companion charges listed. The instruction: \"Companion charge check — the primary charge is likely [重大责任事故]. These charges frequently co-occur with it in training; include each ONLY if the case facts support it: - 诈骗 (co-occurred 1x)\". This seems unrelated; maybe a template. For this case, primary charge is theft. No fraud. So answer: [罪名]盗窃<eoa>. Need JSON format: {\"reasoning\":\"...\",\"final_answer\":\"[罪名]盗窃<eoa>\"} but they want final answer between [罪名] and <eoa>. Actually format: - Single: [罪名]盗窃<eoa>. So final answer string should be that. In JSON, final_answer field should contain that string. Provide reasoning.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the charge(s) for this case. Facts: burglary (breaking and entering) with intent to steal, but no property taken. This is theft attempt (盗窃未遂). In Chinese criminal law, the crime is 盗窃罪 (theft) and if attempted, it's 盗窃未遂. The label used in examples: they use \"盗窃\" for theft. For attempted, they still label as \"盗窃\". In earlier examples, for attempted theft they used \"盗窃\". Example: earlier case with \"盗窃;非法狩猎\" they had theft. For attempted, they said \"犯罪未遂，依法可比照既遂犯从轻处罚\". The label likely \"盗窃\". No other companion charges listed. The instruction: \"Companion charge check — the primary charge is likely [重大责任事故]. These charges frequently co-occur with it in training; include each ONLY if the case facts support it: - 诈骗 (co-occurred 1x)\". This seems unrelated; maybe a template. For this case, primary charge is theft. No fraud. So answer: [罪名]盗窃<eoa>. Need JSON format: {\"reasoning\":\"...\",\"final_answer\":\"[罪名]盗窃<eoa>\"} but they want final answer between [罪名] and <eoa>. Actually format: - Single: [罪名]盗窃<eoa>. So final answer string should be that. In JSON, final_answer field should contain that string. Provide reasoning.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine the charge(s) for this case. Facts: burglary (breaking and entering) with intent to steal, but no property taken. This is theft attempt (盗窃未遂). In Chinese criminal law, the crime is 盗窃罪 (theft) and if attempted, it's 盗窃未遂. The label used in examples: they use \"盗窃\" for theft. For attempted, they still label as \"盗窃\". In earlier examples, for attempted theft they used \"盗窃\". Example: earlier case with \"盗窃;非法狩猎\" they had theft. For attempted, they said \"犯罪未遂，依法可比照既遂犯从轻处罚\". The label likely \"盗窃\". No other companion charges listed. The instruction: \"Companion charge check — the primary charge is likely [重大责任事故]. These charges frequently co-occur with it in training; include each ONLY if the case facts support it: - 诈骗 (co-occurred 1x)\". This seems unrelated; maybe a template. For this case, primary charge is theft. No fraud. So answer: [罪名]盗窃<eoa>. Need JSON format: {\"reasoning\":\"...\",\"final_answer\":\"[罪名]盗窃<eoa>\"} but they want final answer between [罪名] and <eoa>. Actually format: - Single: [罪名]盗窃<eoa>. So final answer string should be that. In JSON, final_answer field should contain that string. Provide reasoning.",
+            "refusal": null,
+            "reasoning_content": "We need to determine the charge(s) for this case. Facts: burglary (breaking and entering) with intent to steal, but no property taken. This is theft attempt (盗窃未遂). In Chinese criminal law, the crime is 盗窃罪 (theft) and if attempted, it's 盗窃未遂. The label used in examples: they use \"盗窃\" for theft. For attempted, they still label as \"盗窃\". In earlier examples, for attempted theft they used \"盗窃\". Example: earlier case with \"盗窃;非法狩猎\" they had theft. For attempted, they said \"犯罪未遂，依法可比照既遂犯从轻处罚\". The label likely \"盗窃\". No other companion charges listed. The instruction: \"Companion charge check — the primary charge is likely [重大责任事故]. These charges frequently co-occur with it in training; include each ONLY if the case facts support it: - 诈骗 (co-occurred 1x)\". This seems unrelated; maybe a template. For this case, primary charge is theft. No fraud. So answer: [罪名]盗窃<eoa>. Need JSON format: {\"reasoning\":\"...\",\"final_answer\":\"[罪名]盗窃<eoa>\"} but they want final answer between [罪名] and <eoa>. Actually format: - Single: [罪名]盗窃<eoa>. So final answer string should be that. In JSON, final_answer field should contain that string. Provide reasoning."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 447,
+      "prompt_tokens": 23658,
+      "total_tokens": 24105,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 336,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00129465,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00129465,
+        "upstream_inference_prompt_cost": 0.0011829,
+        "upstream_inference_completions_cost": 0.00011175
+      }
+    }
+  },
+  "raw_response_missing": false
+}

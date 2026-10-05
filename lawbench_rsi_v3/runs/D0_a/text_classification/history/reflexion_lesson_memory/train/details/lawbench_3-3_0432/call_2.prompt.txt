@@ -1,0 +1,24 @@
+An AI classifier made an error on this case. Generate a compact correction lesson.
+
+**Correct label:** 伪造、变造、买卖国家机关公文、证件、印章
+**Wrong prediction:** [罪名]伪造、变造居民身份证<eoa>
+**Case facts (excerpt):**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，2014年10月9日下午，被告人黄某在珠海市香洲区汽车总站水晶堡附近路边，以人民币20元的价格，将一本《流动人口婚育证明》贩卖给黎某。同年10月11日，被告人黄某被抓获。经查，上述《流动人口婚育证明》系伪造。
+上述事实，被告人黄某在开庭审理过程中亦无异议，并有证人黎某的证言及辨认笔录，抓获经过，接受证据材料清单，户籍证明，现场及物证照片，证明等证据证实，足以认定。
+
+
+Write a lesson that:
+1. States the KEY distinguishing feature that determines the correct label
+2. Explains what makes this different from "[罪名]伪造、变造居民身份证<eoa>"
+3. Gives a brief rule a classifier can apply to future cases
+
+Respond only in JSON:
+{"lesson": "<one to three sentences, in the same language as the case facts>", "final_answer": "伪造、变造、买卖国家机关公文、证件、印章"}

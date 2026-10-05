@@ -1,0 +1,21 @@
+{
+  "iteration": 2,
+  "candidates": [
+    {
+      "name": "confusion_lesson_memory",
+      "file": "agents/confusion_lesson_memory.py",
+      "hypothesis": "For each wrong prediction, calling the LLM once to distill a corrective lesson ('when you see X prefer Y over Z because...') and injecting the top-k most similar lessons as an explicit advisory section in the prompt will reduce fine-grained charge confusion errors that raw Q/A examples cannot encode as explicit rules.",
+      "axis": "exploitation",
+      "base_system": "label_glossary_memory",
+      "components": ["llm_generated_lessons", "lesson_retrieval_jaccard", "lesson_injection_prompt_section", "label_glossary", "cjk_bigram_tokenizer"]
+    },
+    {
+      "name": "mmr_diversity_memory",
+      "file": "agents/mmr_diversity_memory.py",
+      "hypothesis": "Replacing Jaccard top-k retrieval with Maximal Marginal Relevance (lam=0.6) will reduce multi-label omissions by ensuring the retrieved example set spans multiple charge families rather than clustering around one neighbourhood, giving the LLM at least one multi-charge exemplar when the query facts describe concurrent behaviours.",
+      "axis": "exploration",
+      "base_system": "label_glossary_memory",
+      "components": ["mmr_selection", "mmr_pool_prefilter", "label_glossary", "cjk_bigram_tokenizer", "jaccard_similarity"]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+An AI classifier made an error on this case. Generate a compact correction lesson.
+
+**Correct label:** 盗窃;开设赌场
+**Wrong prediction:** [罪名]盗窃<eoa>
+**Case facts (excerpt):**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:温州市龙湾区人民检察院指控：2011年6月12日晚，被告人周1某来到龙湾区蒲州街道大罗山路19街606室被害人黄某的住所，撬锁进入实施盗窃，未窃得财物。公安机关在现场勘验时在房内桌子抽屉表面提取到一枚汗潜手印，经鉴定，该手印系周1某右手拇指所留。
+对于以上指控事实，公诉机关提供了相应的证据。公诉机关认为，被告人周1某的行为已触犯《中华人民共和国刑法》××之规定，构成××，应予处罚。被告人周1某已经着手实施犯罪，因意志以外的原因而未得逞，系犯罪未遂，依法可比照既遂犯从轻处罚；被告人周1某因犯××被判决宣告以后，刑罚执行完毕以前，发现其在判决宣告以前还有漏罪没有判决，应对其数罪并罚。
+
+
+Write a lesson that:
+1. States the KEY distinguishing feature that determines the correct label
+2. Explains what makes this different from "[罪名]盗窃<eoa>"
+3. Gives a brief rule a classifier can apply to future cases
+
+Respond only in JSON:
+{"lesson": "<one to three sentences, in the same language as the case facts>", "final_answer": "盗窃;开设赌场"}

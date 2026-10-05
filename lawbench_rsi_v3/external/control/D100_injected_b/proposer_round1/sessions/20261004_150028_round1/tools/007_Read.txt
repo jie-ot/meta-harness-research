@@ -1,0 +1,27 @@
+Read: .prototypes\_probe.py
+
+
+--- output ---
+1	"""Probe: what can a .prototypes script import here?"""
+2	
+3	report = []
+4	
+5	try:
+6	    import importlib
+7	
+8	    mod = importlib.import_module("text_classification.memory_system")
+9	    report.append(("text_classification.memory_system", "OK"))
+10	except Exception as exc:
+11	    report.append(("text_classification.memory_system", f"{type(exc).__name__}: {exc}"))
+12	
+13	try:
+14	    import importlib
+15	
+16	    mod = importlib.import_module("text_classification.agents.confusion_disambiguation_memory")
+17	    report.append(("agents.confusion_disambiguation_memory", "OK"))
+18	except Exception as exc:
+19	    report.append(("agents.confusion_disambiguation_memory", f"{type(exc).__name__}: {exc}"))
+20	
+21	for name, status in report:
+22	    print(f"{name}: {status}")
+23	

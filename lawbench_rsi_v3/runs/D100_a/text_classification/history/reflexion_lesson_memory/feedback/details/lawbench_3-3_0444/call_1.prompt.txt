@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- If the factual description indicates that the defendants not only set traps and capture wild animals but also kill or cause the death of those protected species, the charge must include both “非法猎捕” an
+- If the factual description involves the theft or misappropriation of a species that is designated as a nationally protected plant or animal, the classification must include both the theft charge and t
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控，2015年4月份，在未办理狩猎证的情况下，被告人候某用网制捕鸟工具陆续在龙泉市龙渊街道一村北山路周边的竹山、后山等处捕捉野生画眉鸟51只，并将其中的18只分两次出售给丽水市莲都区秀山花鸟店老板蔡某，另外33只野生画眉鸟存放在其出租房内，后被龙泉市公安局森林分局民警当场抓获。
+经龙泉市林业局鉴定，被扣押的鸟类活体33只均为野生的画眉鸟，系浙江省一般保护陆生野生动物。
+据此，公诉机关认定被告人候某的行为构成××，提请本院依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

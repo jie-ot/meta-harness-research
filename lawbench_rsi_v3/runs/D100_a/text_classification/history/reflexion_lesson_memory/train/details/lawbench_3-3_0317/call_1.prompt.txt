@@ -1,0 +1,36 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+- If the facts only describe forging, altering, or selling state‑issued documents or certificates and do not contain any separate act of deceiving another party for financial gain, assign only the forge
+- If the facts describe a person in a managerial or official position receiving money or valuables in exchange for using their职务便利, classify the crime simply as "受贿" unless the source explicitly states 
+- When the conduct involves unauthorized tampering or manipulation of computer system data (e.g., modifying transaction packets) that causes the system to erroneously process false transactions and resu
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:莆田市涵江区人民检察院指控：
+一、××
+2013年初至2014年7月间，被告人黄3某以牟利为目的，提供“时时彩”赌博网站及参赌账户、密码后，利用赌博网站传输赌博数据，组织黄2某（另案处理）等人参与网络赌博活动，并招募黄2某担任下级代理，由黄2某接受参赌人员戴某、李某1等投注，赌资累计5364200元（人民币，下同）。
+二、××
+2013年1月至2014年7月间，被告人黄3某以牟利为目的，利用香港“六合彩”开奖信息、2014年世界杯足球比赛赛事信息、篮球比赛赛事信息作为赌博输赢参考，坐庄揽注，单独或伙同被告人吴1某清，组织黄2某、佘俊生等多名参赌人员进行竞猜对赌，具体事实如下：
+1．2013年初至2014年7月间，被告人黄3某利用香港“六合彩”开奖信息作为赌博输赢参考，坐庄揽注，与参赌人员黄2某发生赌资往来累计1562088元，与参赌人员杨1某高（另案处理）发生赌资往来累计7000元，与参赌人员龚某发生赌资往来累计787690元，与参赌人员黄1某发生赌资往来累计40000元，与参赌人员佘俊生发生赌资往来累计263182元，与参赌人员周丽某发生赌资往来累计1800元，与参赌人员杨4某发生赌资往来累计7264元，与参赌人员“飞哥”（身份待查）发生赌资往来累计13800元。其间，吴1某清受黄3某纠集为其提供揽注、招徕赌徒、赌资结算等帮助，与参赌人员龚某、黄1某、佘俊生、周丽某、杨4某、“飞哥”发生赌资往来累计1113736元。
+2．2014年6月至7月间，被告人黄3某利用2014年世界杯足球比赛赛事信息作为赌博输赢参考，坐庄揽注，并纠集被告人吴1某清为其提供揽注、招徕赌徒、赌资结算等帮助，与参赌人员吴某发生赌资往来累计149000元，与参赌人员姚1某才发生赌资往来累计150050元，与参赌人员郑1某发生赌资往来累计212000元，与参赌人员郑3某发生赌资往来累计243737元，与参赌人员杨某1发生赌资往来累计654970元。
+3．2014年间，被告人黄3某利用篮球比赛赛事信息作为赌博输赢参考，坐庄揽注，并委托被告人吴1某清为其提供揽注、赌资结算等帮助，与参赌人员“进财”（身份待查）发生赌资往来累计46753元。
+案发后，被告人吴1某清于2015年12月22日向公安机关投案，后在取保候审期间协助公安机关动员孙某（已判决）回国投案。
+指控上述事实，公诉机关提供了相应的证据证明。公诉机关认为，被告人黄3某利用赌博网站组织“时时彩”赌博活动，并为赌博网站招募下级代理，由下级代理接受投注，赌资累计5364200元，情节严重；又单独或伙同被告人吴1某清利用香港“六合彩”开奖信息、足球和篮球赛事信息，聚众赌博，赌资累计4139334元，其行为触犯了《中华人民共和国刑法》××××、××、××××，应当以××、××追究其刑事责任，且在共同犯罪中起主要作用，属主犯，应当按照其所参与的全部犯罪处罚。被告人黄3某在前罪判决宣告后发现漏罪，应当实行数罪并罚。被告人吴1某清伙同被告人黄3某利用香港“六合彩”开奖信息、足球和篮球赛事信息，聚众赌博，赌资累计2570246元，其行为触犯了《中华人民共和国刑法》××××、××××，应当以××追究其刑事责任，且在共同犯罪中起次要作用，属从犯，应当从轻处罚。被告人吴1某清在取保候审期间动员犯罪在逃人员回国投案，属立功，可以从轻处罚。提请依法分别判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

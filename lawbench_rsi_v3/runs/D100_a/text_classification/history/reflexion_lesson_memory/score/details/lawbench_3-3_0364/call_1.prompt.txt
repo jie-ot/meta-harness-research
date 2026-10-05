@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When extracting the crime name, output the exact statutory offense term (e.g., “行贿”) without adding descriptive prefixes or qualifiers such as “对国家工作人员”。
+- If the factual description indicates that the offender used their official position or entrusted authority to appropriate property for personal gain, rather than physically taking or stealthily removi
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:上海市青浦区人民检察院根据被告人金某甲的供述笔录，被害人顾某甲、顾某乙、顾某丙的陈述笔录，证人金某乙、张某、倪某某、陆某某、唐某某、朱某某的证言及相关辨认笔录，监控录像、工作情况，扣押决定书、扣押笔录、扣押清单、扣押物品照片、侦查实验，火灾现场勘验情况、现场勘验笔录，残疾人证、华东政法大学司法鉴定中心司法鉴定意见书，案发（抓获）经过，被告人的户籍资料等证据指控，2016年10月28日22时许，被告人金某甲因发泄私愤，至上海市青浦区香花桥街道金米村金横8号被害人顾某甲、顾某乙、顾某丙三兄弟的房屋内，用随身携带的可助燃的液体、细竹等物点火引燃屋内家具，后又行至屋外将门口的沙发引燃后离开。不久，火势蔓延，将该房屋烧毁，后消防人员至现场将火势扑灭。被告人金某甲到案后如实供述了上述事实。
+据此，公诉机关认为，被告人金某甲故意放火焚烧他人财物，危害公共安全，尚未造成严重后果，其行为已构成××。被告人金某甲到案后如实供述了自己的罪行，依法可以从轻处罚。被告人金某甲系尚未完全丧失辨认或者控制自己行为能力的精神病人犯罪的，应当负刑事责任，但是可以从轻或者减轻处罚。故提请本院依照《中华人民共和国刑法》××、××××、××××之规定，依法审判。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

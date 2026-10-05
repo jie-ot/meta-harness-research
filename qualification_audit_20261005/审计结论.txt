@@ -1,0 +1,156 @@
+Meta-Harness 第一个诊断：有界静态资格审计
+审计日期：2026-10-05。执行地点：用户电脑上的 Windows 工作区。
+工作区：D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness
+
+结论：可以继续做有限的离线 prefix 回放；不能把这些历史结果解释为 Sol / Max 结果，也不能用两轮 LawBench 轨迹验证 patience=3 或长程饱和。
+本阶段新增模型调用为 0。没有运行项目模块、生成器、评估器、测试或安装依赖；没有上传、发布或修改原文件。
+仅新建 qualification_audit_20261005/ 中的解析器、CSV、JSON 与本结论。原记录源哈希校验见 source_hashes.json 和 unchanged_source_check.json。
+
+1. 模型、额度与读取边界
+当前会话没有可核验的实际模型名或 reasoning effort。CODEX_MODEL 与 CODEX_REASONING_EFFORT 两个允许检查的非敏感状态变量均为空。
+当前线程 ID 与用户提供的来源线程 ID，在限定的 Codex 当天普通 session 记录目录中均未找到对应 rollout；没有读取其他线程正文，没有为查额度扩大搜索。
+可用工具没有 Codex 周额度查询接口，因此“剩余约14%”为用户报告，无法独立验证。没有重置、购买或启动嵌套模型请求，也没有主动选择替代模型。
+因此本审计的“GPT-6.1 Sol / Max 执行模型资格”仍为未认证，不能声称已满足。
+默认 Windows 受限沙箱启动失败；随后限定的只读 shell 命令获得审批并正常执行。目录真实可读，没有持续的权限阻塞。
+检查的仓库及两级上级目录未发现 AGENTS.md 或 .agents/skills。读取了 README、ONBOARDING、实验 README、.claude/skills/meta-harness/SKILL.md 与相关源码。
+仓库中的 evolution 技能仅作为历史实验约束接受审计；本任务没有执行其生成/原型/测试步骤。没有创建并行子任务。
+
+2. 实际实验分组、时间与 run ID
+用户口中的“三个实验”没有唯一名称。本审计按实际文件区分三组，保留 LawBench 内部原实验编号，避免误把它们混为同一轨迹。
+
+组A：文本分类复现。
+run ID：20260925_200856；路径 reference_examples/text_classification/logs/20260925_200856/。
+20轮、每轮2个生成候选、40个候选；其中原搜索有一个导入失败、一个benchmark失败。当前归档含42个系统（40候选+2基线）的126份validation及126份test汇总。
+finalized.json：started_at=2026-09-27T20:45:54.596335，completed_at=2026-09-28T00:16:17.301079，status=complete。原时间戳无时区，不能擅自转换为UTC。
+20个 proposer session ID 和原 timestamp 均写入 proposer_sessions.json；首轮例如 243a4494-2ca2-41d0-ae01-ff297513ecea。
+
+组B：LawBench v3 pilot，文件原编号为实验1（冻结版本重复测量）、实验2（第一轮D0/D100）、实验3（第二轮）；实验4明确未运行。
+正式搜索 run ID：D0_a、D0_b、D100_a、D100_b。每条2轮、每轮2候选，共16个正式候选、8次正式proposer会话、8个冻结选优checkpoint。
+analysis/timing_summary.json 记录原批次 first_request=2026-10-03T04:02:06.040610+00:00，last_result=2026-10-04T02:34:14.798224+00:00；该跨度含中断。
+原实验1/2/3汇总声明有8600题预测；这是已有报告的统计，本次没有重复运行其验证器。
+各checkpoint的精确UTC时间在 rounds.csv；每个stage的时间和配置在 evaluations.csv。四个训练stage的部分活动时长缺失，不能把elapsed span当模型运行时长。
+
+组C：100条反馈直接注入的补充实验。
+run ID：D100_injected_a、D100_injected_b；均只完成第一轮，共4个正式候选、2个最终proposer会话。既有报告记录10次付费proposer尝试，包含失败/续接。
+新候选train/score/audit合计1600题已有预测。两个选优checkpoint分别在2026-10-05T01:39:57.868684+00:00和2026-10-04T15:51:30.283506+00:00。
+analysis/injected_results.json 的既有复核时间为2026-10-05T02:06:02.958324+00:00、status=PASS。external/status.json 最终analyze complete时间为2026-10-05T02:06:11.333659+00:00。
+
+模型分组：本次提取的全部332份评价结果均记录 openrouter/openai/gpt-oss-120b。
+30个最终proposer记录（20原复现+8pilot+2补充）均记录 claude-opus-5-5-code / effort=high。没有任何一组可以称为 GPT-6.1 Sol / Max。
+proposer result的requested_models仅能证明所审阅记录的请求名，不能替代服务端路由与所有已归档失败尝试的完整证明；未展开108MB失败归档。
+
+3. 原始候选分、parent、incumbent 与选优
+完整表：candidates.csv（60候选）与 rounds.csv（30轮/选优点）。parent由历史pending_eval的base_system原字段提取；它是声明来源，不等价于已证明实际执行了copy-then-edit。
+已恢复40/40原候选的声明parent。parent_equals_observed_incumbent是精确名称比较；不推测名称别名等价，不把所有候选都说成从best修改。
+LawBench新候选每次重新建立空memory并按固定200题在线训练；代码parent不意味着继承parent的训练状态。共同H0是明确复制的既有训练memory。
+
+原复现：按三个数据集的validation准确率作宏平均，维护accuracy/context length的Pareto frontier；Pareto首项作为外层显示incumbent，同分还受context length与顺序影响。
+数据集内best另按accuracy优先、context length较短优先选取，所以global incumbent与三个数据集best不是同一对象。
+源码证据：benchmark.py:284、:674、:704；meta_harness.py:547、:638。
+evolution_summary的delta在更新frontier后计算（meta_harness.py:265），不能直接把该delta当相对上一轮incumbent的收益。
+
+原搜索结束后的修复必须剥离：
+hard_buffer_memory，第16轮原日志benchmark失败，avg_val显示0.0（evolve_out.log:1498、:1532），并不是取得了0/50的有效评价。
+当前summary已写回49.1并标记recovered_after_search；此数不能用于当时prefix。
+per_label_recent_memory，第19轮原日志导入失败（evolve_out.log:1861、:1864），原有效分为missing；当前summary写回45.6并标记recovered_after_search。
+post_search_recovery.csv另列6份后补validation结果，run ID=20260925_200856_recovery_20260927_184423。其recovery_note明确used_by_later_rounds=false。
+表中raw_validation_pp保留原运行记录，current_summary_validation_pp保留现有summary；失败状态另列，未以修复分补齐历史缺失。
+
+原前19轮的after incumbent均由下一轮原运行日志或同期工具读取快照证实：
+1 fewshot_all；2 similarity_retrieval_memory；3 label_champion_memory；4-5 confusion_disambiguation_memory；6 label_grouped_memory；7-12 adaptive_tokenizer_confusion_memory；13-18 decayed_confusion_memory；19 symmetric_confusion_memory。
+best-so-far（记录到一位小数）依次43.8、45.6、46.2、47.6、47.8、51.6、52.2；精确逐轮值见CSV。
+第20轮当前最终frontier首项是notation_adaptive_memory，但本次未找到同期after快照，无法排除后续更新；严格的当时incumbent标为missing，不据当前frontier推测补齐。
+
+LawBench只按固定100题score的correct计数选择；同分保留candidate_order中最早对象（通常H0/旧incumbent优先）。
+select_earliest在pilot/run_pilot.py:166；冻结checkpoint在:173；audit在checkpoint之后（:431-436）。没有按audit重选。
+
+run                 round1 新候选score   fixed incumbent score/audit       round2 新候选score  fixed incumbent score/audit
+D0_a                 38,39               reflexion_lesson 39/36            32,30              原incumbent 39/36
+D0_b                 39,37               bigram_confusion 39/36            31,32              原incumbent 39/36
+D100_a               38,23               chinese_bigram 38/36              43,36              label_vocab 43/41
+D100_b               41,46               label_glossary 46/48              41,42              原incumbent 46/48
+D100_injected_a      23,4                H0 32 / 共享冻结audit重复29、26     missing            missing
+D100_injected_b      36,31               label_lexicon_snap 36/42          missing            missing
+补充a的H0 audit 27.5是上述两个既有重复的均值，不是新复测，不把任何新候选audit替代H0。
+
+4. 已有每题结果、重复、独立audit 与数据证明
+原复现前19轮实际global incumbent均能映射到三个数据集已有test汇总：57个轮×数据集映射，但只有24个不同系统×数据集文件。同一incumbent跨轮复用一次test，不是每轮独立复测。
+第20轮严格incumbent missing；当前final frontier的notation与其同分symmetric各有三个test汇总，不能据test高低解决第20轮身份。
+原test目录抽查只有test.json，源码inner_loop.py:797-828只保存聚合字段；未持久化每题validation/test predictions。原训练log不等于每题test结果。
+原每个incumbent重复独立评价：missing。保存聚合test≠无历史污染的全新独立audit。
+
+LawBench每个正式新候选有训练memory、score结果和独立audit结果及每题轨迹；score/train/feedback有精简diagnostics和细节引用，audit保存audit_traces.jsonl及calls.jsonl。
+本次对6个不同已选新incumbent的score+audit共12份、1200题已有记录做有界核对：全部保存correct标记之和及题数与result.json一致，item ID各100个不重复。
+6份audit每题完整input与prompt字段均存在，没有发现[TRUNCATED]标记；只核对这些记录，不能把结果外推为所有日志均完整。
+共读取87,207,051字节相关每题记录，设定硬上限160MiB；精确核对结果见bounded_consistency_checks.json。未遍历巨型响应缓存、未展开归档、未运行原复核器。
+完整独立重复仅现存R4B、R7A、R12B三冻结版本各两次score/audit（既有noise_summary.csv）。这些不是四条新搜索轨迹中每个incumbent的重复测量。
+所有candidate和stage的现存汇总及实际logical/API/cache/retry数见evaluations.csv。
+
+LawBench manifest：外部官方固定commit=e30981bb3ff54c41571f222e0b23e92d27375388；manifest SHA256=486493d2b3b6241ff92aeca5d18e634b77fd48412ce6fdad1452406f65e1532d。
+train200（legacy）；score100（50旧validation+50新）；feedback100（新）；audit100（旧test）。split seed=20261003；训练顺序seed=42，manifest声明文件已经按执行顺序排列，禁止再次shuffle。
+本次重算四个split文件SHA256均与manifest一致；item ID跨split交集均为0。完整顺序、文件hash、source/legacy hash见split_evidence.json。
+既有data_audit还记录规范化精确题面重合为0；这不是语义去重证明。audit为旧test，先前已经做过全候选test，仍有历史暴露与公共数据污染边界。
+原复现数据为USPTO 50/30/100、Symptom2Disease 200/50/212、LawBench 200/50/100；各split由seed42打乱后取prefix（data/api.py:107-134）。原运行时顺序hash和不可变代码版本证明missing。
+共同模型temperature=0.0、max_tokens=16384、system prompt='Reasoning: medium'。训练seed控制数据顺序；LLM kwargs没有传服务端生成seed，不能宣称API输出完全确定。
+候选prompt模板在各agents文件；proposer prior在.claude/skills/meta-harness/SKILL.md，动态prompt入口分别meta_harness.py:168与engine版本:168，注入prompt在pilot/injected.py:124；具体记录路径随CSV及JSON提供。
+
+5. 静态调用图、retry、memory 与计费
+原生成链：run_evolve → render_task_prompt → propose_claude → claude_wrapper.run/Claude CLI → 多轮模型/tool交互 → 两候选pending_eval → import验证 → benchmark → inner_loop。
+一次proposer session同时生成A/B两个候选；不是每个candidate一次固定LLM调用。现存D0_a第一轮result记录22次API请求、21个logical消息，且包含会话交互而非22个候选。
+pilot生成链：round_run → propose → 受限CLI/本地relay → accept_completed_proposal（冻结框架及旧候选hash、校验A/B）→ 每候选train/score → 冻结checkpoint → audit。
+生成时的prototype/final import检查用fake LLM，不应增加solver调用；它们属于历史执行证据。本阶段未执行。
+
+evaluation链：worker.execute → load_pilot_split → load_memory_system → set_state(固定train memory) → evaluate_memory → 每题memory.predict → MemorySystem.call_llm → LLM.__call__ → ProviderLLM.generate/_generate_one → cache或litellm completion。
+在线train200题：每题先predict，再learn_from_batch；learn可以自己调用LLM。evaluate不调用learn，score/feedback/audit分别重新加载同一训练状态；可观察predict状态变化另记prediction_state_effect。
+worker签名包含run/candidate/round/D/phase、manifest和item顺序hash、代码/memory hash、模型配置、cache模式/绝对路径、engine hashes（worker.py:40-58）。六run冻结框架hash均与各initialized.json匹配。
+本项目被检查的主入口没有名为Q1/Q2/Q3的API阶段，也不是统一三次调用。若把训练预测、学习、评价当作三种功能，它们分别是predict、learn_from_batch、evaluate_memory中的predict；不能据Q1/Q2/Q3标签乘固定次数。
+
+真实调用例：
+confusion_disambiguation_memory.predict只调用一次LLM（:163-179）；learn_from_batch不调LLM。因此从新memory训练200题+score100题=至少300逻辑调用，再audit100题合计至少400，缓存与retry另算。
+reflexion_lesson_memory训练每题一次predict，错误且prediction非空时另生成lesson（D0_a agents文件:106-144），所以200题训练不一定只有200调用。
+canonical_charge_lexicon_memory.predict为空答案时再call（:238-259）；已存train/score/audit逻辑调用数221/105/113。
+act_decomposition_union_memory对每个分段act调用一次，解析空再调用一次（:285-326）；已有100题audit实际238逻辑调用、234 API请求、4缓存命中，不能计为1次或100次。
+API请求最低数与logical calls不同，且temperature=0也不保证独立重复无噪声。
+
+pilot API每逻辑调用最多4次尝试（首发+3retry），litellm显式num_retries=0（llm.py:259、:319）。401/403、不可重试错误或第4次失败停止；没有自动换模型。
+原provider外层tenacity最多6次（原llm.py:223），benchmark还最多重启整次job3次（benchmark.py:76）；失败后重复train/eval与缓存复用都可能发生，原llm_calls不是物理API计数。
+pilot逻辑调用在尝试前记录；失败、cache-hit、成功分别保留。无价失败cost=None并在ledger保留保守reservation；402信用拒绝释放预留但保留事件（state.py:170-187）。
+共同缓存key含版本、规范化model、api_base、system prompt、prompt、kwargs；不含run/candidate/split/item/代码hash。
+原默认共享~/.cache/text-classification/litellm（原llm.py:28），会跨run复用相同prompt响应；不应把cache-hit的0成本当独立测量。
+pilot强制off/run模式且run显式目录，controller按run隔离external/caches/<run>；同run内不同candidate/phase仍可能命中同一prompt。为独立重复必须预先规定cache-off或全新命名空间。
+baseline_cache_recovery.json记录明确H0恢复，补充run reused_stage复制既有H0测量；这不是新样本。缓存不含代码hash本身不证明串分，但prompt一致会减少重复独立性；未遍历cache验证全部来源。
+共同H0直接复制旧R4B训练memory；历史val.json的费用同时包含训练与50题validation，不能从旧记录准确分离纯memory构建成本，既有报告因此排除历史共享成本。
+
+原日志恢复：原meta_harness以summary最高iteration续跑，benchmark可重启whole job，失败候选曾在搜索结束后修复；没有完整物理失败调用ledger。
+pilot恢复：complete与签名/文件hash相符则复用；train保留逐step state，eval保留逐item prediction；未完成API计费先阻塞，完成并验证后才清除冗余中间checkpoint（worker.py:50、:61、:83、:113、:166）。
+已保存proposer失败、候选artifact与continuation；不因设计差重生成来替代完成候选。补充失败/续接仍应计入总成本，归档失败不能当作不存在。
+
+已有计费报告：原known/estimated=56.810708美元，其中setup failure=13.146295；另保留2.50美元unknown reservation。补充known=24.507324美元，其中失败CLI会话12.988909；合计约81.318032美元。
+这些是历史provider报告/日志估计，不是本阶段开支、不是现金发票，也不是Codex周额度。原计划8个proposer会话实际13个付费尝试；补充最终2个会话实际10个付费尝试。
+本次没有遍历18.6MB ledger及归档来独立重新对账；仅抽取已有accounting_review，核对已选incumbent的保存correct标记及汇总，并验证420个读取源文件未变化。摘要与原始记录的关键不一致是两个已标注的搜索后修复分数。
+
+6. 离线回放资格、偏差与最小新增调用
+可以：原前19轮可按当时记录的candidate结果、失败状态、观察到的incumbent，回放预先固定的round/candidate预算与validation patience规则；使用固定validation选择后查既有test。新增模型调用=0。
+第20轮已有两候选validation结果但严格after incumbent时间证明missing，最终同分选择应保留不确定，不按test解决。
+LawBench只可回放固定已有一/两轮prefix；补充只一轮。两轮不足以验证patience=3、长期饱和、完整停止后tail；不外推不存在的后续轮。
+未拟合epsilon、阈值、停止规则或训练预测器，没有开始下一实验。即便原20轮可作描述性回放，也只是单条adaptive搜索轨迹，不是随机化停止政策的因果验证。
+风险：validation反复使用与proposer读取每题score/答案产生选择偏差；宏平均有缺失dataset时可能改变比较口径；原test已公开并全候选可见，LawBench audit沿用旧test；语义近重复未证明排除；修复回填、失败重启/归档、固定20/2/1轮造成censoring；共享cache/共同H0和同seed限制独立性；旧模型不能混入SolMax结论。
+如果另行授权一次100题、一次predict调用的固定incumbent独立复测，关闭缓存且无失败时至少100个新solver逻辑调用/请求，不需要重训memory；pilot最多400次可见API尝试，不含proposer。
+若要求原8个已同期确认的不同global incumbent在三个test panel各做一次新独立复测，则简单单次predict机制下至少8×(100+212+100)=3296个solver逻辑调用（不是19次eval）。这只是按现有代码的条件预算，不是当前请求或SolMax接口保证。
+复杂候选必须逐代码计数，例如act按分段数与fallback增加；若改模型/改变memory训练流程，不能使用上述“保持旧memory”的复测预算代替重新训练预算。
+
+7. 云端迁移与正常独立请求路线
+本审计只在用户电脑执行，没有云端任务、上传、发布、迁移凭证或修改设置。
+本地HEAD=0cbc31e97c9e6d24232d1dc754827c02e1ec415c；origin=git@github.com:stanford-iris-lab/meta-harness.git。只能从本地证明配置了该上游，未查远端公开/私有状态，未找到个人私有远端的证据。
+多份核心复现源码/配置已本地修改；git ls-files lawbench_rsi_v3无输出，说明该补充目录未在当前Git索引跟踪。直接克隆上游不会包含本地修改、候选与日志。
+最小可核查离线迁移包：本地实际源码/配置及proposer skills；原logs目标run中的summary、候选memory、训练记录、session元数据/必要工具快照、results/test；后补recovery单独保留；lawbench engine/pilot/protocol/config、runs各固定框架与候选/history、external prepared_data/source/control/jobs/audit/noise/cost ledger、analysis与归档manifest。要保留全部历史失败证据再包含external归档ZIP。
+仅离线回放不需要模型凭证、服务账号、全局响应cache、.venv、个人Codex目录。不要把.env或认证文件放进迁移包；运行时凭证须通过目的平台正常授权另行配置。
+新的模型执行还要求Python>=3.11、锁定依赖、Claude CLI/proposer以及模型服务正常授权、并发与预算约束。pyproject列datasets、litellm==1.84.10、openai-harmony、tenacity、tqdm；pilot还使用PyYAML/python-dotenv，画图链使用matplotlib/numpy；实际安装环境未重新验证。
+run.ps1依赖Windows .venv\Scripts\python.exe，plot_python为本机绝对路径；JSON spec/checkpoint含绝对package/output/cache路径及其hash。移到云端后原路径签名会变，不能盲目Resume；必须另行设计并审阅迁移适配，不能改hash掩盖变化。
+state.file_lock含Windows与POSIX实现，核心逻辑可移植，但原Windows wrapper/CLI与新平台依赖需验证。本任务未进行这些适配或安装。
+本机正常Codex CLI帮助提供exec、--model、--config接口；只查看了help，没有启动exec会话。它说明存在原生CLI请求入口，但不证明本账号有GPT-6.1 Sol、Max的确切可用ID或额度。
+仓库被检查的入口没有SolMax/Codex solver实现；当前LLM通用层只传temperature/max_tokens，不能仅换模型名就保证reasoning Max。合法精确SolMax独立请求路线仍为未认证。
+后续只能使用平台正式支持并获用户授权的原生会话/CLI或正式API路径；不能复用订阅认证token自行构造API。没有查、读取或迁移任何认证值。
+
+剩余阻塞：实际SolMax/Max模型与正常周usage未认证；原第20轮同期最终incumbent、原每题validation/test预测与独立重复missing；长程LawBench tail不存在；云端实际环境及精确模型访问未建立。
+本次审计到此结束，等待下一实验安排。

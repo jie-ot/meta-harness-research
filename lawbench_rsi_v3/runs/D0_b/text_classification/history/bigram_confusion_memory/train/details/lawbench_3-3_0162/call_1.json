@@ -1,0 +1,72 @@
+{
+  "call_id": "406507b1ff9a4b6790147be39fb2ae7e",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791013476-Irt3JAJSeOXGBRbcl4ny",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The facts describe that the defendant participated in the production of methamphetamine (ice) using equipment and chemicals, and the prosecution charges him with manufacturing illegal drugs. The appropriate criminal charge under Chinese law is the crime of manufacturing narcotics.\",\n  \"final_answer\": \"[罪名]制造毒品<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the crime(s) based on facts. The facts: manufacturing methamphetamine (ice). So crime: 制造毒品罪 (manufacture of illegal drugs). Possibly also \"非法持有毒品\" but they seized the product, but the main charge is manufacturing. In examples, they output \"制造毒品\" or \"制造毒品罪\"? In earlier examples, they used \"容留他人吸毒\", \"滥伐林木\", \"失火\", \"盗窃;非法持有毒品\", \"违法发放贷款\", \"非法吸收公众存款\", \"走私珍贵动物、珍贵动物制品\", \"走私国家禁止进出口的货物、物品\", \"污染环境\", \"诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\", \"开设赌场\", \"抢夺\", \"过失致人死亡;破坏生产经营\", \"强制猥亵、侮辱妇女\", \"走私珍贵动物、珍贵动物制品\", etc. For drug manufacturing, they used \"制造毒品\". In example: \"事实:公诉机关指控：... 盗窃;非法持有毒品\". For manufacturing, we have example: \"事实:... 事实:... 盗窃;非法持有毒品\". Not manufacturing. Another example: \"事实:... 事实:... 盗窃;非法持有毒品\". No manufacturing example. But we have \"走私珍贵动物、珍贵动物制品\". So format: [罪名]制造毒品<eoa> maybe.\n\nCheck earlier: \"事实:... 事实:... 盗窃;非法持有毒品\". So they separate with semicolon. For single crime, they just put the name. Eg: \"容留他人吸毒\". So we should output \"[罪名]制造毒品<eoa>\".\n\nThus final answer JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the crime(s) based on facts. The facts: manufacturing methamphetamine (ice). So crime: 制造毒品罪 (manufacture of illegal drugs). Possibly also \"非法持有毒品\" but they seized the product, but the main charge is manufacturing. In examples, they output \"制造毒品\" or \"制造毒品罪\"? In earlier examples, they used \"容留他人吸毒\", \"滥伐林木\", \"失火\", \"盗窃;非法持有毒品\", \"违法发放贷款\", \"非法吸收公众存款\", \"走私珍贵动物、珍贵动物制品\", \"走私国家禁止进出口的货物、物品\", \"污染环境\", \"诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\", \"开设赌场\", \"抢夺\", \"过失致人死亡;破坏生产经营\", \"强制猥亵、侮辱妇女\", \"走私珍贵动物、珍贵动物制品\", etc. For drug manufacturing, they used \"制造毒品\". In example: \"事实:公诉机关指控：... 盗窃;非法持有毒品\". For manufacturing, we have example: \"事实:... 事实:... 盗窃;非法持有毒品\". Not manufacturing. Another example: \"事实:... 事实:... 盗窃;非法持有毒品\". No manufacturing example. But we have \"走私珍贵动物、珍贵动物制品\". So format: [罪名]制造毒品<eoa> maybe.\n\nCheck earlier: \"事实:... 事实:... 盗窃;非法持有毒品\". So they separate with semicolon. For single crime, they just put the name. Eg: \"容留他人吸毒\". So we should output \"[罪名]制造毒品<eoa>\".\n\nThus final answer JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to determine the crime(s) based on facts. The facts: manufacturing methamphetamine (ice). So crime: 制造毒品罪 (manufacture of illegal drugs). Possibly also \"非法持有毒品\" but they seized the product, but the main charge is manufacturing. In examples, they output \"制造毒品\" or \"制造毒品罪\"? In earlier examples, they used \"容留他人吸毒\", \"滥伐林木\", \"失火\", \"盗窃;非法持有毒品\", \"违法发放贷款\", \"非法吸收公众存款\", \"走私珍贵动物、珍贵动物制品\", \"走私国家禁止进出口的货物、物品\", \"污染环境\", \"诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\", \"开设赌场\", \"抢夺\", \"过失致人死亡;破坏生产经营\", \"强制猥亵、侮辱妇女\", \"走私珍贵动物、珍贵动物制品\", etc. For drug manufacturing, they used \"制造毒品\". In example: \"事实:公诉机关指控：... 盗窃;非法持有毒品\". For manufacturing, we have example: \"事实:... 事实:... 盗窃;非法持有毒品\". Not manufacturing. Another example: \"事实:... 事实:... 盗窃;非法持有毒品\". No manufacturing example. But we have \"走私珍贵动物、珍贵动物制品\". So format: [罪名]制造毒品<eoa> maybe.\n\nCheck earlier: \"事实:... 事实:... 盗窃;非法持有毒品\". So they separate with semicolon. For single crime, they just put the name. Eg: \"容留他人吸毒\". So we should output \"[罪名]制造毒品<eoa>\".\n\nThus final answer JSON with reasoning and final answer.",
+            "reasoning_content": "We need to determine the crime(s) based on facts. The facts: manufacturing methamphetamine (ice). So crime: 制造毒品罪 (manufacture of illegal drugs). Possibly also \"非法持有毒品\" but they seized the product, but the main charge is manufacturing. In examples, they output \"制造毒品\" or \"制造毒品罪\"? In earlier examples, they used \"容留他人吸毒\", \"滥伐林木\", \"失火\", \"盗窃;非法持有毒品\", \"违法发放贷款\", \"非法吸收公众存款\", \"走私珍贵动物、珍贵动物制品\", \"走私国家禁止进出口的货物、物品\", \"污染环境\", \"诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\", \"开设赌场\", \"抢夺\", \"过失致人死亡;破坏生产经营\", \"强制猥亵、侮辱妇女\", \"走私珍贵动物、珍贵动物制品\", etc. For drug manufacturing, they used \"制造毒品\". In example: \"事实:公诉机关指控：... 盗窃;非法持有毒品\". For manufacturing, we have example: \"事实:... 事实:... 盗窃;非法持有毒品\". Not manufacturing. Another example: \"事实:... 事实:... 盗窃;非法持有毒品\". No manufacturing example. But we have \"走私珍贵动物、珍贵动物制品\". So format: [罪名]制造毒品<eoa> maybe.\n\nCheck earlier: \"事实:... 事实:... 盗窃;非法持有毒品\". So they separate with semicolon. For single crime, they just put the name. Eg: \"容留他人吸毒\". So we should output \"[罪名]制造毒品<eoa>\".\n\nThus final answer JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 557,
+      "prompt_tokens": 24949,
+      "total_tokens": 25506,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 488,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0013867,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0013867,
+        "upstream_inference_prompt_cost": 0.00124745,
+        "upstream_inference_completions_cost": 0.00013925
+      }
+    }
+  },
+  "raw_response_missing": false
+}

@@ -1,0 +1,72 @@
+{
+  "call_id": "e815b3c769ee4e51b7fe79d2b60e8a35",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791128255-nuHfdaPcuW9PMLainjVN",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendants were village officials who abused their positions to manipulate public land and social insurance resources for personal gain. They collected large sums of cash from relatives by falsely claiming fees for processing loss-of-land farmer pension insurance, and they allocated public land to individuals to qualify for insurance benefits, effectively defrauding the state and the victims. This conduct constitutes fraud (诈骗) for deceiving the victims and misappropriating funds, and also a breach of fiduciary duty by misusing public assets, which fits the crime of embezzlement/occupation of public assets (职务侵占). No evidence of other crimes such as bribery or drug offenses is present. Therefore the appropriate charges are 诈骗 and 职务侵占.\",\n  \"final_answer\": \"[罪名]诈骗;职务侵占<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate criminal charges based on facts. The case involves fraudulent manipulation of social security/insurance, misappropriation of public land, taking money from people under false pretenses, etc. Likely charges: fraud (诈骗), embezzlement (侵占), abuse of power (职务侵占?), illegal acquisition of public property, maybe \"非法占用公共财产\" but Chinese criminal law: \"国有资产犯罪\" maybe \"国有资产侵占罪\". Also \"行贿受贿\"? Not exactly. They used public land to get insurance benefits, collected cash as fees. This is a scheme to defraud the social security system, i.e., \"诈骗\" (fraud) or \"非法获取社会保险金\". Could be \"诈骗罪\" (fraud) and \"职务侵占罪\" (if they are village cadres). Also \"非法占用土地罪\"? But Chinese law: \"非法占用农用地罪\". However they used public land to allocate to individuals, maybe \"非法占用农用地罪\". Also \"非法获取国家补助金罪\". The co-occurrence summary only includes certain relationships: theft (盗窃) with other crimes, illegal hunting, etc. Not relevant.\n\nWe need to use established label wording from examples: \"抢夺\", \"单位行贿\", \"容留他人吸毒\", \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯\", \"盗窃;非法狩猎\". So labels are Chinese phrases exactly as used.\n\nThus we need to produce appropriate label(s) from that set? The set may include \"诈骗\", \"职务侵占\", \"非法占用土地\", \"贪污\", \"受贿\". The facts: village cadres (village officials) used public land to get insurance benefits, collected cash as fees. This is likely \"职务侵占\" (misappropriation of public funds by a person in a position). Also \"诈骗\" because they defrauded people of money by promising insurance benefits. Also \"非法占用公共财产\" maybe \"非法占用土地\". The co-occurrence summary does not list these, but we can still assign.\n\nThe instruction: \"请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" The format: [罪名]...<eoa>. But also they ask to respond in JSON with \"reasoning\" and \"final_answer\". So final answer should be the string with [罪名]...<eoa>. Probably include multiple separated by semicolon.\n\nThus we need to decide charges: likely \"诈骗\" and \"职务侵占\". Also maybe \"非法占用土地\". However Chinese criminal law: \"非法占用农用地罪\" is for occupying farmland for non-agricultural use. Here they allocated public land to individuals for insurance, not for building. Could be \"非法占用土地罪\". Might be considered \"国有资产犯罪\". Could be \"国有资产侵占罪\". The facts: they used public land (state-owned) to get insurance benefits, and collected cash. That is misappropriation of state assets. So \"国有资产侵占罪\". But typical label maybe \"国有资产侵占\". Not sure.\n\nGiven limited examples, we might stick to \"诈骗\" and \"职务侵占\". Provide both.\n\nThus final answer: [罪名]诈骗;职务侵占<eoa>\n\nReturn JSON.\n\n",
+          "provider_specific_fields": {
+            "reasoning": "We need to determine appropriate criminal charges based on facts. The case involves fraudulent manipulation of social security/insurance, misappropriation of public land, taking money from people under false pretenses, etc. Likely charges: fraud (诈骗), embezzlement (侵占), abuse of power (职务侵占?), illegal acquisition of public property, maybe \"非法占用公共财产\" but Chinese criminal law: \"国有资产犯罪\" maybe \"国有资产侵占罪\". Also \"行贿受贿\"? Not exactly. They used public land to get insurance benefits, collected cash as fees. This is a scheme to defraud the social security system, i.e., \"诈骗\" (fraud) or \"非法获取社会保险金\". Could be \"诈骗罪\" (fraud) and \"职务侵占罪\" (if they are village cadres). Also \"非法占用土地罪\"? But Chinese law: \"非法占用农用地罪\". However they used public land to allocate to individuals, maybe \"非法占用农用地罪\". Also \"非法获取国家补助金罪\". The co-occurrence summary only includes certain relationships: theft (盗窃) with other crimes, illegal hunting, etc. Not relevant.\n\nWe need to use established label wording from examples: \"抢夺\", \"单位行贿\", \"容留他人吸毒\", \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯\", \"盗窃;非法狩猎\". So labels are Chinese phrases exactly as used.\n\nThus we need to produce appropriate label(s) from that set? The set may include \"诈骗\", \"职务侵占\", \"非法占用土地\", \"贪污\", \"受贿\". The facts: village cadres (village officials) used public land to get insurance benefits, collected cash as fees. This is likely \"职务侵占\" (misappropriation of public funds by a person in a position). Also \"诈骗\" because they defrauded people of money by promising insurance benefits. Also \"非法占用公共财产\" maybe \"非法占用土地\". The co-occurrence summary does not list these, but we can still assign.\n\nThe instruction: \"请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" The format: [罪名]...<eoa>. But also they ask to respond in JSON with \"reasoning\" and \"final_answer\". So final answer should be the string with [罪名]...<eoa>. Probably include multiple separated by semicolon.\n\nThus we need to decide charges: likely \"诈骗\" and \"职务侵占\". Also maybe \"非法占用土地\". However Chinese criminal law: \"非法占用农用地罪\" is for occupying farmland for non-agricultural use. Here they allocated public land to individuals for insurance, not for building. Could be \"非法占用土地罪\". Might be considered \"国有资产犯罪\". Could be \"国有资产侵占罪\". The facts: they used public land (state-owned) to get insurance benefits, and collected cash. That is misappropriation of state assets. So \"国有资产侵占罪\". But typical label maybe \"国有资产侵占\". Not sure.\n\nGiven limited examples, we might stick to \"诈骗\" and \"职务侵占\". Provide both.\n\nThus final answer: [罪名]诈骗;职务侵占<eoa>\n\nReturn JSON.\n\n",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate criminal charges based on facts. The case involves fraudulent manipulation of social security/insurance, misappropriation of public land, taking money from people under false pretenses, etc. Likely charges: fraud (诈骗), embezzlement (侵占), abuse of power (职务侵占?), illegal acquisition of public property, maybe \"非法占用公共财产\" but Chinese criminal law: \"国有资产犯罪\" maybe \"国有资产侵占罪\". Also \"行贿受贿\"? Not exactly. They used public land to get insurance benefits, collected cash as fees. This is a scheme to defraud the social security system, i.e., \"诈骗\" (fraud) or \"非法获取社会保险金\". Could be \"诈骗罪\" (fraud) and \"职务侵占罪\" (if they are village cadres). Also \"非法占用土地罪\"? But Chinese law: \"非法占用农用地罪\". However they used public land to allocate to individuals, maybe \"非法占用农用地罪\". Also \"非法获取国家补助金罪\". The co-occurrence summary only includes certain relationships: theft (盗窃) with other crimes, illegal hunting, etc. Not relevant.\n\nWe need to use established label wording from examples: \"抢夺\", \"单位行贿\", \"容留他人吸毒\", \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯\", \"盗窃;非法狩猎\". So labels are Chinese phrases exactly as used.\n\nThus we need to produce appropriate label(s) from that set? The set may include \"诈骗\", \"职务侵占\", \"非法占用土地\", \"贪污\", \"受贿\". The facts: village cadres (village officials) used public land to get insurance benefits, collected cash as fees. This is likely \"职务侵占\" (misappropriation of public funds by a person in a position). Also \"诈骗\" because they defrauded people of money by promising insurance benefits. Also \"非法占用公共财产\" maybe \"非法占用土地\". The co-occurrence summary does not list these, but we can still assign.\n\nThe instruction: \"请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" The format: [罪名]...<eoa>. But also they ask to respond in JSON with \"reasoning\" and \"final_answer\". So final answer should be the string with [罪名]...<eoa>. Probably include multiple separated by semicolon.\n\nThus we need to decide charges: likely \"诈骗\" and \"职务侵占\". Also maybe \"非法占用土地\". However Chinese criminal law: \"非法占用农用地罪\" is for occupying farmland for non-agricultural use. Here they allocated public land to individuals for insurance, not for building. Could be \"非法占用土地罪\". Might be considered \"国有资产犯罪\". Could be \"国有资产侵占罪\". The facts: they used public land (state-owned) to get insurance benefits, and collected cash. That is misappropriation of state assets. So \"国有资产侵占罪\". But typical label maybe \"国有资产侵占\". Not sure.\n\nGiven limited examples, we might stick to \"诈骗\" and \"职务侵占\". Provide both.\n\nThus final answer: [罪名]诈骗;职务侵占<eoa>\n\nReturn JSON.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": "We need to determine appropriate criminal charges based on facts. The case involves fraudulent manipulation of social security/insurance, misappropriation of public land, taking money from people under false pretenses, etc. Likely charges: fraud (诈骗), embezzlement (侵占), abuse of power (职务侵占?), illegal acquisition of public property, maybe \"非法占用公共财产\" but Chinese criminal law: \"国有资产犯罪\" maybe \"国有资产侵占罪\". Also \"行贿受贿\"? Not exactly. They used public land to get insurance benefits, collected cash as fees. This is a scheme to defraud the social security system, i.e., \"诈骗\" (fraud) or \"非法获取社会保险金\". Could be \"诈骗罪\" (fraud) and \"职务侵占罪\" (if they are village cadres). Also \"非法占用土地罪\"? But Chinese law: \"非法占用农用地罪\". However they used public land to allocate to individuals, maybe \"非法占用农用地罪\". Also \"非法获取国家补助金罪\". The co-occurrence summary only includes certain relationships: theft (盗窃) with other crimes, illegal hunting, etc. Not relevant.\n\nWe need to use established label wording from examples: \"抢夺\", \"单位行贿\", \"容留他人吸毒\", \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯\", \"盗窃;非法狩猎\". So labels are Chinese phrases exactly as used.\n\nThus we need to produce appropriate label(s) from that set? The set may include \"诈骗\", \"职务侵占\", \"非法占用土地\", \"贪污\", \"受贿\". The facts: village cadres (village officials) used public land to get insurance benefits, collected cash as fees. This is likely \"职务侵占\" (misappropriation of public funds by a person in a position). Also \"诈骗\" because they defrauded people of money by promising insurance benefits. Also \"非法占用公共财产\" maybe \"非法占用土地\". The co-occurrence summary does not list these, but we can still assign.\n\nThe instruction: \"请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" The format: [罪名]...<eoa>. But also they ask to respond in JSON with \"reasoning\" and \"final_answer\". So final answer should be the string with [罪名]...<eoa>. Probably include multiple separated by semicolon.\n\nThus we need to decide charges: likely \"诈骗\" and \"职务侵占\". Also maybe \"非法占用土地\". However Chinese criminal law: \"非法占用农用地罪\" is for occupying farmland for non-agricultural use. Here they allocated public land to individuals for insurance, not for building. Could be \"非法占用土地罪\". Might be considered \"国有资产犯罪\". Could be \"国有资产侵占罪\". The facts: they used public land (state-owned) to get insurance benefits, and collected cash. That is misappropriation of state assets. So \"国有资产侵占罪\". But typical label maybe \"国有资产侵占\". Not sure.\n\nGiven limited examples, we might stick to \"诈骗\" and \"职务侵占\". Provide both.\n\nThus final answer: [罪名]诈骗;职务侵占<eoa>\n\nReturn JSON.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 937,
+      "prompt_tokens": 2863,
+      "total_tokens": 3800,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00028115,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00028115,
+        "upstream_inference_prompt_cost": 0.000105931,
+        "upstream_inference_completions_cost": 0.000175219
+      }
+    }
+  },
+  "raw_response_missing": false
+}

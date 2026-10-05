@@ -1,0 +1,72 @@
+{
+  "call_id": "56cfff8af50d44aa8557b3d779d87359",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791028080-vNfKMqICedMrRwUhHaGn",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"事实中被告人在未经林业主管部门批准的情况下，点燃杂草导致森林（未成林地）火灾，毁坏大量芒果树苗，构成《刑法》规定的非法采伐、毁坏森林资源罪。未出现其他独立的犯罪行为，故仅列出该罪名。\",\n  \"final_answer\": \"[罪名]非法采伐、毁坏森林资源罪<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the crime(s) based on facts. The fact: \"未经县级以上林业主管部门审批同意的情况下，在其地里干农活时，用自身携带的打火机点燃杂草后引发火灾，烧毁了被害人钱XX的芒果树苗。... 过火面积 9.6公顷 (未成林地144.5亩)\". This is likely \"非法燃放、焚烧林木\" or \"非法毁坏森林资源\" etc. In Chinese criminal law, there is a crime \"非法采伐、毁坏森林资源罪\" (illegal logging, destroying forest resources). Also there is \"放火罪\" (arson) but for forest fire, there is \"非法燃放、焚烧林木罪\"? Actually Chinese Criminal Law article 322: \"非法采伐、毁坏森林资源罪\" includes illegal logging, destroying forest resources, causing forest fire, etc. Also there is \"放火罪\" (arson) under article 114, but that is for arson causing property damage, not necessarily forest. However typical case: \"非法点燃林木，造成森林火灾\" is prosecuted as \"非法采伐、毁坏森林资源罪\". The key is the fact says \"未经县级以上林业主管部门审批同意的情况下...点燃杂草后引发火灾，烧毁...芒果树苗\". This is likely \"非法采伐、毁坏森林资源罪\". The examples earlier: they used \"失火\" as answer for forest fire cases (first examples). But those examples had \"失火\" as answer, which is not a legal crime name; they used \"失火\" as placeholder. However the key rules say we must use official crime names from criminal law. The examples given in the prompt are not necessarily correct; they are just demonstration of format. The actual answer should be the crime name.\n\nWe need to see if there is a specific crime \"非法点燃林木\" maybe \"非法燃放、焚烧林木罪\". In Chinese law, there is \"非法燃放、焚烧林木罪\" under article 322? Actually article 322: \"非法采伐、毁坏森林资源罪\" includes: (1) illegal logging, (2) illegal cutting, (3) illegal burning of forest resources, etc. The name is \"非法采伐、毁坏森林资源罪\". So we should output that.\n\nCheck key rules: Must use exact wording from law. Use \"非法采伐、毁坏森林资源罪\". No extra spaces. Format: [罪名]非法采伐、毁坏森林资源罪<eoa>\n\nIf there are multiple crimes? Possibly also \"放火罪\"? But the fact says \"未经审批\" which is a violation of forestry admin, so illegal destruction of forest resources. The primary crime is that. Not arson because arson is general property, but they specifically mention forest. So answer single crime.\n\nThus final JSON with reasoning and final answer.\n\n",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to determine the crime(s) based on facts. The fact: \"未经县级以上林业主管部门审批同意的情况下，在其地里干农活时，用自身携带的打火机点燃杂草后引发火灾，烧毁了被害人钱XX的芒果树苗。... 过火面积 9.6公顷 (未成林地144.5亩)\". This is likely \"非法燃放、焚烧林木\" or \"非法毁坏森林资源\" etc. In Chinese criminal law, there is a crime \"非法采伐、毁坏森林资源罪\" (illegal logging, destroying forest resources). Also there is \"放火罪\" (arson) but for forest fire, there is \"非法燃放、焚烧林木罪\"? Actually Chinese Criminal Law article 322: \"非法采伐、毁坏森林资源罪\" includes illegal logging, destroying forest resources, causing forest fire, etc. Also there is \"放火罪\" (arson) under article 114, but that is for arson causing property damage, not necessarily forest. However typical case: \"非法点燃林木，造成森林火灾\" is prosecuted as \"非法采伐、毁坏森林资源罪\". The key is the fact says \"未经县级以上林业主管部门审批同意的情况下...点燃杂草后引发火灾，烧毁...芒果树苗\". This is likely \"非法采伐、毁坏森林资源罪\". The examples earlier: they used \"失火\" as answer for forest fire cases (first examples). But those examples had \"失火\" as answer, which is not a legal crime name; they used \"失火\" as placeholder. However the key rules say we must use official crime names from criminal law. The examples given in the prompt are not necessarily correct; they are just demonstration of format. The actual answer should be the crime name.\n\nWe need to see if there is a specific crime \"非法点燃林木\" maybe \"非法燃放、焚烧林木罪\". In Chinese law, there is \"非法燃放、焚烧林木罪\" under article 322? Actually article 322: \"非法采伐、毁坏森林资源罪\" includes: (1) illegal logging, (2) illegal cutting, (3) illegal burning of forest resources, etc. The name is \"非法采伐、毁坏森林资源罪\". So we should output that.\n\nCheck key rules: Must use exact wording from law. Use \"非法采伐、毁坏森林资源罪\". No extra spaces. Format: [罪名]非法采伐、毁坏森林资源罪<eoa>\n\nIf there are multiple crimes? Possibly also \"放火罪\"? But the fact says \"未经审批\" which is a violation of forestry admin, so illegal destruction of forest resources. The primary crime is that. Not arson because arson is general property, but they specifically mention forest. So answer single crime.\n\nThus final JSON with reasoning and final answer.\n\n",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the crime(s) based on facts. The fact: \"未经县级以上林业主管部门审批同意的情况下，在其地里干农活时，用自身携带的打火机点燃杂草后引发火灾，烧毁了被害人钱XX的芒果树苗。... 过火面积 9.6公顷 (未成林地144.5亩)\". This is likely \"非法燃放、焚烧林木\" or \"非法毁坏森林资源\" etc. In Chinese criminal law, there is a crime \"非法采伐、毁坏森林资源罪\" (illegal logging, destroying forest resources). Also there is \"放火罪\" (arson) but for forest fire, there is \"非法燃放、焚烧林木罪\"? Actually Chinese Criminal Law article 322: \"非法采伐、毁坏森林资源罪\" includes illegal logging, destroying forest resources, causing forest fire, etc. Also there is \"放火罪\" (arson) under article 114, but that is for arson causing property damage, not necessarily forest. However typical case: \"非法点燃林木，造成森林火灾\" is prosecuted as \"非法采伐、毁坏森林资源罪\". The key is the fact says \"未经县级以上林业主管部门审批同意的情况下...点燃杂草后引发火灾，烧毁...芒果树苗\". This is likely \"非法采伐、毁坏森林资源罪\". The examples earlier: they used \"失火\" as answer for forest fire cases (first examples). But those examples had \"失火\" as answer, which is not a legal crime name; they used \"失火\" as placeholder. However the key rules say we must use official crime names from criminal law. The examples given in the prompt are not necessarily correct; they are just demonstration of format. The actual answer should be the crime name.\n\nWe need to see if there is a specific crime \"非法点燃林木\" maybe \"非法燃放、焚烧林木罪\". In Chinese law, there is \"非法燃放、焚烧林木罪\" under article 322? Actually article 322: \"非法采伐、毁坏森林资源罪\" includes: (1) illegal logging, (2) illegal cutting, (3) illegal burning of forest resources, etc. The name is \"非法采伐、毁坏森林资源罪\". So we should output that.\n\nCheck key rules: Must use exact wording from law. Use \"非法采伐、毁坏森林资源罪\". No extra spaces. Format: [罪名]非法采伐、毁坏森林资源罪<eoa>\n\nIf there are multiple crimes? Possibly also \"放火罪\"? But the fact says \"未经审批\" which is a violation of forestry admin, so illegal destruction of forest resources. The primary crime is that. Not arson because arson is general property, but they specifically mention forest. So answer single crime.\n\nThus final JSON with reasoning and final answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to determine the crime(s) based on facts. The fact: \"未经县级以上林业主管部门审批同意的情况下，在其地里干农活时，用自身携带的打火机点燃杂草后引发火灾，烧毁了被害人钱XX的芒果树苗。... 过火面积 9.6公顷 (未成林地144.5亩)\". This is likely \"非法燃放、焚烧林木\" or \"非法毁坏森林资源\" etc. In Chinese criminal law, there is a crime \"非法采伐、毁坏森林资源罪\" (illegal logging, destroying forest resources). Also there is \"放火罪\" (arson) but for forest fire, there is \"非法燃放、焚烧林木罪\"? Actually Chinese Criminal Law article 322: \"非法采伐、毁坏森林资源罪\" includes illegal logging, destroying forest resources, causing forest fire, etc. Also there is \"放火罪\" (arson) under article 114, but that is for arson causing property damage, not necessarily forest. However typical case: \"非法点燃林木，造成森林火灾\" is prosecuted as \"非法采伐、毁坏森林资源罪\". The key is the fact says \"未经县级以上林业主管部门审批同意的情况下...点燃杂草后引发火灾，烧毁...芒果树苗\". This is likely \"非法采伐、毁坏森林资源罪\". The examples earlier: they used \"失火\" as answer for forest fire cases (first examples). But those examples had \"失火\" as answer, which is not a legal crime name; they used \"失火\" as placeholder. However the key rules say we must use official crime names from criminal law. The examples given in the prompt are not necessarily correct; they are just demonstration of format. The actual answer should be the crime name.\n\nWe need to see if there is a specific crime \"非法点燃林木\" maybe \"非法燃放、焚烧林木罪\". In Chinese law, there is \"非法燃放、焚烧林木罪\" under article 322? Actually article 322: \"非法采伐、毁坏森林资源罪\" includes: (1) illegal logging, (2) illegal cutting, (3) illegal burning of forest resources, etc. The name is \"非法采伐、毁坏森林资源罪\". So we should output that.\n\nCheck key rules: Must use exact wording from law. Use \"非法采伐、毁坏森林资源罪\". No extra spaces. Format: [罪名]非法采伐、毁坏森林资源罪<eoa>\n\nIf there are multiple crimes? Possibly also \"放火罪\"? But the fact says \"未经审批\" which is a violation of forestry admin, so illegal destruction of forest resources. The primary crime is that. Not arson because arson is general property, but they specifically mention forest. So answer single crime.\n\nThus final JSON with reasoning and final answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 769,
+      "prompt_tokens": 4972,
+      "total_tokens": 5741,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000327767,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000327767,
+        "upstream_inference_prompt_cost": 0.000183964,
+        "upstream_inference_completions_cost": 0.000143803
+      }
+    }
+  },
+  "raw_response_missing": false
+}

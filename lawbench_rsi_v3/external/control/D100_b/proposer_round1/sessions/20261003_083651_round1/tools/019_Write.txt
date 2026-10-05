@@ -1,0 +1,222 @@
+Write: .prototypes\label_glossary_memory.py
+
+content:
+"""Prototype: Label Glossary Memory.
+
+Diagnosis from score diagnostics (71 wrong out of 100):
+  - Surface-form near-misses: model predicts "销售假冒注册商标商品" but truth is
+    "销售假冒注册商标的商品" (missing 的).
+  - Specificity errors: "诈骗" instead of "合同诈骗", "行贿" vs "单位行贿".
+  - Paraphrase errors: "非法种植罂粟" vs "非法种植毒品原植物".
+
+Hypothesis: injecting the full set of seen canonical label strings as a
+reference glossary in the prompt will anchor the LLM to exact forms and
+reduce near-miss errors. This is a prompt-architecture change (axis A),
+not a retrieval parameter change.
+
+Two variants tested:
+  V1 — glossary appended after examples ("Available charge labels: ...")
+  V2 — glossary prepended before examples as a reference header
+"""
+
+import re
+from collections import defaultdict
+from typing import Any
+
+# ---- Real canonical labels from training (steps 0-13, score diagnostics) ----
+SEEN_LABELS_RAW = [
+    "伪造、变造、买卖国家机关公文、证件、印章",
+    "破坏计算机信息系统",
+    "故意毁坏财物",
+    "拐骗儿童",
+    "拐卖妇女、儿童",
+    "非国家工作人员受贿",
+    "行贿",
+    "诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫",
+    "故意伤害;故意毁坏财物",
+    "非法获取公民个人信息",
+    "信用卡诈骗",
+    "危险物品肇事",
+    "受贿;滥用职权",
+    "非法组织卖血",
+    # from score diagnostics:
+    "单位行贿",
+    "销售假冒注册商标的商品",
+    "非法持有、私藏枪支、弹药;故意伤害;聚众斗殴",
+    "破坏电力设备",
+    "非法种植毒品原植物",
+    "失火",
+    "合同诈骗",
+    "虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;持有伪造的发票",
+    "非法采伐、毁坏国家重点保护植物",
+    "赌博;开设赌场",
+]
+
+# ---- Fake LLM for testing ----
+class FakeLLM:
+    def __init__(self):
+        self.calls = []
+        self.response = '{"reasoning": "test", "final_answer": "故意毁坏财物"}'
+
+    def __call__(self, prompt: str) -> str:
+        self.calls.append(prompt)
+        return self.response
+
+
+# ---- Tokenizer (CJK bigram + ASCII) ----
+def _tokenize(text: str) -> frozenset:
+    cjk = re.findall(r'[一-鿿]', text)
+    bigrams = frozenset(cjk[i] + cjk[i+1] for i in range(len(cjk) - 1))
+    ascii_toks = frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+    return bigrams | ascii_toks
+
+
+def _jaccard(a: frozenset, b: frozenset) -> float:
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+# ---- Variant 1: glossary appended after examples ----
+PROMPT_V1 = """{examples_section}
+
+**Problem:**
+{input}
+
+**Reference — canonical charge labels seen in training:**
+{glossary}
+Use one of these exact labels (or a semicolon-separated combination) in your answer.
+
+Respond in JSON: {{"reasoning": "[your reasoning]", "final_answer": "[exact label(s)]"}}"""
+
+# ---- Variant 2: glossary as header, then examples ----
+PROMPT_V2 = """**Canonical charge labels (use exact text):**
+{glossary}
+
+{examples_section}
+
+**Problem:**
+{input}
+
+Respond in JSON: {{"reasoning": "[your reasoning]", "final_answer": "[exact label(s)]"}}"""
+
+
+def build_glossary(labels: list[str]) -> str:
+    """Format unique labels as a compact list."""
+    seen = []
+    deduped = []
+    for lbl in labels:
+        if lbl not in seen:
+            seen.append(lbl)
+            deduped.append(lbl)
+    return "\n".join(f"- {l}" for l in sorted(deduped))
+
+
+def select_examples(query: str, examples: list[dict], max_chars: int = 8000) -> list[str]:
+    """Simple bigram similarity retrieval."""
+    q_tok = _tokenize(query)
+    ranked = sorted(
+        [(_jaccard(q_tok, ex["tokens"]), i, ex) for i, ex in enumerate(examples)],
+        reverse=True
+    )
+    parts = []
+    total = 0
+    for _, _, ex in ranked:
+        q_text = ex.get("raw_question", ex["input"])
+        part = f"Q: {q_text}\nA: {ex['target']}"
+        if total + len(part) + 2 > max_chars:
+            break
+        parts.append(part)
+        total += len(part) + 2
+    return parts
+
+
+# ---- Simulate predict with both variants ----
+
+# Build a small memory store from real examples
+store = []
+for label in SEEN_LABELS_RAW[:6]:
+    store.append({
+        "input": f"事实:某某于某年进行了相关犯罪行为。",
+        "target": label,
+        "tokens": _tokenize(label + "某某犯罪行为"),
+        "raw_question": f"事实:某某于某年进行了相关犯罪行为，其行为构成{label}。",
+    })
+
+query = (
+    "事实:公诉机关指控，被告人郭某受雇于同案人，在本市白云区销售假冒LOUISVUITTON等"
+    "注册商标的皮鞋1009双，共价值人民币6525350元。其行为触犯了相关规定，构成××。"
+)
+
+glossary_str = build_glossary(SEEN_LABELS_RAW)
+example_parts = select_examples(query, store)
+examples_section = "\n\n".join(example_parts) if example_parts else "(no examples yet)"
+
+llm = FakeLLM()
+
+prompt_v1 = PROMPT_V1.format(
+    examples_section=examples_section,
+    input=query,
+    glossary=glossary_str,
+)
+prompt_v2 = PROMPT_V2.format(
+    glossary=glossary_str,
+    examples_section=examples_section,
+    input=query,
+)
+
+resp_v1 = llm(prompt_v1)
+resp_v2 = llm(prompt_v2)
+
+print("=== V1 (glossary after examples) ===")
+print(f"Prompt length: {len(prompt_v1)} chars")
+# Check glossary appears
+assert "销售假冒注册商标的商品" in prompt_v1, "canonical label missing from V1 prompt"
+assert "合同诈骗" in prompt_v1, "合同诈骗 missing from V1"
+print("✓ Canonical labels present in prompt")
+print(f"Response: {resp_v1[:80]}")
+
+print("\n=== V2 (glossary as header) ===")
+print(f"Prompt length: {len(prompt_v2)} chars")
+assert "销售假冒注册商标的商品" in prompt_v2, "canonical label missing from V2 prompt"
+# Glossary comes before examples in V2
+glossary_pos = prompt_v2.index("销售假冒注册商标的商品")
+example_pos = prompt_v2.index("Q:")
+assert glossary_pos < example_pos, "Glossary should precede examples in V2"
+print("✓ Glossary precedes examples in V2")
+print(f"Response: {resp_v2[:80]}")
+
+# ---- Check label accumulation (learn_from_batch equivalent) ----
+# Labels are accumulated from ground_truth during learning
+print("\n=== Label accumulation test ===")
+seen_labels: list[str] = []
+batch = [
+    {"input": "q1", "prediction": "诈骗", "ground_truth": "合同诈骗", "was_correct": False, "metadata": {}},
+    {"input": "q2", "prediction": "故意伤害", "ground_truth": "故意伤害;故意毁坏财物", "was_correct": False, "metadata": {}},
+    {"input": "q3", "prediction": "盗窃", "ground_truth": "盗窃", "was_correct": True, "metadata": {}},
+]
+for r in batch:
+    for lbl in r["ground_truth"].split(";"):
+        lbl = lbl.strip()
+        if lbl and lbl not in seen_labels:
+            seen_labels.append(lbl)
+
+print(f"Accumulated labels: {seen_labels}")
+assert "合同诈骗" in seen_labels
+assert "故意伤害" in seen_labels
+assert "故意毁坏财物" in seen_labels
+assert "盗窃" in seen_labels
+print("✓ Labels correctly extracted including multi-label ground truths")
+
+# ---- Winner selection ----
+# V1 (glossary after examples) is preferred: the model has seen examples in context
+# before seeing the glossary, which guides format. The glossary then constrains
+# the answer to exact canonical strings. V2 risks the model anchoring to the
+# glossary list and ignoring the examples.
+print("\n=== DECISION: V1 (glossary appended after examples) selected ===")
+print("PROTOTYPE PASSED")
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_b\text_classification\.prototypes\label_glossary_memory.py (file state is current in your context — no need to Read it back)

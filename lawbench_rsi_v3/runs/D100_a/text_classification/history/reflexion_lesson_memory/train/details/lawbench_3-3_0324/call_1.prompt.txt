@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- When the facts describe bribery directed at persons who are not state officials or at a legal entity (unit), the charge must be specified as “对非国家工作人员行贿” and/or “对单位行贿” rather than the generic “行贿”.
+- If the facts describe the use of a false or deceptive contract (e.g., a sale, lease, transfer agreement) to obtain money or property, classify the offense as “合同诈骗” rather than the generic “诈骗”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the statutory offense name in the facts contains multiple listed items separated by commas (e.g., “走私国家禁止进出口的货物、物品”), always output the complete official charge name including every listed item.
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:上林县人民检察院指控，2007年，被告人吴某获悉上林县××工程管理所（以下简称××工管所）着手筹建该所第3至6栋职工集资住宅楼，欲参与投资承建。为此，吴某找到时任××工管所长谭某、副所长李某和党支部书记胡某（三人均另案处理），要求谭某、李某和胡某给予关照。谭某、李某和胡某经商量决定将××工管所第3至6栋职工集资住宅楼以不经公开招投标的方式交由吴某承建。同时，谭某、李某、胡某等人以此作为条件要求吴某给予××工管所领导好处费人民币10万某，吴某表示同意。2007年12月30日，吴某挂靠上林县城乡建设工程有限公司与××工管所签订建设工程施工合同书。吴某按事先约定，于2007年底送给谭某现金人民币3万某，于2008年送给胡某现金人民币2万某。针对上述指控，公诉机关当庭宣读了并出示了书证、证人证言、被告人的供述与辩解等证据。据此认为，被告人吴某为谋取不正当利益，给予国家工作人员以财物，其行为已触犯《中华人民共和国刑法》××××、××××之规定，犯罪事实清楚，证据确实、充分，应当以××追究其刑事责任。提请本院依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

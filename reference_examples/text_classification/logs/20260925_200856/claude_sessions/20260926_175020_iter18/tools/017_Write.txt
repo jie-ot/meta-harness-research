@@ -1,0 +1,142 @@
+Write: C:/tmp/proto_reasoning.py
+
+content:
+"""Prototype: reasoning-trace injection.
+
+Stores the LLM's 'reasoning' field alongside correct examples.
+At predict time, retrieved examples show a truncated reasoning prefix.
+
+Tests three variants:
+  A - include reasoning for all retrieved examples (if stored)
+  B - include reasoning only for the top-3 examples
+  C - include reasoning but put it AFTER the answer line
+"""
+import json, re, pathlib
+
+REASON_CHARS = 180   # max chars of reasoning to inject per example
+
+log_path = pathlib.Path(
+    r"D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples"
+    r"\text_classification\logs\20260925_200856\LawBench\decayed_confusion_memory"
+    r"\gpt-oss-120b\log.jsonl"
+)
+
+steps = []
+with log_path.open(encoding='utf-8') as f:
+    for line in f:
+        obj = json.loads(line)
+        if obj.get('type') == 'step':
+            steps.append(obj)
+        if len(steps) >= 200:
+            break
+
+print(f"Loaded {len(steps)} steps")
+
+# How many steps have a 'metadata' field with reasoning?
+with_meta = [s for s in steps if s.get('metadata')]
+print(f"Steps with metadata field: {len(with_meta)}")
+if with_meta:
+    print(f"  Sample keys: {list(with_meta[0]['metadata'].keys())}")
+    print(f"  Sample metadata: {json.dumps(with_meta[0]['metadata'], ensure_ascii=False)[:300]}")
+
+# Check what's in the full_response to extract reasoning
+sample_correct = [s for s in steps[:60] if s.get('ok')]
+print(f"\nCorrect steps in first 60: {len(sample_correct)}")
+if sample_correct:
+    # The full response would be in metadata['full_response'] if stored
+    s = sample_correct[0]
+    print(f"  Sample correct step keys: {list(s.keys())}")
+
+# Check whether the checkpoint memory_state has full_response info
+print("\nChecking log for checkpoints with full_response...")
+with log_path.open(encoding='utf-8') as f:
+    for line in f:
+        obj = json.loads(line)
+        if obj.get('type') == 'checkpoint':
+            # Does memory_state (a JSON string) contain any "reasoning" key?
+            ms = obj.get('memory_state', '')
+            if '"reasoning"' in ms:
+                print("  Found 'reasoning' in memory_state!")
+                break
+            else:
+                print("  No reasoning in memory_state (first checkpoint checked)")
+                break
+
+# Check whether the step log itself contains full_response field
+print("\nChecking if steps carry full_response or reasoning...")
+with log_path.open(encoding='utf-8') as f:
+    for line in f:
+        obj = json.loads(line)
+        if obj.get('type') == 'step':
+            keys = list(obj.keys())
+            print(f"  Step keys: {keys}")
+            if 'full_response' in obj:
+                print(f"  full_response sample: {str(obj['full_response'])[:200]}")
+            break
+
+# The reasoning will need to be captured at learn time from metadata.
+# Test: simulate building examples with reasoning stored
+
+class FakeMemory:
+    def __init__(self):
+        self.examples = []  # {input, target, reasoning, tokens}
+
+    def learn_step(self, step_dict, reasoning_text=None):
+        ex = {
+            'input': step_dict['input_preview'],
+            'target': step_dict.get('tgt', ''),
+            'ok': step_dict.get('ok', False),
+            'reasoning': reasoning_text or '',
+        }
+        self.examples.append(ex)
+
+    def format_A(self, ex):
+        """Reasoning for all examples before Q/A"""
+        r = ex['reasoning'][:REASON_CHARS] if ex['reasoning'] else ''
+        if r:
+            return f"Reasoning: {r}\nQ: {ex['input'][:100]}\nA: {ex['target']}"
+        return f"Q: {ex['input'][:100]}\nA: {ex['target']}"
+
+    def format_B(self, ex, include_reasoning=True):
+        """Reasoning only for top-3"""
+        if include_reasoning and ex['reasoning']:
+            r = ex['reasoning'][:REASON_CHARS]
+            return f"Reasoning: {r}\nQ: {ex['input'][:100]}\nA: {ex['target']}"
+        return f"Q: {ex['input'][:100]}\nA: {ex['target']}"
+
+    def format_C(self, ex):
+        """Reasoning after A"""
+        r = ex['reasoning'][:REASON_CHARS] if ex['reasoning'] else ''
+        base = f"Q: {ex['input'][:100]}\nA: {ex['target']}"
+        if r:
+            return base + f"\nReasoning: {r}"
+        return base
+
+mem = FakeMemory()
+# Simulate with fake reasoning for correct examples
+for i, s in enumerate(steps[:60]):
+    fake_reasoning = f"Based on the facts provided, this appears to be a case of {s.get('tgt','unknown')}" if s.get('ok') else ''
+    mem.learn_step(s, fake_reasoning if s.get('ok') else '')
+
+correct_with_reasoning = [e for e in mem.examples if e['ok'] and e['reasoning']]
+print(f"\nCorrect examples with reasoning: {len(correct_with_reasoning)}")
+
+# Show format comparison
+if correct_with_reasoning:
+    ex = correct_with_reasoning[0]
+    print("\nFormat A (reasoning first):")
+    print(mem.format_A(ex)[:250])
+    print("\nFormat C (reasoning after answer):")
+    print(mem.format_C(ex)[:250])
+
+# Measure context budget: how much does reasoning add?
+total_A = sum(len(mem.format_A(e)) for e in mem.examples[:20])
+total_plain = sum(len(f"Q: {e['input'][:100]}\nA: {e['target']}") for e in mem.examples[:20])
+print(f"\nContext budget: plain={total_plain} chars, with_reasoning={total_A} chars (+{total_A-total_plain})")
+print(f"  With 30k budget, reasoning adds {(total_A-total_plain)/total_plain:.0%} overhead")
+print(f"  => fewer examples fit; need to cap reasoning chars or limit to top-K")
+
+
+
+--- output ---
+File created successfully at: C:/tmp/proto_reasoning.py (file state is current in your context — no need to Read it back)

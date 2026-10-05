@@ -1,0 +1,77 @@
+E2：探索性离线停止回放
+执行日期：2026-10-05；地点：用户本地Windows工作区。
+新增实验模型调用：0。未启动solver/proposer/记忆训练/新测评，没有嵌套模型请求、依赖安装、认证读取、上传或原文件修改。
+用户报告UTC04:58剩余13%周额度且未重置；本阶段没有再次查询额度或个人状态，没有重置或购买。实际会话模型/effort的可认证性仍保持E1的未知边界，没有尝试其他模型。
+
+1. 实验目的
+在同一条既有文本分类搜索轨迹上，描述预先冻结的固定轮数与validation-patience策略会在哪轮停止、少尝试多少候选，以及validation已选incumbent的既有test汇总怎样变化。
+同时单列LawBench短轨迹及补充注入实验，核对D0/D100的配对和实际feedback暴露边界。此步不估计最优阈值，不认证独立泛化，不展开E3。
+
+2. 设计
+原轨迹确实有20轮；比较时距固定T=19，因为第20轮同期最终incumbent仍missing。原第20轮没有被改成“实际未运行”。
+比较四行：Reference-19；Fixed-10；Patience-3 delta0；Patience-3 delta2pp。
+每个完整round/batch计一次机会，两候选不计两次。第1轮结束anchor=该轮incumbent validation，计数0；第2轮开始判定。
+delta0仅V_t>anchor时重置；delta2仅V_t-anchor>=2pp时重置，否则累计未重置次数。delta2小增益相对未改变的anchor累积；相同分数即使ID改变也不重置。
+首次3次未重置于该轮结束停止，最早第4轮。最终选中该停止轮真实incumbent，不能把patience anchor对应旧版本代替它。
+incumbent ID来自E1同期记录；V来自其三个数据集原validation JSON的机器可读accuracy，按原benchmark宏平均定义计算。没有先舍入，沒有从best-so-far的一位小数反推精度。
+所有24份所用validation源与E1导出内容及hash一致；原count/total精确分数复核与机器记录在全部实际reset/count/stop决定上一致，未采用容差。
+先写frozen_validation_selections.json，再只读取四行已选ID的既有test。test不参与规则、阈值或选择。
+失败状态单独保留：第16轮hard_buffer为benchmark失败及运行时显示0，第19轮per_label_recent为import失败无分；修复后的49.1/45.6没有进入回放。
+两个独立标准库脚本保存于本目录；边界检查、独立输出核查、69个输入hash前后校验均通过。没有导入/执行项目模块或运行项目测试。
+
+3. 结果
+以下仅为显示而保留6位小数；comparison.csv保存完整机器浮点值及validation精确题数分数，规则决定使用未额外舍入的原记录。
+
+策略                    T   固定incumbent                         V(%)        U test(%) S test(%)  L test(%)  尝试/少尝试
+Reference-19            19   symmetric_confusion_memory           52.222222   17        86.320755  34         38/0
+Fixed-10                10   adaptive_tokenizer_confusion_memory  51.555556   17        88.207547  33         20/18
+Patience-3 delta0        10   adaptive_tokenizer_confusion_memory  51.555556   17        88.207547  33         20/18
+Patience-3 delta2pp       6   label_grouped_memory                 47.777778   16        84.905660  38         12/26
+U=USPTO，S=Symptom2Disease，L=LawBench。
+
+相对Reference-19差值（pp）：
+策略                    ΔV          ΔU       ΔS         ΔL
+Reference-19             0           0        0           0
+Fixed-10                -0.666667    0       +1.886792   -1
+Patience-3 delta0        -0.666667    0       +1.886792   -1
+Patience-3 delta2pp      -4.444444   -1       -1.415094   +4
+
+描述标记：Fixed-10/delta0只有LawBench相对reference低>=1pp；delta2pp的USPTO与Symptom2Disease低>=1pp。所有行/数据集均未低>=2pp或>=5pp。判定按既有correct/total精确差值，无显著性检验或bootstrap。
+token、美元、运行时间节省均为missing_no_comparable_ledger；只报告少尝试候选18/26个，不把轮数或候选比例转换成费用比例。
+delta0在第7轮reset后，第8、9、10轮连续不reset而触发。delta2在第3轮reset后，第4、5、6轮均未达相对anchor的2pp而触发；第6轮取的是label_grouped，不是第3轮anchor对应的label_champion。
+
+LawBench固定score选择后查已有audit，单位为百分比：
+run        T1 incumbent / score / audit                   T2 incumbent / score / audit
+D0_a       reflexion_lesson_memory /39/36                 reflexion_lesson_memory /39/36
+D0_b       bigram_confusion_memory /39/36                 bigram_confusion_memory /39/36
+D100_a     chinese_bigram_confusion_memory /38/36         label_vocab_memory /43/41
+D100_b     label_glossary_memory /46/48                   label_glossary_memory /46/48
+不换ID的T2复用T1同一份audit，不算新增独立重复。
+
+配对由已有paired_changes记录确认：a为D0_a与D100_a，b为D0_b与D100_b，共2组轨迹配对；两个轮次给4个描述性对比，不是4个独立pair。
+各配对seed42和model_config相同，manifest和audit的100个输入ID顺序hash相同。audit input IDs hash=be9cd3605c9d566912ad1210a668bdb0440c22d2c0b5ac1f700edd340d339524。
+D100-D0 audit变化：a的T1/T2为0/+5pp，b的T1/T2为+12/+12pp。所有对比沿用同一100题audit panel，不能把题数当搜索重复数。
+
+补充注入只各一轮，不拼接到上表：
+D100_injected_a：H0 confusion_disambiguation_memory，score32；共享冻结audit两次29/26、既有均值27.5，不是新独立audit。
+D100_injected_b：label_lexicon_snap_memory，score36、已有audit42。
+
+feedback处理差异：原D100为生成并可访问100题feedback文件，并不证明完整100题进入优化器上下文。
+保存的直接Read记录可证明返回的不同feedback ID数：D100_a T1=15、T2=20；D100_b T1=0（该读取失败）、T2=59。
+这些计数只是可见ID，不证明模型对这些项目的实际认知使用量，也不是所有候选版本记录总量的因果dose。
+已有injected独立复核报告记录100条完整H0 feedback在prompt内注入并保留feedback/prompt hash；本阶段沿用该复核，未展开失败归档。prompt内注入也不证明模型实际利用全部100条。
+因此D0/D100按“可访问额外feedback的协议”描述；补充实验按“100条反馈prompt注入的协议”描述。不能解释为反馈信息使用量增加的纯因果对照。
+
+原1-19轮绘图数值在plot_rounds.csv，候选别名名称在candidate_name_registry.csv。数据仅取E1已有导出；两类失败单独标记，第20轮incumbent/V/test继续留空。
+R4B/R7A/R12B各两次score/audit的已有材料仅记为下一诊断输入，未分析其噪声、概率或阈值；H0既有29/26仅用于说明本次补充选择的已存audit基础。
+
+4. 结论
+这条轨迹上，冻结的delta0 patience与Fixed-10选中同一版本；delta2pp更早触发，但三个数据集test的变化方向不同。
+这些结果不证明任何规则最优或更安全，不证明统一的效果保持，也不认证停止后的长期饱和。
+结果为有条件的legacy汇总对照：原不可变代码/版本证据和每题test缺失、历史test公开/全候选暴露、单条adaptive轨迹、共享cache及共同memory等E1限制仍存在。
+所有历史求解模型为gpt-oss-120b，不是SolMax结果。LawBench只有两轮，不能验证patience3或长程停止；1200题已有记录核对不是1200次搜索重复。
+
+5. 对下一实验的影响
+主线程可以据此审阅两个事实：预算更短会选择不同版本，而legacy test变化并不在三个任务上同向；D100的“可访问100条”与“实际返回/注入100条”也不等价。
+本次不能直接决定停止阈值、认证泛化或建立反馈dose的纯因果关系。若继续，应先由主线程决定是否值得补足固定incumbent的独立重复、版本/每题输出与实际暴露记录；长程patience验证需要超出当前两轮的另行授权数据。
+本阶段到此停止，不启动E3或下一实验，等待主线程安排。

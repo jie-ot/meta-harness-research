@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the facts describe a defendant’s role in a scheme that withdraws money from victims’ bank or credit‑card accounts, classify the conduct under the specific statutory offenses of fraud (诈骗) and, if
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description mentions distinct illegal tax‑related actions (e.g., falsifying VAT invoices, fraudulently obtaining export rebates, and using fake invoices for tax deduction), enumerate 
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:泌阳县人民检察院指控：2013年以来，被告人孙某某以购买兽药为名，让受害人往其提供的银行卡上汇款，先后骗取183名受害人现金，后由被告人将骗取的现金取出占为己有。
+针对上述事实，公诉机关当庭出示了被告人的供述、受害人的陈述、银行汇款凭证及交易明细、扣押物品清单、手机通话记录等证据，认为被告人孙某某的行为已触犯《中华人民共和国刑法》××之规定，应当以××追究其刑事责任，提请本院依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,72 @@
+{
+  "call_id": "2e0f5dfa00d4477fb6c7943acfc62380",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791004928-3dNquhLYPz0yoMb1YCHf",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendants forcibly seized the victim, detained him in a temple, beat him causing minor injury, and used violence and threats to obtain money, a gun, a vest and a necklace. These acts constitute illegal detention (非法拘禁罪), robbery (抢劫罪) because they used force to take property, and intentional injury (故意伤害罪) resulting in a light injury.\",\n  \"final_answer\": \"[罪名]非法拘禁;抢劫;故意伤害<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine crimes based on facts. Let's parse.\n\nFacts: Bear (熊某) told 徐某 about 陈某, 徐某 ordered 熊某 to detain 陈某. 熊某 gathered people (邹某, 傅某, 熊某1, 游某 etc) and drove to game room, forcibly took 陈某, put a cloth over his head, illegally detained him at a temple's straw area. Then they beat him with wooden sticks. They demanded money (30000) for car repair, and to hand over gun and bulletproof vest. 陈's wife transferred 9900 to 聂某's bank card. 熊某 and 聂某 took 9000 from bank, took gun and vest from 吴某. They also took a gold necklace as collateral. They threatened to get more money and gun. 陈's injury is minor.\n\nThus crimes: illegal detention (非法拘禁), robbery/ extortion? They demanded money and property (money, gun, vest, necklace) by force. That is robbery (抢劫) or extortion (敲诈). They used violence to obtain money and property. The act of taking money and property by force is robbery (抢劫罪) if they used violence or threat to obtain property. They also used weapons (gun). So likely robbery. Also assault causing minor injury: intentional injury (故意伤害) but injury is minor (轻伤). The act of beating with wooden sticks causing minor injury qualifies as故意伤害罪 (light injury). Also illegal detention is separate crime: illegal detention (非法拘禁罪). So multiple crimes: illegal detention, robbery, intentional injury.\n\nCheck examples: In earlier similar case: \"故意伤害;妨害作证\" etc. So we list crimes separated by semicolon.\n\nThus answer: [罪名]非法拘禁;抢劫;故意伤害<eoa>\n\nBut need to ensure correct Chinese terms used in dataset. In examples they used \"故意伤害\", \"妨害作证\", \"赌博\", \"容留他人吸毒\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"生产、销售有毒、有害食品\", \"提供侵入、非法控制计算机信息系统程序、工具\", \"非法行医\", \"开设赌场\", \"挪用公款\", \"非法猎捕、杀害珍贵、濒危野生动物\", \"非法携带枪支、弹药、管制刀具、危险物品危及公共安全;寻衅滋事\", \"非法组织卖血\", \"盗窃;非法持有毒品\", \"贪污\", \"污染环境\", \"诽谤\", \"盗窃;掩饰、隐瞒犯罪所得、犯罪所得收益\", \"故意伤害;绑架;寻衅滋事\", \"侵犯著作权\", \"非法吸收公众存款\", \"走私普通货物、物品;盗窃\", \"非法占用农用地\", \"非法吸收公众存款\", \"受贿\", \"非法占用农用地\", etc.\n\nThus \"非法拘禁\" appears? Not seen but likely used. In Chinese criminal law, the crime is \"非法拘禁罪\". So label \"非法拘禁\". Also \"抢劫\" appears? Not in examples but typical. Could be \"抢劫\" or \"敲诈勒索\". They demanded money under threat, but they also used force and beat him. That is robbery (抢劫). The act of extorting money by threatening to kill? They used violence to get money, so robbery.\n\nThus final answer: [罪名]非法拘禁;抢劫;故意伤害<eoa>\n\nCheck if \"抢劫\" is appropriate vs \"敲诈勒索\". They used force to take money and property, not just threat. So robbery.\n\nThus produce JSON.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine crimes based on facts. Let's parse.\n\nFacts: Bear (熊某) told 徐某 about 陈某, 徐某 ordered 熊某 to detain 陈某. 熊某 gathered people (邹某, 傅某, 熊某1, 游某 etc) and drove to game room, forcibly took 陈某, put a cloth over his head, illegally detained him at a temple's straw area. Then they beat him with wooden sticks. They demanded money (30000) for car repair, and to hand over gun and bulletproof vest. 陈's wife transferred 9900 to 聂某's bank card. 熊某 and 聂某 took 9000 from bank, took gun and vest from 吴某. They also took a gold necklace as collateral. They threatened to get more money and gun. 陈's injury is minor.\n\nThus crimes: illegal detention (非法拘禁), robbery/ extortion? They demanded money and property (money, gun, vest, necklace) by force. That is robbery (抢劫) or extortion (敲诈). They used violence to obtain money and property. The act of taking money and property by force is robbery (抢劫罪) if they used violence or threat to obtain property. They also used weapons (gun). So likely robbery. Also assault causing minor injury: intentional injury (故意伤害) but injury is minor (轻伤). The act of beating with wooden sticks causing minor injury qualifies as故意伤害罪 (light injury). Also illegal detention is separate crime: illegal detention (非法拘禁罪). So multiple crimes: illegal detention, robbery, intentional injury.\n\nCheck examples: In earlier similar case: \"故意伤害;妨害作证\" etc. So we list crimes separated by semicolon.\n\nThus answer: [罪名]非法拘禁;抢劫;故意伤害<eoa>\n\nBut need to ensure correct Chinese terms used in dataset. In examples they used \"故意伤害\", \"妨害作证\", \"赌博\", \"容留他人吸毒\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"生产、销售有毒、有害食品\", \"提供侵入、非法控制计算机信息系统程序、工具\", \"非法行医\", \"开设赌场\", \"挪用公款\", \"非法猎捕、杀害珍贵、濒危野生动物\", \"非法携带枪支、弹药、管制刀具、危险物品危及公共安全;寻衅滋事\", \"非法组织卖血\", \"盗窃;非法持有毒品\", \"贪污\", \"污染环境\", \"诽谤\", \"盗窃;掩饰、隐瞒犯罪所得、犯罪所得收益\", \"故意伤害;绑架;寻衅滋事\", \"侵犯著作权\", \"非法吸收公众存款\", \"走私普通货物、物品;盗窃\", \"非法占用农用地\", \"非法吸收公众存款\", \"受贿\", \"非法占用农用地\", etc.\n\nThus \"非法拘禁\" appears? Not seen but likely used. In Chinese criminal law, the crime is \"非法拘禁罪\". So label \"非法拘禁\". Also \"抢劫\" appears? Not in examples but typical. Could be \"抢劫\" or \"敲诈勒索\". They demanded money under threat, but they also used force and beat him. That is robbery (抢劫). The act of extorting money by threatening to kill? They used violence to get money, so robbery.\n\nThus final answer: [罪名]非法拘禁;抢劫;故意伤害<eoa>\n\nCheck if \"抢劫\" is appropriate vs \"敲诈勒索\". They used force to take money and property, not just threat. So robbery.\n\nThus produce JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine crimes based on facts. Let's parse.\n\nFacts: Bear (熊某) told 徐某 about 陈某, 徐某 ordered 熊某 to detain 陈某. 熊某 gathered people (邹某, 傅某, 熊某1, 游某 etc) and drove to game room, forcibly took 陈某, put a cloth over his head, illegally detained him at a temple's straw area. Then they beat him with wooden sticks. They demanded money (30000) for car repair, and to hand over gun and bulletproof vest. 陈's wife transferred 9900 to 聂某's bank card. 熊某 and 聂某 took 9000 from bank, took gun and vest from 吴某. They also took a gold necklace as collateral. They threatened to get more money and gun. 陈's injury is minor.\n\nThus crimes: illegal detention (非法拘禁), robbery/ extortion? They demanded money and property (money, gun, vest, necklace) by force. That is robbery (抢劫) or extortion (敲诈). They used violence to obtain money and property. The act of taking money and property by force is robbery (抢劫罪) if they used violence or threat to obtain property. They also used weapons (gun). So likely robbery. Also assault causing minor injury: intentional injury (故意伤害) but injury is minor (轻伤). The act of beating with wooden sticks causing minor injury qualifies as故意伤害罪 (light injury). Also illegal detention is separate crime: illegal detention (非法拘禁罪). So multiple crimes: illegal detention, robbery, intentional injury.\n\nCheck examples: In earlier similar case: \"故意伤害;妨害作证\" etc. So we list crimes separated by semicolon.\n\nThus answer: [罪名]非法拘禁;抢劫;故意伤害<eoa>\n\nBut need to ensure correct Chinese terms used in dataset. In examples they used \"故意伤害\", \"妨害作证\", \"赌博\", \"容留他人吸毒\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"生产、销售有毒、有害食品\", \"提供侵入、非法控制计算机信息系统程序、工具\", \"非法行医\", \"开设赌场\", \"挪用公款\", \"非法猎捕、杀害珍贵、濒危野生动物\", \"非法携带枪支、弹药、管制刀具、危险物品危及公共安全;寻衅滋事\", \"非法组织卖血\", \"盗窃;非法持有毒品\", \"贪污\", \"污染环境\", \"诽谤\", \"盗窃;掩饰、隐瞒犯罪所得、犯罪所得收益\", \"故意伤害;绑架;寻衅滋事\", \"侵犯著作权\", \"非法吸收公众存款\", \"走私普通货物、物品;盗窃\", \"非法占用农用地\", \"非法吸收公众存款\", \"受贿\", \"非法占用农用地\", etc.\n\nThus \"非法拘禁\" appears? Not seen but likely used. In Chinese criminal law, the crime is \"非法拘禁罪\". So label \"非法拘禁\". Also \"抢劫\" appears? Not in examples but typical. Could be \"抢劫\" or \"敲诈勒索\". They demanded money under threat, but they also used force and beat him. That is robbery (抢劫). The act of extorting money by threatening to kill? They used violence to get money, so robbery.\n\nThus final answer: [罪名]非法拘禁;抢劫;故意伤害<eoa>\n\nCheck if \"抢劫\" is appropriate vs \"敲诈勒索\". They used force to take money and property, not just threat. So robbery.\n\nThus produce JSON.",
+            "reasoning_content": "We need to determine crimes based on facts. Let's parse.\n\nFacts: Bear (熊某) told 徐某 about 陈某, 徐某 ordered 熊某 to detain 陈某. 熊某 gathered people (邹某, 傅某, 熊某1, 游某 etc) and drove to game room, forcibly took 陈某, put a cloth over his head, illegally detained him at a temple's straw area. Then they beat him with wooden sticks. They demanded money (30000) for car repair, and to hand over gun and bulletproof vest. 陈's wife transferred 9900 to 聂某's bank card. 熊某 and 聂某 took 9000 from bank, took gun and vest from 吴某. They also took a gold necklace as collateral. They threatened to get more money and gun. 陈's injury is minor.\n\nThus crimes: illegal detention (非法拘禁), robbery/ extortion? They demanded money and property (money, gun, vest, necklace) by force. That is robbery (抢劫) or extortion (敲诈). They used violence to obtain money and property. The act of taking money and property by force is robbery (抢劫罪) if they used violence or threat to obtain property. They also used weapons (gun). So likely robbery. Also assault causing minor injury: intentional injury (故意伤害) but injury is minor (轻伤). The act of beating with wooden sticks causing minor injury qualifies as故意伤害罪 (light injury). Also illegal detention is separate crime: illegal detention (非法拘禁罪). So multiple crimes: illegal detention, robbery, intentional injury.\n\nCheck examples: In earlier similar case: \"故意伤害;妨害作证\" etc. So we list crimes separated by semicolon.\n\nThus answer: [罪名]非法拘禁;抢劫;故意伤害<eoa>\n\nBut need to ensure correct Chinese terms used in dataset. In examples they used \"故意伤害\", \"妨害作证\", \"赌博\", \"容留他人吸毒\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"生产、销售有毒、有害食品\", \"提供侵入、非法控制计算机信息系统程序、工具\", \"非法行医\", \"开设赌场\", \"挪用公款\", \"非法猎捕、杀害珍贵、濒危野生动物\", \"非法携带枪支、弹药、管制刀具、危险物品危及公共安全;寻衅滋事\", \"非法组织卖血\", \"盗窃;非法持有毒品\", \"贪污\", \"污染环境\", \"诽谤\", \"盗窃;掩饰、隐瞒犯罪所得、犯罪所得收益\", \"故意伤害;绑架;寻衅滋事\", \"侵犯著作权\", \"非法吸收公众存款\", \"走私普通货物、物品;盗窃\", \"非法占用农用地\", \"非法吸收公众存款\", \"受贿\", \"非法占用农用地\", etc.\n\nThus \"非法拘禁\" appears? Not seen but likely used. In Chinese criminal law, the crime is \"非法拘禁罪\". So label \"非法拘禁\". Also \"抢劫\" appears? Not in examples but typical. Could be \"抢劫\" or \"敲诈勒索\". They demanded money under threat, but they also used force and beat him. That is robbery (抢劫). The act of extorting money by threatening to kill? They used violence to get money, so robbery.\n\nThus final answer: [罪名]非法拘禁;抢劫;故意伤害<eoa>\n\nCheck if \"抢劫\" is appropriate vs \"敲诈勒索\". They used force to take money and property, not just threat. So robbery.\n\nThus produce JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 958,
+      "prompt_tokens": 25636,
+      "total_tokens": 26594,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 872,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0015213,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0015213,
+        "upstream_inference_prompt_cost": 0.0012818,
+        "upstream_inference_completions_cost": 0.0002395
+      }
+    }
+  },
+  "raw_response_missing": false
+}

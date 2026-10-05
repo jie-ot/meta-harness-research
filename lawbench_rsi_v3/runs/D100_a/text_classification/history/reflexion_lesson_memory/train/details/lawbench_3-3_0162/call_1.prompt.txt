@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+- When a single conduct simultaneously satisfies the elements of a higher‑level offense (e.g., rape) and also matches lower‑level offenses (e.g., illegal entry, forced indecency, or intentional injury),
+- When the statutory offense name in the facts contains multiple listed items separated by commas (e.g., “走私国家禁止进出口的货物、物品”), always output the complete official charge name including every listed item.
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:陆2某人民检察院指控：2015年5、6月份，同案人李某甲（在逃）伙同被告人蔡某某在陆2某甲东镇可湖村新南四巷17号其住宅中制造毒品冰毒。2015年6月4日0时许，公安机关在李某甲、蔡某某住宅的铁皮房内现场查获结晶状物3小袋净重13.97克、疑似毒品液体重计11476克（经鉴定均检出甲基苯丙胺成分），并查获煤气炉、漏斗等制毒工具及三水合乙酸钠等制毒配剂，现场抓获被告人蔡某某。
+公诉机关为证明上述事实，向法庭宣读和出示了相关证据。认为被告人蔡某某竟制造毒品，其行为已触犯《中华人民共和国刑法》××××之规定，应当以制造毒品罪追究其刑事责任。提请本院依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

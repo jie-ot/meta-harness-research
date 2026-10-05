@@ -1,0 +1,33 @@
+# Iteration 10 Report
+
+## What changed
+- `anchor_last_memory`: places the single best-matching example per top candidate label at the
+  very end of context (immediately before the question), filling remaining budget with
+  similarity-ranked examples from the top.
+- `utility_weighted_memory`: assigns each stored example a utility score (+1 when in-context
+  and correct, −1 when in-context and wrong); at retrieval, score = similarity × sigmoid(utility).
+
+## Results
+Both systems regressed sharply against the frontier (51.6%).
+- anchor_last: 46.0% (−5.6%)
+- utility_weighted: 45.8% (−5.8%)
+
+## Why each failed
+
+**anchor_last**: The recency/proximity bias hypothesis is plausible in theory, but the single
+anchored example per label compresses diversity. Moving one example to the bottom forces other
+useful examples out of the budget ceiling, and the net effect was degraded coverage — a structural
+tradeoff, not a gain.
+
+**utility_weighted**: With only 50–200 training examples per dataset, each stored example appears
+in context at most once or twice. The +1/−1 utility signal is too sparse and noisy for sigmoid
+scaling to produce reliable weights. The index-tracking overhead (recording which example indices
+were in context at each step) also introduces subtle alignment bugs.
+
+## Takeaway
+- Prompt position engineering (moving examples around) does not reliably help; selection and
+  content matter more than placement.
+- Per-example outcome feedback requires far more observations per example than these dataset
+  sizes allow; avoid thin per-example statistics.
+- The adaptive tokenizer + confusion matrix core (iter 7) remains the strongest foundation.
+  Next gains likely require a new retrieval structure or prompt architecture, not tuning weights.

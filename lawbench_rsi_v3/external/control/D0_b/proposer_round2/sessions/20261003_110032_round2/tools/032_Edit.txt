@@ -1,0 +1,20 @@
+Edit: .prototypes\label_cluster_memory_final.py
+
+replace_all: False
+old_string:
+    # 6. canonical header instruction present in prompt template
+    assert "### Charge:" in PREDICT_PROMPT
+    assert "section headers" in PREDICT_PROMPT
+    print("[prompt structure] canonical header instructions present: OK")
+
+new_string:
+    # 6. canonical header instruction present in prompt template and built sections
+    assert "{cluster_section}" in PREDICT_PROMPT, "template must have cluster_section placeholder"
+    assert "section headers" in PREDICT_PROMPT, "template must reference section headers"
+    cluster_sec_check, _ = m._build_sections("被告单位某商业广场法定代表人以政府名义支付报酬")
+    assert "### Charge:" in cluster_sec_check, "built cluster section must contain ### Charge: headers"
+    print("[prompt structure] canonical header instructions present: OK")
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D0_b\text_classification\.prototypes\label_cluster_memory_final.py has been updated successfully. (file state is current in your context — no need to Read it back)

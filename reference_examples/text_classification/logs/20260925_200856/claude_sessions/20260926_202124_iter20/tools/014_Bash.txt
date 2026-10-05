@@ -1,0 +1,55 @@
+Bash
+
+command:
+python -c "
+import os, json
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+log_path = os.path.join(base, 'LawBench', 'symmetric_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+lines = open(log_path, encoding='utf-8').readlines()
+print(f'Total: {len(lines)}')
+# Show a few real entries
+for i, l in enumerate(lines[:3]):
+    d = json.loads(l)
+    print(f'--- entry {i} keys: {list(d.keys())}')
+    for k,v in d.items():
+        val = str(v)[:100]
+        print(f'  {k}: {val}')
+"
+
+
+description: Inspect LawBench log structure
+
+--- output ---
+Total: 404
+--- entry 0 keys: ['type', 't', 'dataset', 'memory', 'model', 'seed', 'mode', 'num_epochs', 'start_time']
+  type: meta
+  t: 0.0
+  dataset: LawBench
+  memory: symmetric_confusion_memory
+  model: openrouter/openai/gpt-oss-120b
+  seed: 42
+  mode: online
+  num_epochs: None
+  start_time: 2026-09-27T03:52:25.152850
+--- entry 1 keys: ['type', 't', 'step', 'input_preview', 'pred', 'tgt', 'ok', 'prompt_len', 'prompt_hash']
+  type: step
+  t: 0.23
+  step: 0
+  input_preview: 请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+  pred: [罪名]伪造国家机关证件罪<eoa>
+  tgt: 伪造、变造、买卖国家机关公文、证件、印章
+  ok: False
+  prompt_len: 684
+  prompt_hash: 8b1e782d
+--- entry 2 keys: ['type', 't', 'batch_idx', 'batch_size', 'learn_ms']
+  type: learn_batch
+  t: 0.23
+  batch_idx: 0
+  batch_size: 1
+  learn_ms: 0

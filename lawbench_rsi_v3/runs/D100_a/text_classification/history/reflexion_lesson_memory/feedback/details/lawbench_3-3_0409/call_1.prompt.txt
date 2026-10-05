@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the factual description involves the illegal discharge of waste or pollutants, select the statutory offense name "污染环境" (environmental pollution) rather than a descriptive phrase such as "非法排放污染物
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the facts describe a person performing any medical diagnosis, treatment, or related procedure without a valid medical license, classify the conduct under the statutory offense of “非法行医” rather th
+- If the alleged bribery is committed by a legal entity (e.g., a company) or its legal representative, the correct charge is "单位行贿" rather than the individual offense "行贿".
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:天津市西青区人民检察院指控：2014年6月至8月间，被告人马××在天津市西青区杨柳青镇农学院北路其个人经营的电镀作坊内，未经处理将电镀废水排放至厂外。经检测，该企业排放废水中重金属锌超标541.67倍、重金属六价铬超标534倍。后被告人马××被抓获归案。
+检察机关提供了相应的证据，指控被告人马××犯××，请求依照《中华人民共和国刑法》××之规定进行处罚。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

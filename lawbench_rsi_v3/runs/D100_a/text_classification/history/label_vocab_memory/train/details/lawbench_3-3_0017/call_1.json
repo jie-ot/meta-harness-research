@@ -1,0 +1,72 @@
+{
+  "call_id": "28c0d98b51d04b6283d9987e4b7826e0",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791040884-YQpUS1EbR58tZwqOD86G",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant stole company funds by unauthorized transfers, which constitutes theft (盗窃). He also forged resident identity cards, which are state-issued documents, falling under the offense of forging, altering, or trading state documents and certificates (伪造、变造、买卖国家机关公文、证件、印章). No other listed offenses apply.\",\n  \"final_answer\": \"[罪名]盗窃;伪造、变造、买卖国家机关公文、证件、印章<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine applicable crimes from the facts.\n\nWe have theft (盗窃) of company funds via unauthorized transfer. Also fraud? The act of using stolen credentials to transfer money is theft (appropriation). Also they later returned money, but still theft.\n\nAlso they forged resident ID cards: 伪造居民身份证件. The list includes \"伪造、变造、买卖国家机关公文、证件、印章\" and \"伪造公司、企业、事业单位、人民团体印章\". There's also \"伪造居民身份证件\"? Not exactly. The list includes \"伪造、变造、买卖国家机关公文、证件、印章\". Resident ID is a state document, so that falls under that category. So label: 伪造、变造、买卖国家机关公文、证件、印章.\n\nAlso there is \"诈骗\"? They used stolen credentials to transfer money, but they returned money. The crime is theft (盗窃) not fraud. However they also used forged IDs to apply for loans? The fact says they forged IDs to increase transfer limit and apply for small loans. That could be fraud (诈骗) or false identity for loan. But the list includes \"贷款诈骗\" for loan fraud. They used forged IDs to apply for small loans. The description: \"伪造居民身份证件以提高转账额度及申请小额贷款\". So they used forged IDs to apply for small loans. That could be 贷款诈骗. However the main act is forging ID, not necessarily obtaining loan? The fact says they wanted to apply for small loan. Not clear if they actually obtained loan. The crime of forging ID is separate.\n\nThus we have two crimes: 盗窃 and 伪造、变造、买卖国家机关公文、证件、印章.\n\nCheck list: \"盗窃\" is present. \"伪造、变造、买卖国家机关公文、证件、印章\" is present.\n\nThus answer: [罪名]盗窃;伪造、变造、买卖国家机关公文、证件、印章<eoa>\n\nReturn JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine applicable crimes from the facts.\n\nWe have theft (盗窃) of company funds via unauthorized transfer. Also fraud? The act of using stolen credentials to transfer money is theft (appropriation). Also they later returned money, but still theft.\n\nAlso they forged resident ID cards: 伪造居民身份证件. The list includes \"伪造、变造、买卖国家机关公文、证件、印章\" and \"伪造公司、企业、事业单位、人民团体印章\". There's also \"伪造居民身份证件\"? Not exactly. The list includes \"伪造、变造、买卖国家机关公文、证件、印章\". Resident ID is a state document, so that falls under that category. So label: 伪造、变造、买卖国家机关公文、证件、印章.\n\nAlso there is \"诈骗\"? They used stolen credentials to transfer money, but they returned money. The crime is theft (盗窃) not fraud. However they also used forged IDs to apply for loans? The fact says they forged IDs to increase transfer limit and apply for small loans. That could be fraud (诈骗) or false identity for loan. But the list includes \"贷款诈骗\" for loan fraud. They used forged IDs to apply for small loans. The description: \"伪造居民身份证件以提高转账额度及申请小额贷款\". So they used forged IDs to apply for small loans. That could be 贷款诈骗. However the main act is forging ID, not necessarily obtaining loan? The fact says they wanted to apply for small loan. Not clear if they actually obtained loan. The crime of forging ID is separate.\n\nThus we have two crimes: 盗窃 and 伪造、变造、买卖国家机关公文、证件、印章.\n\nCheck list: \"盗窃\" is present. \"伪造、变造、买卖国家机关公文、证件、印章\" is present.\n\nThus answer: [罪名]盗窃;伪造、变造、买卖国家机关公文、证件、印章<eoa>\n\nReturn JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine applicable crimes from the facts.\n\nWe have theft (盗窃) of company funds via unauthorized transfer. Also fraud? The act of using stolen credentials to transfer money is theft (appropriation). Also they later returned money, but still theft.\n\nAlso they forged resident ID cards: 伪造居民身份证件. The list includes \"伪造、变造、买卖国家机关公文、证件、印章\" and \"伪造公司、企业、事业单位、人民团体印章\". There's also \"伪造居民身份证件\"? Not exactly. The list includes \"伪造、变造、买卖国家机关公文、证件、印章\". Resident ID is a state document, so that falls under that category. So label: 伪造、变造、买卖国家机关公文、证件、印章.\n\nAlso there is \"诈骗\"? They used stolen credentials to transfer money, but they returned money. The crime is theft (盗窃) not fraud. However they also used forged IDs to apply for loans? The fact says they forged IDs to increase transfer limit and apply for small loans. That could be fraud (诈骗) or false identity for loan. But the list includes \"贷款诈骗\" for loan fraud. They used forged IDs to apply for small loans. The description: \"伪造居民身份证件以提高转账额度及申请小额贷款\". So they used forged IDs to apply for small loans. That could be 贷款诈骗. However the main act is forging ID, not necessarily obtaining loan? The fact says they wanted to apply for small loan. Not clear if they actually obtained loan. The crime of forging ID is separate.\n\nThus we have two crimes: 盗窃 and 伪造、变造、买卖国家机关公文、证件、印章.\n\nCheck list: \"盗窃\" is present. \"伪造、变造、买卖国家机关公文、证件、印章\" is present.\n\nThus answer: [罪名]盗窃;伪造、变造、买卖国家机关公文、证件、印章<eoa>\n\nReturn JSON with reasoning and final answer.",
+            "reasoning_content": "We need to determine applicable crimes from the facts.\n\nWe have theft (盗窃) of company funds via unauthorized transfer. Also fraud? The act of using stolen credentials to transfer money is theft (appropriation). Also they later returned money, but still theft.\n\nAlso they forged resident ID cards: 伪造居民身份证件. The list includes \"伪造、变造、买卖国家机关公文、证件、印章\" and \"伪造公司、企业、事业单位、人民团体印章\". There's also \"伪造居民身份证件\"? Not exactly. The list includes \"伪造、变造、买卖国家机关公文、证件、印章\". Resident ID is a state document, so that falls under that category. So label: 伪造、变造、买卖国家机关公文、证件、印章.\n\nAlso there is \"诈骗\"? They used stolen credentials to transfer money, but they returned money. The crime is theft (盗窃) not fraud. However they also used forged IDs to apply for loans? The fact says they forged IDs to increase transfer limit and apply for small loans. That could be fraud (诈骗) or false identity for loan. But the list includes \"贷款诈骗\" for loan fraud. They used forged IDs to apply for small loans. The description: \"伪造居民身份证件以提高转账额度及申请小额贷款\". So they used forged IDs to apply for small loans. That could be 贷款诈骗. However the main act is forging ID, not necessarily obtaining loan? The fact says they wanted to apply for small loan. Not clear if they actually obtained loan. The crime of forging ID is separate.\n\nThus we have two crimes: 盗窃 and 伪造、变造、买卖国家机关公文、证件、印章.\n\nCheck list: \"盗窃\" is present. \"伪造、变造、买卖国家机关公文、证件、印章\" is present.\n\nThus answer: [罪名]盗窃;伪造、变造、买卖国家机关公文、证件、印章<eoa>\n\nReturn JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 592,
+      "prompt_tokens": 22818,
+      "total_tokens": 23410,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 451,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 80,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0027222,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0027222,
+        "upstream_inference_prompt_cost": 0.0022782,
+        "upstream_inference_completions_cost": 0.000444
+      }
+    }
+  },
+  "raw_response_missing": false
+}

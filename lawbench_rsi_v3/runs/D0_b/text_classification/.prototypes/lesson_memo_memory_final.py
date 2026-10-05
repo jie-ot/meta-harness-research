@@ -1,0 +1,278 @@
+"""Final validation for agents/lesson_memo_memory.py.
+
+Stubs MemorySystem and extract_json_field so the agent's logic can be
+exercised without the package being on sys.path.
+"""
+
+import json
+import re
+from typing import Any
+
+
+# ── framework stubs ──────────────────────────────────────────────────────────
+
+def extract_json_field(text: str, field: str, default: str = "") -> str:
+    try:
+        return json.loads(text).get(field, default)
+    except Exception:
+        m = re.search(rf'"{field}"\s*:\s*"(.*?)"', text, re.DOTALL)
+        return m.group(1) if m else default
+
+
+class MemorySystem:
+    def __init__(self, llm):
+        self._llm = llm
+
+    def call_llm(self, prompt: str) -> str:
+        return self._llm(prompt)
+
+
+LLMCallable = Any
+
+
+# ── inline copy of agent logic (mirrors agents/lesson_memo_memory.py) ────────
+
+MAX_CHARS = 30000
+_MAX_ERRORS_TO_SYNTHESIZE = 6
+_MAX_LESSONS = 20
+_MAX_LESSON_INJECT = 3
+_MAX_EXAMPLES = 15
+
+LESSON_KEYWORD = "生成规律"
+
+LESSON_PROMPT = """以下是模型在若干案例中的预测错误，请总结出最多5条简明的判案规律，帮助未来避免类似错误。
+每条规律必须基于案件事实中可观测的信号，而非简单重复错误本身。
+用中文回答，格式如下：
+
+{{"lesson": "- 规律1\\n- 规律2\\n- ..."}}
+
+错误案例：
+{error_cases}
+
+请生成规律："""
+
+PREDICT_PROMPT = """Solve the problem below based on the rules and examples provided.
+
+{lessons_section}{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Follow the patterns shown in the examples
+- Pay special attention to the key rules above to avoid common mistakes
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+
+def _tokenize(text: str) -> frozenset:
+    tokens: set = set()
+    tokens.update(re.findall(r"[A-Za-z0-9]+", text.lower()))
+    cjk = re.findall(r"[一-鿿]", text)
+    for i in range(len(cjk) - 1):
+        tokens.add(cjk[i] + cjk[i + 1])
+    return frozenset(tokens)
+
+
+def _jaccard(a: frozenset, b: frozenset) -> float:
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+class LessonMemoMemory(MemorySystem):
+    def __init__(self, llm):
+        super().__init__(llm)
+        self.examples: list = []
+        self.lessons: list = []
+        self._pending_errors: list = []
+
+    def _maybe_synthesize(self):
+        if len(self._pending_errors) < _MAX_ERRORS_TO_SYNTHESIZE:
+            return
+        batch = self._pending_errors[:_MAX_ERRORS_TO_SYNTHESIZE]
+        cases = []
+        for e in batch:
+            preview = e["input"][:120].replace("\n", " ").replace("\r", "")
+            cases.append(
+                f"事实片段: {preview}\n预测: {e.get('prediction', '')}\n正确答案: {e['ground_truth']}"
+            )
+        prompt = LESSON_PROMPT.format(error_cases="\n---\n".join(cases))
+        resp = self.call_llm(prompt)
+        lesson_text = extract_json_field(resp, "lesson")
+        if lesson_text:
+            combined = " ".join(e["input"][:200] for e in batch)
+            self.lessons.append({
+                "text": lesson_text,
+                "tokens": _tokenize(combined),
+                "source_preview": batch[0]["input"][:40],
+            })
+            if len(self.lessons) > _MAX_LESSONS:
+                self.lessons.pop(0)
+        self._pending_errors = self._pending_errors[_MAX_ERRORS_TO_SYNTHESIZE:]
+
+    def _top_lessons(self, q_tok: frozenset) -> list:
+        if not self.lessons:
+            return []
+        scored = sorted(self.lessons, key=lambda l: _jaccard(q_tok, l["tokens"]), reverse=True)
+        return [l["text"] for l in scored[:_MAX_LESSON_INJECT]]
+
+    def _top_examples(self, q_tok: frozenset) -> list:
+        scored = sorted(
+            enumerate(self.examples),
+            key=lambda ie: (_jaccard(q_tok, ie[1]["tokens"]), ie[0]),
+            reverse=True,
+        )
+        parts, total = [], 0
+        for _, ex in scored:
+            part = f"Q: {ex['input'][:300]}\nA: {ex['target']}"
+            if total + len(part) + 2 > MAX_CHARS:
+                break
+            parts.append(part)
+            total += len(part) + 2
+            if len(parts) >= _MAX_EXAMPLES:
+                break
+        return parts
+
+    def predict(self, input: str) -> tuple:
+        q_tok = _tokenize(input)
+        lessons = self._top_lessons(q_tok)
+        examples = self._top_examples(q_tok)
+        lessons_section = ""
+        if lessons:
+            lessons_section = "**Key rules (pay special attention):**\n" + "\n".join(lessons) + "\n\n"
+        examples_section = ""
+        if examples:
+            examples_section = "**Examples:**\n" + "\n\n".join(examples) + "\n\n"
+        prompt = PREDICT_PROMPT.format(
+            lessons_section=lessons_section,
+            examples_section=examples_section,
+            input=input,
+        )
+        response = self.call_llm(prompt)
+        answer = extract_json_field(response, "final_answer")
+        return answer, {
+            "num_examples": len(self.examples),
+            "num_lessons": len(self.lessons),
+            "num_lessons_injected": len(lessons),
+            "num_examples_injected": len(examples),
+        }
+
+    def learn_from_batch(self, batch_results: list) -> None:
+        for r in batch_results:
+            self.examples.append({
+                "input": r["input"],
+                "target": r["ground_truth"],
+                "tokens": _tokenize(r.get("raw_question", r["input"])),
+            })
+            if not r.get("was_correct", True):
+                self._pending_errors.append(r)
+        self._maybe_synthesize()
+
+    def get_state(self) -> str:
+        return json.dumps({
+            "examples": [
+                {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+                for ex in self.examples
+            ],
+            "lessons": [
+                {"text": l["text"], "tokens": sorted(l["tokens"]), "source_preview": l["source_preview"]}
+                for l in self.lessons
+            ],
+            "pending_errors": self._pending_errors,
+        })
+
+    def set_state(self, state: str) -> None:
+        data = json.loads(state)
+        self.examples = []
+        for ex in data.get("examples", []):
+            restored = dict(ex)
+            if "tokens" in restored and isinstance(restored["tokens"], list):
+                restored["tokens"] = frozenset(restored["tokens"])
+            else:
+                restored["tokens"] = _tokenize(restored.get("input", ""))
+            self.examples.append(restored)
+        self.lessons = []
+        for l in data.get("lessons", []):
+            self.lessons.append({
+                "text": l["text"],
+                "tokens": frozenset(l.get("tokens", [])),
+                "source_preview": l.get("source_preview", ""),
+            })
+        self._pending_errors = data.get("pending_errors", [])
+
+
+# ── fake LLM ─────────────────────────────────────────────────────────────────
+
+LESSON_RESPONSE = json.dumps({"lesson": "- 主体是单位时用单位形式罪名\n- 勿在罪名后加'罪'字"})
+PREDICT_RESPONSE = json.dumps({"reasoning": "test", "final_answer": "单位行贿"})
+
+
+def fake_llm(prompt: str) -> str:
+    if LESSON_KEYWORD in prompt:
+        return LESSON_RESPONSE
+    return PREDICT_RESPONSE
+
+
+# ── validation tests ──────────────────────────────────────────────────────────
+
+ERRORS = [
+    {"input": "被告单位通辽市某商业广场有限公司利用职务便利以政府名义出具推荐函", "prediction": "行贿", "ground_truth": "单位行贿", "was_correct": False},
+    {"input": "被告人韩某某在担任物业公司副总经理期间收受行贿款", "prediction": "受贿", "ground_truth": "非国家工作人员受贿", "was_correct": False},
+    {"input": "被告人李某甲以牟利为目的盗割正在使用中的公共照明电线", "prediction": "破坏公共设施", "ground_truth": "破坏电力设备", "was_correct": False},
+    {"input": "被告人郭某销售假冒GIVENCHY注册商标的皮鞋", "prediction": "侵犯注册商标专用权", "ground_truth": "销售假冒注册商标的商品", "was_correct": False},
+    {"input": "被告人何某偷走三轮摩托车后将车架喷色隐瞒来源", "prediction": "盗窃", "ground_truth": "盗窃;掩饰、隐瞒犯罪所得、犯罪所得收益", "was_correct": False},
+    {"input": "被告人林某伪造假的房产证交还被害人", "prediction": "伪造国家机关证件罪", "ground_truth": "伪造、变造、买卖国家机关公文、证件、印章", "was_correct": False},
+]
+
+CORRECT = [
+    {"input": "被告人叶某甲将罂粟果种植在自家农田中", "prediction": "非法种植毒品原植物", "ground_truth": "非法种植毒品原植物", "was_correct": True},
+    {"input": "被告人何某私自焚烧秸秆引发山火", "prediction": "失火", "ground_truth": "失火", "was_correct": True},
+]
+
+
+def run():
+    m = LessonMemoMemory(fake_llm)
+
+    # 1. cold start — no examples, no lessons
+    ans, meta = m.predict("被告人张某以租车为名将轿车骗走")
+    assert ans == "单位行贿", f"cold start: {ans}"
+    assert meta["num_lessons_injected"] == 0
+    print(f"[cold start] ok — answer={ans}, lessons_injected={meta['num_lessons_injected']}")
+
+    # 2. learn 6 errors → synthesis fires
+    m.learn_from_batch(ERRORS + CORRECT)
+    assert len(m.lessons) == 1, f"expected 1 lesson, got {len(m.lessons)}"
+    assert len(m.examples) == len(ERRORS) + len(CORRECT)
+    print(f"[after batch] lessons={len(m.lessons)}, examples={len(m.examples)}")
+
+    # 3. predict with lessons injected
+    ans2, meta2 = m.predict("被告单位某公司以政府名义支付报酬")
+    assert ans2 == "单位行贿"
+    assert meta2["num_lessons_injected"] >= 1
+    print(f"[with lessons] answer={ans2}, lessons_injected={meta2['num_lessons_injected']}")
+
+    # 4. get_state / set_state round-trip
+    state = m.get_state()
+    m2 = LessonMemoMemory(fake_llm)
+    m2.set_state(state)
+    assert len(m2.examples) == len(m.examples)
+    assert len(m2.lessons) == len(m.lessons)
+    for ex in m2.examples:
+        assert isinstance(ex["tokens"], frozenset), "tokens must be frozenset after restore"
+    for l in m2.lessons:
+        assert isinstance(l["tokens"], frozenset)
+    print(f"[state round-trip] ok — examples={len(m2.examples)}, lessons={len(m2.lessons)}")
+
+    # 5. lesson cap: 5 more batches of 6 errors each → cap at 20
+    for _ in range(5):
+        m.learn_from_batch(ERRORS)
+    assert len(m.lessons) <= _MAX_LESSONS
+    print(f"[lesson cap] lessons={len(m.lessons)} <= {_MAX_LESSONS}")
+
+    print("\nAll validation tests passed — lesson_memo_memory OK.")
+
+
+if __name__ == "__main__":
+    run()

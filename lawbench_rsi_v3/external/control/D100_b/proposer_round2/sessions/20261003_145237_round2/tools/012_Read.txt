@@ -1,0 +1,41 @@
+Read: reports\iteration_1_diagnosis.md
+
+
+--- output ---
+1	# Iteration 1 Diagnosis — D100_b base analysis
+2	
+3	## Base system: confusion_disambiguation_memory (29/100 score)
+4	
+5	## Root cause analysis
+6	
+7	The base system's `_tokenize` uses `[A-Za-z0-9]+`, which extracts only ASCII tokens.
+8	For Chinese legal text (LawBench), this means similarity between any two examples
+9	is driven solely by shared date/number strings. Almost every pair ties at or near
+10	Jaccard=0.0, making retrieval effectively random and the confusion-disambiguation
+11	mechanism blind — it cannot identify which stored examples are most relevant.
+12	
+13	## Error patterns observed in score diagnostics (71 wrong / 100)
+14	
+15	1. Surface-form near-misses: model paraphrases the canonical label
+16	   (e.g. "销售假冒注册商标商品" vs "销售假冒注册商标的商品";
+17	   "非法种植罂粟" vs "非法种植毒品原植物").
+18	2. Specificity errors: model picks a general charge when a specific one applies
+19	   ("诈骗" vs "合同诈骗"; "行贿" vs "单位行贿").
+20	3. Multi-charge omissions: model lists one charge when facts support two
+21	   ("故意伤害" vs "故意伤害;故意毁坏财物").
+22	
+23	## Iteration 1 candidates
+24	
+25	- A (exploitation): cjk_bigram_confusion_memory — fix retrieval signal by
+26	  replacing ASCII-only tokenizer with CJK character bigrams. Restores the
+27	  confusion disambiguation mechanism so it actually functions over Chinese text.
+28	- B (exploration): label_glossary_memory — accumulate canonical label strings
+29	  during training and inject them as a reference glossary in the prompt to
+30	  anchor the LLM to exact forms and reduce near-miss errors.
+31	
+32	## Takeaway for future iterations
+33	
+34	The tokenizer was the single biggest latent bug. Future iterations that build
+35	on retrieval should keep the CJK bigram tokenizer. If glossary helps, combining
+36	it with the confusion disambiguation mechanism is the natural next step.
+37	

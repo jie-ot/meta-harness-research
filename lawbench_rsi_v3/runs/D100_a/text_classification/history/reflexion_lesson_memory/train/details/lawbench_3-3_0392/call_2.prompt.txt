@@ -1,0 +1,22 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:阜南县人民检察院指控：2016年10月份，两名缅甸籍女子马某拉丁（音）、苗某（音）被以介绍工作的名义骗到中国安徽省阜南县，由岳某（另案）将上述两名缅甸女带至阜南县境内某宾馆，其中苗某通过被告人徐某介绍，卖给阜南县老观乡居民徐某3为妻，徐某3母亲杜某1付给岳某人民币五万元。以上事实，公诉机关提供了相关证据予以证实，据此认为被告人徐某拐卖妇女，其行为触犯了《中华人民共和国刑法》××规定，构成拐卖妇女罪，提请本院依法对其判处刑罚。
+
+
+Wrong prediction: [罪名]拐卖妇女<eoa>
+Correct answer: 拐卖妇女、儿童
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

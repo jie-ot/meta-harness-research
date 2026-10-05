@@ -1,0 +1,72 @@
+{
+  "call_id": "3d2bcb81ea1e47ae81f06565259d8bb3",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791038215-3gIVlOUys6KFWEs5Asig",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"事实中指控被告单位及其实际经营人向国家工作人员行贿，构成单位行贿罪；同时被告人为其经营的公司购买并使用虚开的增值税专用发票用于抵扣税款，构成虚开增值税专用发票罪。根据规则，罪名应使用法定名称，不加前缀修饰。\",\n  \"final_answer\": \"[罪名]单位行贿;虚开增值税专用发票罪<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine crimes. Facts mention two crimes: unit bribery (单位行贿) and false issuance of VAT special invoices (虚开增值税专用发票). Also the person is individual but also responsible for unit bribery as direct responsible person. So charges: 对单位行贿; 虚开增值税专用发票罪.\n\nNeed to follow correction rules: When bribery directed at persons who are not state officials or at a legal entity, must be specified as “对非国家工作人员行贿” and/or “对单位行贿”. Here the bribery is to a state official (孔某某 held positions in state-owned oil fields). So it's bribery of state staff. The rule says: When facts describe bribery directed at persons who are not state officials or at a legal entity (unit), the charge must be specified as “对非国家工作人员行贿” and/or “对单位行贿” rather than generic “行贿”. But here it's state officials, so generic \"行贿\" maybe \"对国家工作人员行贿\". The problem statement: \"被告单位...向国家工作人员行贿\". So charge should be \"对国家工作人员行贿\". However the instruction says output exact statutory offense term without qualifiers like “对国家工作人员”. Actually earlier rule: \"When extracting the crime name, output the exact statutory offense term (e.g., “行贿”) without adding descriptive prefixes or qualifiers such as “对国家工作人员”。\" So we should output just \"行贿\". But also need to differentiate unit vs individual? The statutory offense for unit bribery is \"单位行贿罪\". The exact term is \"单位行贿\". So we output \"单位行贿\". For false VAT invoice: \"虚开增值税专用发票罪\". So final answer: [罪名]单位行贿;虚开增值税专用发票罪<eoa>\n\nCheck formatting: multiple crimes separated by semicolon. No extra spaces? Example: [罪名]盗窃;诈骗<eoa>. So we follow that.\n\nThus final JSON with reasoning and final_answer.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine crimes. Facts mention two crimes: unit bribery (单位行贿) and false issuance of VAT special invoices (虚开增值税专用发票). Also the person is individual but also responsible for unit bribery as direct responsible person. So charges: 对单位行贿; 虚开增值税专用发票罪.\n\nNeed to follow correction rules: When bribery directed at persons who are not state officials or at a legal entity, must be specified as “对非国家工作人员行贿” and/or “对单位行贿”. Here the bribery is to a state official (孔某某 held positions in state-owned oil fields). So it's bribery of state staff. The rule says: When facts describe bribery directed at persons who are not state officials or at a legal entity (unit), the charge must be specified as “对非国家工作人员行贿” and/or “对单位行贿” rather than generic “行贿”. But here it's state officials, so generic \"行贿\" maybe \"对国家工作人员行贿\". The problem statement: \"被告单位...向国家工作人员行贿\". So charge should be \"对国家工作人员行贿\". However the instruction says output exact statutory offense term without qualifiers like “对国家工作人员”. Actually earlier rule: \"When extracting the crime name, output the exact statutory offense term (e.g., “行贿”) without adding descriptive prefixes or qualifiers such as “对国家工作人员”。\" So we should output just \"行贿\". But also need to differentiate unit vs individual? The statutory offense for unit bribery is \"单位行贿罪\". The exact term is \"单位行贿\". So we output \"单位行贿\". For false VAT invoice: \"虚开增值税专用发票罪\". So final answer: [罪名]单位行贿;虚开增值税专用发票罪<eoa>\n\nCheck formatting: multiple crimes separated by semicolon. No extra spaces? Example: [罪名]盗窃;诈骗<eoa>. So we follow that.\n\nThus final JSON with reasoning and final_answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine crimes. Facts mention two crimes: unit bribery (单位行贿) and false issuance of VAT special invoices (虚开增值税专用发票). Also the person is individual but also responsible for unit bribery as direct responsible person. So charges: 对单位行贿; 虚开增值税专用发票罪.\n\nNeed to follow correction rules: When bribery directed at persons who are not state officials or at a legal entity, must be specified as “对非国家工作人员行贿” and/or “对单位行贿”. Here the bribery is to a state official (孔某某 held positions in state-owned oil fields). So it's bribery of state staff. The rule says: When facts describe bribery directed at persons who are not state officials or at a legal entity (unit), the charge must be specified as “对非国家工作人员行贿” and/or “对单位行贿” rather than generic “行贿”. But here it's state officials, so generic \"行贿\" maybe \"对国家工作人员行贿\". The problem statement: \"被告单位...向国家工作人员行贿\". So charge should be \"对国家工作人员行贿\". However the instruction says output exact statutory offense term without qualifiers like “对国家工作人员”. Actually earlier rule: \"When extracting the crime name, output the exact statutory offense term (e.g., “行贿”) without adding descriptive prefixes or qualifiers such as “对国家工作人员”。\" So we should output just \"行贿\". But also need to differentiate unit vs individual? The statutory offense for unit bribery is \"单位行贿罪\". The exact term is \"单位行贿\". So we output \"单位行贿\". For false VAT invoice: \"虚开增值税专用发票罪\". So final answer: [罪名]单位行贿;虚开增值税专用发票罪<eoa>\n\nCheck formatting: multiple crimes separated by semicolon. No extra spaces? Example: [罪名]盗窃;诈骗<eoa>. So we follow that.\n\nThus final JSON with reasoning and final_answer.",
+            "reasoning_content": "We need to determine crimes. Facts mention two crimes: unit bribery (单位行贿) and false issuance of VAT special invoices (虚开增值税专用发票). Also the person is individual but also responsible for unit bribery as direct responsible person. So charges: 对单位行贿; 虚开增值税专用发票罪.\n\nNeed to follow correction rules: When bribery directed at persons who are not state officials or at a legal entity, must be specified as “对非国家工作人员行贿” and/or “对单位行贿”. Here the bribery is to a state official (孔某某 held positions in state-owned oil fields). So it's bribery of state staff. The rule says: When facts describe bribery directed at persons who are not state officials or at a legal entity (unit), the charge must be specified as “对非国家工作人员行贿” and/or “对单位行贿” rather than generic “行贿”. But here it's state officials, so generic \"行贿\" maybe \"对国家工作人员行贿\". The problem statement: \"被告单位...向国家工作人员行贿\". So charge should be \"对国家工作人员行贿\". However the instruction says output exact statutory offense term without qualifiers like “对国家工作人员”. Actually earlier rule: \"When extracting the crime name, output the exact statutory offense term (e.g., “行贿”) without adding descriptive prefixes or qualifiers such as “对国家工作人员”。\" So we should output just \"行贿\". But also need to differentiate unit vs individual? The statutory offense for unit bribery is \"单位行贿罪\". The exact term is \"单位行贿\". So we output \"单位行贿\". For false VAT invoice: \"虚开增值税专用发票罪\". So final answer: [罪名]单位行贿;虚开增值税专用发票罪<eoa>\n\nCheck formatting: multiple crimes separated by semicolon. No extra spaces? Example: [罪名]盗窃;诈骗<eoa>. So we follow that.\n\nThus final JSON with reasoning and final_answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 585,
+      "prompt_tokens": 1196,
+      "total_tokens": 1781,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 455,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0005304,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0005304,
+        "upstream_inference_prompt_cost": 0.0001794,
+        "upstream_inference_completions_cost": 0.000351
+      }
+    }
+  },
+  "raw_response_missing": false
+}

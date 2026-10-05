@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- If the facts describe the use of a false or deceptive contract (e.g., a sale, lease, transfer agreement) to obtain money or property, classify the offense as “合同诈骗” rather than the generic “诈骗”.
+- When the facts describe a person performing any medical diagnosis, treatment, or related procedure without a valid medical license, classify the conduct under the statutory offense of “非法行医” rather th
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:温州市瓯海区人民检察院指控，被告人陈某原系温州市瓯海区潘桥镇焦下村新桐路13号“吕某鞋材加工厂”的驾驶员。2014年7月4日16时许，被告人陈某在该加工厂内驾驶浙C×××××轻型普通货车至该厂传达室门口时，因对厂内行人动态注意不够，车辆碰撞途经此处的被害人张某丙（女，2011年5月15日出生）并致其受伤，随后，被告人陈某积极抢救被害人张某丙，并在医院主动接受公安机关调查，如实供述上述事实。经鉴定，被害人张某丙系头部遭受外力作用致重度颅脑损伤而死亡。案发后，被告人陈某及“吕某鞋材加工厂”与被害人张某丙家属达成赔偿人民币335000元的协议，并已履行完毕。
+指控认为，被告人陈某的行为已构成××，应依照《中华人民共和国刑法》××之规定予以惩处。被告人陈某有自首情节，可以从轻处罚。公诉机关提供的证据有证人张某甲、张某乙、王某、滕某、吕某的证言，现场勘验检查笔录及照片，道路交通事故现场勘查笔录，辨认笔录，法医学尸体检验鉴定书，人民调解协议书，收条，刑事谅解书，抢救转诊登记表，机动车驾驶证和行驶证，接警单，归案情况说明和到案经过，身份证明材料，被告人的供述与辩解等。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

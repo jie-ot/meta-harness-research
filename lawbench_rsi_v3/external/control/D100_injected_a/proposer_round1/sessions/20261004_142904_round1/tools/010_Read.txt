@@ -1,0 +1,340 @@
+Read: agents\act_decomposition_union_memory.py
+
+
+--- output ---
+1	"""Act Decomposition Union Memory — charge each act separately, then union system-side.
+2	
+3	Diagnosis this addresses (two buckets the base system loses, distinct from the
+4	naming bucket that Canonical Charge Lexicon Memory attacks):
+5	
+6	  * Multi-charge undercount. When a target holds 2-3 charges the system answers
+7	    with 1, because a single call over a long narrative collapses every act into
+8	    the one most salient label:
+9	        盗窃              vs 破坏交通设施;盗窃
+10	        盗窃              vs 抢劫;盗窃;抢夺
+11	        伪造货币          vs 伪造货币;故意伤害
+12	  * Over-prediction. Charging the whole narrative at once also invites extras, and
+13	    the system never learns how large the answer is supposed to be:
+14	        诈骗;敲诈勒索;非法拘禁 vs 非法拘禁
+15	
+16	Mechanism (an added stage, not a parameter change): the fact is *segmented* into
+17	acts on structural markers, each act is charged in its own short call, and the
+18	system assembles the union itself in first-appearance order. Two pieces of learned
+19	*structural* memory govern the assembly:
+20	
+21	  1. Spurious charges — names the model emitted that the truth did not contain —
+22	     strip inventions that are repeatedly produced and never confirmed.
+23	  2. Answer-cardinality prior — the observed distribution of |truth| conditioned on
+24	     how many acts were detected — trims a union that is longer than this kind of
+25	     fact ever warrants, dropping the weakest-evidence excess first.
+26	
+27	Note what this system does *not* do: it never rewrites a charge string into another
+28	string, and it keeps no inventory of statutory names. Its memory is about how many
+29	charges an answer should contain and which ones are inventions, not about how a
+30	charge is spelled. Memory of set *structure*, rather than memory of *strings*, is
+31	the axis.
+32	
+33	Segmenting also shortens the prompt: a long fact that pushes the answer out of the
+34	response channel is charged act-by-act instead, and an empty act gets one terse
+35	retry.
+36	"""
+37	
+38	import re
+39	from collections import defaultdict
+40	from typing import Any
+41	
+42	from ..llm import LLMCallable
+43	from ..memory_system import MemorySystem, extract_json_field
+44	
+45	# One call per act; beyond this the tail is joined into the last call so the call
+46	# budget stays bounded.
+47	MAX_ACTS = 3
+48	
+49	ACT_PROMPT = """下面是一起案件事实的其中一部分。请只针对这部分列出它构成的罪名。
+50	
+51	**这部分事实:**
+52	{act}
+53	
+54	**要求:**
+55	- 用法定罪名，多个罪名用 ';' 连接。
+56	- 只写这部分事实直接支持的罪名；不要补充其他部分可能涉及的罪名。
+57	- 罪名只写在 [罪名] 和 <eoa> 之间。
+58	{examples_section}
+59	{{"reasoning": "简要分析", "final_answer": "[罪名]<罪名><eoa>"}}"""
+60	
+61	# Terse retry, used only when an act's first call yields nothing.
+62	RETRY_PROMPT = """这部分事实构成什么罪名？一行作答。
+63	
+64	{act}
+65	
+66	格式: {{"final_answer": "[罪名]<罪名><eoa>"}}"""
+67	
+68	MIN_FACT_CHARS = 240   # below this, segmentation is pointless
+69	MIN_ACT_CHARS = 50     # drop fragments too short to carry a charge
+70	SPURIOUS_MIN = 2       # unconfirmed inventions must recur before being stripped
+71	MIN_GLOBAL_OBS = 10    # observations before the global cardinality prior is trusted
+72	MAX_EXAMPLES = 2
+73	MAX_EXAMPLE_CHARS = 180
+74	_STATE_VERSION = 1
+75	
+76	# Structural markers that introduce a distinct act: 一、/（一）/(一)/1、/1./1．
+77	_MARKER = re.compile(
+78	    r"(?m)^[ \t　]*(?:[一二三四五六七八九十]{1,2}[ \t]*、"
+79	    r"|（[一二三四五六七八九十]{1,2}）"
+80	    r"|\([一二三四五六七八九十]{1,2}\)"
+81	    r"|\d{1,2}[ \t]*[、.．])"
+82	)
+83	_PARAGRAPH = re.compile(r"\n{2,}")
+84	
+85	
+86	def _clean(s: str) -> str:
+87	    return re.sub(r"\s+", "", s or "")
+88	
+89	
+90	def _split_charges(s: str) -> list[str]:
+91	    """Split on ';' only — '、' is internal to statutory names and must not split."""
+92	    return [p.strip() for p in re.split(r"[;；]", s or "") if p.strip()]
+93	
+94	
+95	def _payload(s: str) -> str:
+96	    m = re.search(r"\[罪名\](.*?)(?:<eoa>|$)", s or "", re.S)
+97	    return (m.group(1) if m else (s or "")).strip()
+98	
+99	
+100	def _wrap(payload: str) -> str:
+101	    return f"[罪名]{payload}<eoa>" if payload else ""
+102	
+103	
+104	def _bigrams(s: str) -> frozenset[str]:
+105	    s = _clean(s)
+106	    if not s:
+107	        return frozenset()
+108	    if len(s) == 1:
+109	        return frozenset([s])
+110	    return frozenset(s[i : i + 2] for i in range(len(s) - 1))
+111	
+112	
+113	def _sim(a: str, b: str) -> float:
+114	    A, B = _bigrams(a), _bigrams(b)
+115	    if not A or not B:
+116	        return 0.0
+117	    return len(A & B) / len(A | B)
+118	
+119	
+120	def _segment_fact(
+121	    text: str, max_acts: int = MAX_ACTS, min_fact: int = MIN_FACT_CHARS, min_act: int = MIN_ACT_CHARS
+122	) -> list[str]:
+123	    """Split a fact into acts on structural markers, falling back to paragraphs.
+124	
+125	    Returns [whole_text] when nothing splits cleanly, so single-act facts are
+126	    charged exactly as before.
+127	    """
+128	    t = (text or "").replace("\r\n", "\n").replace("\r", "\n").strip()
+129	    if not t:
+130	        return []
+131	    if len(t) < min_fact:
+132	        return [t]
+133	    for pattern in (_MARKER, _PARAGRAPH):
+134	        starts = [0] + [m.start() for m in pattern.finditer(t) if m.start() > 0]
+135	        segs = [t[starts[i] : starts[i + 1]].strip() for i in range(len(starts) - 1)]
+136	        segs = [s for s in segs if len(s) >= min_act]
+137	        if len(segs) >= 2:
+138	            if len(segs) > max_acts:
+139	                segs = segs[: max_acts - 1] + ["\n".join(segs[max_acts - 1 :])]
+140	            return segs
+141	    return [t]
+142	
+143	
+144	class ActDecompositionUnionMemory(MemorySystem):
+145	    """Per-act charging with system-side union and learned charge-count control."""
+146	
+147	    def __init__(self, llm: LLMCallable):
+148	        super().__init__(llm)
+149	        # charge predicted but absent from the truth -> times observed
+150	        self.spurious: dict[str, int] = defaultdict(int)
+151	        # charge that appeared in some truth -> times observed
+152	        self.confirmed: dict[str, int] = defaultdict(int)
+153	        # number of detected acts -> {number of true charges: times observed}
+154	        self.size_by_acts: dict[int, dict[int, int]] = defaultdict(lambda: defaultdict(int))
+155	        # every observed |truth|, for facts whose act count was never seen
+156	        self.global_sizes: dict[int, int] = defaultdict(int)
+157	        self._size_obs = 0
+158	        # (act text, charge) style hints, most recent last
+159	        self.examples: list[dict[str, str]] = []
+160	        self._learned_items = 0
+161	
+162	    # ------------------------------------------------------------------
+163	    # Learning — structural memory only; no string rewriting
+164	    # ------------------------------------------------------------------
+165	
+166	    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+167	        for r in batch_results:
+168	            truth = _clean(_payload(r.get("ground_truth", "")))
+169	            if not truth:
+170	                continue
+171	            truth_parts = [_clean(t) for t in _split_charges(truth)]
+172	            truth_parts = [t for t in truth_parts if t]
+173	            if not truth_parts:
+174	                continue
+175	            for t in truth_parts:
+176	                self.confirmed[t] += 1
+177	
+178	            truth_set = set(truth_parts)
+179	            pred_parts = [_clean(p) for p in _split_charges(_payload(r.get("prediction", "")))]
+180	            for p in pred_parts:
+181	                if p and p not in truth_set:
+182	                    self.spurious[p] += 1
+183	
+184	            fact = r.get("raw_question", r.get("input", "")) or ""
+185	            acts = _segment_fact(fact)
+186	            self.size_by_acts[len(acts)][len(truth_parts)] += 1
+187	            self.global_sizes[len(truth_parts)] += 1
+188	            self._size_obs += 1
+189	
+190	            self.examples.append({"fact": _clean(fact)[:MAX_EXAMPLE_CHARS], "target": truth})
+191	            self._learned_items += 1
+192	
+193	        if len(self.examples) > MAX_EXAMPLES * 4:
+194	            self.examples = self.examples[-MAX_EXAMPLES * 4 :]
+195	
+196	    # ------------------------------------------------------------------
+197	    # Assembly
+198	    # ------------------------------------------------------------------
+199	
+200	    def _expected_size(self, n_acts: int) -> int | None:
+201	        """Most common true charge count for a fact with this many acts."""
+202	        row = self.size_by_acts.get(n_acts)
+203	        if row:
+204	            return max(row.items(), key=lambda kv: (kv[1], -kv[0]))[0]
+205	        if self._size_obs >= MIN_GLOBAL_OBS and self.global_sizes:
+206	            return max(self.global_sizes.items(), key=lambda kv: (kv[1], -kv[0]))[0]
+207	        return None
+208	
+209	    def _calibrate(self, charges: list[str], n_acts: int) -> list[str]:
+210	        if not charges:
+211	            return []
+212	        # Layer 1: strip inventions that recur without ever being confirmed.
+213	        kept = [
+214	            c
+215	            for c in charges
+216	            if not (self.spurious.get(c, 0) >= SPURIOUS_MIN and c not in self.confirmed)
+217	        ]
+218	        if not kept:
+219	            kept = list(charges)
+220	        # Layer 2: an answer longer than this kind of fact ever warrants loses its
+221	        # weakest-evidence parts first (unconfirmed before confirmed).
+222	        expected = self._expected_size(n_acts)
+223	        if expected is not None and expected >= 1:
+224	            while len(kept) > expected and len(kept) > 1:
+225	                idx = max(
+226	                    range(len(kept)),
+227	                    key=lambda i: (
+228	                        self.spurious.get(kept[i], 0),
+229	                        1 if kept[i] not in self.confirmed else 0,
+230	                    ),
+231	                )
+232	                kept.pop(idx)
+233	        return kept
+234	
+235	    def _parse(self, response: str) -> list[str]:
+236	        out, seen = [], set()
+237	        for p in _split_charges(_payload(extract_json_field(response, "final_answer"))):
+238	            c = _clean(p)
+239	            if c and c not in seen:
+240	                seen.add(c)
+241	                out.append(c)
+242	        return out
+243	
+244	    # ------------------------------------------------------------------
+245	    # Retrieval
+246	    # ------------------------------------------------------------------
+247	
+248	    def _examples_section(self, act: str) -> str:
+249	        if not self.examples:
+250	            return ""
+251	        ranked = sorted(self.examples, key=lambda ex: -_sim(act, ex["fact"]))[:MAX_EXAMPLES]
+252	        blocks = [f"例：{ex['fact']}\n罪名：{ex['target']}" for ex in ranked]
+253	        return "\n" + "\n".join(blocks) + "\n"
+254	
+255	    # ------------------------------------------------------------------
+256	    # MemorySystem interface
+257	    # ------------------------------------------------------------------
+258	
+259	    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+260	        acts = _segment_fact(input)
+261	        if not acts:
+262	            return "", {"full_response": "", "num_acts": 0, "retried": False}
+263	
+264	        responses: list[str] = []
+265	        per_act: list[list[str]] = []
+266	        retries = 0
+267	        for act in acts:
+268	            response = self.call_llm(ACT_PROMPT.format(act=act, examples_section=self._examples_section(act)))
+269	            parts = self._parse(response)
+270	            if not parts:
+271	                retries += 1
+272	                retry_response = self.call_llm(RETRY_PROMPT.format(act=act))
+273	                response = response + "\n" + retry_response
+274	                parts = self._parse(retry_response)
+275	            responses.append(response)
+276	            per_act.append(parts)
+277	
+278	        union: list[str] = []
+279	        for parts in per_act:
+280	            for c in parts:
+281	                if c not in union:
+282	                    union.append(c)
+283	        kept = self._calibrate(union, len(acts))
+284	        answer = _wrap(";".join(kept)) if kept else ""
+285	
+286	        return answer, {
+287	            "full_response": "\n".join(responses),
+288	            "num_acts": len(acts),
+289	            "per_act": per_act,
+290	            "union": union,
+291	            "kept": kept,
+292	            "expected_size": self._expected_size(len(acts)),
+293	            "retries": retries,
+294	            "num_spurious": len(self.spurious),
+295	            "size_observations": self._size_obs,
+296	        }
+297	
+298	    def get_context_length(self) -> int:
+299	        return MAX_ACTS * 900
+300	
+301	    # ------------------------------------------------------------------
+302	    # State
+303	    # ------------------------------------------------------------------
+304	
+305	    def get_state(self) -> str:
+306	        import json
+307	
+308	        return json.dumps(
+309	            {
+310	                "version": _STATE_VERSION,
+311	                "spurious": dict(self.spurious),
+312	                "confirmed": dict(self.confirmed),
+313	                "size_by_acts": {str(k): dict(v) for k, v in self.size_by_acts.items()},
+314	                "global_sizes": dict(self.global_sizes),
+315	                "size_obs": self._size_obs,
+316	                "examples": self.examples,
+317	                "learned_items": self._learned_items,
+318	            },
+319	            ensure_ascii=False,
+320	        )
+321	
+322	    def set_state(self, state: str) -> None:
+323	        import json
+324	
+325	        data = json.loads(state)
+326	        self.spurious = defaultdict(int, {k: int(v) for k, v in data.get("spurious", {}).items()})
+327	        self.confirmed = defaultdict(int, {k: int(v) for k, v in data.get("confirmed", {}).items()})
+328	        self.size_by_acts = defaultdict(lambda: defaultdict(int))
+329	        for k, row in data.get("size_by_acts", {}).items():
+330	            for size, cnt in row.items():
+331	                self.size_by_acts[int(k)][int(size)] = int(cnt)
+332	        self.global_sizes = defaultdict(int, {int(k): int(v) for k, v in data.get("global_sizes", {}).items()})
+333	        self._size_obs = int(data.get("size_obs", 0))
+334	        self.examples = list(data.get("examples", []))
+335	        self._learned_items = int(data.get("learned_items", len(self.examples)))
+336	

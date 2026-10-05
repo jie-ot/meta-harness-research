@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the facts describe the acquisition, processing, and sale of animal-derived products that are unsafe or of unknown origin, classify the offense under food safety statutes (e.g., 生产、销售不符合安全标准的食品) r
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the facts describe manufacturing or distributing drugs that are counterfeit, adulterated, or otherwise not meeting legal standards (i.e., ‘假药’), the appropriate charge is “生产、销售假药” rather than th
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控，2016年10月，被告人于某君先后两次共从寿光市侯镇海洋化工园区一盐场内购进40袋工业用盐（50公斤/袋、23元/袋），后驾驶车辆到安丘市、沂水县圈里乡等地假冒食用盐销售给他人食用，销售金额共计1800余元，牟利800余元。2016年10月29日，被告人于某君再次从上述盐厂购进26袋工业盐后驾驶车辆到沂水县圈里乡牛家老庄村欲销售牟利时被沂水县盐务局执法人员当场查获，查获未销售的工业用盐1.3吨。经检验，于某君销售的工业用盐不符合加碘食用盐标准。
+公诉机关提交的证据如下：物证；鉴定意见；证人宋某五、牛某伟等人的证言；被告人于某君的供述等。
+公诉机关认为，被告人于某君销售不符合安全标准的食品，其行为破坏了社会主义市场经济秩序，触犯了《中华人民共和国刑法》××之规定，犯罪事实清楚，证据确实充分，应当以销售不符合安全标准的食品罪追究其刑事责任。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

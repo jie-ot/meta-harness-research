@@ -1,0 +1,72 @@
+{
+  "call_id": "f3a7048e7d654028a4a4b2c6a945a87f",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791035284-6NSdv7EYWAuiGkUpsVBL",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant deceived the victim by promising to purchase a house and related services, obtaining 115,000 RMB. This constitutes fraud (诈骗). Afterwards, the defendant filed a false police report claiming the victim had defrauded him of 640,000 RMB and arranged false testimony to have the victim prosecuted, which is a false accusation (诬告陷害). Both crimes are supported by the facts.\",\n  \"final_answer\": \"[罪名]诈骗;诬告陷害<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine charges. Facts: Wang deceived victim by false promises to buy house, garage, handle paperwork, defrauded 115,000 RMB. That's fraud/诈骗. Also later he filed false report claiming victim defrauded him 640,000 and had friend give false testimony. That's false accusation, possibly false reporting, making false statements to police, or false accusation (诬告). The companion charge list at top: \"Companion charge check — the primary charge is likely [破坏广播电视设施、公用电信设施]. These charges frequently co-occur with it in training; include each ONLY if the case facts support it: - 盗窃 (co-occurred 1x)\". That seems generic instruction for classification tasks. But our case is about fraud. So primary charge likely 诈骗? The list of possible labels includes many. We need to output the appropriate charge(s). The facts: deception to obtain money => 诈骗. Also false accusation to police => 诬告罪 (making false accusations). In Chinese criminal law, \"诬告陷害罪\" (false accusation). The description: He reported that victim defrauded him 640k, with friend giving false testimony, intending to cause victim to be criminally prosecuted. That's false accusation. So charges: 诈骗;诬告陷害 (or 诬告). The label set likely includes \"诬告\" or \"诬告陷害\". Need to see typical label names used in dataset. From examples, we saw labels like \"诈骗\", \"盗窃\", \"强制猥亵、侮辱妇女\", etc. They use Chinese terms separated by semicolons. For false accusation, we haven't seen example. But likely \"诬告\" or \"诬告陷害\". Let's search memory: In Chinese criminal law, the crime is \"诬告陷害罪\". The dataset may have label \"诬告陷害\". We'll choose that.\n\nThus final answer: [罪名]诈骗;诬告陷害<eoa>\n\nReturn JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine charges. Facts: Wang deceived victim by false promises to buy house, garage, handle paperwork, defrauded 115,000 RMB. That's fraud/诈骗. Also later he filed false report claiming victim defrauded him 640,000 and had friend give false testimony. That's false accusation, possibly false reporting, making false statements to police, or false accusation (诬告). The companion charge list at top: \"Companion charge check — the primary charge is likely [破坏广播电视设施、公用电信设施]. These charges frequently co-occur with it in training; include each ONLY if the case facts support it: - 盗窃 (co-occurred 1x)\". That seems generic instruction for classification tasks. But our case is about fraud. So primary charge likely 诈骗? The list of possible labels includes many. We need to output the appropriate charge(s). The facts: deception to obtain money => 诈骗. Also false accusation to police => 诬告罪 (making false accusations). In Chinese criminal law, \"诬告陷害罪\" (false accusation). The description: He reported that victim defrauded him 640k, with friend giving false testimony, intending to cause victim to be criminally prosecuted. That's false accusation. So charges: 诈骗;诬告陷害 (or 诬告). The label set likely includes \"诬告\" or \"诬告陷害\". Need to see typical label names used in dataset. From examples, we saw labels like \"诈骗\", \"盗窃\", \"强制猥亵、侮辱妇女\", etc. They use Chinese terms separated by semicolons. For false accusation, we haven't seen example. But likely \"诬告\" or \"诬告陷害\". Let's search memory: In Chinese criminal law, the crime is \"诬告陷害罪\". The dataset may have label \"诬告陷害\". We'll choose that.\n\nThus final answer: [罪名]诈骗;诬告陷害<eoa>\n\nReturn JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine charges. Facts: Wang deceived victim by false promises to buy house, garage, handle paperwork, defrauded 115,000 RMB. That's fraud/诈骗. Also later he filed false report claiming victim defrauded him 640,000 and had friend give false testimony. That's false accusation, possibly false reporting, making false statements to police, or false accusation (诬告). The companion charge list at top: \"Companion charge check — the primary charge is likely [破坏广播电视设施、公用电信设施]. These charges frequently co-occur with it in training; include each ONLY if the case facts support it: - 盗窃 (co-occurred 1x)\". That seems generic instruction for classification tasks. But our case is about fraud. So primary charge likely 诈骗? The list of possible labels includes many. We need to output the appropriate charge(s). The facts: deception to obtain money => 诈骗. Also false accusation to police => 诬告罪 (making false accusations). In Chinese criminal law, \"诬告陷害罪\" (false accusation). The description: He reported that victim defrauded him 640k, with friend giving false testimony, intending to cause victim to be criminally prosecuted. That's false accusation. So charges: 诈骗;诬告陷害 (or 诬告). The label set likely includes \"诬告\" or \"诬告陷害\". Need to see typical label names used in dataset. From examples, we saw labels like \"诈骗\", \"盗窃\", \"强制猥亵、侮辱妇女\", etc. They use Chinese terms separated by semicolons. For false accusation, we haven't seen example. But likely \"诬告\" or \"诬告陷害\". Let's search memory: In Chinese criminal law, the crime is \"诬告陷害罪\". The dataset may have label \"诬告陷害\". We'll choose that.\n\nThus final answer: [罪名]诈骗;诬告陷害<eoa>\n\nReturn JSON with reasoning and final answer.",
+            "refusal": null,
+            "reasoning_content": "We need to determine charges. Facts: Wang deceived victim by false promises to buy house, garage, handle paperwork, defrauded 115,000 RMB. That's fraud/诈骗. Also later he filed false report claiming victim defrauded him 640,000 and had friend give false testimony. That's false accusation, possibly false reporting, making false statements to police, or false accusation (诬告). The companion charge list at top: \"Companion charge check — the primary charge is likely [破坏广播电视设施、公用电信设施]. These charges frequently co-occur with it in training; include each ONLY if the case facts support it: - 盗窃 (co-occurred 1x)\". That seems generic instruction for classification tasks. But our case is about fraud. So primary charge likely 诈骗? The list of possible labels includes many. We need to output the appropriate charge(s). The facts: deception to obtain money => 诈骗. Also false accusation to police => 诬告罪 (making false accusations). In Chinese criminal law, \"诬告陷害罪\" (false accusation). The description: He reported that victim defrauded him 640k, with friend giving false testimony, intending to cause victim to be criminally prosecuted. That's false accusation. So charges: 诈骗;诬告陷害 (or 诬告). The label set likely includes \"诬告\" or \"诬告陷害\". Need to see typical label names used in dataset. From examples, we saw labels like \"诈骗\", \"盗窃\", \"强制猥亵、侮辱妇女\", etc. They use Chinese terms separated by semicolons. For false accusation, we haven't seen example. But likely \"诬告\" or \"诬告陷害\". Let's search memory: In Chinese criminal law, the crime is \"诬告陷害罪\". The dataset may have label \"诬告陷害\". We'll choose that.\n\nThus final answer: [罪名]诈骗;诬告陷害<eoa>\n\nReturn JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 565,
+      "prompt_tokens": 24220,
+      "total_tokens": 24785,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 482,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.001245,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.001245,
+        "upstream_inference_prompt_cost": 0.0010896593122001164,
+        "upstream_inference_completions_cost": 0.00015534068779988355
+      }
+    }
+  },
+  "raw_response_missing": false
+}

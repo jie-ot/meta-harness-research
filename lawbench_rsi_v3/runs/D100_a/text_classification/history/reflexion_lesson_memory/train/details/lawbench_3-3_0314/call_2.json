@@ -1,0 +1,72 @@
+{
+  "call_id": "b3a8f006e0074f0ea98d564afe019e94",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791018476-h2OYfmjabEV4bHXREkrQ",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detention that also causes minor injury), do not add additional charges.\",\n  \"keywords\": [\n    \"仅构成\",\n    \"未满足\",\n    \"单一行为\",\n    \"法条规定\",\n    \"未构成故意伤害\",\n    \"仅一项罪名\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with a rule to prevent the error: The AI gave multiple charges (非法拘禁;故意伤害) but correct answer is only 非法拘禁. So error: over-prediction of multiple charges when only one applies. The rule: Only assign multiple charges if the facts explicitly satisfy elements of each distinct crime; otherwise, if one crime subsumes the conduct (e.g., illegal detention includes the injury), do not list additional charges. Also need keywords that indicate when rule applies: \"仅构成\", \"未满足\", \"仅一项罪名\", \"单一行为\", \"法条规定\", \"未构成故意伤害\". Provide 3-6.\n\nWrite JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with a rule to prevent the error: The AI gave multiple charges (非法拘禁;故意伤害) but correct answer is only 非法拘禁. So error: over-prediction of multiple charges when only one applies. The rule: Only assign multiple charges if the facts explicitly satisfy elements of each distinct crime; otherwise, if one crime subsumes the conduct (e.g., illegal detention includes the injury), do not list additional charges. Also need keywords that indicate when rule applies: \"仅构成\", \"未满足\", \"仅一项罪名\", \"单一行为\", \"法条规定\", \"未构成故意伤害\". Provide 3-6.\n\nWrite JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with a rule to prevent the error: The AI gave multiple charges (非法拘禁;故意伤害) but correct answer is only 非法拘禁. So error: over-prediction of multiple charges when only one applies. The rule: Only assign multiple charges if the facts explicitly satisfy elements of each distinct crime; otherwise, if one crime subsumes the conduct (e.g., illegal detention includes the injury), do not list additional charges. Also need keywords that indicate when rule applies: \"仅构成\", \"未满足\", \"仅一项罪名\", \"单一行为\", \"法条规定\", \"未构成故意伤害\". Provide 3-6.\n\nWrite JSON.",
+            "reasoning_content": "We need to produce a JSON with a rule to prevent the error: The AI gave multiple charges (非法拘禁;故意伤害) but correct answer is only 非法拘禁. So error: over-prediction of multiple charges when only one applies. The rule: Only assign multiple charges if the facts explicitly satisfy elements of each distinct crime; otherwise, if one crime subsumes the conduct (e.g., illegal detention includes the injury), do not list additional charges. Also need keywords that indicate when rule applies: \"仅构成\", \"未满足\", \"仅一项罪名\", \"单一行为\", \"法条规定\", \"未构成故意伤害\". Provide 3-6.\n\nWrite JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 261,
+      "prompt_tokens": 481,
+      "total_tokens": 742,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 6.6604e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 6.6604e-05,
+        "upstream_inference_prompt_cost": 1.7797e-05,
+        "upstream_inference_completions_cost": 4.8807e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

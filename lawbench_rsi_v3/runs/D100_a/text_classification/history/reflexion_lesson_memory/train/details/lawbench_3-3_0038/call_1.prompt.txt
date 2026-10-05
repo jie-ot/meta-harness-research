@@ -1,0 +1,30 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- If the facts only describe forging, altering, or selling state‑issued documents or certificates and do not contain any separate act of deceiving another party for financial gain, assign only the forge
+- When the factual description contains multiple distinct illegal actions (e.g., fraud and any form of prostitution‑related conduct), list every applicable crime separated by semicolons rather than sele
+- When the conduct described involves the unauthorized collection, copying, or use of personal data (e.g., names, phone numbers, ID numbers) rather than the taking of tangible property, classify the cri
+- When the alleged offender holds a position in a private or non‑governmental entity (e.g., company executive, manager) rather than a public official, classify the offense as “非国家工作人员受贿” instead of the 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:北京市海淀区人民检察院起诉书指控：
+2013年6月27日，被告人任×（系东风日产颐达牌轿车，车牌号为京PNB057的被保险人）在本市海淀区，伪造东风日产颐达牌轿车（车牌号为京PNB057）与宝马轿车（车牌号为京QSU596）的双方交通事故，骗取中国人民财产保险股份有限公司北京市分公司人民币14160.8元。
+2013年8月15日，被告人任×在本市海淀区，伪造金杯牌轿车（车牌号为京KP2320）与宝马轿车（车牌号为京QSU596）的双方交通事故，骗取中国人民财产保险股份有限公司北京市分公司人民币10231.2元。
+2013年9月26日，被告人任×经公安机关电话传唤到案。涉案赃款已经在案发后全部退还被害单位。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

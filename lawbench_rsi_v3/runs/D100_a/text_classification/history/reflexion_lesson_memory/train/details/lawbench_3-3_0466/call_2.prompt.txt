@@ -1,0 +1,22 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:吉林省公主岭市人民检察院指控：2014年3月末，。同案犯姜某（已判刑）在张某某（绰号“大某”，未到案）处先后购进散包“大民3307”玉米种子一万余斤及“吉单27”玉米种子一万斤（两品种均为受保护植物新品种），经伪装成“创吨95”及“龙某8号”后，伙同被告人付某某，以真实品种名义，低于市场价格私自在其经营的公主岭市铁北街西丰种子商店进行销售。共计售出“大民3307”一万余斤，货值七万余元，获利二万余元；售出“吉单27”（“龙某8号”）一万斤，货值六万元，获利一万余元。经农业部谷物及制品质量监督检验测试中心（哈尔滨）检验，上述“大民3307”玉米种子与真实品种判定为不同品种，上述“吉单27”玉米种与真实品种判定为疑同品种。案发后，被告人付某某到公安机关投案。
+
+
+Wrong prediction: [罪名]非法买卖国家重点保护植物种子<eoa>
+Correct answer: 生产、销售伪劣产品;非法经营
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

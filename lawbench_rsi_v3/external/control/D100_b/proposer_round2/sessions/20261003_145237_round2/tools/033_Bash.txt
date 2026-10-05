@@ -1,0 +1,23 @@
+Bash
+
+command: python .prototypes/validate_confusion_lesson_memory.py
+description: Run self-contained validation for confusion_lesson_memory
+
+--- output ---
+=== Validating confusion_lesson_memory (inlined) ===
+
+Cold start: answer='行贿'  lessons_injected=0
+  ✓ cold start OK
+
+After learn_from_batch: examples=3, lessons=2, glossary=4
+  ✓ learn_from_batch OK
+  ✓ correct items do not generate lessons
+
+Warm predict: answer='行贿'  lessons_injected=2
+  ✓ warm predict injects lessons and glossary
+
+Lesson relevance for assault+property query: top=['When facts describe both assault with injury and p', 'When the actor gives money to obtain benefits, use']
+
+State round-trip: ✓
+
+✓ All assertions passed — confusion_lesson_memory mechanism validated

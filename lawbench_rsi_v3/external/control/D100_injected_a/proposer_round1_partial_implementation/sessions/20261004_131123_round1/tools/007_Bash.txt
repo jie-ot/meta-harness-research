@@ -1,0 +1,21 @@
+Bash
+
+command: python .prototypes/canonical_charge_lexicon_memory.py
+description: Run candidate A prototype mechanism check
+
+--- output ---
+inventory size: 7
+learned aliases: {'故意毁坏财物罪': {'故意毁坏财物': 1}, '侵犯注册商标专用权罪': {'假冒注册商标': 1}, '侵犯注册商标专用权': {'销售假冒注册商标的商品': 1}, '非法种植罂粟': {'非法种植毒品原植物': 1}, '非法制造枪支': {'非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物': 1}, '滥伐林木': {'盗伐林木': 1}}
+  lawbench_3-3_0003: [罪名]故意毁坏财物罪<eoa> -> '故意毁坏财物' target='故意毁坏财物' OK
+  lawbench_3-3_0234: [罪名]侵犯注册商标专用权罪<eoa> -> '假冒注册商标' target='假冒注册商标' OK
+  lawbench_3-3_0482: [罪名]侵犯注册商标专用权<eoa> -> '销售假冒注册商标的商品' target='销售假冒注册商标的商品' OK
+  lawbench_3-3_0309: [罪名]非法种植罂粟<eoa> -> '非法种植毒品原植物' target='非法种植毒品原植物' OK
+  lawbench_3-3_0349: [罪名]非法制造枪支<eoa> -> '非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物' target='非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物' OK
+  lawbench_3-3_0329: [罪名]滥伐林木<eoa> -> '盗伐林木' target='盗伐林木' OK
+  lawbench_3-3_0287: [罪名]开设赌场<eoa> -> '开设赌场' target='赌博' MISS
+  multi-charge passthrough: '虚开发票;盗窃'
+  enumeration truncation: '非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物'
+PART 1: SOME MISSES
+PART 2 skipped — import failed: ModuleNotFoundError: No module named 'text_classification.agents.canonical_charge_lexicon_memory'
+REAL IMPORT: import failed: ModuleNotFoundError: No module named 'text_classification.agents.canonical_charge_lexicon_memory'
+RESULT: PART1_MISSES

@@ -1,0 +1,19 @@
+Bash
+
+command:
+python -c "
+import os, glob
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+# find decayed_confusion log in USPTO
+for root, dirs, files in os.walk(base):
+    for f in files:
+        if f == 'log.jsonl' and 'decayed_confusion' in root:
+            print(os.path.join(root, f))
+" 2>&1 | head -20
+
+description: Find decayed_confusion log files
+
+--- output ---
+D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\LawBench\decayed_confusion_memory\gpt-oss-120b\log.jsonl
+D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\Symptom2Disease\decayed_confusion_memory\gpt-oss-120b\log.jsonl
+D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\USPTO\decayed_confusion_memory\gpt-oss-120b\log.jsonl

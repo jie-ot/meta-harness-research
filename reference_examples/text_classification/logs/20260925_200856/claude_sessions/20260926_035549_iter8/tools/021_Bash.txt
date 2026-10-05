@@ -1,0 +1,39 @@
+Bash
+
+command:
+cd "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification" && uv run python -c "
+import json, os
+
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+
+for ds in ['USPTO', 'LawBench', 'Symptom2Disease']:
+    log_path = os.path.join(base, ds, 'adaptive_tokenizer_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+    lines = [json.loads(l) for l in open(log_path, encoding='utf-8') if l.strip()]
+    steps = [e for e in lines if e.get('type') == 'step']
+    wrong = [e for e in steps if e.get('ok') is False]
+    print(f'=== {ds}: {len(steps)} steps, {len(wrong)} wrong ({100*len(wrong)/max(len(steps),1):.0f}% error)')
+    for w in wrong[:5]:
+        print(f'  pred={str(w.get(\"pred\",\"?\"))[:50]:50s}  tgt={str(w.get(\"tgt\",\"?\"))[:50]}')
+" 2>&1
+
+description: Sample wrong predictions by dataset
+
+--- output ---
+=== USPTO: 50 steps, 45 wrong (90% error)
+  pred=COC(=O)[C@@H](N)c1ccc(cc1)C.CC(C)(C)OC(=O)OC(=O)OC  tgt=CC(C)(C)OC(=O)OC(=O)OC(C)(C)C.COC(=O)[C@@H]([NH3+]
+  pred=Clc1ncncc1.c1ccccc1C#C                              tgt=C#Cc1ccccc1.Clc1ncncc1I
+  pred=O=C(NCC(=O)N1CCN(C(=O)c2ccccc2C(F)(F)F)CC1)c1ccc(-  tgt=O=C(NCC(=O)N1CCN(C(=O)c2ccccc2C(F)(F)F)CC1)c1ccc(-
+  pred=Cc1c(-c2ccc(=O)n(Cc3cccc(F)c3F)c2)c2cc(F)ccc2n1CC=  tgt=Cc1c(-c2ccc(=O)n(Cc3cccc(F)c3F)c2)c2cc(F)ccc2n1CC(
+  pred=C[C@@H]1C[C@H](NC(=O)OC(C)(C)C)C(=O)N1CC(=O)OC(C)(  tgt=CCOC(=O)CN1C(=O)[C@@H](NC(=O)OC(C)(C)C)C[C@H]1C
+=== LawBench: 200 steps, 144 wrong (72% error)
+  pred=[罪名]伪造国家机关证件罪<eoa>                                  tgt=伪造、变造、买卖国家机关公文、证件、印章
+  pred=[罪名]敲诈勒索罪<eoa>                                      tgt=破坏计算机信息系统
+  pred=[罪名]拐卖妇女<eoa>                                       tgt=拐卖妇女、儿童
+  pred=[罪名]受贿<eoa>                                         tgt=非国家工作人员受贿
+  pred=[罪名]诈骗<eoa>                                         tgt=诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫
+=== Symptom2Disease: 200 steps, 39 wrong (20% error)
+  pred=[DIAGNOSIS]allergy[/DIAGNOSIS]                      tgt=fungal infection
+  pred=[DIAGNOSIS]allergy[/DIAGNOSIS]                      tgt=dengue
+  pred=[DIAGNOSIS]pneumonia[/DIAGNOSIS]                    tgt=cervical spondylosis
+  pred=[DIAGNOSIS]pneumonia[/DIAGNOSIS]                    tgt=bronchial asthma
+  pred=[DIAGNOSIS]psoriasis[/DIAGNOSIS]                    tgt=varicose veins

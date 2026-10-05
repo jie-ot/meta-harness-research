@@ -1,0 +1,16 @@
+Bash
+
+command: python .prototypes/label_glossary_memory.py
+description: Run candidate B validation prototype
+
+--- output ---
+Cold start: answer='合同诈骗', glossary labels=0 ✓
+After batch: 4 examples, 5 glossary labels ✓
+Glossary: ['合同诈骗', '销售假冒注册商标的商品', '非法种植毒品原植物', '故意伤害', '故意毁坏财物']
+Predict with glossary: selected=4, glossary=5 ✓
+Only canonical ground-truth labels in glossary (not model paraphrases) ✓
+Retrieval top-3: [(0.7727272727272727, '合同诈骗'), (0.17857142857142858, '故意伤害;故意毁坏财物'), (0.14285714285714285, '非法种植毒品原植物')]
+Retrieval ranks correct example first ✓
+State round-trip ✓
+
+VALIDATION PASSED: label_glossary_memory

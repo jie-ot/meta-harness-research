@@ -1,0 +1,33 @@
+Bash
+
+command:
+python -c "
+import json
+log = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/USPTO/decayed_confusion_memory/gpt-oss-120b/log.jsonl'
+lines = open(log, encoding='utf-8').readlines()
+print(f'Total entries: {len(lines)}')
+errors = [json.loads(l) for l in lines if not json.loads(l).get('was_correct')]
+correct = [json.loads(l) for l in lines if json.loads(l).get('was_correct')]
+print(f'Errors: {len(errors)}, Correct: {len(correct)}')
+for e in errors[:5]:
+    print(f'pred={repr(e.get(\"prediction\",\"\")[:80])}, gt={repr(e.get(\"ground_truth\",\"\")[:80])}')
+    meta = e.get('metadata', {})
+    print(f'  num_selected={meta.get(\"num_selected\")}')
+"
+
+
+description: Read USPTO decayed_confusion trace errors
+
+--- output ---
+Total entries: 104
+Errors: 104, Correct: 0
+pred='', gt=''
+  num_selected=None
+pred='', gt=''
+  num_selected=None
+pred='', gt=''
+  num_selected=None
+pred='', gt=''
+  num_selected=None
+pred='', gt=''
+  num_selected=None

@@ -1,0 +1,15 @@
+Bash [ERROR]
+
+command:
+powershell -Command "Get-Content 'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\evolution_summary.jsonl' | ForEach-Object { $j = $_ | ConvertFrom-Json; if ($j.iteration -ge 13) { Write-Host ($j.iteration, $j.system, $j.avg_val, $j.get_Item('delta')) -Separator ' | ' } }"
+
+description: Read evolution summary iterations 13+
+
+--- output ---
+Exit code 1
+����λ�� ��:1 �ַ�: 236
++ ... rtFrom-Json; if (.iteration -ge 13) { Write-Host (.iteration, .system ...
++                                                                 ~
+�����б���ȱ�ٲ�����
+    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : MissingArgument

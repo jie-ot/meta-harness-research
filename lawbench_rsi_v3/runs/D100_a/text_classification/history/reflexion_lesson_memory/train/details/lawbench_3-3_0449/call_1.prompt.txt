@@ -1,0 +1,31 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the facts describe the creation, alteration, or commercial transaction of forged state‑issued documents, certificates, or official seals, the charge must list all applicable offenses: 伪造、变造、以及买卖（
+- When the facts describe bribery directed at persons who are not state officials or at a legal entity (unit), the charge must be specified as “对非国家工作人员行贿” and/or “对单位行贿” rather than the generic “行贿”.
+- When the statutory offense name in the facts contains multiple listed items separated by commas (e.g., “走私国家禁止进出口的货物、物品”), always output the complete official charge name including every listed item.
+- When the facts describe the creation, possession, or transaction of a counterfeit official seal or document, list all applicable offenses under the relevant statute (e.g., forgery/alteration and buyin
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:长沙市天心区人民检察院指控被告人虞1某犯××的事实如下：
+2016年4月18日20时许，被告人虞1某（原南郊公园警务站协警）在民警肖某的带领下与协警李某、黄某、王某、高某在本市天心区南郊公园警务站附近进行车辆盘查时，从贩毒人员刘某（另案处理）驾驶的湘AQY552小车内各处查获毒品甲基苯丙胺、甲基苯丙胺片剂、包装袋若干和电子称、手机等物品。随后，上述人员在警务站内对查扣的物品进行清点并等待办案民警将刘某予以移交。期间，被告人虞1某应贩毒人员刘某请求，趁无人注意之际，将贩毒人员刘某被查扣的2袋毒品甲基苯丙胺藏匿于制服口袋中，后将该毒品埋于警务站后墙角下。
+2016年5月27日，贩毒人员刘某在讯问中向公安机关交待了有警务站协警为其藏匿2袋毒品的事实。
+2016年5月28日，被告人虞1某将上述较重的1袋毒品甲基苯丙胺在南郊公园警务站厕所内冲走，同日主动向公安机关投案并如实供述了自己的罪行。案发后，被告人虞1某上交了另1袋毒品甲基苯丙胺，净重25.26克。
+该院认为，被告人虞1某作为国家机关工作人员，明知刘某系贩毒人员，仍帮助其隐瞒毒品、湮灭罪证，以使其逃避应有的法律制裁，其行为已触犯了《中华人民共和国刑法》××××、二款，应当以××追究其刑事责任。该院对上述指控提供了相关证据，并建议本院对被告人虞1某犯××在××至五年之间予以量刑。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

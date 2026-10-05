@@ -1,0 +1,375 @@
+Write: agents\charge_cooccurrence_count_memory.py
+
+content:
+"""Charge Co-occurrence Graph Memory (candidate B — exploration).
+
+DIAGNOSIS THIS SYSTEM EXPLOITS
+------------------------------
+Exact-set-match scoring gives zero credit for a set that has the right labels
+but the wrong SIZE. In the visible traces the dominant cardinality error is
+UNDER-generation: a correct charge is identified and its companions are dropped.
+The stored targets also show that co-occurring charges are not random — certain
+groups travel together across many unrelated fact patterns.
+
+WHAT THIS SYSTEM CHANGES (mechanism, not constants)
+---------------------------------------------------
+1. A GRAPH MEMORY. Instead of storing flat (input, label) pairs and retrieving
+   by text similarity alone, learning builds a weighted, undirected CO-OCCURRENCE
+   GRAPH over charge units. Memory is a relational structure, not a bag.
+
+2. CARDINALITY PLANNING FROM STRUCTURE. The fact text itself carries a
+   structural count signal: where the charge names were blanked out, the
+   remaining placeholder runs record how many charges appear in one enumeration
+   (a maximal group of placeholders joined only by enumeration separators —
+   placeholders separated by narrative prose are separately-cited, not a group).
+   That group size becomes the planned set size. This reads a property of the
+   INPUT rather than tuning a constant.
+
+3. ONE-HOP GRAPH EXPANSION. Retrieval yields a seed label set; the graph then
+   proposes attested companions — but only companions with real support
+   (attested at least twice) that are reinforced by a second seed or dominate
+   one seed's neighbourhood. Under-generation is repaired; closed neighbourhoods
+   and weakly-attested companions are left untouched, because inflation is
+   equally fatal to an exact-set score.
+
+4. The final set is constrained to the planned cardinality, and a one-hop
+   canonicalisation of each unit is applied as a safety net.
+"""
+
+import json
+import re
+from collections import Counter, defaultdict
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+_STRONG_SEPS = [";", "；", ",", "，"]
+_SEP_CLASS = "、;；,，"
+_PLACEHOLDER = "×"
+
+PROMPT_TEMPLATE = """You are given prior cases and a relational summary of which charges
+tend to be charged together.
+
+{examples_section}
+
+**Co-occurrence summary:**
+{graph_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Decide the complete SET of charges, then list every one of them
+- A set that omits a charge scores as wrong, exactly like a wrong charge does
+- Use the established label wording, not a paraphrase
+- Separate multiple charges with a semicolon
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+MAX_CHARS = 30000
+_RETRIEVE_K = 5
+_SIM_MARGIN = 0.5          # runner-up must reach this fraction of the top score
+_GRAPH_MIN_SUPPORT = 2     # a companion must be attested at least this often
+_GRAPH_DOMINANCE = 0.4     # or dominate a seed's neighbourhood at this rate
+_SNAP_MIN_RUN = 4
+_SNAP_COVER = 0.6
+
+
+# ----------------------------------------------------------------------------
+# Text utilities (script-agnostic)
+# ----------------------------------------------------------------------------
+def _split_units(text: str) -> list[str]:
+    for sep in _STRONG_SEPS:
+        if sep in text:
+            return [p.strip() for p in text.split(sep) if p.strip()]
+    return [text.strip()] if text.strip() else []
+
+
+def _trigrams(text: str) -> frozenset[str]:
+    text = "".join(text.split())
+    if len(text) < 3:
+        return frozenset({text}) if text else frozenset()
+    return frozenset(text[i:i + 3] for i in range(len(text) - 2))
+
+
+def _dice(a: frozenset[str], b: frozenset[str]) -> float:
+    if not a or not b:
+        return 0.0
+    return 2 * len(a & b) / (len(a) + len(b))
+
+
+def _strip_markup(text: str) -> str:
+    out = (text or "").strip()
+    if "[罪名]" in out:
+        out = out.split("[罪名]", 1)[1]
+    for marker in ("<eoa>", "\n"):
+        if marker in out:
+            out = out.split(marker, 1)[0]
+    return out.strip()
+
+
+def _planned_slots(text: str) -> int:
+    """Largest enumeration group of blanked placeholders in the fact text."""
+    best = 0
+    for clause in re.split(r"[。\n]", text or ""):
+        for group in re.findall(
+            _PLACEHOLDER + r"{2,}(?:\s*[" + _SEP_CLASS + r"]\s*"
+            + _PLACEHOLDER + r"{2,})*",
+            clause,
+        ):
+            n = len(re.findall(_PLACEHOLDER + r"{2,}", group))
+            if n > best:
+                best = n
+    return best
+
+
+def _lcs_len(a: str, b: str) -> int:
+    if not a or not b:
+        return 0
+    prev = [0] * (len(b) + 1)
+    best = 0
+    for i in range(1, len(a) + 1):
+        cur = [0] * (len(b) + 1)
+        ai = a[i - 1]
+        for j in range(1, len(b) + 1):
+            if ai == b[j - 1]:
+                cur[j] = prev[j - 1] + 1
+                if cur[j] > best:
+                    best = cur[j]
+        prev = cur
+    return best
+
+
+def _snap(candidate: str, lexicon: set[str]) -> str:
+    cand = candidate.strip()
+    if not cand or cand in lexicon:
+        return cand
+    if len(cand) > 1 and cand.endswith("罪") and cand[:-1] in lexicon:
+        return cand[:-1]
+    if len(cand) < _SNAP_MIN_RUN:
+        return cand
+    best_run = 0
+    winners: list[str] = []
+    for entry in lexicon:
+        run = _lcs_len(cand, entry)
+        if run > best_run:
+            best_run, winners = run, [entry]
+        elif run == best_run and run > 0:
+            winners.append(entry)
+    if best_run < _SNAP_MIN_RUN:
+        return cand
+    if best_run < _SNAP_COVER * len(cand):
+        return cand
+    if len(winners) != 1:
+        return cand
+    return winners[0]
+
+
+class ChargeCooccurrenceCountMemory(MemorySystem):
+    """Memory as a charge graph, used to repair under-generated label sets."""
+
+    def __init__(self, llm: LLMCallable):
+        super().__init__(llm)
+        self.examples: list[dict[str, Any]] = []
+        self.graph: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+        self.label_counts: Counter = Counter()
+        self.lexicon: set[str] = set()
+
+    # ------------------------------------------------------------------
+    # Graph helpers
+    # ------------------------------------------------------------------
+
+    def _expand(self, seeds: list[str]) -> list[str]:
+        seeds = list(dict.fromkeys(seeds))
+        seedset = set(seeds)
+        votes: dict[str, int] = defaultdict(int)
+        for s in seeds:
+            for other, c in self.graph.get(s, {}).items():
+                if other not in seedset:
+                    votes[other] += c
+        out: list[tuple[int, str]] = []
+        for other, v in votes.items():
+            if v < _GRAPH_MIN_SUPPORT:
+                continue
+            reinforced = sum(
+                1 for s in seeds if self.graph.get(s, {}).get(other, 0) >= 1
+            )
+            dominant = any(
+                self.graph.get(s, {}).get(other, 0)
+                / max(1, self.label_counts[s]) >= _GRAPH_DOMINANCE
+                for s in seeds
+            )
+            if reinforced >= 2 or dominant:
+                out.append((v, other))
+        out.sort(key=lambda x: (-x[0], x[1]))
+        return [o for _, o in out]
+
+    def _graph_section(self, seeds: list[str]) -> str:
+        if not seeds:
+            return "(no relational summary available yet)"
+        lines = []
+        for s in seeds:
+            row = self.graph.get(s, {})
+            if not row:
+                continue
+            top = sorted(row.items(), key=lambda x: (-x[1], x[0]))[:4]
+            lines.append(f"- {s}: " + ", ".join(f"{o} ({c})" for o, c in top))
+        return "\n".join(lines) if lines else "(no relational summary available yet)"
+
+    # ------------------------------------------------------------------
+    # Retrieval
+    # ------------------------------------------------------------------
+
+    def _ranked(self, query: str) -> list[tuple[float, int, dict]]:
+        q = _trigrams(query)
+        scored = [
+            (_dice(q, ex["trigrams"]), idx, ex)
+            for idx, ex in enumerate(self.examples)
+        ]
+        scored.sort(key=lambda x: (-x[0], x[1]))
+        return scored
+
+    def _select(self, query: str) -> tuple[list[dict], list[str]]:
+        if not self.examples:
+            return [], []
+        ranked = self._ranked(query)
+        top = ranked[0][0]
+        picked: list[dict] = []
+        total = 0
+        for score, _idx, ex in ranked[:_RETRIEVE_K]:
+            if picked and score < _SIM_MARGIN * top:
+                break
+            part_len = len(ex["target"]) + len(ex.get("raw_question", "")) + 8
+            if total + part_len > MAX_CHARS:
+                continue
+            picked.append(ex)
+            total += part_len
+        seeds: list[str] = []
+        for ex in picked:
+            for unit in _split_units(ex["target"]):
+                if unit not in seeds:
+                    seeds.append(unit)
+        return picked, seeds
+
+    # ------------------------------------------------------------------
+    # MemorySystem interface
+    # ------------------------------------------------------------------
+
+    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+        picked, seeds = self._select(input)
+        examples_section = (
+            "\n\n".join(
+                f"Q: {ex.get('raw_question', ex['input'])}\nA: {ex['target']}"
+                for ex in picked
+            )
+            if picked
+            else "(no examples available yet — reason from the facts alone)"
+        )
+        prompt = PROMPT_TEMPLATE.format(
+            examples_section=examples_section,
+            graph_section=self._graph_section(seeds),
+            input=input,
+        )
+        response = self.call_llm(prompt)
+        raw = extract_json_field(response, "final_answer")
+        units = [u for u in _split_units(_strip_markup(raw)) if u]
+        units = [_snap(u, self.lexicon) for u in units]
+        units = list(dict.fromkeys(units))
+
+        slots = _planned_slots(input)
+        # Only pad when the input's own structure says the set is larger than
+        # the model produced; never pad on a guess.
+        if slots > len(units) and seeds:
+            for companion in self._expand(seeds):
+                if len(units) >= slots:
+                    break
+                if companion not in units:
+                    units.append(companion)
+                if companion in units and len(units) >= slots:
+                    break
+        answer = ";".join(units)
+        return answer, {
+            "full_response": response,
+            "num_examples": len(self.examples),
+            "num_selected": len(picked),
+            "planned_slots": slots,
+            "num_units": len(units),
+            "seed_labels": seeds,
+        }
+
+    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+        for r in batch_results:
+            raw_q = r.get("raw_question", r["input"])
+            truth = r.get("ground_truth", "")
+            ex: dict[str, Any] = {
+                "input": r["input"],
+                "target": truth,
+                "trigrams": _trigrams(raw_q),
+            }
+            if "raw_question" in r:
+                ex["raw_question"] = r["raw_question"]
+            self.examples.append(ex)
+
+            parts = sorted(set(_split_units(truth)))
+            for a in parts:
+                self.lexicon.add(a)
+                self.label_counts[a] += 1
+                for b in parts:
+                    if a != b:
+                        self.graph[a][b] += 1
+
+            # Reinforce graph edges with the observed prediction, not only the
+            # truth: an over-generated prediction that overlaps the truth
+            # reveals which charges genuinely travel together.
+            if not r.get("was_correct", True):
+                pred_units = set(_split_units(_strip_markup(r.get("prediction", ""))))
+                shared = pred_units & set(parts)
+                for a in shared:
+                    for b in shared:
+                        if a != b:
+                            self.graph[a][b] += 1
+
+    def get_context_length(self) -> int:
+        return sum(len(ex["target"]) + len(ex.get("raw_question", "")) + 8
+                   for ex in self.examples[:_RETRIEVE_K])
+
+    def get_state(self) -> str:
+        serialisable = [
+            {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+            for ex in self.examples
+        ]
+        return json.dumps({
+            "examples": serialisable,
+            "graph": {k: dict(v) for k, v in self.graph.items()},
+            "label_counts": dict(self.label_counts),
+            "lexicon": sorted(self.lexicon),
+        }, ensure_ascii=False, indent=2)
+
+    def set_state(self, state: str) -> None:
+        data = json.loads(state)
+        self.examples = []
+        for ex in data.get("examples", []):
+            restored = dict(ex)
+            if isinstance(restored.get("trigrams"), list):
+                restored["trigrams"] = frozenset(restored["trigrams"])
+            else:
+                raw_q = restored.get("raw_question", restored.get("input", ""))
+                restored["trigrams"] = _trigrams(raw_q)
+            self.examples.append(restored)
+        self.graph = defaultdict(lambda: defaultdict(int))
+        for a, row in data.get("graph", {}).items():
+            for b, c in row.items():
+                self.graph[a][b] = c
+        self.label_counts = Counter(data.get("label_counts", {}))
+        self.lexicon = set(data.get("lexicon", []))
+        if not self.lexicon:
+            for ex in self.examples:
+                for unit in _split_units(ex.get("target", "")):
+                    self.lexicon.add(unit)
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\agents\charge_cooccurrence_count_memory.py (file state is current in your context — no need to Read it back)

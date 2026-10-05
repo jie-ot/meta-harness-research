@@ -1,0 +1,32 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the factual description indicates that the offender used their official position or entrusted authority to appropriate property for personal gain, rather than physically taking or stealthily removi
+- When the alleged offender is not a public official (i.e., not a state functionary) but the conduct involves accepting or soliciting a bribe, the correct charge is '非国家工作人员受贿' rather than the generic '
+- If the conduct described involves a public official or person in a position of authority misusing their official power to divert public funds, assets, or benefits for personal or relatives' gain, the 
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:盱眙县人民检察院指控，一、滥用职权
+被告人王某甲在担任盱眙县城市管理局副局长分管环卫、渣土办工作期间，违反《县政府关于印发盱眙县城区建筑垃圾处置作业管理办法的通知》（盱某[2010]146号）文件等相关规定，在五洲国际一期工程渣土外运中，明知五洲国际项目部未提供工程图纸，不符合发放建筑垃圾处置证的要求，违规安排赵某甲、张某甲等人进行现场勘查。在无工程图纸的情况下，无法得出准确的五洲国际一期渣土外运土方量，但是王某甲仍然违规审批发放建筑垃圾处置证。被告人王某甲在工作中滥用职权，导致国家损失了建筑垃圾处置费1208797.5元。
+二、受贿
+被告人王某甲在担任盱眙县城市管理局副局长期间，利用职务之便，多次收受他人财物，共计187000元，并为他人谋取利益。
+案发后，被告人王某甲向盱眙县监察局退交赃款9.5万元。
+公诉机关认为，被告人王某甲作为国家机关工作人员，滥用职权，致使公共财产遭受重大损失；被告人王某甲利用职务上的便利，非法收受他人财物，为他人谋利，其行为分别构成滥用职权和××。被告人王某甲一人犯数罪，依法应当实行数罪并罚。提请本院依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

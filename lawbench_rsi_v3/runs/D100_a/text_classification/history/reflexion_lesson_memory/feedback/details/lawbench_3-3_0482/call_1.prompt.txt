@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the facts describe a person performing any medical diagnosis, treatment, or related procedure without a valid medical license, classify the conduct under the statutory offense of “非法行医” rather th
+- If the factual description indicates that the offender used their official position or entrusted authority to appropriate property for personal gain, rather than physically taking or stealthily removi
+- When the facts describe manufacturing or distributing drugs that are counterfeit, adulterated, or otherwise not meeting legal standards (i.e., ‘假药’), the appropriate charge is “生产、销售假药” rather than th
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:广州市白云区人民检察院指控，2014年年底开始，被告人陈某在未经CELINE注册商标所有人授权或者许可的情况下，在本市白云区，存储并对外销售假冒CELINE注册商标的手袋。2015年8月24日10许，公安人员抓获陈某，并在上址缴获假冒CELINE注册商标的手袋共403个。经鉴定，上述假冒CELINE注册商标的手袋共价值人民币7947000元。根据上述事实，公诉机关认为，被告人陈某销售明知是假冒注册商标的商品，销售金额数额巨大，其行为触犯了《中华人民共和国刑法》××的规定，应以××追究刑事责任。陈某犯罪未遂，可以比照既遂犯从轻或者减轻处罚。陈某犯罪后如实供述自己的罪行，可以从轻处罚。提请本院依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

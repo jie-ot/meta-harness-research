@@ -1,0 +1,18 @@
+Bash [ERROR]
+
+command:
+powershell -Command "
+Set-Content 'C:\tmp\validate.py' 'from text_classification.agents.missed_component_memory import MissedComponentMemory; print(\"missed_component_memory OK\")'
+cd 'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples'
+uv run python C:\tmp\validate.py
+"
+
+description: Validate missed_component_memory import via temp file
+
+--- output ---
+Exit code 1
+Traceback (most recent call last):
+  File "C:\tmp\validate.py", line 1, in <module>
+    from text_classification.agents.missed_component_memory import MissedComponentMemory; print("missed_component_memory OK")
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'text_classification'

@@ -1,0 +1,24 @@
+Bash [ERROR]
+
+command:
+python -c "
+import os, json
+base = r'D:\我的文件\华中科技大学\李老师课技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+# Check Symptom2Disease trace - what does a good run look like?
+log_path = os.path.join(base, 'Symptom2Disease', 'symmetric_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+lines = open(log_path, encoding='utf-8').readlines()
+steps = [json.loads(l) for l in lines if json.loads(l).get('type') == 'step']
+errors = [s for s in steps if not s.get('ok')]
+print(f'Symptom2Disease steps={len(steps)} errors={len(errors)} acc={1-len(errors)/len(steps):.1%}')
+for e in errors[:6]:
+    print(f'  pred={repr(e[\"pred\"][:50])} gt={repr(e[\"tgt\"][:50])}')
+"
+
+
+description: Check Symptom2Disease trace
+
+--- output ---
+Exit code 1
+Traceback (most recent call last):
+  File "<string>", line 6, in <module>
+FileNotFoundError: [Errno 2] No such file or directory: 'D:\\我的文件\\华中科技大学\\李老师课技大学\\李老师课题组研究工作\\meta-harness\\reference_examples\\text_classification\\logs\\20260925_200856\\Symptom2Disease\\symmetric_confusion_memory\\gpt-oss-120b\\log.jsonl'

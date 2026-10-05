@@ -1,0 +1,68 @@
+Write: reports\iteration_1_diagnosis.md
+
+content:
+# Iteration 1 — diagnosis and candidate design
+
+Frontier to beat: `confusion_disambiguation_memory`, 32/100 exact on the score split.
+Zero prior candidates in `evolution_summary.jsonl`, so both axes are fresh.
+
+## Where the 68 misses come from
+
+Buckets read off `score/diagnostics.jsonl` + `feedback/diagnostics.jsonl` (200 items,
+100 score + 100 feedback), with the full prompt/response per item under `details/`.
+
+| Bucket | ~items | Shape |
+|---|---|---|
+| A. canonical-name mismatch | ~26 | right conduct, non-statutory string |
+| B. multi-charge undercount | ~8 | target has 2-3 charges, system answers 1 |
+| C. over-prediction | ~4 | system answers 2-3, target has 1 |
+| D. empty output on long facts | ~2 | answer lands in the truncated reasoning channel |
+
+Bucket A is the largest, and it is a *string* problem, not a reasoning problem:
+`侵犯注册商标专用权罪` → `假冒注册商标`, `非法种植罂粟` → `非法种植毒品原植物`,
+`非法制造枪支` → `非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物`.
+Some of these share zero characters with the target (`开设赌场` → `赌博`), so no
+similarity metric can recover them — only a stored observation can.
+
+## Framework note that constrains both designs
+
+The base `confusion_disambiguation_memory` retrieves with `_tokenize` = `[A-Za-z0-9]+`
+then Jaccard. On Chinese facts that regex keeps only years and amounts, so retrieval
+is numeric-only noise. Both candidates replace this, with character bigrams.
+
+## Candidates
+
+**A (exploitation, axes B memory content + F LLM usage in learning) —
+`canonical_charge_lexicon_memory`.** Maintains a lexicon of exact statutory strings
+harvested from every ground truth seen; adds a deterministic rewrite stage between the
+model's answer and the returned answer. Two learned layers: verbatim whole-payload
+rules (load-bearing — survives zero character overlap) and part-wise alignment rules.
+The lexicon also enters the prompt as allowed vocabulary. Prototype ladder:
+V1 similarity-only 6/7 < V2 +verbatim payload 7/7 = V3 verbatim-first 7/7 (adopted).
+
+**B (exploration, axis A prompt template + F) — `act_decomposition_union_memory`.**
+Segments the fact into acts on structural markers, charges each act in its own call,
+unions system-side in first-appearance order. Learns two *structural* memories:
+recurring unconfirmed inventions, and |truth| conditioned on detected act count.
+Two guards keep the prior from eating its own gains: a bucket needs `MIN_BUCKET_OBS=5`
+before it is trusted, and the prior may never cut below the number of acts that each
+independently produced a charge. Prototype ladder: V1 whole-fact 2/5 < V2 +union 4/5
+= V3 +calibration 4/5.
+
+The V3 guard was added after V3 initially *regressed* V2 (3/5): the first `_calibrate`
+trimmed charges that came from separate acts, each evidenced by that act's own text,
+on the strength of a single observation. Making the two layers unequal — evidence
+beats prior — fixed it.
+
+## Takeaway
+
+A and B attack disjoint buckets by construction: A rewrites strings, B fixes set
+cardinality, and neither touches the other's mechanism. B deliberately does not
+rewrite names, so its expected miss (`虚开增值税专用发票` for the long statutory
+enumeration) stays A's job. Combined they cover buckets A + B + D; C is handled by
+B's invention layer only if the invention recurs.
+
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_a\text_classification\reports\iteration_1_diagnosis.md has been updated successfully. (file state is current in your context — no need to Read it back)

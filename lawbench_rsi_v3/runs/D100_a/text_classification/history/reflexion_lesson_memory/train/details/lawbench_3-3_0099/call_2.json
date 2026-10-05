@@ -1,0 +1,72 @@
+{
+  "call_id": "258df55e417a41d3bea41e41222db971",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791016927-IwdUN1uDcIyRnXCm99jv",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"If the case facts state that the defendant both produced/manufactured and sold the illegal product, the charge must list both offenses (e.g., “生产假药” and “销售假药”) rather than only the selling offense.\",\n  \"keywords\": [\n    \"生产假药\",\n    \"制造假药\",\n    \"加工假药\",\n    \"生产并销售\",\n    \"生产、销售假药\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with rule and keywords. The error: AI predicted only \"销售假药\" but correct answer includes both \"生产、销售假药\". So rule: when facts indicate both manufacturing and selling, include both offenses. So rule: If the factual description mentions that the defendant engaged in production/manufacture of the illegal product (e.g., \"生产\", \"加工\", \"制造\") in addition to selling, the charge should include both \"生产假药\" and \"销售假药\". Keywords: \"生产\", \"制造\", \"加工\", \"假药\", \"销售\", \"生产、销售\". Provide 3-6 phrases.\n\nReturn JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with rule and keywords. The error: AI predicted only \"销售假药\" but correct answer includes both \"生产、销售假药\". So rule: when facts indicate both manufacturing and selling, include both offenses. So rule: If the factual description mentions that the defendant engaged in production/manufacture of the illegal product (e.g., \"生产\", \"加工\", \"制造\") in addition to selling, the charge should include both \"生产假药\" and \"销售假药\". Keywords: \"生产\", \"制造\", \"加工\", \"假药\", \"销售\", \"生产、销售\". Provide 3-6 phrases.\n\nReturn JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with rule and keywords. The error: AI predicted only \"销售假药\" but correct answer includes both \"生产、销售假药\". So rule: when facts indicate both manufacturing and selling, include both offenses. So rule: If the factual description mentions that the defendant engaged in production/manufacture of the illegal product (e.g., \"生产\", \"加工\", \"制造\") in addition to selling, the charge should include both \"生产假药\" and \"销售假药\". Keywords: \"生产\", \"制造\", \"加工\", \"假药\", \"销售\", \"生产、销售\". Provide 3-6 phrases.\n\nReturn JSON.",
+            "reasoning_content": "We need to produce a JSON with rule and keywords. The error: AI predicted only \"销售假药\" but correct answer includes both \"生产、销售假药\". So rule: when facts indicate both manufacturing and selling, include both offenses. So rule: If the factual description mentions that the defendant engaged in production/manufacture of the illegal product (e.g., \"生产\", \"加工\", \"制造\") in addition to selling, the charge should include both \"生产假药\" and \"销售假药\". Keywords: \"生产\", \"制造\", \"加工\", \"假药\", \"销售\", \"生产、销售\". Provide 3-6 phrases.\n\nReturn JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "end_turn"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 240,
+      "prompt_tokens": 450,
+      "total_tokens": 690,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 160,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0002115,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0002115,
+        "upstream_inference_prompt_cost": 6.75e-05,
+        "upstream_inference_completions_cost": 0.000144
+      }
+    }
+  },
+  "raw_response_missing": false
+}

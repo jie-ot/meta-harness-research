@@ -1,0 +1,72 @@
+{
+  "call_id": "5c0f56deb2a64f2ab61a9a97e80efc2e",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791028141-rYbcTDid4fmbtCxN2mmR",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"被告人高某甲作为公司法定代表人，故意逃避支付职工工资，构成拒不支付劳动报酬。根据《刑法》第276条，拒不支付劳动报酬且数额较大，情节严重的，构成犯罪。案件中涉及51名职工、金额378,912元，已构成拒不支付劳动报酬罪。没有其他行为符合其他罪名的要件。\",\n  \"final_answer\": \"[罪名]拒不支付劳动报酬<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the appropriate criminal charge(s) for the given facts.\n\nFacts: High-level summary: The defendant, as legal representative of a company, avoided paying wages to 51 employees, total 378,912 RMB. Government ordered payment, still not paid. Court auctioned company's production equipment and paid 115,206 RMB to employees. Defendant returned, confessed.\n\nWhat crime? Under Chinese criminal law, failure to pay wages is \"拒不支付劳动报酬\" (refusal to pay labor remuneration) which is a crime under Article 276 of Criminal Law: \"拒不支付劳动报酬罪\". The typical label used in examples: \"拒不支付劳动报酬\". Indeed earlier example: \"拒不支付劳动报酬\" used for similar case (Yue case). So the correct charge is \"拒不支付劳动报酬\". Possibly also \"逃匿\" but that's not a crime; it's evading. The main crime is refusal to pay wages.\n\nThus answer: single charge.\n\nWe must output JSON with reasoning and final answer.\n\nMake sure format: {\"reasoning\":\"...\",\"final_answer\":\"[罪名]拒不支付劳动报酬<eoa>\"}? Wait the required output: The final answer should be the label(s) inside [罪名] and <eoa>. The instruction: \"write final answer in [罪名] and <eoa> between\". But the JSON format they want: \"final_answer\": \"[exact label(s), semicolon-separated if multiple]\". In examples they gave earlier? Not exactly. The problem statement says: \"请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" But the meta instruction for us: \"Respond in JSON format\". So we need to embed the final answer string (including the brackets?) The earlier examples in the prompt show format: - 单个罪名: [罪名]盗窃<eoa>. So the final answer should be something like \"[罪名]拒不支付劳动报酬<eoa>\". In JSON we likely need to output that string as final_answer.\n\nThus final_answer: \"[罪名]拒不支付劳动报酬<eoa>\"\n\nNow reasoning: Provide explanation.\n\nLet's craft JSON.\n\n",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the appropriate criminal charge(s) for the given facts.\n\nFacts: High-level summary: The defendant, as legal representative of a company, avoided paying wages to 51 employees, total 378,912 RMB. Government ordered payment, still not paid. Court auctioned company's production equipment and paid 115,206 RMB to employees. Defendant returned, confessed.\n\nWhat crime? Under Chinese criminal law, failure to pay wages is \"拒不支付劳动报酬\" (refusal to pay labor remuneration) which is a crime under Article 276 of Criminal Law: \"拒不支付劳动报酬罪\". The typical label used in examples: \"拒不支付劳动报酬\". Indeed earlier example: \"拒不支付劳动报酬\" used for similar case (Yue case). So the correct charge is \"拒不支付劳动报酬\". Possibly also \"逃匿\" but that's not a crime; it's evading. The main crime is refusal to pay wages.\n\nThus answer: single charge.\n\nWe must output JSON with reasoning and final answer.\n\nMake sure format: {\"reasoning\":\"...\",\"final_answer\":\"[罪名]拒不支付劳动报酬<eoa>\"}? Wait the required output: The final answer should be the label(s) inside [罪名] and <eoa>. The instruction: \"write final answer in [罪名] and <eoa> between\". But the JSON format they want: \"final_answer\": \"[exact label(s), semicolon-separated if multiple]\". In examples they gave earlier? Not exactly. The problem statement says: \"请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" But the meta instruction for us: \"Respond in JSON format\". So we need to embed the final answer string (including the brackets?) The earlier examples in the prompt show format: - 单个罪名: [罪名]盗窃<eoa>. So the final answer should be something like \"[罪名]拒不支付劳动报酬<eoa>\". In JSON we likely need to output that string as final_answer.\n\nThus final_answer: \"[罪名]拒不支付劳动报酬<eoa>\"\n\nNow reasoning: Provide explanation.\n\nLet's craft JSON.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine the appropriate criminal charge(s) for the given facts.\n\nFacts: High-level summary: The defendant, as legal representative of a company, avoided paying wages to 51 employees, total 378,912 RMB. Government ordered payment, still not paid. Court auctioned company's production equipment and paid 115,206 RMB to employees. Defendant returned, confessed.\n\nWhat crime? Under Chinese criminal law, failure to pay wages is \"拒不支付劳动报酬\" (refusal to pay labor remuneration) which is a crime under Article 276 of Criminal Law: \"拒不支付劳动报酬罪\". The typical label used in examples: \"拒不支付劳动报酬\". Indeed earlier example: \"拒不支付劳动报酬\" used for similar case (Yue case). So the correct charge is \"拒不支付劳动报酬\". Possibly also \"逃匿\" but that's not a crime; it's evading. The main crime is refusal to pay wages.\n\nThus answer: single charge.\n\nWe must output JSON with reasoning and final answer.\n\nMake sure format: {\"reasoning\":\"...\",\"final_answer\":\"[罪名]拒不支付劳动报酬<eoa>\"}? Wait the required output: The final answer should be the label(s) inside [罪名] and <eoa>. The instruction: \"write final answer in [罪名] and <eoa> between\". But the JSON format they want: \"final_answer\": \"[exact label(s), semicolon-separated if multiple]\". In examples they gave earlier? Not exactly. The problem statement says: \"请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" But the meta instruction for us: \"Respond in JSON format\". So we need to embed the final answer string (including the brackets?) The earlier examples in the prompt show format: - 单个罪名: [罪名]盗窃<eoa>. So the final answer should be something like \"[罪名]拒不支付劳动报酬<eoa>\". In JSON we likely need to output that string as final_answer.\n\nThus final_answer: \"[罪名]拒不支付劳动报酬<eoa>\"\n\nNow reasoning: Provide explanation.\n\nLet's craft JSON.\n\n",
+            "refusal": null,
+            "reasoning_content": "We need to determine the appropriate criminal charge(s) for the given facts.\n\nFacts: High-level summary: The defendant, as legal representative of a company, avoided paying wages to 51 employees, total 378,912 RMB. Government ordered payment, still not paid. Court auctioned company's production equipment and paid 115,206 RMB to employees. Defendant returned, confessed.\n\nWhat crime? Under Chinese criminal law, failure to pay wages is \"拒不支付劳动报酬\" (refusal to pay labor remuneration) which is a crime under Article 276 of Criminal Law: \"拒不支付劳动报酬罪\". The typical label used in examples: \"拒不支付劳动报酬\". Indeed earlier example: \"拒不支付劳动报酬\" used for similar case (Yue case). So the correct charge is \"拒不支付劳动报酬\". Possibly also \"逃匿\" but that's not a crime; it's evading. The main crime is refusal to pay wages.\n\nThus answer: single charge.\n\nWe must output JSON with reasoning and final answer.\n\nMake sure format: {\"reasoning\":\"...\",\"final_answer\":\"[罪名]拒不支付劳动报酬<eoa>\"}? Wait the required output: The final answer should be the label(s) inside [罪名] and <eoa>. The instruction: \"write final answer in [罪名] and <eoa> between\". But the JSON format they want: \"final_answer\": \"[exact label(s), semicolon-separated if multiple]\". In examples they gave earlier? Not exactly. The problem statement says: \"请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" But the meta instruction for us: \"Respond in JSON format\". So we need to embed the final answer string (including the brackets?) The earlier examples in the prompt show format: - 单个罪名: [罪名]盗窃<eoa>. So the final answer should be something like \"[罪名]拒不支付劳动报酬<eoa>\". In JSON we likely need to output that string as final_answer.\n\nThus final_answer: \"[罪名]拒不支付劳动报酬<eoa>\"\n\nNow reasoning: Provide explanation.\n\nLet's craft JSON.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 611,
+      "prompt_tokens": 23563,
+      "total_tokens": 24174,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 522,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000975701,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000975701,
+        "upstream_inference_prompt_cost": 0.000871831,
+        "upstream_inference_completions_cost": 0.00010387
+      }
+    }
+  },
+  "raw_response_missing": false
+}

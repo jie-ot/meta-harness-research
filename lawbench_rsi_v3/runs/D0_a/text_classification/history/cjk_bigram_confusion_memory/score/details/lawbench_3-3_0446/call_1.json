@@ -1,0 +1,72 @@
+{
+  "call_id": "78a33a583ca84e71be03ad19d6d24166",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791023875-LxpHseNoVTTNk1EK8A7E",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant illegally cut and removed protected trees (闽楠, a national second‑level key protected plant) from a nature reserve. This constitutes illegal logging of protected forest resources. In the provided examples, the corresponding charge label for unlawful cutting of trees is \\\"滥伐林木\\\". No other criminal conduct is described.\",\n  \"final_answer\": \"[罪名]滥伐林木<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the appropriate charge label(s) based on the facts. The facts: illegal cutting of protected trees (闽楠, a protected species, national second-level key protected plant). This is illegal logging/illegal harvesting of protected wildlife/plant. In examples, similar case: first example about illegal hunting of black water chicken gave \"非法狩猎\". For illegal logging of protected trees, likely \"非法采伐\" or \"非法砍伐\" or \"非法采伐保护植物\". Need to see label used in examples. Look through provided examples for similar. There's example: \"非法捕捞水产品\" etc. For illegal logging, we have \"滥伐林木\" (illegal logging). Also \"非法占用农用地\". \"非法种植毒品原植物\". \"非法捕捞水产品\". \"非法狩猎\". \"非法持有枪支\". So for illegal cutting of protected trees, likely \"非法采伐\" or \"非法砍伐\". But we need exact label used in dataset. Look at example: \"非法捕捞水产品\" is used. \"非法捕捞水产品\". For illegal logging, there is \"滥伐林木\" (overcutting). But that is for illegal logging without permit? Example: \"滥伐林木\" used for cutting without permit? Actually example: \"滥伐林木\" was for cutting trees without permit. That seems similar. However the tree is protected species, second-level key. Could be \"非法采伐\" or \"非法砍伐\". Let's search among examples: There's \"非法采伐\" not present. \"非法砍伐\" not present. \"滥伐林木\" appears. Also \"非法占用农用地\". \"非法种植毒品原植物\". \"非法捕捞水产品\". \"非法狩猎\". So likely the label for illegal cutting of protected trees is \"滥伐林木\". But \"滥伐林木\" is used for cutting without permit, not necessarily protected species. However the fact mentions \"国家二级重点保护植物\". That might be \"非法采伐国家重点保护植物\". Could be \"非法采伐国家重点保护植物\". Not sure.\n\nCheck other examples: \"非法捕捞水产品\" includes \"非法捕捞\". \"非法狩猎\". So pattern: \"非法\"+\"activity\". So \"非法采伐\" maybe used. But we haven't seen that label. Could be \"非法采伐\" is a valid label. The instruction: Use exact official charge label as shown in examples. So we must use a label that appears in examples. \"滥伐林木\" appears. So we should use that.\n\nThus answer: [罪名]滥伐林木<eoa>\n\nCheck if any other charges? Only illegal cutting. No other crimes. So single.\n\nReturn JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to determine the appropriate charge label(s) based on the facts. The facts: illegal cutting of protected trees (闽楠, a protected species, national second-level key protected plant). This is illegal logging/illegal harvesting of protected wildlife/plant. In examples, similar case: first example about illegal hunting of black water chicken gave \"非法狩猎\". For illegal logging of protected trees, likely \"非法采伐\" or \"非法砍伐\" or \"非法采伐保护植物\". Need to see label used in examples. Look through provided examples for similar. There's example: \"非法捕捞水产品\" etc. For illegal logging, we have \"滥伐林木\" (illegal logging). Also \"非法占用农用地\". \"非法种植毒品原植物\". \"非法捕捞水产品\". \"非法狩猎\". \"非法持有枪支\". So for illegal cutting of protected trees, likely \"非法采伐\" or \"非法砍伐\". But we need exact label used in dataset. Look at example: \"非法捕捞水产品\" is used. \"非法捕捞水产品\". For illegal logging, there is \"滥伐林木\" (overcutting). But that is for illegal logging without permit? Example: \"滥伐林木\" used for cutting without permit? Actually example: \"滥伐林木\" was for cutting trees without permit. That seems similar. However the tree is protected species, second-level key. Could be \"非法采伐\" or \"非法砍伐\". Let's search among examples: There's \"非法采伐\" not present. \"非法砍伐\" not present. \"滥伐林木\" appears. Also \"非法占用农用地\". \"非法种植毒品原植物\". \"非法捕捞水产品\". \"非法狩猎\". So likely the label for illegal cutting of protected trees is \"滥伐林木\". But \"滥伐林木\" is used for cutting without permit, not necessarily protected species. However the fact mentions \"国家二级重点保护植物\". That might be \"非法采伐国家重点保护植物\". Could be \"非法采伐国家重点保护植物\". Not sure.\n\nCheck other examples: \"非法捕捞水产品\" includes \"非法捕捞\". \"非法狩猎\". So pattern: \"非法\"+\"activity\". So \"非法采伐\" maybe used. But we haven't seen that label. Could be \"非法采伐\" is a valid label. The instruction: Use exact official charge label as shown in examples. So we must use a label that appears in examples. \"滥伐林木\" appears. So we should use that.\n\nThus answer: [罪名]滥伐林木<eoa>\n\nCheck if any other charges? Only illegal cutting. No other crimes. So single.\n\nReturn JSON with reasoning and final answer.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the appropriate charge label(s) based on the facts. The facts: illegal cutting of protected trees (闽楠, a protected species, national second-level key protected plant). This is illegal logging/illegal harvesting of protected wildlife/plant. In examples, similar case: first example about illegal hunting of black water chicken gave \"非法狩猎\". For illegal logging of protected trees, likely \"非法采伐\" or \"非法砍伐\" or \"非法采伐保护植物\". Need to see label used in examples. Look through provided examples for similar. There's example: \"非法捕捞水产品\" etc. For illegal logging, we have \"滥伐林木\" (illegal logging). Also \"非法占用农用地\". \"非法种植毒品原植物\". \"非法捕捞水产品\". \"非法狩猎\". \"非法持有枪支\". So for illegal cutting of protected trees, likely \"非法采伐\" or \"非法砍伐\". But we need exact label used in dataset. Look at example: \"非法捕捞水产品\" is used. \"非法捕捞水产品\". For illegal logging, there is \"滥伐林木\" (overcutting). But that is for illegal logging without permit? Example: \"滥伐林木\" used for cutting without permit? Actually example: \"滥伐林木\" was for cutting trees without permit. That seems similar. However the tree is protected species, second-level key. Could be \"非法采伐\" or \"非法砍伐\". Let's search among examples: There's \"非法采伐\" not present. \"非法砍伐\" not present. \"滥伐林木\" appears. Also \"非法占用农用地\". \"非法种植毒品原植物\". \"非法捕捞水产品\". \"非法狩猎\". So likely the label for illegal cutting of protected trees is \"滥伐林木\". But \"滥伐林木\" is used for cutting without permit, not necessarily protected species. However the fact mentions \"国家二级重点保护植物\". That might be \"非法采伐国家重点保护植物\". Could be \"非法采伐国家重点保护植物\". Not sure.\n\nCheck other examples: \"非法捕捞水产品\" includes \"非法捕捞\". \"非法狩猎\". So pattern: \"非法\"+\"activity\". So \"非法采伐\" maybe used. But we haven't seen that label. Could be \"非法采伐\" is a valid label. The instruction: Use exact official charge label as shown in examples. So we must use a label that appears in examples. \"滥伐林木\" appears. So we should use that.\n\nThus answer: [罪名]滥伐林木<eoa>\n\nCheck if any other charges? Only illegal cutting. No other crimes. So single.\n\nReturn JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to determine the appropriate charge label(s) based on the facts. The facts: illegal cutting of protected trees (闽楠, a protected species, national second-level key protected plant). This is illegal logging/illegal harvesting of protected wildlife/plant. In examples, similar case: first example about illegal hunting of black water chicken gave \"非法狩猎\". For illegal logging of protected trees, likely \"非法采伐\" or \"非法砍伐\" or \"非法采伐保护植物\". Need to see label used in examples. Look through provided examples for similar. There's example: \"非法捕捞水产品\" etc. For illegal logging, we have \"滥伐林木\" (illegal logging). Also \"非法占用农用地\". \"非法种植毒品原植物\". \"非法捕捞水产品\". \"非法狩猎\". \"非法持有枪支\". So for illegal cutting of protected trees, likely \"非法采伐\" or \"非法砍伐\". But we need exact label used in dataset. Look at example: \"非法捕捞水产品\" is used. \"非法捕捞水产品\". For illegal logging, there is \"滥伐林木\" (overcutting). But that is for illegal logging without permit? Example: \"滥伐林木\" used for cutting without permit? Actually example: \"滥伐林木\" was for cutting trees without permit. That seems similar. However the tree is protected species, second-level key. Could be \"非法采伐\" or \"非法砍伐\". Let's search among examples: There's \"非法采伐\" not present. \"非法砍伐\" not present. \"滥伐林木\" appears. Also \"非法占用农用地\". \"非法种植毒品原植物\". \"非法捕捞水产品\". \"非法狩猎\". So likely the label for illegal cutting of protected trees is \"滥伐林木\". But \"滥伐林木\" is used for cutting without permit, not necessarily protected species. However the fact mentions \"国家二级重点保护植物\". That might be \"非法采伐国家重点保护植物\". Could be \"非法采伐国家重点保护植物\". Not sure.\n\nCheck other examples: \"非法捕捞水产品\" includes \"非法捕捞\". \"非法狩猎\". So pattern: \"非法\"+\"activity\". So \"非法采伐\" maybe used. But we haven't seen that label. Could be \"非法采伐\" is a valid label. The instruction: Use exact official charge label as shown in examples. So we must use a label that appears in examples. \"滥伐林木\" appears. So we should use that.\n\nThus answer: [罪名]滥伐林木<eoa>\n\nCheck if any other charges? Only illegal cutting. No other crimes. So single.\n\nReturn JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 739,
+      "prompt_tokens": 25415,
+      "total_tokens": 26154,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 675,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.001345,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.001345,
+        "upstream_inference_prompt_cost": 0.0011420616786695374,
+        "upstream_inference_completions_cost": 0.00020293832133046254
+      }
+    }
+  },
+  "raw_response_missing": false
+}

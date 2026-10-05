@@ -1,0 +1,159 @@
+Edit: .prototypes\canonical_charge_lexicon_memory.py
+
+replace_all: False
+old_string:
+class Canonicalizer:
+    """Learned inventory + rewrite rules. Deterministic; no LLM involved."""
+
+    def __init__(self) -> None:
+        self.inventory = {}          # canonical string -> times seen as ground truth
+        self.alias = defaultdict(dict)  # observed part -> {canonical part: count}
+
+    def observe_truth(self, truth: str) -> None:
+        for t in _split_charges(_extract_payload(truth)):
+            t = _clean(t)
+            if t:
+                self.inventory[t] = self.inventory.get(t, 0) + 1
+
+    def learn(self, pred: str, truth: str) -> None:
+        """Align each predicted part to its nearest truth part; record the rewrite."""
+        parts = _split_charges(_extract_payload(pred))
+        truths = [_clean(t) for t in _split_charges(_extract_payload(truth))]
+        for p in parts:
+            p = _clean(p)
+            if not p:
+                continue
+            best, best_s = None, 0.0
+            for t in truths:
+                s = _sim(p, t)
+                if s > best_s:
+                    best, best_s = t, s
+            if best and best != p:
+                self.alias[p][best] = self.alias[p].get(best, 0) + 1
+
+    def _best(self, cand: str, threshold: float) -> str:
+        best, best_s = cand, threshold
+        for t in self.inventory:
+            s = _sim(cand, t)
+            if s > best_s:
+                best, best_s = t, s
+        return best
+
+    def canonical(self, cand: str) -> str:
+        c = _clean(_extract_payload(cand))
+        if not c:
+            return ""
+        if c in self.inventory:
+            return c
+        # 1. learned exact alias
+        if c in self.alias and self.alias[c]:
+            return max(self.alias[c].items(), key=lambda kv: kv[1])[0]
+        # 2. generic Chinese convention: the label field drops the "罪" suffix
+        if c.endswith("罪") and c[:-1] in self.inventory:
+            return c[:-1]
+        # 3. containment (statutory enumerations get truncated by the model)
+        contained = [t for t in self.inventory if c in t or t in c]
+        if contained:
+            return max(contained, key=len)
+        # 4. fuzzy fallback, conservative threshold
+        return self._best(c, 0.6)
+
+    def normalize(self, answer: str) -> str:
+        out, seen = [], set()
+        for p in _split_charges(_extract_payload(answer)):
+            c = self.canonical(p)
+            if c and c not in seen:
+                seen.add(c)
+                out.append(c)
+        return ";".join(out)
+
+new_string:
+class Canonicalizer:
+    """Learned inventory + rewrite rules. Deterministic; no LLM involved.
+
+    Two rule layers, tested as variants below:
+      V1 similarity-only alignment (the naive design that MISSes 开设赌场 -> 赌博)
+      V2 + verbatim whole-payload rules (no similarity required)
+      V3 + verbatim preferred over lexicon hit (adopted)
+    """
+
+    def __init__(self, use_payload_rules: bool = False, payload_first: bool = False) -> None:
+        self.inventory = {}          # canonical string -> times seen as ground truth
+        self.alias = defaultdict(dict)  # observed part -> {canonical part: count}
+        self.payload = defaultdict(dict)  # whole observed payload -> {truth payload: count}
+        self.use_payload_rules = use_payload_rules
+        self.payload_first = payload_first
+
+    def observe_truth(self, truth: str) -> None:
+        for t in _split_charges(_extract_payload(truth)):
+            t = _clean(t)
+            if t:
+                self.inventory[t] = self.inventory.get(t, 0) + 1
+
+    def learn(self, pred: str, truth: str) -> None:
+        """Record the literal rewrite, then align parts when counts agree."""
+        pred_payload = _clean(_extract_payload(pred))
+        truth_payload = _clean(_extract_payload(truth))
+        if self.use_payload_rules and pred_payload and pred_payload != truth_payload:
+            self.payload[pred_payload][truth_payload] = (
+                self.payload[pred_payload].get(truth_payload, 0) + 1
+            )
+        parts = _split_charges(_extract_payload(pred))
+        truths = [_clean(t) for t in _split_charges(_extract_payload(truth))]
+        for p in parts:
+            p = _clean(p)
+            if not p:
+                continue
+            best, best_s = None, 0.0
+            for t in truths:
+                s = _sim(p, t)
+                if s > best_s:
+                    best, best_s = t, s
+            if best and best != p:
+                self.alias[p][best] = self.alias[p].get(best, 0) + 1
+
+    def _best(self, cand: str, threshold: float) -> str:
+        best, best_s = cand, threshold
+        for t in self.inventory:
+            s = _sim(cand, t)
+            if s > best_s:
+                best, best_s = t, s
+        return best
+
+    def canonical(self, cand: str) -> str:
+        c = _clean(_extract_payload(cand))
+        if not c:
+            return ""
+        # V3 ordering: the stored rewrite beats a bare inventory hit, because a
+        # verbatim repeat of the same wrong string is the strongest evidence.
+        if self.payload_first and c in self.payload and self.payload[c]:
+            return max(self.payload[c].items(), key=lambda kv: kv[1])[0]
+        if c in self.inventory:
+            return c
+        if c in self.payload and self.payload[c]:
+            return max(self.payload[c].items(), key=lambda kv: kv[1])[0]
+        # 1. learned exact alias
+        if c in self.alias and self.alias[c]:
+            return max(self.alias[c].items(), key=lambda kv: kv[1])[0]
+        # 2. generic Chinese convention: the label field drops the "罪" suffix
+        if c.endswith("罪") and c[:-1] in self.inventory:
+            return c[:-1]
+        # 3. containment (statutory enumerations get truncated by the model)
+        contained = [t for t in self.inventory if c in t or t in c]
+        if contained:
+            return max(contained, key=len)
+        # 4. fuzzy fallback, conservative threshold
+        return self._best(c, 0.6)
+
+    def normalize(self, answer: str) -> str:
+        out, seen = [], set()
+        for p in _split_charges(_extract_payload(answer)):
+            c = self.canonical(p)
+            if c and c not in seen:
+                seen.add(c)
+                out.append(c)
+        return ";".join(out)
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_a\text_classification\.prototypes\canonical_charge_lexicon_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

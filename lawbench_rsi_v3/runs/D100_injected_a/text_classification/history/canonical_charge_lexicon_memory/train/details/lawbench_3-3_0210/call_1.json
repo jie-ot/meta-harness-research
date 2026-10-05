@@ -1,0 +1,72 @@
+{
+  "call_id": "f248273f3c4844a5bc9edcc19e647c21",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791127190-BheVnmt8W56dtcOxVJyU",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The facts show Guo instructed others to falsify evidence and file false lawsuits, which constitutes the crime of obstructing testimony (妨害作证). Additionally, Guo collected funds from many individuals without approval, amounting to over 3 million yuan, which matches the crime of illegal public deposit collection (非法吸收公众存款).\",\n  \"final_answer\": \"[罪名]妨害作证;非法吸收公众存款<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine charges from the fact.\n\nThe fact includes two parts:\n\n(一) 妨害作证: The defendant Guo instructed others to falsify evidence, making false lawsuits and causing the court to make false mediation. This is \"妨害作证\" (obstructing testimony). However the lexicon does not have \"妨害作证\". It has \"妨害公务\". That's different. The fact says \"指使他人作伪证进行虚假诉讼\". The charge could be \"妨害作证\" but not in list. The list includes \"妨害公务\". Not matching. Could be \"妨害作证\" not listed, but instruction says if no listed name fits, use the correct statutory name anyway. So we can use \"妨害作证\". But is there a statutory crime named \"妨害作证\"? In Chinese criminal law, there is \"妨害作证罪\" (obstructing testimony). So we can use that.\n\n(二) 非法吸收公众存款: This matches exactly \"非法吸收公众存款\" in list.\n\nThus charges: 妨害作证;非法吸收公众存款\n\nWe need format: [罪名]妨害作证;非法吸收公众存款<eoa>\n\nAdd brief reasoning in JSON? The instruction says output final answer with that format. The example shows just the line. The prompt says: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"} So we need to output JSON with reasoning and final_answer.\n\nThus produce:\n\n{\n  \"reasoning\": \"The facts show Guo instructed others to falsify evidence and file false lawsuits, which constitutes the crime of obstructing testimony (妨害作证). Additionally, Guo collected funds from many individuals without approval, amounting to over 3 million yuan, which matches the crime of illegal public deposit collection (非法吸收公众存款).\",\n  \"final_answer\": \"[罪名]妨害作证;非法吸收公众存款<eoa>\"\n}\n\nCheck format: The final_answer string includes [罪名]...<eoa>. Good.\n\n",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine charges from the fact.\n\nThe fact includes two parts:\n\n(一) 妨害作证: The defendant Guo instructed others to falsify evidence, making false lawsuits and causing the court to make false mediation. This is \"妨害作证\" (obstructing testimony). However the lexicon does not have \"妨害作证\". It has \"妨害公务\". That's different. The fact says \"指使他人作伪证进行虚假诉讼\". The charge could be \"妨害作证\" but not in list. The list includes \"妨害公务\". Not matching. Could be \"妨害作证\" not listed, but instruction says if no listed name fits, use the correct statutory name anyway. So we can use \"妨害作证\". But is there a statutory crime named \"妨害作证\"? In Chinese criminal law, there is \"妨害作证罪\" (obstructing testimony). So we can use that.\n\n(二) 非法吸收公众存款: This matches exactly \"非法吸收公众存款\" in list.\n\nThus charges: 妨害作证;非法吸收公众存款\n\nWe need format: [罪名]妨害作证;非法吸收公众存款<eoa>\n\nAdd brief reasoning in JSON? The instruction says output final answer with that format. The example shows just the line. The prompt says: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"} So we need to output JSON with reasoning and final_answer.\n\nThus produce:\n\n{\n  \"reasoning\": \"The facts show Guo instructed others to falsify evidence and file false lawsuits, which constitutes the crime of obstructing testimony (妨害作证). Additionally, Guo collected funds from many individuals without approval, amounting to over 3 million yuan, which matches the crime of illegal public deposit collection (非法吸收公众存款).\",\n  \"final_answer\": \"[罪名]妨害作证;非法吸收公众存款<eoa>\"\n}\n\nCheck format: The final_answer string includes [罪名]...<eoa>. Good.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine charges from the fact.\n\nThe fact includes two parts:\n\n(一) 妨害作证: The defendant Guo instructed others to falsify evidence, making false lawsuits and causing the court to make false mediation. This is \"妨害作证\" (obstructing testimony). However the lexicon does not have \"妨害作证\". It has \"妨害公务\". That's different. The fact says \"指使他人作伪证进行虚假诉讼\". The charge could be \"妨害作证\" but not in list. The list includes \"妨害公务\". Not matching. Could be \"妨害作证\" not listed, but instruction says if no listed name fits, use the correct statutory name anyway. So we can use \"妨害作证\". But is there a statutory crime named \"妨害作证\"? In Chinese criminal law, there is \"妨害作证罪\" (obstructing testimony). So we can use that.\n\n(二) 非法吸收公众存款: This matches exactly \"非法吸收公众存款\" in list.\n\nThus charges: 妨害作证;非法吸收公众存款\n\nWe need format: [罪名]妨害作证;非法吸收公众存款<eoa>\n\nAdd brief reasoning in JSON? The instruction says output final answer with that format. The example shows just the line. The prompt says: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"} So we need to output JSON with reasoning and final_answer.\n\nThus produce:\n\n{\n  \"reasoning\": \"The facts show Guo instructed others to falsify evidence and file false lawsuits, which constitutes the crime of obstructing testimony (妨害作证). Additionally, Guo collected funds from many individuals without approval, amounting to over 3 million yuan, which matches the crime of illegal public deposit collection (非法吸收公众存款).\",\n  \"final_answer\": \"[罪名]妨害作证;非法吸收公众存款<eoa>\"\n}\n\nCheck format: The final_answer string includes [罪名]...<eoa>. Good.\n\n",
+            "refusal": null,
+            "reasoning_content": "We need to determine charges from the fact.\n\nThe fact includes two parts:\n\n(一) 妨害作证: The defendant Guo instructed others to falsify evidence, making false lawsuits and causing the court to make false mediation. This is \"妨害作证\" (obstructing testimony). However the lexicon does not have \"妨害作证\". It has \"妨害公务\". That's different. The fact says \"指使他人作伪证进行虚假诉讼\". The charge could be \"妨害作证\" but not in list. The list includes \"妨害公务\". Not matching. Could be \"妨害作证\" not listed, but instruction says if no listed name fits, use the correct statutory name anyway. So we can use \"妨害作证\". But is there a statutory crime named \"妨害作证\"? In Chinese criminal law, there is \"妨害作证罪\" (obstructing testimony). So we can use that.\n\n(二) 非法吸收公众存款: This matches exactly \"非法吸收公众存款\" in list.\n\nThus charges: 妨害作证;非法吸收公众存款\n\nWe need format: [罪名]妨害作证;非法吸收公众存款<eoa>\n\nAdd brief reasoning in JSON? The instruction says output final answer with that format. The example shows just the line. The prompt says: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"} So we need to output JSON with reasoning and final_answer.\n\nThus produce:\n\n{\n  \"reasoning\": \"The facts show Guo instructed others to falsify evidence and file false lawsuits, which constitutes the crime of obstructing testimony (妨害作证). Additionally, Guo collected funds from many individuals without approval, amounting to over 3 million yuan, which matches the crime of illegal public deposit collection (非法吸收公众存款).\",\n  \"final_answer\": \"[罪名]妨害作证;非法吸收公众存款<eoa>\"\n}\n\nCheck format: The final_answer string includes [罪名]...<eoa>. Good.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 580,
+      "prompt_tokens": 2447,
+      "total_tokens": 3027,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 497,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00026735,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00026735,
+        "upstream_inference_prompt_cost": 0.00012235,
+        "upstream_inference_completions_cost": 0.000145
+      }
+    }
+  },
+  "raw_response_missing": false
+}

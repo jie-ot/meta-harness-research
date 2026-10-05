@@ -1,0 +1,130 @@
+Read: agents\fewshot_memory.py
+
+
+--- output ---
+1	"""Few-Shot Memory - baseline using all training examples as demonstrations.
+2	
+3	Accumulates (raw_question, ground_truth) pairs during training, uses them as
+4	few-shot context at test time. Uses raw questions (not full preprocessed prompts)
+5	to avoid repeating task context per example — matching MCE reproduce behavior.
+6	
+7	Variant:
+8	- FewShotAll: Up to 9999 examples
+9	Uses a global max_chars=50000 cap (matching MCE reproduce).
+10	"""
+11	
+12	import hashlib
+13	import json
+14	import random
+15	from typing import Any
+16	
+17	from ..llm import LLMCallable
+18	from ..memory_system import MemorySystem, extract_json_field
+19	
+20	PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+21	
+22	{examples_section}
+23	
+24	**Problem:**
+25	{input}
+26	
+27	**Instructions:**
+28	- Follow the patterns shown in the examples above
+29	- Respond in JSON format
+30	
+31	{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+32	
+33	MAX_CHARS = 30000
+34	
+35	
+36	def _seed_for_input(input: str) -> int:
+37	    """Return a stable per-input seed across Python processes."""
+38	    return int.from_bytes(hashlib.sha256(input.encode()).digest()[:8], "big")
+39	
+40	
+41	class FewShotMemory(MemorySystem):
+42	    """Few-shot baseline - accumulate all examples, use as demonstrations."""
+43	
+44	    def __init__(
+45	        self,
+46	        llm: LLMCallable,
+47	        max_examples: int = 50,
+48	    ):
+49	        super().__init__(llm)
+50	        self.max_examples = max_examples
+51	        self.examples: list[dict[str, str]] = []
+52	
+53	    def _format_examples_section(self, seed: int | None = None) -> str:
+54	        """Format examples as few-shot demonstrations, respecting global char limit.
+55	
+56	        Uses raw_question (short Q/A) when available to avoid repeating task
+57	        context per example. Falls back to full input for non-MCE datasets.
+58	
+59	        Args:
+60	            seed: If provided, randomly sample max_examples and shuffle order.
+61	                  Each eval instance should pass a different seed for diversity.
+62	        """
+63	        if not self.examples:
+64	            return ""
+65	
+66	        if seed is not None and len(self.examples) > self.max_examples:
+67	            rng = random.Random(seed)
+68	            to_use = rng.sample(self.examples, self.max_examples)
+69	        else:
+70	            to_use = self.examples[-self.max_examples :]
+71	            if seed is not None:
+72	                rng = random.Random(seed)
+73	                to_use = list(to_use)
+74	                rng.shuffle(to_use)
+75	
+76	        parts = []
+77	        total_chars = 0
+78	        for ex in to_use:
+79	            # Use raw_question for demos (avoids repeating task context per example)
+80	            question = ex.get("raw_question", ex["input"])
+81	            part = f"Q: {question}\nA: {ex['target']}"
+82	            if total_chars + len(part) > MAX_CHARS:
+83	                break
+84	            parts.append(part)
+85	            total_chars += len(part) + 2  # \n\n separator
+86	
+87	        return "\n\n".join(parts)
+88	
+89	    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+90	        """Generate prediction using accumulated few-shot examples."""
+91	        seed = _seed_for_input(input)
+92	        examples_section = self._format_examples_section(seed=seed)
+93	        prompt = PROMPT_TEMPLATE.format(
+94	            examples_section=examples_section,
+95	            input=input,
+96	        )
+97	
+98	        response = self.call_llm(prompt)
+99	        answer = extract_json_field(response, "final_answer")
+100	
+101	        return answer, {
+102	            "full_response": response,
+103	            "num_examples": len(self.examples),
+104	        }
+105	
+106	    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+107	        """Accumulate all examples with ground truth labels."""
+108	        for r in batch_results:
+109	            ex = {"input": r["input"], "target": r["ground_truth"]}
+110	            if "raw_question" in r:
+111	                ex["raw_question"] = r["raw_question"]
+112	            self.examples.append(ex)
+113	
+114	    def get_context_length(self) -> int:
+115	        """Return length of the examples section actually injected per query."""
+116	        return len(self._format_examples_section())
+117	
+118	    def get_state(self) -> str:
+119	        """Serialize memory state."""
+120	        return json.dumps({"examples": self.examples}, indent=2)
+121	
+122	    def set_state(self, state: str) -> None:
+123	        """Restore memory state from JSON."""
+124	        data = json.loads(state)
+125	        self.examples = data.get("examples", [])
+126	

@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the case facts describe multiple distinct criminal conduct or explicitly mention additional offenses (e.g., “数罪并罚”, “其他罪”, “并且…”， “同时” etc.), output every applicable charge separated by semicolon
+- When the factual narrative describes more than one distinct illegal act that maps to separate statutory offenses, list every applicable charge (separated by semicolons) rather than selecting only the 
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:杭州市上城区人民检察院指控被告人查某明知自己患有梅毒，于2008年6月13日凌晨在杭州市中山大酒店8129房间与姜某发生性关系。离开时窃走姜某的笔记本电脑一台和现金人民币1450元。公诉机关认为上述事实有被告人供述、被害人陈述、证人证言、价格鉴定结论书、扣押发还物品清单、照片、监控录像光盘、化验报告单、诊断证明书、租房登记表、归案经过等证据证明，对被告人查某应以××、××两罪并罚。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,72 @@
+{
+  "call_id": "04b78db3ac564bdf80ab01cc712f0a7f",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791043094-fbIrQwHruAoYMMxTSBmz",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The facts describe three separate criminal acts: (1) organized group assault with knives and guns causing heavy injury, which matches the crime of intentional injury (故意伤害). (2) organized destruction of a vehicle with an axe, which is intentional destruction of property (故意毁坏财物). (3) using threats and force to obtain money, which is robbery, labeled as 抢夺 in the provided charge list.\",\n  \"final_answer\": \"[罪名]故意伤害;故意毁坏财物;抢夺<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine charges based on facts.\n\nFacts: three sets:\n\n1. Violence: Wang1 (汪1某成) organized group with knives, guns, entered house of Xu (许某3) and beat, causing heavy injury (right leg heavy injury, head light injury). That's intentional injury causing heavy injury. So charge: 故意伤害.\n\n2. Property destruction: Wang1 organized group with axe to smash Wu's car, causing damage 5390 yuan. That's intentional destruction of property. Charge: 故意毁坏财物? The list includes \"故意毁坏财物\". Yes.\n\n3. Robbery: Wang1 organized group, took victim Zhang to remote area, threatened with cutting tendons, forced to give cash 10k, got 2k transferred, plus a note. That's robbery. Charge: 抢劫? The list includes \"抢夺\" but not \"抢劫\". However earlier examples: they used \"抢夺\" for robbery? In earlier example: \"抢夺\" used for robbery (Zhao case). So label \"抢夺\". Also maybe \"抢劫\" not in list. So use \"抢夺\". Also maybe \"故意伤害;故意毁坏财物;抢夺\". Also there is \"聚众斗殴\"? Not exactly, they used weapons, but it's organized assault causing injury. Could be \"聚众斗殴\". But earlier example for group beating in prison used \"故意伤害;组织、强迫、引诱、容留、介绍卖淫;强迫卖淫\" which seems unrelated. For group assault, they used \"聚众斗殴\" in earlier example about 125 project. That case: group of workers beat someone causing heavy injury, they labeled \"聚众斗殴\". So maybe this also qualifies as \"聚众斗殴\". However the list includes \"聚众斗殴\". The facts: organized group with knives, guns, entering house, beating. That's a violent group assault. Could be \"聚众斗殴\". But also \"故意伤害\". Which is more appropriate? In earlier example, they used \"聚众斗殴\" for a group beating causing heavy injury. So we should include \"聚众斗殴\". But the list also includes \"故意伤害\". Which one is primary? The prosecution says \"故意伤害他人身体并致人重伤\". So they likely charge \"故意伤害\". But also \"聚众斗殴\" is a separate offense for group fighting. The earlier example: \"聚众斗殴\" used for a case where group used weapons? Let's check: earlier example: \"安顺市西秀区... 125项目部... 打斗... 造成重伤\". They labeled \"聚众斗殴\". So they used that label. So we should include \"聚众斗殴\". However the list includes both \"故意伤害\" and \"聚众斗殴\". Could be both. But typical charges: \"故意伤害\" for causing injury, \"聚众斗殴\" for group fighting. Might be both. The problem statement: \"公诉机关认为...已分别构成××、××和抢劫罪\". So they think three crimes: first maybe \"故意伤害\", second \"故意毁坏财物\", third \"抢劫\". So we should output those three: 故意伤害;故意毁坏财物;抢夺.\n\nThus final answer list: 故意伤害;故意毁坏财物;抢夺\n\nReturn JSON.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine charges based on facts.\n\nFacts: three sets:\n\n1. Violence: Wang1 (汪1某成) organized group with knives, guns, entered house of Xu (许某3) and beat, causing heavy injury (right leg heavy injury, head light injury). That's intentional injury causing heavy injury. So charge: 故意伤害.\n\n2. Property destruction: Wang1 organized group with axe to smash Wu's car, causing damage 5390 yuan. That's intentional destruction of property. Charge: 故意毁坏财物? The list includes \"故意毁坏财物\". Yes.\n\n3. Robbery: Wang1 organized group, took victim Zhang to remote area, threatened with cutting tendons, forced to give cash 10k, got 2k transferred, plus a note. That's robbery. Charge: 抢劫? The list includes \"抢夺\" but not \"抢劫\". However earlier examples: they used \"抢夺\" for robbery? In earlier example: \"抢夺\" used for robbery (Zhao case). So label \"抢夺\". Also maybe \"抢劫\" not in list. So use \"抢夺\". Also maybe \"故意伤害;故意毁坏财物;抢夺\". Also there is \"聚众斗殴\"? Not exactly, they used weapons, but it's organized assault causing injury. Could be \"聚众斗殴\". But earlier example for group beating in prison used \"故意伤害;组织、强迫、引诱、容留、介绍卖淫;强迫卖淫\" which seems unrelated. For group assault, they used \"聚众斗殴\" in earlier example about 125 project. That case: group of workers beat someone causing heavy injury, they labeled \"聚众斗殴\". So maybe this also qualifies as \"聚众斗殴\". However the list includes \"聚众斗殴\". The facts: organized group with knives, guns, entering house, beating. That's a violent group assault. Could be \"聚众斗殴\". But also \"故意伤害\". Which is more appropriate? In earlier example, they used \"聚众斗殴\" for a group beating causing heavy injury. So we should include \"聚众斗殴\". But the list also includes \"故意伤害\". Which one is primary? The prosecution says \"故意伤害他人身体并致人重伤\". So they likely charge \"故意伤害\". But also \"聚众斗殴\" is a separate offense for group fighting. The earlier example: \"聚众斗殴\" used for a case where group used weapons? Let's check: earlier example: \"安顺市西秀区... 125项目部... 打斗... 造成重伤\". They labeled \"聚众斗殴\". So they used that label. So we should include \"聚众斗殴\". However the list includes both \"故意伤害\" and \"聚众斗殴\". Could be both. But typical charges: \"故意伤害\" for causing injury, \"聚众斗殴\" for group fighting. Might be both. The problem statement: \"公诉机关认为...已分别构成××、××和抢劫罪\". So they think three crimes: first maybe \"故意伤害\", second \"故意毁坏财物\", third \"抢劫\". So we should output those three: 故意伤害;故意毁坏财物;抢夺.\n\nThus final answer list: 故意伤害;故意毁坏财物;抢夺\n\nReturn JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine charges based on facts.\n\nFacts: three sets:\n\n1. Violence: Wang1 (汪1某成) organized group with knives, guns, entered house of Xu (许某3) and beat, causing heavy injury (right leg heavy injury, head light injury). That's intentional injury causing heavy injury. So charge: 故意伤害.\n\n2. Property destruction: Wang1 organized group with axe to smash Wu's car, causing damage 5390 yuan. That's intentional destruction of property. Charge: 故意毁坏财物? The list includes \"故意毁坏财物\". Yes.\n\n3. Robbery: Wang1 organized group, took victim Zhang to remote area, threatened with cutting tendons, forced to give cash 10k, got 2k transferred, plus a note. That's robbery. Charge: 抢劫? The list includes \"抢夺\" but not \"抢劫\". However earlier examples: they used \"抢夺\" for robbery? In earlier example: \"抢夺\" used for robbery (Zhao case). So label \"抢夺\". Also maybe \"抢劫\" not in list. So use \"抢夺\". Also maybe \"故意伤害;故意毁坏财物;抢夺\". Also there is \"聚众斗殴\"? Not exactly, they used weapons, but it's organized assault causing injury. Could be \"聚众斗殴\". But earlier example for group beating in prison used \"故意伤害;组织、强迫、引诱、容留、介绍卖淫;强迫卖淫\" which seems unrelated. For group assault, they used \"聚众斗殴\" in earlier example about 125 project. That case: group of workers beat someone causing heavy injury, they labeled \"聚众斗殴\". So maybe this also qualifies as \"聚众斗殴\". However the list includes \"聚众斗殴\". The facts: organized group with knives, guns, entering house, beating. That's a violent group assault. Could be \"聚众斗殴\". But also \"故意伤害\". Which is more appropriate? In earlier example, they used \"聚众斗殴\" for a group beating causing heavy injury. So we should include \"聚众斗殴\". But the list also includes \"故意伤害\". Which one is primary? The prosecution says \"故意伤害他人身体并致人重伤\". So they likely charge \"故意伤害\". But also \"聚众斗殴\" is a separate offense for group fighting. The earlier example: \"聚众斗殴\" used for a case where group used weapons? Let's check: earlier example: \"安顺市西秀区... 125项目部... 打斗... 造成重伤\". They labeled \"聚众斗殴\". So they used that label. So we should include \"聚众斗殴\". However the list includes both \"故意伤害\" and \"聚众斗殴\". Could be both. But typical charges: \"故意伤害\" for causing injury, \"聚众斗殴\" for group fighting. Might be both. The problem statement: \"公诉机关认为...已分别构成××、××和抢劫罪\". So they think three crimes: first maybe \"故意伤害\", second \"故意毁坏财物\", third \"抢劫\". So we should output those three: 故意伤害;故意毁坏财物;抢夺.\n\nThus final answer list: 故意伤害;故意毁坏财物;抢夺\n\nReturn JSON.",
+            "reasoning_content": "We need to determine charges based on facts.\n\nFacts: three sets:\n\n1. Violence: Wang1 (汪1某成) organized group with knives, guns, entered house of Xu (许某3) and beat, causing heavy injury (right leg heavy injury, head light injury). That's intentional injury causing heavy injury. So charge: 故意伤害.\n\n2. Property destruction: Wang1 organized group with axe to smash Wu's car, causing damage 5390 yuan. That's intentional destruction of property. Charge: 故意毁坏财物? The list includes \"故意毁坏财物\". Yes.\n\n3. Robbery: Wang1 organized group, took victim Zhang to remote area, threatened with cutting tendons, forced to give cash 10k, got 2k transferred, plus a note. That's robbery. Charge: 抢劫? The list includes \"抢夺\" but not \"抢劫\". However earlier examples: they used \"抢夺\" for robbery? In earlier example: \"抢夺\" used for robbery (Zhao case). So label \"抢夺\". Also maybe \"抢劫\" not in list. So use \"抢夺\". Also maybe \"故意伤害;故意毁坏财物;抢夺\". Also there is \"聚众斗殴\"? Not exactly, they used weapons, but it's organized assault causing injury. Could be \"聚众斗殴\". But earlier example for group beating in prison used \"故意伤害;组织、强迫、引诱、容留、介绍卖淫;强迫卖淫\" which seems unrelated. For group assault, they used \"聚众斗殴\" in earlier example about 125 project. That case: group of workers beat someone causing heavy injury, they labeled \"聚众斗殴\". So maybe this also qualifies as \"聚众斗殴\". However the list includes \"聚众斗殴\". The facts: organized group with knives, guns, entering house, beating. That's a violent group assault. Could be \"聚众斗殴\". But also \"故意伤害\". Which is more appropriate? In earlier example, they used \"聚众斗殴\" for a group beating causing heavy injury. So we should include \"聚众斗殴\". But the list also includes \"故意伤害\". Which one is primary? The prosecution says \"故意伤害他人身体并致人重伤\". So they likely charge \"故意伤害\". But also \"聚众斗殴\" is a separate offense for group fighting. The earlier example: \"聚众斗殴\" used for a case where group used weapons? Let's check: earlier example: \"安顺市西秀区... 125项目部... 打斗... 造成重伤\". They labeled \"聚众斗殴\". So they used that label. So we should include \"聚众斗殴\". However the list includes both \"故意伤害\" and \"聚众斗殴\". Could be both. But typical charges: \"故意伤害\" for causing injury, \"聚众斗殴\" for group fighting. Might be both. The problem statement: \"公诉机关认为...已分别构成××、××和抢劫罪\". So they think three crimes: first maybe \"故意伤害\", second \"故意毁坏财物\", third \"抢劫\". So we should output those three: 故意伤害;故意毁坏财物;抢夺.\n\nThus final answer list: 故意伤害;故意毁坏财物;抢夺\n\nReturn JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 894,
+      "prompt_tokens": 20591,
+      "total_tokens": 21485,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 921,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00077865,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00077865,
+        "upstream_inference_prompt_cost": 0.00061773,
+        "upstream_inference_completions_cost": 0.00016092
+      }
+    }
+  },
+  "raw_response_missing": false
+}

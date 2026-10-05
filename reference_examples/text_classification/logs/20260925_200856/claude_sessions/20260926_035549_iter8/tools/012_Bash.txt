@@ -1,0 +1,26 @@
+Bash [ERROR]
+
+command:
+powershell -Command "
+$base = 'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+Get-ChildItem -Path $base -Recurse -Filter 'log.jsonl' | Where-Object { $_.FullName -like '*adaptive_tokenizer*' } | Select-Object FullName
+"
+
+description: Find adaptive_tokenizer_confusion log files
+
+--- output ---
+Exit code 1
+= : �޷�����=����ʶ��Ϊ cmdlet���������ű��ļ�������г�������ơ��������Ƶ�ƴд���������·������ȷ��·����ȷ��Ȼ������һ
+�Ρ�
+����λ�� ��:2 �ַ�: 2
++  = 'D:\�ҵ��ļ�\���пƼ���ѧ\����ʦ�������о�����\meta-harness\reference_examples\text_cl ...
++  ~
+    + CategoryInfo          : ObjectNotFound: (=:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 
+Get-ChildItem : ȱ�ٲ�����Path����ĳ����������ָ��һ������Ϊ��System.String[]���Ĳ�����Ȼ������һ�Ρ�
+����λ�� ��:3 �ַ�: 15
++ Get-ChildItem -Path  -Recurse -Filter 'log.jsonl' | Where-Object { un ...
++               ~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [Get-ChildItem]��ParameterBindingException
+    + FullyQualifiedErrorId : MissingArgument,Microsoft.PowerShell.Commands.GetChildItemCommand

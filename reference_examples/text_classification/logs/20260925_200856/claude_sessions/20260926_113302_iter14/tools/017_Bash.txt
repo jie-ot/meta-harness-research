@@ -1,0 +1,27 @@
+Bash
+
+command:
+powershell -Command "
+\$lines = Get-Content 'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\LawBench\decayed_confusion_memory\gpt-oss-120b\log.jsonl'
+\$steps = \$lines | ForEach-Object { \$_ | ConvertFrom-Json } | Where-Object { \$_.type -eq 'step' }
+\$errors = \$steps | Where-Object { -not \$_.ok }
+# Show compound-label errors
+\$compound = \$errors | Where-Object { \$_.tgt -match ';' }
+Write-Host \"Total errors: \$(\$errors.Count), Compound-label errors: \$(\$compound.Count)\"
+\$compound | Select-Object -First 10 | ForEach-Object { \"pred=[\$(\$_.pred)] | tgt=[\$(\$_.tgt)]\" }
+"
+
+description: Analyze compound-label errors in LawBench
+
+--- output ---
+Total errors: 146, Compound-label errors: 53
+pred=[[����]թƭ<eoa>] | tgt=[թƭ;��֯��ǿ�ȡ����ա���������������;���ա���������������]
+pred=[[����]�����˺���;����ٻ�������<eoa>] | tgt=[�����˺�;����ٻ�����]
+pred=[[����]��˽�����;�ܻ���<eoa>] | tgt=[�ܻ�;����ְȨ]
+pred=[[����]����<eoa>] | tgt=[����;���Ρ������������á�������������]
+pred=[[����]����;���Ρ������������á�������������<eoa>] | tgt=[��˽��ͨ�����Ʒ;����]
+pred=[[����]�����˺�;�ƻ�������Ӫ<eoa>] | tgt=[�����˺�;���������������]
+pred=[[����]�ƻ����õ�����ʩ��<eoa>] | tgt=[�ƻ��㲥������ʩ�����õ�����ʩ;����]
+pred=[[����]�����˺�;������ٿֲ���Ϣ<eoa>] | tgt=[�����˺�;���졢���⴫����ٿֲ���Ϣ]
+pred=[[����]����;������������<eoa>] | tgt=[����;���ա���������ƭ��������]
+pred=[] | tgt=[���С�ʹ�üٱ�;����]

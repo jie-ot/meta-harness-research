@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- If the facts state that the defendant knowingly acquired or dealt with property known to be stolen and thereby obtained or handled the proceeds of the crime, list both the concealment/cover‑up offense
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- If the factual scenario describes fraud that is carried out through the creation, signing, or performance of a contract (e.g., false representation of a business role, fictitious project, or fabricate
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:垫江县人民检察院起诉指控，2016年2月，被告人郑某在垫江县X批发市场购买了一支射钉枪，后在网上购买了无缝枪管、枪托、套筒等配件对射钉枪进行改装。2017年5月25日，垫江县公安局民警在郑某居住的房间查获无缝枪管一支、枪托一个、射钉枪内套筒一支等配件及工具，在郑某驾驶的渝GWXXXX号货车内查获无缝枪管一支，并从郑某处扣押射钉枪一支。经重庆市公安局物证鉴定中心鉴定，郑某改装的射钉枪是以火药为动力发射非制式枪弹的非制式枪。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

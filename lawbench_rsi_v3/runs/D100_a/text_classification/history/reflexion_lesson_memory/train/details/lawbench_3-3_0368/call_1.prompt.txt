@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- If the factual description involves a gas cylinder, combustible gas, or other explosive material being ignited or prepared for detonation, and the intent is to cause an explosion rather than to set fi
+- If the facts only describe forging, altering, or selling state‑issued documents or certificates and do not contain any separate act of deceiving another party for financial gain, assign only the forge
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+- When the defendant intentionally ignites a building, room, or other structure causing fire damage, the appropriate charge is "放火" (arson) under Criminal Law Article 114, not the generic "故意毁坏财物".
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控，2014年6月25日12时许，被告人张某某在攀枝花市东区鸿海巷9号“有盐有味店”餐馆内，因要求辞职并索要工资，被老板任某某拒绝。后张某某购买打火机回到店内，割断液化气罐管子，打开阀门放出煤气，要求任某某同意其辞职，任某某将液化气罐阀门关闭，将张某某带到厨房劝解，双方未谈妥，张某某再次拿出打火机往液化气罐旁冲时，被任某某制止并报警。
+对指控的上述事实，公诉机关当庭提供了相应的证据证实，诉请依照《中华人民共和国刑法》××之规定，对被告人张某某犯××予以判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

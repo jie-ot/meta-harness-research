@@ -1,0 +1,82 @@
+Write: C:\tmp\proto_compound.py
+
+content:
+"""Prototype: compound-label missed-component tracking.
+
+Hypothesis: when a prediction is a strict subset of a multi-part ground truth
+(e.g. pred="A" tgt="A;B;C"), the model missed components B and C.
+Tracking missed components separately and boosting retrieval of examples whose
+target is a missed component should help the model learn to predict compound answers.
+"""
+import re
+from collections import defaultdict
+
+DELIM_RE = re.compile(r'[;；、,，/]')
+
+def split_label(label: str) -> list[str]:
+    """Split a compound label into atomic parts and strip wrappers."""
+    # Strip format wrappers like [罪名]...<eoa>
+    cleaned = re.sub(r'^\[[^\]]*\]|<eoa>\s*$|\[[^\]]*\]\s*$', '', label).strip()
+    parts = [p.strip() for p in DELIM_RE.split(cleaned) if p.strip()]
+    return parts if parts else [cleaned]
+
+def compute_missed(pred: str, gt: str) -> list[str]:
+    """Return components in gt that are not in pred."""
+    pred_parts = set(split_label(pred))
+    gt_parts = set(split_label(gt))
+    return list(gt_parts - pred_parts)
+
+# Test with real error data
+errors = [
+    ("[罪名]诈骗<eoa>", "诈骗;组织、领导传销活动;销售假冒注册商标的商品"),
+    ("[罪名]故意伤害;毁坏财物<eoa>", "故意伤害;非法持有枪支"),
+    ("[罪名]强迫卖淫<eoa>", "组织卖淫;强迫卖淫;强奸"),
+    ("[罪名]走私<eoa>", "走私贵重金属;走私普通货物、物品"),
+    ("[罪名]故意伤害<eoa>", "故意伤害"),  # correct, no miss
+]
+
+missed_counts = defaultdict(int)
+for pred, gt in errors:
+    missed = compute_missed(pred, gt)
+    print(f"pred={pred!r} gt={gt!r} -> missed={missed}")
+    for m in missed:
+        missed_counts[m] += 1
+
+print("\nMissed component counts:")
+for lbl, cnt in sorted(missed_counts.items(), key=lambda x: -x[1]):
+    print(f"  {lbl}: {cnt}")
+
+# Simulate retrieval boost: score = jaccard + beta * missed_boost
+# Examples in pool:
+examples = [
+    {"target": "组织、领导传销活动", "sim": 0.3},
+    {"target": "诈骗", "sim": 0.8},
+    {"target": "走私普通货物、物品", "sim": 0.25},
+    {"target": "故意伤害", "sim": 0.6},
+]
+
+BETA = 0.3
+
+def score_with_missed(ex, missed_counts, total_steps):
+    base_sim = ex["sim"]
+    missed_weight = missed_counts.get(ex["target"], 0) / max(1, total_steps)
+    return base_sim + BETA * missed_weight
+
+print("\nScores with missed boost (total_steps=4):")
+for ex in examples:
+    s = score_with_missed(ex, missed_counts, 4)
+    print(f"  {ex['target']}: base={ex['sim']:.2f} boost={BETA * missed_counts.get(ex['target'],0)/4:.3f} final={s:.3f}")
+
+# Variant 2: use log scaling for missed boost
+import math
+print("\nVariant 2 - log-scaled missed boost:")
+for ex in examples:
+    base = ex["sim"]
+    cnt = missed_counts.get(ex["target"], 0)
+    boosted = base + BETA * math.log(1 + cnt)
+    print(f"  {ex['target']}: base={base:.2f} log_boost={BETA * math.log(1+cnt):.3f} final={boosted:.3f}")
+
+
+
+--- output ---
+File created successfully at: C:\tmp\proto_compound.py (file state is current in your context — no need to Read it back)

@@ -1,0 +1,72 @@
+{
+  "call_id": "83a794dec19145cabe5c4f98c2458516",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791008836-6vWYCmpX2FI886ap6dFs",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The facts describe two distinct criminal conduct. First, the companies and their manager bribed a state official with cash, foreign currency, watches and cigarettes to obtain business, which constitutes unit bribery (单位行贿罪) and, for the manager personally, the crime of giving bribes (行贿罪). Second, the manager purchased falsified VAT special invoices to obtain illegal tax deductions, which is the offense of falsifying VAT invoices (虚开增值税专用发票罪). Therefore, the applicable crimes are unit bribery, individual bribery, and falsifying VAT invoices.\",\n  \"final_answer\": \"[罪名]单位行贿;行贿;虚开增值税专用发票<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the crimes (罪名) based on facts. The case includes two sets:\n\n1) Unit bribery (单位行贿) by two companies (大某隆某货物运输有限公司 and 大某聚某货物运输有限公司) via their actual manager 李某某, bribing a state employee (孔某某) with cash, foreign currency, watches, cigarettes, etc. So crime: unit bribery (单位行贿罪). Also the individual 李某某 as direct responsible person may be charged with giving bribe (行贿罪) as a person, but the text says \"单位行贿犯罪\" and \"被告单位...构成××\". So the crime for the unit is unit bribery. For the individual, likely also \"行贿罪\". However examples: In earlier example with 罗1某 they gave answer \"单位行贿;利用影响力受贿\". That case had both unit bribery and influence bribery. Here we have unit bribery and also individual bribery? The text says \"被告人李某某作为二被告单位的直接负责的主管人员，依法应承担刑事责任\". Usually the individual is charged with \"行贿罪\". So we should list both: \"单位行贿;行贿\". But the prompt may expect \"单位行贿\" only? Let's see previous examples: For the case with \"受贿\" they gave answer \"受贿\". For \"对非国家工作人员行贿\" they gave answer \"对非国家工作人员行贿\". For \"单位行贿;利用影响力受贿\" they listed two crimes. So they include both unit and personal crimes. So we should list \"单位行贿;行贿\". However the second part is \"虚开增值税专用发票罪\". So overall the defendant faces multiple crimes: unit bribery, individual bribery, and false VAT invoice. The answer should list all applicable crimes separated by semicolon.\n\nThus final answer: [罪名]单位行贿;行贿;虚开增值税专用发票<eoa>\n\nCheck if \"行贿\" is appropriate term. In Chinese criminal law, the crime of giving bribe is \"行贿罪\". So yes.\n\nReturn JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "reasoning": "We need to determine the crimes (罪名) based on facts. The case includes two sets:\n\n1) Unit bribery (单位行贿) by two companies (大某隆某货物运输有限公司 and 大某聚某货物运输有限公司) via their actual manager 李某某, bribing a state employee (孔某某) with cash, foreign currency, watches, cigarettes, etc. So crime: unit bribery (单位行贿罪). Also the individual 李某某 as direct responsible person may be charged with giving bribe (行贿罪) as a person, but the text says \"单位行贿犯罪\" and \"被告单位...构成××\". So the crime for the unit is unit bribery. For the individual, likely also \"行贿罪\". However examples: In earlier example with 罗1某 they gave answer \"单位行贿;利用影响力受贿\". That case had both unit bribery and influence bribery. Here we have unit bribery and also individual bribery? The text says \"被告人李某某作为二被告单位的直接负责的主管人员，依法应承担刑事责任\". Usually the individual is charged with \"行贿罪\". So we should list both: \"单位行贿;行贿\". But the prompt may expect \"单位行贿\" only? Let's see previous examples: For the case with \"受贿\" they gave answer \"受贿\". For \"对非国家工作人员行贿\" they gave answer \"对非国家工作人员行贿\". For \"单位行贿;利用影响力受贿\" they listed two crimes. So they include both unit and personal crimes. So we should list \"单位行贿;行贿\". However the second part is \"虚开增值税专用发票罪\". So overall the defendant faces multiple crimes: unit bribery, individual bribery, and false VAT invoice. The answer should list all applicable crimes separated by semicolon.\n\nThus final answer: [罪名]单位行贿;行贿;虚开增值税专用发票<eoa>\n\nCheck if \"行贿\" is appropriate term. In Chinese criminal law, the crime of giving bribe is \"行贿罪\". So yes.\n\nReturn JSON with reasoning and final answer.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the crimes (罪名) based on facts. The case includes two sets:\n\n1) Unit bribery (单位行贿) by two companies (大某隆某货物运输有限公司 and 大某聚某货物运输有限公司) via their actual manager 李某某, bribing a state employee (孔某某) with cash, foreign currency, watches, cigarettes, etc. So crime: unit bribery (单位行贿罪). Also the individual 李某某 as direct responsible person may be charged with giving bribe (行贿罪) as a person, but the text says \"单位行贿犯罪\" and \"被告单位...构成××\". So the crime for the unit is unit bribery. For the individual, likely also \"行贿罪\". However examples: In earlier example with 罗1某 they gave answer \"单位行贿;利用影响力受贿\". That case had both unit bribery and influence bribery. Here we have unit bribery and also individual bribery? The text says \"被告人李某某作为二被告单位的直接负责的主管人员，依法应承担刑事责任\". Usually the individual is charged with \"行贿罪\". So we should list both: \"单位行贿;行贿\". But the prompt may expect \"单位行贿\" only? Let's see previous examples: For the case with \"受贿\" they gave answer \"受贿\". For \"对非国家工作人员行贿\" they gave answer \"对非国家工作人员行贿\". For \"单位行贿;利用影响力受贿\" they listed two crimes. So they include both unit and personal crimes. So we should list \"单位行贿;行贿\". However the second part is \"虚开增值税专用发票罪\". So overall the defendant faces multiple crimes: unit bribery, individual bribery, and false VAT invoice. The answer should list all applicable crimes separated by semicolon.\n\nThus final answer: [罪名]单位行贿;行贿;虚开增值税专用发票<eoa>\n\nCheck if \"行贿\" is appropriate term. In Chinese criminal law, the crime of giving bribe is \"行贿罪\". So yes.\n\nReturn JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": "We need to determine the crimes (罪名) based on facts. The case includes two sets:\n\n1) Unit bribery (单位行贿) by two companies (大某隆某货物运输有限公司 and 大某聚某货物运输有限公司) via their actual manager 李某某, bribing a state employee (孔某某) with cash, foreign currency, watches, cigarettes, etc. So crime: unit bribery (单位行贿罪). Also the individual 李某某 as direct responsible person may be charged with giving bribe (行贿罪) as a person, but the text says \"单位行贿犯罪\" and \"被告单位...构成××\". So the crime for the unit is unit bribery. For the individual, likely also \"行贿罪\". However examples: In earlier example with 罗1某 they gave answer \"单位行贿;利用影响力受贿\". That case had both unit bribery and influence bribery. Here we have unit bribery and also individual bribery? The text says \"被告人李某某作为二被告单位的直接负责的主管人员，依法应承担刑事责任\". Usually the individual is charged with \"行贿罪\". So we should list both: \"单位行贿;行贿\". But the prompt may expect \"单位行贿\" only? Let's see previous examples: For the case with \"受贿\" they gave answer \"受贿\". For \"对非国家工作人员行贿\" they gave answer \"对非国家工作人员行贿\". For \"单位行贿;利用影响力受贿\" they listed two crimes. So they include both unit and personal crimes. So we should list \"单位行贿;行贿\". However the second part is \"虚开增值税专用发票罪\". So overall the defendant faces multiple crimes: unit bribery, individual bribery, and false VAT invoice. The answer should list all applicable crimes separated by semicolon.\n\nThus final answer: [罪名]单位行贿;行贿;虚开增值税专用发票<eoa>\n\nCheck if \"行贿\" is appropriate term. In Chinese criminal law, the crime of giving bribe is \"行贿罪\". So yes.\n\nReturn JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 664,
+      "prompt_tokens": 25503,
+      "total_tokens": 26167,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 536,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00133,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00133,
+        "upstream_inference_prompt_cost": 0.0011474322582100155,
+        "upstream_inference_completions_cost": 0.0001825677417899845
+      }
+    }
+  },
+  "raw_response_missing": false
+}

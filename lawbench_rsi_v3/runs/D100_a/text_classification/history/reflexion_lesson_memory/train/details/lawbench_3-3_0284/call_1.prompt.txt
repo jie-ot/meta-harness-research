@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- When the factual description involves possession of controlled substances (e.g., heroin, cocaine) and cites violation of drug control laws, always label the offense as “非法持有毒品” rather than the generic
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+- If the case facts describe the illegal acquisition, transport, or sale of goods that constitute smuggling (e.g., mention of ‘走私’, ‘普通货物’, ‘物品’, customs violations, or illicit trade) in addition to a t
+- When the facts describe a group assault that results only in minor injuries and the perpetrator’s conduct is characterized as disorderly or provocative, charge it as ‘寻衅滋事’ rather than ‘故意伤害’; and whe
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明：2015年1月16日11时许，永州市公安局治安支队民警和零陵分局治安大队民警在永州市零陵区石山脚乡工作中发现被告人蒋某某非法持有鸟铳和猎枪各一支。经对被告人蒋某某及其家人进行了教育和劝导，被告人蒋某某于2015年1月16日主动到公安机关投案，并将一支鸟铳及铁砂150克和一支猎枪及子弹壳1颗上交到公安机关。经永州市公安司法鉴定中心鉴定，被告人蒋某某持有的一支鸟铳和一支猎枪，是以火药为发射动力的枪支。
+上述事实，有经庭审质证属实的物证照片、扣押物品清单、鉴定意见通知书、到案经过、户籍证明等书证、被告人蒋某某的供述、永州市公安司法鉴定中心物证检验意见书予以证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

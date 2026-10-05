@@ -1,0 +1,29 @@
+Write: logs\20260925_200856\pending_eval.json
+
+content:
+{
+  "iteration": 11,
+  "candidates": [
+    {
+      "name": "contrastive_boundary_memory",
+      "file": "agents/contrastive_boundary_memory.py",
+      "hypothesis": "Rendering disambiguation examples in a dedicated 'Common Confusions' section with an explicit '[NOT: wrong_label]' annotation per example will outperform the frontier system, because it gives the model a direct negative-example signal at each label boundary rather than forcing it to infer the boundary from two similar positive examples buried in a flat list.",
+      "axis": "exploitation",
+      "base_system": "adaptive_tokenizer_confusion_memory",
+      "components": ["contrastive_negative_annotation", "two_section_prompt", "disambiguation_header", "adaptive_tokenizer", "confusion_matrix", "prompt_architecture_axis"]
+    },
+    {
+      "name": "cluster_confusion_memory",
+      "file": "agents/cluster_confusion_memory.py",
+      "hypothesis": "Expanding the top candidate labels to their full connected component in the undirected confusion graph (BFS over both prediction→actual and actual→prediction edges) and injecting one representative per cluster member will outperform the frontier system, because it surfaces transitively-confused label boundaries that one-hop disambiguation misses — particularly on tasks where label confusions form chains (A↔B and B↔C) rather than isolated pairs.",
+      "axis": "exploration",
+      "base_system": "adaptive_tokenizer_confusion_memory",
+      "components": ["undirected_confusion_graph", "bfs_cluster_expansion", "transitive_confusion", "cluster_representative_injection", "adaptive_tokenizer", "selection_algorithm_axis"]
+    }
+  ]
+}
+
+
+
+--- output ---
+File created successfully at: D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/pending_eval.json (file state is current in your context — no need to Read it back)

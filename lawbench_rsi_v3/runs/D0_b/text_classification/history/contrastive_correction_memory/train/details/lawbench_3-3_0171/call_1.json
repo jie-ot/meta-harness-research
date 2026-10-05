@@ -1,0 +1,72 @@
+{
+  "call_id": "27c0d964f5684f55a46c38169f3cbb91",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791014470-GYv5SrmENlAyuQ0SLd2D",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The case involves two distinct criminal conduct areas. First, the teaching and research center (a public institution) received a kickback of 10% from a book supplier, which was hidden in an off‑books petty cash fund. This constitutes the crime of unit bribery (单位受贿罪). As the director and legal representative of the unit, Yue also personally participated in the illicit handling of the money, which meets the elements of personal bribery (受贿罪). Second, Yue was found to have a blood alcohol concentration of 266.64 mg/100 ml while driving, which is well above the legal limit and therefore constitutes the crime of dangerous driving (危险驾驶罪). All three offenses are separate crimes, so they should be listed together, separated by semicolons.\",\n  \"final_answer\": \"[罪名]受贿;单位受贿;危险驾驶<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate Chinese criminal charges.\n\nFacts: Two parts: (1) Unit receiving bribes (unit bribery) and the person as head also involved. So charges: unit accepting bribes (单位受贿) and possibly accepting bribes by person (受贿). In examples, for similar case: \"受贿;滥用职权\". But here it's unit receiving bribes and director. The correct label likely \"受贿\" for the person and \"单位受贿\" for the unit. In examples, they used \"受贿;滥用职权\". For unit they used \"受贿\" maybe with \"单位受贿\". Let's see earlier example: \"公诉机关认为，被告单位教研中心在经济往来中帐外收受回扣款，其行为构成××，被告人岳某作为该单位负责人，也构成××。\" So they want both unit and person. The answer should list both: \"受贿;单位受贿\"? But order? Usually they list person first then unit? In earlier example with multiple charges they separate with semicolon. For example: \"受贿;滥用职权\". For unit they used \"受贿;滥用职权\". Not unit. Another example: \"拐卖妇女、儿童\". That's two charges separated by comma? Actually they used comma. But pattern: semicolon for multiple distinct crimes. For unit bribery, typical term is \"单位受贿罪\". So we can output \"受贿;单位受贿\". Then second part: dangerous driving (醉酒驾驶) which is \"危险驾驶罪\". In examples, they used \"非法持有毒品\" etc. For dangerous driving they might use \"危险驾驶\". In Chinese criminal law, the crime is \"危险驾驶罪\". So we need to include that as third charge.\n\nThus final answer: three charges: 受贿;单位受贿;危险驾驶\n\nCheck ordering: maybe \"单位受贿;受贿;危险驾驶\". But typical listing: first personal crime then unit then traffic. In example with both \"受贿;滥用职权\" they listed personal then abuse. So we can list \"受贿;单位受贿;危险驾驶\". Use semicolons.\n\nReturn format: [罪名]受贿;单位受贿;危险驾驶<eoa>\n\nNow produce JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate Chinese criminal charges.\n\nFacts: Two parts: (1) Unit receiving bribes (unit bribery) and the person as head also involved. So charges: unit accepting bribes (单位受贿) and possibly accepting bribes by person (受贿). In examples, for similar case: \"受贿;滥用职权\". But here it's unit receiving bribes and director. The correct label likely \"受贿\" for the person and \"单位受贿\" for the unit. In examples, they used \"受贿;滥用职权\". For unit they used \"受贿\" maybe with \"单位受贿\". Let's see earlier example: \"公诉机关认为，被告单位教研中心在经济往来中帐外收受回扣款，其行为构成××，被告人岳某作为该单位负责人，也构成××。\" So they want both unit and person. The answer should list both: \"受贿;单位受贿\"? But order? Usually they list person first then unit? In earlier example with multiple charges they separate with semicolon. For example: \"受贿;滥用职权\". For unit they used \"受贿;滥用职权\". Not unit. Another example: \"拐卖妇女、儿童\". That's two charges separated by comma? Actually they used comma. But pattern: semicolon for multiple distinct crimes. For unit bribery, typical term is \"单位受贿罪\". So we can output \"受贿;单位受贿\". Then second part: dangerous driving (醉酒驾驶) which is \"危险驾驶罪\". In examples, they used \"非法持有毒品\" etc. For dangerous driving they might use \"危险驾驶\". In Chinese criminal law, the crime is \"危险驾驶罪\". So we need to include that as third charge.\n\nThus final answer: three charges: 受贿;单位受贿;危险驾驶\n\nCheck ordering: maybe \"单位受贿;受贿;危险驾驶\". But typical listing: first personal crime then unit then traffic. In example with both \"受贿;滥用职权\" they listed personal then abuse. So we can list \"受贿;单位受贿;危险驾驶\". Use semicolons.\n\nReturn format: [罪名]受贿;单位受贿;危险驾驶<eoa>\n\nNow produce JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine appropriate Chinese criminal charges.\n\nFacts: Two parts: (1) Unit receiving bribes (unit bribery) and the person as head also involved. So charges: unit accepting bribes (单位受贿) and possibly accepting bribes by person (受贿). In examples, for similar case: \"受贿;滥用职权\". But here it's unit receiving bribes and director. The correct label likely \"受贿\" for the person and \"单位受贿\" for the unit. In examples, they used \"受贿;滥用职权\". For unit they used \"受贿\" maybe with \"单位受贿\". Let's see earlier example: \"公诉机关认为，被告单位教研中心在经济往来中帐外收受回扣款，其行为构成××，被告人岳某作为该单位负责人，也构成××。\" So they want both unit and person. The answer should list both: \"受贿;单位受贿\"? But order? Usually they list person first then unit? In earlier example with multiple charges they separate with semicolon. For example: \"受贿;滥用职权\". For unit they used \"受贿;滥用职权\". Not unit. Another example: \"拐卖妇女、儿童\". That's two charges separated by comma? Actually they used comma. But pattern: semicolon for multiple distinct crimes. For unit bribery, typical term is \"单位受贿罪\". So we can output \"受贿;单位受贿\". Then second part: dangerous driving (醉酒驾驶) which is \"危险驾驶罪\". In examples, they used \"非法持有毒品\" etc. For dangerous driving they might use \"危险驾驶\". In Chinese criminal law, the crime is \"危险驾驶罪\". So we need to include that as third charge.\n\nThus final answer: three charges: 受贿;单位受贿;危险驾驶\n\nCheck ordering: maybe \"单位受贿;受贿;危险驾驶\". But typical listing: first personal crime then unit then traffic. In example with both \"受贿;滥用职权\" they listed personal then abuse. So we can list \"受贿;单位受贿;危险驾驶\". Use semicolons.\n\nReturn format: [罪名]受贿;单位受贿;危险驾驶<eoa>\n\nNow produce JSON with reasoning and final answer.",
+            "refusal": null,
+            "reasoning_content": "We need to determine appropriate Chinese criminal charges.\n\nFacts: Two parts: (1) Unit receiving bribes (unit bribery) and the person as head also involved. So charges: unit accepting bribes (单位受贿) and possibly accepting bribes by person (受贿). In examples, for similar case: \"受贿;滥用职权\". But here it's unit receiving bribes and director. The correct label likely \"受贿\" for the person and \"单位受贿\" for the unit. In examples, they used \"受贿;滥用职权\". For unit they used \"受贿\" maybe with \"单位受贿\". Let's see earlier example: \"公诉机关认为，被告单位教研中心在经济往来中帐外收受回扣款，其行为构成××，被告人岳某作为该单位负责人，也构成××。\" So they want both unit and person. The answer should list both: \"受贿;单位受贿\"? But order? Usually they list person first then unit? In earlier example with multiple charges they separate with semicolon. For example: \"受贿;滥用职权\". For unit they used \"受贿;滥用职权\". Not unit. Another example: \"拐卖妇女、儿童\". That's two charges separated by comma? Actually they used comma. But pattern: semicolon for multiple distinct crimes. For unit bribery, typical term is \"单位受贿罪\". So we can output \"受贿;单位受贿\". Then second part: dangerous driving (醉酒驾驶) which is \"危险驾驶罪\". In examples, they used \"非法持有毒品\" etc. For dangerous driving they might use \"危险驾驶\". In Chinese criminal law, the crime is \"危险驾驶罪\". So we need to include that as third charge.\n\nThus final answer: three charges: 受贿;单位受贿;危险驾驶\n\nCheck ordering: maybe \"单位受贿;受贿;危险驾驶\". But typical listing: first personal crime then unit then traffic. In example with both \"受贿;滥用职权\" they listed personal then abuse. So we can list \"受贿;单位受贿;危险驾驶\". Use semicolons.\n\nReturn format: [罪名]受贿;单位受贿;危险驾驶<eoa>\n\nNow produce JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 727,
+      "prompt_tokens": 7233,
+      "total_tokens": 7960,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 556,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 80,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00040357,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00040357,
+        "upstream_inference_prompt_cost": 0.000267621,
+        "upstream_inference_completions_cost": 0.000135949
+      }
+    }
+  },
+  "raw_response_missing": false
+}

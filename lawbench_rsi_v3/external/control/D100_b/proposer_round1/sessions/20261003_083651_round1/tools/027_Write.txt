@@ -1,0 +1,44 @@
+Write: reports\iteration_1_diagnosis.md
+
+content:
+# Iteration 1 Diagnosis — D100_b base analysis
+
+## Base system: confusion_disambiguation_memory (29/100 score)
+
+## Root cause analysis
+
+The base system's `_tokenize` uses `[A-Za-z0-9]+`, which extracts only ASCII tokens.
+For Chinese legal text (LawBench), this means similarity between any two examples
+is driven solely by shared date/number strings. Almost every pair ties at or near
+Jaccard=0.0, making retrieval effectively random and the confusion-disambiguation
+mechanism blind — it cannot identify which stored examples are most relevant.
+
+## Error patterns observed in score diagnostics (71 wrong / 100)
+
+1. Surface-form near-misses: model paraphrases the canonical label
+   (e.g. "销售假冒注册商标商品" vs "销售假冒注册商标的商品";
+   "非法种植罂粟" vs "非法种植毒品原植物").
+2. Specificity errors: model picks a general charge when a specific one applies
+   ("诈骗" vs "合同诈骗"; "行贿" vs "单位行贿").
+3. Multi-charge omissions: model lists one charge when facts support two
+   ("故意伤害" vs "故意伤害;故意毁坏财物").
+
+## Iteration 1 candidates
+
+- A (exploitation): cjk_bigram_confusion_memory — fix retrieval signal by
+  replacing ASCII-only tokenizer with CJK character bigrams. Restores the
+  confusion disambiguation mechanism so it actually functions over Chinese text.
+- B (exploration): label_glossary_memory — accumulate canonical label strings
+  during training and inject them as a reference glossary in the prompt to
+  anchor the LLM to exact forms and reduce near-miss errors.
+
+## Takeaway for future iterations
+
+The tokenizer was the single biggest latent bug. Future iterations that build
+on retrieval should keep the CJK bigram tokenizer. If glossary helps, combining
+it with the confusion disambiguation mechanism is the natural next step.
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_b\text_classification\reports\iteration_1_diagnosis.md (file state is current in your context — no need to Read it back)

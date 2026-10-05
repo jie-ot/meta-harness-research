@@ -1,0 +1,35 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the factual scenario describes a corporate or organizational entity offering money or other benefits to a public official to obtain official favors, and the official does not retain the benefit (
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the facts describe bribery directed at persons who are not state officials or at a legal entity (unit), the charge must be specified as “对非国家工作人员行贿” and/or “对单位行贿” rather than the generic “行贿”.
+- If the facts describe the use of a false or deceptive contract (e.g., a sale, lease, transfer agreement) to obtain money or property, classify the offense as “合同诈骗” rather than the generic “诈骗”.
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:清某市清新区人民检察院指控：
+1.利用影响力受贿人民币(下同)300万某和行贿100万某
+被告人罗1某是原清某市国土资源局局长莫某2的表弟，曾为莫某2做过多年的专职司机，与莫某2关系密切。2014年上半年，被告人罗1某得知清某市清城区源潭镇有一城乡建设用地增减挂钩试点工程项目，项目造价达六千余万某后，主动找到生意伙伴罗某1和刘某1，提出由其去争取中标该项目，拿到中标通知书，罗某1和刘某1要各支付150万某给他作为中标的代价，并约定中标后罗1某、罗某1、刘某1三家共同开发该项目，罗1某占20%股份、罗某1和刘某1各占40%股份。罗某1和刘某1在与被告人罗1某的交往过程中，知道罗1某与莫某2的关系密切，有能力取得该项目，遂同意了被告人罗1某的提议。其后，被告人罗1某找到清某市清城区城乡建设用地增减挂钩试点工作领导小组组长、原源潭镇党委书记薛某（另案处理）,提出要争取该项目。薛某知道罗1某与莫某2关系，便授意源潭镇城乡建设用地增减挂钩试点工作领导小组成员、源潭镇财政所所长林某1（另案处理）为罗1某提供帮助。2015年5月，罗1某、罗某1、刘某1为实际承建商的广东华远国土工程有限公司（原中山华远国土工程有限公司，以下简称华远公司）、惠州市弘某水利工程有限公司（以下简称弘某公司）联合体顺利中标，取得上述工程项目。罗某1和刘某1遂按约定支付了300万某给被告人罗1某。2015年6月，被告人罗1某为感谢薛某、林某1在上述招投标过程中给予的帮助，吩咐下属罗某2到林某1的办公室将100万某贿赂款交给林某1，由林某1和薛某分配。2015年8月，薛某和林某1知道罗1某被检察机关带走调查后，将收到的100万某贿赂款由林某1退回给罗某2让其给回罗1某。
+2.受贿250万某
+2013年初，莫2某受英德市英隆投资置业有限公司（以下简称英隆公司）法定代表人潘某1（另案处理）所托，在该公司办理英德市英某镇仙水南路西地块的土地出让手续过程中，帮助协调英德当地国土部门关系，使土地出让方式由拟拍卖转为挂牌，为英隆公司节约了数百万某的拍卖佣金。2015年5月，被告人罗1某在莫某2的授意下，通过签订“服务协议”的方式帮助莫某2收取英隆公司贿送的50万某，所得贿赂款一直由罗1某保管。
+2014年上半年，清某市正隆矿业有限公司的投资者叶某、区志某（均另案处理）准备在清某市清城区石角镇舟山村委会开办锦霞坑石场。为取得锦霞石场的开采权，叶某、区志某经打听得知被告人罗1某与莫某2关系密切，于是主动找到被告人罗1某，希望罗1某帮助他们取得锦霞石场矿产开采权。2014年4月20日，被告人罗1某以其登记成立的清某市中基投资咨询服务有限公司（以下简称中基公司）的名义与区志某签订一份服务协议，约定若公司为区志某争取得该石场开采权，区一方需支付200万某的咨询服务费。被告人罗1某随后将上述情况告知时任清某市国土资源局局长的莫某2，莫某2即授意其下属为叶、区投资的锦霞石场申请矿产开采权提供关照，使得锦霞石场于2015年上半年顺利取得矿产开采权。在此过程中，被告人罗1某先后分三次收取叶某、区志某共200万某，并在事后告知莫某2。
+3.单位行贿35万某
+2012年，被告人罗1某从清某市国土资源局辞职出来后与廖某（另案处理）商定，共同以廖某投资成立的清某市宏图绘测公司（另案处理，以下简称宏图公司）名义合作开发绘测业务，所得利润宏图公司占60%,罗1某占40%。2013年上半年，罗1某找到时任清某市国土资源局清新分局局长曾某，在曾某的帮助下，使宏图公司和华南农业大学组成的联合体顺利中标，竞得ZD13-013BG清新区高标准基本农田建设项目测量、可行性研究、设计和预算、整理后土地重估与登记采购项目。为答谢曾某，约在2013年底，罗1某代表宏图公司送给曾某现金35万某。约在2014年底，曾某得知清某市国土系统有人被查处，担心自己的行为被发现，于是将所收到的35万某贿款退回给罗1某。
+针对上述指控，公诉机关向法庭提交了相应的证据予以证明。公诉机关认为，被告人罗1某的行为已构成受贿罪、××、行贿罪、××，应当数罪并罚。被告人罗1某在被调查期间，主动交待侦查机关尚未掌握的犯罪事实，系自首，要求依照《中华人民共和国刑法》××、××××、××、××、××××之规定判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

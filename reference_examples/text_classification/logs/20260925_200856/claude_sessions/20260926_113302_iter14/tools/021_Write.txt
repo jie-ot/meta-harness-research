@@ -1,0 +1,94 @@
+Write: C:\tmp\proto_hint.py
+
+content:
+"""Prototype: recent-error hint section prepended to prompt.
+
+Tests whether injecting a compact 'Recent mistakes' header before examples
+gives the model useful meta-signal about its current failure patterns.
+"""
+from collections import deque
+import re
+
+WRAPPER_RE = re.compile(r'^\[[^\]]*\]|<eoa>\s*$|\[[^\]]*\]\s*$', re.IGNORECASE)
+
+def clean(label):
+    return WRAPPER_RE.sub('', label).strip()
+
+# Rolling buffer of recent (pred, gt) errors
+HINT_WINDOW = 8  # how many recent errors to show
+
+recent_errors = deque(maxlen=HINT_WINDOW)
+
+# Simulate a batch of training results
+batch = [
+    {"prediction": "[罪名]诈骗<eoa>",        "ground_truth": "诈骗;组织、领导传销活动", "was_correct": False},
+    {"prediction": "[罪名]故意伤害<eoa>",     "ground_truth": "故意伤害",               "was_correct": True},
+    {"prediction": "[罪名]走私<eoa>",         "ground_truth": "走私贵重金属;走私普通货物、物品", "was_correct": False},
+    {"prediction": "[罪名]强迫卖淫<eoa>",     "ground_truth": "组织卖淫;强迫卖淫",       "was_correct": False},
+]
+
+for r in batch:
+    if not r["was_correct"]:
+        pred_clean = clean(r["prediction"])
+        gt_clean = r["ground_truth"]
+        if pred_clean != gt_clean:
+            recent_errors.append((pred_clean, gt_clean))
+
+def build_hint_section(recent_errors):
+    if not recent_errors:
+        return ""
+    lines = ["**Recent corrections (study these carefully):**"]
+    for pred, gt in recent_errors:
+        lines.append(f"✗ Predicted: {pred}  →  ✓ Correct: {gt}")
+    return "\n".join(lines)
+
+hint = build_hint_section(recent_errors)
+print("=== HINT SECTION ===")
+print(hint)
+print("====================\n")
+
+# Test prompt assembly
+PROMPT = """{hint_section}
+
+{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Follow the patterns shown in the examples above
+- Pay special attention to the recent corrections above
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+examples = "Q: 公诉机关指控...\nA: 诈骗;组织、领导传销活动"
+query = "事实：被告人于某年销售假冒商品..."
+
+prompt = PROMPT.format(
+    hint_section=hint,
+    examples_section=examples,
+    input=query,
+)
+print(f"Prompt length: {len(prompt)} chars")
+print("--- Prompt preview ---")
+print(prompt[:600])
+print("...")
+
+# Variant: limit deduplication — if same (pred,gt) pair appears multiple times, show once
+def build_hint_section_deduped(recent_errors):
+    seen = set()
+    lines = ["**Recent corrections (study these carefully):**"]
+    for pred, gt in reversed(list(recent_errors)):  # most recent first
+        key = (pred, gt)
+        if key not in seen:
+            seen.add(key)
+            lines.append(f"✗ Predicted: {pred}  →  ✓ Correct: {gt}")
+    return "\n".join(lines)
+
+print("\n=== DEDUPED HINT SECTION ===")
+print(build_hint_section_deduped(recent_errors))
+
+
+
+--- output ---
+File created successfully at: C:\tmp\proto_hint.py (file state is current in your context — no need to Read it back)

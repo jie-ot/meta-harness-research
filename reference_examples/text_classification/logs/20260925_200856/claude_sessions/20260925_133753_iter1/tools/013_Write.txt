@@ -1,0 +1,56 @@
+Write: ..\..\..\..\..\..\tmp\test_contrastive.py
+
+content:
+"""Prototype: Contrastive pair selection."""
+
+import random
+
+# Simulate examples with correctness
+examples = [
+    {"input": f"Q{i}", "target": f"A{i}", "prediction": f"P{i}",
+     "correct": random.choice([True, False])}
+    for i in range(50)
+]
+
+# Strategy 1: Store all as (question, target, was_correct) triples
+def format_triple(ex):
+    status = "✓" if ex["correct"] else "✗"
+    return f"[{status}] Q: {ex['input']}\nA: {ex['target']}"
+
+# Strategy 2: Store pairs - show wrong prediction vs right answer
+def format_contrastive_pair(wrong_ex):
+    return (f"Q: {wrong_ex['input']}\n"
+            f"Wrong: {wrong_ex['prediction']}\n"
+            f"Correct: {wrong_ex['target']}")
+
+# Strategy 3: Mixed - show errors with correction + some successes
+def select_mixed(examples, n=10):
+    errors = [ex for ex in examples if not ex["correct"]]
+    successes = [ex for ex in examples if ex["correct"]]
+
+    # Use 60% errors (with contrast), 40% successes
+    n_errors = int(n * 0.6)
+    n_successes = n - n_errors
+
+    selected_errors = errors[-n_errors:]
+    selected_successes = successes[-n_successes:]
+
+    formatted = []
+    for ex in selected_errors:
+        formatted.append(format_contrastive_pair(ex))
+    for ex in selected_successes:
+        formatted.append(f"Q: {ex['input']}\nA: {ex['target']}")
+
+    return formatted
+
+# Test
+print("Formatted examples:")
+for i, fmt in enumerate(select_mixed(examples)[:3]):
+    print(f"\n{i+1}. {fmt}")
+
+# Strategy 3 (mixed with contrastive errors) seems best
+
+
+
+--- output ---
+File created successfully at: /tmp/test_contrastive.py (file state is current in your context — no need to Read it back)

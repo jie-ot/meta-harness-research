@@ -1,0 +1,128 @@
+Bash [ERROR]
+
+command:
+powershell -Command @"
+\$proto = @'
+import re
+from collections import defaultdict
+
+def tokenize(text):
+    return frozenset(re.findall(r'[A-Za-z0-9]+', text.lower()))
+
+def jaccard(a, b):
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+# ---------- Mock data ----------
+labels = ['A','B','C','D','E','F','G','H']
+examples = []
+for i, lbl in enumerate(labels * 5):
+    words = f'word{i} topic{i%3} cat{lbl} item{i*7}'
+    examples.append({'input': words, 'target': lbl,
+                     'tokens': tokenize(words), 'raw_question': words})
+
+query = 'word2 topic2 cat_unknown'
+q_tok = tokenize(query)
+
+def scored(query_toks, examples):
+    r = [( jaccard(query_toks, ex['tokens']), idx, ex)
+         for idx, ex in enumerate(examples)]
+    r.sort(key=lambda x: (-x[0], x[1]))
+    return r
+
+# ---- Prototype 1: MMR fill ----
+def mmr_fill(query_toks, candidates, already_used, budget=5000, lam=0.6):
+    selected_examples = []
+    remaining = [(s, i, e) for s, i, e in candidates if i not in already_used]
+    total_chars = 0
+    while remaining and total_chars < budget:
+        best_score, best_item = -999, None
+        for s, i, ex in remaining:
+            part = f'Q: {ex[\"raw_question\"]}\nA: {ex[\"target\"]}'
+            if total_chars + len(part) + 2 > budget:
+                continue
+            redundancy = max(
+                (jaccard(ex['tokens'], se['tokens']) for se in selected_examples),
+                default=0.0
+            )
+            mmr_s = lam * s - (1 - lam) * redundancy
+            if mmr_s > best_score:
+                best_score, best_item = mmr_s, (s, i, ex)
+        if best_item is None:
+            break
+        _, idx, ex = best_item
+        selected_examples.append(ex)
+        total_chars += len(f'Q: {ex[\"raw_question\"]}\nA: {ex[\"target\"]}') + 2
+        remaining = [(s, i, e) for s, i, e in remaining if i != idx]
+    return selected_examples
+
+# ---- Prototype 2: Difficulty-weighted scoring ----
+label_errors   = {'A': 4, 'B': 1, 'C': 0, 'D': 3, 'E': 2, 'F': 0, 'G': 4, 'H': 1}
+label_totals   = {'A': 5, 'B': 5, 'C': 5, 'D': 5, 'E': 5, 'F': 5, 'G': 5, 'H': 5}
+label_difficulty = {lbl: label_errors.get(lbl,0) / max(label_totals.get(lbl,1),1)
+                    for lbl in labels}
+
+def difficulty_weighted_scored(query_toks, examples, label_difficulty, beta=2.0):
+    r = []
+    for idx, ex in enumerate(examples):
+        jac = jaccard(query_toks, ex['tokens'])
+        diff = label_difficulty.get(ex['target'], 1.0)
+        score = jac * (1 + beta * diff)
+        r.append((score, idx, ex))
+    r.sort(key=lambda x: (-x[0], x[1]))
+    return r
+
+# ---------- Test Prototype 1 ----------
+ranked = scored(q_tok, examples)
+sim_labels = [ex['target'] for _,_,ex in ranked[:10]]
+mmr_results = mmr_fill(q_tok, ranked, set(), budget=1000, lam=0.6)
+mmr_labels = [ex['target'] for ex in mmr_results]
+sim_unique = len(set(sim_labels))
+mmr_unique = len(set(mmr_labels))
+print(f'Proto1 - Sim top-10 unique labels: {sim_unique}  labels={sim_labels}')
+print(f'Proto1 - MMR fill unique labels:   {mmr_unique}  labels={mmr_labels}')
+assert mmr_unique >= sim_unique, 'MMR should be at least as diverse as similarity'
+print('Proto1 PASS: MMR >= sim diversity')
+
+# ---------- Test Prototype 2 ----------
+dw = difficulty_weighted_scored(q_tok, examples, label_difficulty, beta=2.0)
+dw_top5 = [ex['target'] for _,_,ex in dw[:5]]
+raw_top5 = [ex['target'] for _,_,ex in ranked[:5]]
+hard_labels = {l for l, d in label_difficulty.items() if d >= 0.6}
+dw_hard_count = sum(1 for l in dw_top5 if l in hard_labels)
+raw_hard_count = sum(1 for l in raw_top5 if l in hard_labels)
+print(f'\nProto2 - Hard labels: {hard_labels}')
+print(f'Proto2 - Raw top5: {raw_top5} (hard={raw_hard_count})')
+print(f'Proto2 - DW  top5: {dw_top5} (hard={dw_hard_count})')
+print(f'Proto2 - Difficulty map: {label_difficulty}')
+print('Proto2 PASS: difficulty weighting functional')
+
+# ---------- Test combined: disambig slots then MMR fill ----------
+# Simulate: disambiguation injects 2 examples of hard labels A, G
+disambig_used = {0, 40}  # indices of A[0] and G[0]
+disambig_selected = [examples[0], examples[40]]
+remaining = scored(q_tok, examples)
+mmr_after_disambig = mmr_fill(q_tok, remaining, disambig_used, budget=2000, lam=0.6)
+combined_labels = [ex['target'] for ex in disambig_selected + mmr_after_disambig]
+print(f'\nProto3 - Combined labels: {combined_labels}  unique={len(set(combined_labels))}')
+print('Proto3 PASS: disambiguation + MMR fill composes correctly')
+'@
+\$proto | Out-File -FilePath 'C:\Users\33841\AppData\Local\Temp\proto_iter5.py' -Encoding UTF8
+uv run python 'C:\Users\33841\AppData\Local\Temp\proto_iter5.py'
+"@
+
+description: Write and run prototype for both candidates
+
+--- output ---
+Exit code 1
+����λ�� ��:1 �ַ�: 1
++ @
++ ~
+Դ�ı��а����޷�ʶ��ı�ǡ�
+����λ�� ��:110 �ַ�: 1
++ @
++ ~
+Դ�ı��а����޷�ʶ��ı�ǡ�
+    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : UnrecognizedToken

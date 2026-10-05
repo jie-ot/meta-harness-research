@@ -1,0 +1,18 @@
+Write: .prototypes\_probe3.py
+
+content:
+"""Isolate which agent module trips the prototype guard."""
+
+try:
+    import importlib
+    m = importlib.import_module("text_classification.agents.label_lexicon_snap_memory")
+    print("label_lexicon_snap_memory: OK")
+except Exception as exc:
+    print("label_lexicon_snap_memory:", type(exc).__name__, exc)
+
+print("done")
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\.prototypes\_probe3.py (file state is current in your context — no need to Read it back)

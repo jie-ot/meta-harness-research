@@ -1,0 +1,38 @@
+Bash
+
+command:
+python -c "
+import json
+log = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/LawBench/decayed_confusion_memory/gpt-oss-120b/log.jsonl'
+lines = open(log, encoding='utf-8').readlines()
+steps = [json.loads(l) for l in lines if json.loads(l).get('type')=='step']
+print(f'Total step entries: {len(steps)}')
+errors = [s for s in steps if not s.get('ok')]
+print(f'Errors: {len(errors)}')
+# Confusion analysis: what are common pred->tgt pairs?
+from collections import Counter
+pairs = Counter()
+for s in errors:
+    pairs[(s.get('pred','')[:40], s.get('tgt','')[:40])] += 1
+print('Top 10 confusion pairs:')
+for (p,t), c in pairs.most_common(10):
+    print(f'  pred={repr(p)} -> tgt={repr(t)}: {c}')
+"
+
+
+description: Analyze LawBench confusion pairs from frontier logs
+
+--- output ---
+Total step entries: 200
+Errors: 146
+Top 10 confusion pairs:
+  pred='[罪名]诈骗<eoa>' -> tgt='合同诈骗': 3
+  pred='[罪名]受贿<eoa>' -> tgt='非国家工作人员受贿': 2
+  pred='[罪名]盗窃<eoa>' -> tgt='盗窃;掩饰、隐瞒犯罪所得、犯罪所得收益': 2
+  pred='[罪名]故意伤害<eoa>' -> tgt='虐待被监管人': 2
+  pred='[罪名]强制猥亵妇女<eoa>' -> tgt='强制猥亵、侮辱妇女': 2
+  pred='[罪名]受贿;滥用职权<eoa>' -> tgt='受贿': 2
+  pred='[罪名]行贿<eoa>' -> tgt='单位行贿': 2
+  pred='[罪名]生产、销售假药<eoa>' -> tgt='生产、销售有毒、有害食品': 2
+  pred='[罪名]伪造国家机关证件罪<eoa>' -> tgt='伪造、变造、买卖国家机关公文、证件、印章': 1
+  pred='[罪名]敲诈勒索罪<eoa>' -> tgt='破坏计算机信息系统': 1

@@ -1,0 +1,22 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:北京市西城区人民检察院指控，被告人刘×于2014年11月14日，在未办理采伐许可证的情况下，指使他人砍伐并收购北京市顺义区大孙各庄镇小塘村北顺平南线北侧董x（刘×之夫，已去世）承包地内的杨树，当伐倒第113株时被森林公安民警制止。经鉴定，涉案113株杨树折合立木蓄积17.357立方米。2015年6月3日，被告人刘×经民警电话传唤后自行到案。
+
+
+Wrong prediction: [罪名]非法采伐森林木材<eoa>
+Correct answer: 滥伐林木
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

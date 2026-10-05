@@ -1,0 +1,30 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description indicates that the offender used their official position or entrusted authority to appropriate property for personal gain, rather than physically taking or stealthily removi
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- When the facts describe a defendant’s role in a scheme that withdraws money from victims’ bank or credit‑card accounts, classify the conduct under the specific statutory offenses of fraud (诈骗) and, if
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:武山县人民检察院指控，2013年9月份，被告人杨1某以找对象为由在有缘网上与村民赵某丙相识并谈婚论嫁。2013年11月份，被告人杨1某为进一步取得赵某丙及其家人的信任，有意安排一老妇人充当自己母亲，在平凉市与赵某丙及其家人见面。2013年12月份，杨1某以与赵某丙结婚为由通过筹备结婚用品的方式，将赵某丙银行卡的现金71000元先后转入自己的银行卡，任自己挥霍，并由赵某丙为自己购买2541.94元的千足金戒指一枚。2014年1月8日，被告人杨1某与赵某丙在陇西县置办婚宴，当时无杨1某家属及亲人参加，婚后双方未办理结婚手续。2014年2月3日，杨1某无故离开赵某丙家后失去联系。
+综上，被告人杨1某共计骗取他人钱财73541.94元。
+针对上述指控，公诉机关武山县人民检察院列举了相应的证据并认为被告人杨1某的行为触犯了《中华人民共和国刑法》××、××的规定，构成××。依法公诉，请求判处。公诉机关以被告人杨1某诈骗数额达73541.94元，数额巨大；在××考验期内又犯新罪为由，建议判处被告人杨1某三年以上五年以下××。
+庭审中，被告人否认起诉书指控的犯罪事实，但没有提出实质性的辩解意见。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

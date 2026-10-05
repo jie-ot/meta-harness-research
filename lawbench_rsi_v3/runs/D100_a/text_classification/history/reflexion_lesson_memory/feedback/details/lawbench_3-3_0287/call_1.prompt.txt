@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- Label the offense as '赌博' unless the factual description explicitly meets the statutory elements of '组织赌博' (e.g., the defendant organized, operated, or managed a gambling venue as defined by law).
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- If the factual description indicates that the defendant established, operated, or maintained a venue or equipment specifically for gambling (e.g., opening a game hall, installing gambling machines, ru
+- When extracting the crime name, output the exact statutory offense term (e.g., “行贿”) without adding descriptive prefixes or qualifiers such as “对国家工作人员”。
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控，2010年6月始，被告人徐某在其经营的广州市越秀区海珠南路154号××的士多店内，以接受他人现场投注的方式从事“香港六合彩”外围赌博活动。被告人徐某将所收取的投注单交给同案人杨某、罗某（均另案处理），并从中抽头渔利。经查，同案人杨某接受香港外围六合彩投注的金额合计人民币627840元。2014年6月24日，公安人员在上述地址抓获被告人徐某，同时抓获陈某才、陈某英等5名参赌人员（均另案处理），当场缴获被告人徐某接受他人投注的单据若干。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

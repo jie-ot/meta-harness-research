@@ -1,0 +1,40 @@
+Edit: agents\rrf_confusion_memory.py
+
+replace_all: False
+old_string:
+    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+        parts = self._build_parts(input)
+        examples_section = "\n\n".join(parts)
+        prompt = PROMPT_TEMPLATE.format(
+            examples_section=examples_section,
+            input=input,
+        )
+        response = self.call_llm(prompt)
+        answer = extract_json_field(response, "final_answer")
+        return answer, {
+            "full_response": response,
+            "num_examples": len(self.examples),
+            "num_selected": len(parts),
+            "num_confusion_pairs": sum(len(v) for v in self.confusion.values()),
+        }
+
+new_string:
+    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+        parts = self._build_parts(input)
+        examples_section = "\n\n".join(parts)
+        prompt = PROMPT_TEMPLATE.format(
+            examples_section=examples_section,
+            input=input,
+        )
+        response = self.call_llm(prompt)
+        answer = extract_json_field(response, "final_answer")
+        return answer, {
+            "full_response": response,
+            "num_examples": len(self.examples),
+            "num_selected": len(parts),
+            "num_confusion_entries": sum(len(v) for v in self.confusion.values()),
+        }
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\rrf_confusion_memory.py has been updated successfully.

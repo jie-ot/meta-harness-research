@@ -1,0 +1,194 @@
+Read: data\evaluators.py
+
+
+--- output ---
+1	"""Evaluators for kept MCE and OOD tasks."""
+2	
+3	from __future__ import annotations
+4	
+5	import json
+6	import re
+7	from collections.abc import Callable
+8	
+9	from .constants import TRANSFER_TASKS
+10	
+11	
+12	def extract_final_answer(response_text: str) -> str:
+13	    if not response_text:
+14	        return ""
+15	
+16	    text = response_text.strip()
+17	    if text.startswith("```"):
+18	        lines = text.splitlines()
+19	        payload = []
+20	        in_json = False
+21	        for line in lines:
+22	            stripped = line.strip()
+23	            if stripped.startswith("```json"):
+24	                in_json = True
+25	                continue
+26	            if stripped.startswith("```") and in_json:
+27	                break
+28	            if in_json:
+29	                payload.append(line)
+30	        if payload:
+31	            text = "\n".join(payload)
+32	        elif "```" in text:
+33	            parts = text.split("```")
+34	            if len(parts) >= 3:
+35	                text = parts[1]
+36	                if text.startswith("json"):
+37	                    text = text[4:].strip()
+38	
+39	    try:
+40	        data = json.loads(text)
+41	        if isinstance(data, dict) and "final_answer" in data:
+42	            return str(data["final_answer"])
+43	    except json.JSONDecodeError:
+44	        pass
+45	
+46	    match = re.search(r"\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}", text)
+47	    if match:
+48	        try:
+49	            data = json.loads(match.group())
+50	            if isinstance(data, dict) and "final_answer" in data:
+51	                return str(data["final_answer"])
+52	        except json.JSONDecodeError:
+53	            pass
+54	
+55	    return response_text
+56	
+57	
+58	def eval_finer(prediction: str, target: str) -> bool:
+59	    return extract_final_answer(prediction).lower().strip() == target.lower().strip()
+60	
+61	
+62	def eval_uspto(prediction: str, target: str) -> dict:
+63	    def parse_reactants(smiles: str) -> set[str]:
+64	        return {
+65	            part.strip().lower() for part in smiles.strip().split(".") if part.strip()
+66	        }
+67	
+68	    pred_set = parse_reactants(extract_final_answer(prediction))
+69	    target_set = parse_reactants(target)
+70	    if not pred_set and not target_set:
+71	        jaccard = 1.0
+72	    elif not pred_set or not target_set:
+73	        jaccard = 0.0
+74	    else:
+75	        jaccard = len(pred_set & target_set) / len(pred_set | target_set)
+76	    return {"correct": pred_set == target_set, "jaccard_similarity": jaccard}
+77	
+78	
+79	def eval_symptom2disease(prediction: str, target: str) -> bool:
+80	    text = extract_final_answer(prediction)
+81	    match = re.search(r"\[DIAGNOSIS\](.*?)\[/DIAGNOSIS\]", text, re.I | re.S)
+82	    if match:
+83	        text = match.group(1).strip()
+84	    else:
+85	        match = re.search(
+86	            r"(?:diagnosis|final diagnosis|conclusion)[:：]\s*([^\n]+)", text, re.I
+87	        )
+88	        if match:
+89	            text = match.group(1).strip()
+90	
+91	    def normalize(value: str) -> str:
+92	        value = value.lower().strip()
+93	        value = re.sub(r"\s+", " ", value)
+94	        return re.sub(r"[.!?]+$", "", value)
+95	
+96	    return normalize(text) == normalize(target)
+97	
+98	
+99	def eval_lawbench(prediction: str, target: str) -> dict:
+100	    def parse_charges(text: str) -> set[str]:
+101	        text = extract_final_answer(text).strip()
+102	        match = re.search(r"\[罪名\](.*?)(?:<eoa>|$)", text)
+103	        if match:
+104	            text = match.group(1).strip()
+105	        elif "罪名:" in text:
+106	            text = text.split("罪名:")[-1]
+107	        text = re.sub(r"<eoa>.*", "", text).strip()
+108	        for sep in [";", "；", ",", "，", "、"]:
+109	            if sep in text:
+110	                return {part.strip() for part in text.split(sep) if part.strip()}
+111	        return {text} if text else set()
+112	
+113	    pred_charges = parse_charges(prediction)
+114	    true_charges = parse_charges(target)
+115	    tp = len(pred_charges & true_charges)
+116	    fp = len(pred_charges - true_charges)
+117	    fn = len(true_charges - pred_charges)
+118	    precision = tp / (tp + fp) if tp + fp else 0.0
+119	    recall = tp / (tp + fn) if tp + fn else 0.0
+120	    f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
+121	    return {
+122	        "correct": pred_charges == true_charges,
+123	        "f1": f1,
+124	        "precision": precision,
+125	        "recall": recall,
+126	        "tp": tp,
+127	        "fp": fp,
+128	        "fn": fn,
+129	    }
+130	
+131	
+132	def eval_aegis(prediction: str, target: str) -> bool:
+133	    pred = extract_final_answer(prediction).lower()
+134	    if "unsafe" in pred:
+135	        pred = "unsafe"
+136	    elif "safe" in pred:
+137	        pred = "safe"
+138	    else:
+139	        pred = pred.strip()
+140	    return pred == target.lower().strip()
+141	
+142	
+143	def eval_classification(prediction: str, target: str) -> bool:
+144	    def normalize(text: str) -> str:
+145	        text = extract_final_answer(text).lower().strip()
+146	        text = text.replace("_", " ")
+147	        text = re.sub(r"\s+", " ", text)
+148	        return re.sub(r"[.!?]+$", "", text)
+149	
+150	    return normalize(prediction) == normalize(target)
+151	
+152	
+153	def get_evaluator(task: str) -> Callable:
+154	    if task == "FiNER":
+155	        return lambda pred, target, **kwargs: eval_finer(pred, target)
+156	    if task == "USPTO":
+157	
+158	        def _eval_uspto(pred: str, target: str, **kwargs) -> dict:
+159	            raw = eval_uspto(pred, target)
+160	            return {
+161	                "was_correct": raw["correct"],
+162	                "metrics": {"jaccard_similarity": raw["jaccard_similarity"]},
+163	            }
+164	
+165	        return _eval_uspto
+166	    if task == "Symptom2Disease":
+167	        return lambda pred, target, **kwargs: eval_symptom2disease(pred, target)
+168	    if task == "LawBench":
+169	
+170	        def _eval_lawbench(pred: str, target: str, **kwargs) -> dict:
+171	            raw = eval_lawbench(pred, target)
+172	            return {
+173	                "was_correct": raw["correct"],
+174	                "metrics": {
+175	                    "f1": raw["f1"],
+176	                    "precision": raw["precision"],
+177	                    "recall": raw["recall"],
+178	                    "tp": raw["tp"],
+179	                    "fp": raw["fp"],
+180	                    "fn": raw["fn"],
+181	                },
+182	            }
+183	
+184	        return _eval_lawbench
+185	    if task == "AEGIS":
+186	        return lambda pred, target, **kwargs: eval_aegis(pred, target)
+187	    if task in TRANSFER_TASKS:
+188	        return lambda pred, target, **kwargs: eval_classification(pred, target)
+189	    raise ValueError(f"Unknown task: {task}")
+190	

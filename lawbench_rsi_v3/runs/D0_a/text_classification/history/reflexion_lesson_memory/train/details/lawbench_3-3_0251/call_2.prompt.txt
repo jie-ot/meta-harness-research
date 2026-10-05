@@ -1,0 +1,23 @@
+An AI classifier made an error on this case. Generate a compact correction lesson.
+
+**Correct label:** 妨害公务
+**Wrong prediction:** [罪名]阻碍执行公务<eoa>
+**Case facts (excerpt):**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:介休市人民检察院指控，被告人张某以暴力、威胁等方法阻碍介休市交警大队民警依法执行公务，其行为触犯了《刑法》××之规定，构成××，应追究其刑事责任。公诉机关针对上述指控，当庭提供了相应的证据予以证实。
+
+
+Write a lesson that:
+1. States the KEY distinguishing feature that determines the correct label
+2. Explains what makes this different from "[罪名]阻碍执行公务<eoa>"
+3. Gives a brief rule a classifier can apply to future cases
+
+Respond only in JSON:
+{"lesson": "<one to three sentences, in the same language as the case facts>", "final_answer": "妨害公务"}

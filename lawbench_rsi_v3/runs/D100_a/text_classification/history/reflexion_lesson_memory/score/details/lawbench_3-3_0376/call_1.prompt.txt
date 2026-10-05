@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- If the factual scenario describes fraud that is carried out through the creation, signing, or performance of a contract (e.g., false representation of a business role, fictitious project, or fabricate
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:贵溪市人民检察院指控，2014年7月份，贵溪市龙虎山镇水北村委会敖石吴家村进行新农村建设道路硬化工程，在对村中水北小学四周道路进行硬化时，需占用到水北村委会段家村的土地。为解决此事，两村于2014年11月21日签订协议，由敖石吴家一次性补偿给段家村人民币8000元，随后，敖石吴家村道路硬化工程完工。2014年年底以来，被告人段某华以敖石吴家村道路硬化挖到他家祖坟山为由，多次找敖石吴家村理事长吴某一要求补偿，吴某一一直没有理会。2015年5月1日，段某华再次打电话给吴某一要求补偿，吴某一对其不予理会；为此，5月3日，段某华用尖锄将敖石吴家村村牌上“敖石吴家”四个字以及村牌的花岗岩牌面毁坏。经贵溪市价格认证中心鉴定，涉案村牌损失价格为人民币1O713元。案发后，被告人段某华于2O15年6月1O日被贵溪市公安局民警抓获归案。
+针对上述指控，公诉机关当庭宣读并出示的证据有：1、被告人段某华的供述；2、证人吴某一、段某某、吴某二、夏某某、吴某三、毕某某等人的证言；3、受案登记表、收款收据及协议、常住人口查询、归案情况说明等；4、勘验、检查等笔录：现场勘查笔录及照片、搜查笔录及扣．押清单等；5、贵溪市价格认定中心贵价鉴字（2015）045号价格鉴定结论书等证据。
+公诉机关认为，被告人段某华故意毁坏公私财物，数额较大，其行为已触犯《中华人民共和国刑法》××之规定，犯罪事实清楚，证据确实、充分，应当以××追究其刑事责任。根据《中华人民共和国刑事诉讼法》××之规定，提起公诉，请依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

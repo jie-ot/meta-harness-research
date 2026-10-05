@@ -1,0 +1,44 @@
+{
+  "revision": "E4-6.1 infrastructure retry protocol v1",
+  "reason": "A single terminal infrastructure failure without a final answer must not terminate the whole fixed-order experiment",
+  "historical_failed_attempt": null,
+  "retry_eligibility": "Only a request with no final answer and explicit terminal turn status failed may receive one infrastructure retry",
+  "maximum_infrastructure_retries_per_item": 1,
+  "completed_answer_retry_limit": 0,
+  "retry_uses": "new ephemeral thread, identical locked prompt, gpt-6.1-sol/max, same wrapper and tool disables",
+  "non_retryable_error_classes": [
+    "permission_or_authentication",
+    "quota_or_credits_exhausted",
+    "rate_limit",
+    "model_unavailable",
+    "safety_or_moderation_refusal",
+    "tool_action",
+    "wrapper_or_prompt_mismatch"
+  ],
+  "consecutive_final_missing_item_stop_count": 2,
+  "single_item_retry_exhausted_policy": "retain missing and continue if no non-retryable signal and consecutive-final-missing count is below 2",
+  "weekly_quota_stop_before_attempt_remaining_percent_lte": 2,
+  "quota_note": "2% is a displayed safety margin, not a hard cap; an attempt may cross an integer boundary",
+  "logging_revision": {
+    "save": [
+      "sanitized full error notification structures",
+      "JSON-RPC error code and sanitized message structure",
+      "turn status and sanitized turn.error",
+      "request and attempt state"
+    ],
+    "redact_keys_containing": [
+      "token",
+      "authorization",
+      "credential",
+      "cookie",
+      "api_key",
+      "email"
+    ],
+    "do_not_recover_historical_payload_from_private_session_storage": true
+  },
+  "order": "pass1/index0..19, then pass2/index0..19; eligible infrastructure retry immediately after the failed attempt",
+  "all_attempts_count_toward_cost_and_failure_rate": true,
+  "model_substitution": false,
+  "credit_reset_or_paid_api": false,
+  "remaining_experiments_authorized": false
+}

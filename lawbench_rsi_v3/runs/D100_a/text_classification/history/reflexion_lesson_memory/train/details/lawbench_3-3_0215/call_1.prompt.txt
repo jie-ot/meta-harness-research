@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- If the facts only describe forging, altering, or selling state‑issued documents or certificates and do not contain any separate act of deceiving another party for financial gain, assign only the forge
+- When the alleged offender holds a position in a private or non‑governmental entity (e.g., company executive, manager) rather than a public official, classify the offense as “非国家工作人员受贿” instead of the 
+- When the defendant’s conduct primarily involves unauthorized remote locking, erasing, or otherwise disabling computer or mobile device functions—causing the device to become unusable—classify the act 
+- If the factual description indicates that any victim of a trafficking or forced marriage act is a minor (i.e., a child under the age of 14), the charge must include both “拐卖妇女罪” (if the victim is a wo
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，被告人黄某某的父亲黄某甲位于吴川市长岐镇黄址村的一间房屋在茂湛铁路建设征收拆迁范围内。因黄某甲年龄较高，身体不好，便委托黄某某全权负责相关的房屋拆迁补偿事宜。按拆迁补偿标准，其房屋最初评估补偿款是35万多元，黄某某认为补偿价格低，不同意拆迁。后为了获取更高的补偿款，黄某某找到茂湛铁路有限责任公司负责吴川路段征地拆迁工作的于某甲帮忙提高他的拆迁补偿款，并许诺事成后给于某甲好处费。于某甲听后表示同意。在于某甲的帮助下，黄某某最终取得69万多元的房屋拆迁补偿款。为了感谢于某甲的帮忙，2013年春节前，黄某某在广州市越秀区一间咖啡厅内将3万元送给于某甲。
+2013年11月18日，黄某某接到吴川市人民检察院办案人员的电话通知后，自行来到吴川市人民检察院接受调查，并如实交代了其为了获取高额拆迁补偿款而向于某甲行贿3万元的犯罪事实。2014年3月17日，吴川市人民检察院对黄某某涉嫌××一案立案侦查。
+上述事实，被告人黄某某在开庭审理过程中亦无异议，且有公诉机关提供的，经庭审质证、认证的证人于某甲的证言，拆迁安置补偿协议书，专项资金支出凭证，转账凭证，收据，委托书，新建茂名至湛江铁路项目征地拆迁补偿安置方案，于某甲的任职及户籍证明材料，被告人黄某某的户籍证明等证据予以证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

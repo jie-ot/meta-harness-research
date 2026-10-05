@@ -1,0 +1,26 @@
+An AI classifier made an error on this case. Generate a compact correction lesson.
+
+**Correct label:** 保险诈骗
+**Wrong prediction:** [罪名]诈骗<eoa>
+**Case facts (excerpt):**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:北京市海淀区人民检察院起诉书指控：
+2013年6月27日，被告人任×（系东风日产颐达牌轿车，车牌号为京PNB057的被保险人）在本市海淀区，伪造东风日产颐达牌轿车（车牌号为京PNB057）与宝马轿车（车牌号为京QSU596）的双方交通事故，骗取中国人民财产保险股份有限公司北京市分公司人民币14160.8元。
+2013年8月15日，被告人任×在本市海淀区，伪造金杯牌轿车（车牌号为京KP2320）与宝马轿车（车牌号为京QSU596）的双方交通事故，骗取中国人民财产保险股份有限公司北京市分公司人民币10231.2元。
+2013年9月26日，被告人任×经公安机关电话传唤到案。涉案赃款已经在案发后全部退还被害单位。
+
+
+Write a lesson that:
+1. States the KEY distinguishing feature that determines the correct label
+2. Explains what makes this different from "[罪名]诈骗<eoa>"
+3. Gives a brief rule a classifier can apply to future cases
+
+Respond only in JSON:
+{"lesson": "<one to three sentences, in the same language as the case facts>", "final_answer": "保险诈骗"}

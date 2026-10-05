@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- When the factual description involves possession of controlled substances (e.g., heroin, cocaine) and cites violation of drug control laws, always label the offense as “非法持有毒品” rather than the generic
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+- If the facts describe a person in a managerial or official position receiving money or valuables in exchange for using their职务便利, classify the crime simply as "受贿" unless the source explicitly states 
+- When a fact pattern involves encouraging or inducing another person to use drugs, classify the offense using the precise statutory term "引诱、教唆、欺骗他人吸毒" instead of the generic phrase "教唆他人吸毒".
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:九江市浔阳区人民检察院指控：
+2014年11月12日至11月17日期间，被告人宋某某在其位于本市浔阳区新村大道248号的住处先后四次容留吸毒人员刘某某注射毒品海洛因。2014年11月18日下午15时许，公安机关在本市浔阳区新村大道248号将刚注射完毒品海洛因的被告人宋某某和刘某某抓获，当场查获疑似毒品海洛因12小袋（净重2.01克，检出海洛因成分）。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

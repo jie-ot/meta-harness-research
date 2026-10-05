@@ -1,0 +1,25 @@
+Bash
+
+command:
+powershell -Command "cd 'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification'; uv run python C:/tmp/proto_recency.py"
+
+description: Run recency-similarity blend prototype
+
+--- output ---
+Query vocab: ['apple', 'cherry', 'fig', 'grape', 'mango', 'kiwi']
+N examples: 20 (0-9 old/low-relevance, 10-19 new/high-relevance)
+
+Blend alpha=0.2: new_examples=5/5, avg_sim=0.357, labels=['new_0', 'new_2', 'new_1', 'new_1', 'new_2']
+Blend alpha=0.4: new_examples=5/5, avg_sim=0.357, labels=['new_0', 'new_2', 'new_1', 'new_1', 'new_2']
+Blend alpha=0.6: new_examples=5/5, avg_sim=0.357, labels=['new_0', 'new_2', 'new_1', 'new_1', 'new_2']
+
+Pure Jaccard: new_examples=5/5, avg_sim=0.357, labels=['new_0', 'new_2', 'new_1', 'new_1', 'new_2']
+
+RRF: new_examples=5/5, avg_sim=0.357, labels=['new_0', 'new_2', 'new_1', 'new_1', 'new_2']
+
+=== Reverse test: old examples ARE more relevant ===
+Query tokens: frozenset({'gamma', 'theta', 'eta', 'delta'})
+Blend alpha=0.2: old_examples(relevant)=5/5, avg_sim=0.000
+Blend alpha=0.4: old_examples(relevant)=5/5, avg_sim=0.000
+Blend alpha=0.6: old_examples(relevant)=5/5, avg_sim=0.000
+Pure Jaccard: old_examples(relevant)=5/5, avg_sim=0.000

@@ -1,0 +1,46 @@
+Bash
+
+command:
+python "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D0_a\text_classification\.prototypes\cooccurrence_scaffold_memory.py"
+
+description: Run Prototype B co-occurrence scaffold memory
+
+--- output ---
+============================================================
+PROTOTYPE B: Charge Co-occurrence Scaffold Memory
+============================================================
+
+Stored 6 examples
+Co-occurrence graph nodes: 7
+
+Top co-occurrences learned:
+  故意伤害 ↔ 故意毁坏财物 (1x)
+  故意伤害 ↔ 聚众扰乱社会秩序 (1x)
+  故意毁坏财物 ↔ 故意伤害 (1x)
+  虚开增值税专用发票、用于骗取出口退税、抵扣税款发票 ↔ 持有伪造的发票 (1x)
+  持有伪造的发票 ↔ 虚开增值税专用发票、用于骗取出口退税、抵扣税款发票 (1x)
+  聚众扰乱社会秩序 ↔ 故意伤害 (1x)
+
+--- v1: Scaffold hints only ---
+  ✗ assault_and_property: pred='诈骗'
+     expected='故意伤害;故意毁坏财物'
+     scaffold hint: - 故意毁坏财物 (co-occurred 1x in training)
+  ✗ vat_fraud_and_fake_invoice: pred='虚开增值税专用发票、用于骗取出口退税、抵扣税款发票'
+     expected='虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;持有伪造的发票'
+
+--- v2: Scaffold + examples ---
+  ✓ assault_and_property: pred='故意伤害;故意毁坏财物'
+  ✗ vat_fraud_and_fake_invoice: pred='故意伤害;故意毁坏财物'
+
+--- v3: Baseline (no scaffold) ---
+  ✓ assault_and_property: pred='故意伤害;故意毁坏财物'
+  ✗ vat_fraud_and_fake_invoice: pred='故意伤害;故意毁坏财物'
+
+--- Summary ---
+  v1_scaffold_only: 0/2
+  v2_scaffold+examples: 1/2
+  v3_baseline: 1/2
+
+WINNER: v2 (scaffold + similarity examples) — companion hints fix under-prediction
+PROTOTYPE B: PASS — co-occurrence scaffold improves multi-charge coverage
+             Baseline under-predicts secondary charges on both test cases

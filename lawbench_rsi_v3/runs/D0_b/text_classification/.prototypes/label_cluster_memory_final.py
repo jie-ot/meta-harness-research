@@ -1,0 +1,275 @@
+"""Final validation for agents/label_cluster_memory.py.
+
+Stubs MemorySystem and extract_json_field so the agent's logic can be
+exercised without the package being on sys.path.
+"""
+
+import json
+import re
+from collections import defaultdict
+from typing import Any
+
+
+# ── framework stubs ──────────────────────────────────────────────────────────
+
+def extract_json_field(text: str, field: str, default: str = "") -> str:
+    try:
+        return json.loads(text).get(field, default)
+    except Exception:
+        m = re.search(rf'"{field}"\s*:\s*"(.*?)"', text, re.DOTALL)
+        return m.group(1) if m else default
+
+
+class MemorySystem:
+    def __init__(self, llm):
+        self._llm = llm
+
+    def call_llm(self, prompt: str) -> str:
+        return self._llm(prompt)
+
+
+LLMCallable = Any
+
+
+# ── inline copy of agent logic (mirrors agents/label_cluster_memory.py) ──────
+
+MAX_CHARS = 30000
+_TOP_LABELS = 4
+_EXAMPLES_PER_LABEL = 2
+_MAX_FILL = 10
+
+PREDICT_PROMPT = """Solve the problem below based on the clustered examples provided.
+
+Each section below shows examples for a specific charge label. The section \
+header gives the EXACT canonical charge string to use in your answer.
+
+{cluster_section}{fill_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Use the exact charge label strings shown in the section headers as your answer
+- Do NOT append extra characters or suffixes to charge names
+- If multiple charges apply, join them with ';'
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+
+def _tokenize(text: str) -> frozenset:
+    tokens: set = set()
+    tokens.update(re.findall(r"[A-Za-z0-9]+", text.lower()))
+    cjk = re.findall(r"[一-鿿]", text)
+    for i in range(len(cjk) - 1):
+        tokens.add(cjk[i] + cjk[i + 1])
+    return frozenset(tokens)
+
+
+def _jaccard(a: frozenset, b: frozenset) -> float:
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+class LabelClusterMemory(MemorySystem):
+    def __init__(self, llm):
+        super().__init__(llm)
+        self.clusters: dict = defaultdict(list)
+        self.examples: list = []
+
+    def _score_label(self, label: str, q_tok: frozenset) -> float:
+        pool = self.clusters.get(label, [])
+        if not pool:
+            return 0.0
+        return max(_jaccard(q_tok, ex["tokens"]) for ex in pool)
+
+    def _build_sections(self, query: str):
+        q_tok = _tokenize(query)
+        total_chars = 0
+
+        label_scores = sorted(
+            ((label, self._score_label(label, q_tok)) for label in self.clusters),
+            key=lambda x: x[1],
+            reverse=True,
+        )
+        top_labels = [lbl for lbl, _ in label_scores[:_TOP_LABELS]]
+
+        cluster_parts: list = []
+        used_ids: set = set()
+
+        for label in top_labels:
+            pool = self.clusters[label]
+            ranked = sorted(pool, key=lambda ex: _jaccard(q_tok, ex["tokens"]), reverse=True)
+            section_lines: list = []
+            for ex in ranked[:_EXAMPLES_PER_LABEL]:
+                eid = id(ex)
+                if eid in used_ids:
+                    continue
+                part = f"  Q: {ex['input'][:300]}\n  A: {ex['target']}"
+                if total_chars + len(part) + 2 > MAX_CHARS:
+                    break
+                section_lines.append(part)
+                used_ids.add(eid)
+                total_chars += len(part) + 2
+            if section_lines:
+                cluster_parts.append(f"### Charge: {label}\n" + "\n\n".join(section_lines))
+
+        cluster_section = ""
+        if cluster_parts:
+            cluster_section = "\n\n".join(cluster_parts) + "\n\n"
+
+        fill_parts: list = []
+        flat_ranked = sorted(self.examples, key=lambda ex: _jaccard(q_tok, ex["tokens"]), reverse=True)
+        for ex in flat_ranked:
+            if id(ex) in used_ids:
+                continue
+            part = f"Q: {ex['input'][:300]}\nA: {ex['target']}"
+            if total_chars + len(part) + 2 > MAX_CHARS:
+                break
+            fill_parts.append(part)
+            used_ids.add(id(ex))
+            total_chars += len(part) + 2
+            if len(fill_parts) >= _MAX_FILL:
+                break
+
+        fill_section = ""
+        if fill_parts:
+            fill_section = "**Additional examples:**\n" + "\n\n".join(fill_parts) + "\n\n"
+
+        return cluster_section, fill_section
+
+    def predict(self, input: str) -> tuple:
+        cluster_section, fill_section = self._build_sections(input)
+        prompt = PREDICT_PROMPT.format(
+            cluster_section=cluster_section,
+            fill_section=fill_section,
+            input=input,
+        )
+        response = self.call_llm(prompt)
+        answer = extract_json_field(response, "final_answer")
+        return answer, {"num_clusters": len(self.clusters), "num_examples": len(self.examples)}
+
+    def learn_from_batch(self, batch_results: list) -> None:
+        for r in batch_results:
+            tok = _tokenize(r.get("raw_question", r["input"]))
+            ex = {"input": r["input"], "target": r["ground_truth"], "tokens": tok}
+            self.examples.append(ex)
+            for charge in r["ground_truth"].split(";"):
+                charge = charge.strip()
+                if charge:
+                    self.clusters[charge].append(ex)
+
+    def get_state(self) -> str:
+        return json.dumps({
+            "examples": [
+                {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+                for ex in self.examples
+            ]
+        })
+
+    def set_state(self, state: str) -> None:
+        data = json.loads(state)
+        self.examples = []
+        self.clusters = defaultdict(list)
+        for ex in data.get("examples", []):
+            restored = dict(ex)
+            if "tokens" in restored and isinstance(restored["tokens"], list):
+                restored["tokens"] = frozenset(restored["tokens"])
+            else:
+                restored["tokens"] = _tokenize(restored.get("input", ""))
+            self.examples.append(restored)
+            for charge in restored["target"].split(";"):
+                charge = charge.strip()
+                if charge:
+                    self.clusters[charge].append(restored)
+
+
+# ── fake LLM ─────────────────────────────────────────────────────────────────
+
+def fake_llm(prompt: str) -> str:
+    # Return first charge label found in a "### Charge:" header if present
+    m = re.search(r"### Charge: (.+)", prompt)
+    if m:
+        return json.dumps({"reasoning": "test", "final_answer": m.group(1).strip()})
+    return json.dumps({"reasoning": "test", "final_answer": "诈骗"})
+
+
+# ── training examples from real diagnostics ───────────────────────────────────
+
+BATCH = [
+    {"input": "被告单位通辽市某商业广场有限公司利用职务便利以政府名义出具推荐函，向其支付了不正当报酬20万元。", "ground_truth": "单位行贿", "was_correct": False},
+    {"input": "被告人韩某某在担任西宁某物业管理有限公司副总经理期间，非法收受闫某的行贿款200,000元。", "ground_truth": "非国家工作人员受贿", "was_correct": False},
+    {"input": "被告人李某甲以牟利为目的，盗割正在使用中的公共照明电线，危害公共安全。", "ground_truth": "破坏电力设备", "was_correct": False},
+    {"input": "被告人郭某在白云区销售假冒GIVENCHY等注册商标的皮鞋，价值人民币6525350元。", "ground_truth": "销售假冒注册商标的商品", "was_correct": False},
+    {"input": "被告人何某在批发市场偷走三轮摩托车，将车架及轮毂喷色隐瞒来源。", "ground_truth": "盗窃;掩饰、隐瞒犯罪所得、犯罪所得收益", "was_correct": False},
+    {"input": "被告人李某某购买了三部打鱼机，为他人提供赌博场所及用具，非法获利150元。", "ground_truth": "赌博;开设赌场", "was_correct": False},
+    {"input": "被告人叶某甲将罂粟果种植在自家农田中，2013年5月被查获，共计782株。", "ground_truth": "非法种植毒品原植物", "was_correct": True},
+    {"input": "被告人何某私自焚烧秸秆不慎引发山火，造成过火有林地面积2公顷。", "ground_truth": "失火", "was_correct": True},
+    {"input": "被告人何某在签订合同过程中采取虚构事实手段，骗取他人财物，数额较大。", "ground_truth": "合同诈骗", "was_correct": True},
+]
+
+
+def run():
+    m = LabelClusterMemory(fake_llm)
+
+    # 1. cold start
+    ans, meta = m.predict("被告人张某某谎称以租车的名义将轿车骗走")
+    assert ans == "诈骗", f"cold start: expected 诈骗, got {ans}"
+    assert meta["num_clusters"] == 0
+    print(f"[cold start] ok — answer={ans}, clusters={meta['num_clusters']}")
+
+    # 2. learn batch: multi-charge labels split correctly
+    m.learn_from_batch(BATCH)
+    assert "单位行贿" in m.clusters
+    assert "销售假冒注册商标的商品" in m.clusters
+    assert "赌博" in m.clusters          # split from "赌博;开设赌场"
+    assert "开设赌场" in m.clusters
+    assert "盗窃" in m.clusters          # split from multi-charge
+    assert "掩饰、隐瞒犯罪所得、犯罪所得收益" in m.clusters
+    assert len(m.examples) == len(BATCH)
+    print(f"[after batch] clusters={len(m.clusters)}, examples={len(m.examples)}")
+
+    # 3. top labels for a unit-bribery query include 单位行贿 first
+    q_tok = _tokenize("被告单位某商业广场法定代表人以政府名义支付报酬")
+    label_scores = sorted(
+        ((lbl, m._score_label(lbl, q_tok)) for lbl in m.clusters),
+        key=lambda x: x[1], reverse=True,
+    )
+    top4 = [l for l, _ in label_scores[:4]]
+    print(f"[top-4 labels for unit-bribery query]: {top4}")
+    assert top4[0] == "单位行贿", f"expected 单位行贿 first, got {top4[0]}"
+
+    # 4. predict uses first cluster-section header as answer (via fake_llm)
+    ans2, meta2 = m.predict("被告单位某商业广场法定代表人以政府名义支付报酬")
+    assert ans2 == "单位行贿", f"predict: expected 单位行贿, got {ans2}"
+    print(f"[with memory] answer={ans2}, clusters={meta2['num_clusters']}")
+
+    # 5. get_state / set_state round-trip
+    state = m.get_state()
+    m2 = LabelClusterMemory(fake_llm)
+    m2.set_state(state)
+    assert len(m2.examples) == len(m.examples)
+    assert set(m2.clusters.keys()) == set(m.clusters.keys())
+    for ex in m2.examples:
+        assert isinstance(ex["tokens"], frozenset), "tokens must be frozenset after restore"
+    print(f"[state round-trip] ok — examples={len(m2.examples)}, clusters={len(m2.clusters)}")
+
+    # 6. canonical header instruction present in prompt template and built sections
+    assert "{cluster_section}" in PREDICT_PROMPT, "template must have cluster_section placeholder"
+    assert "section headers" in PREDICT_PROMPT, "template must reference section headers"
+    cluster_sec_check, _ = m._build_sections("被告单位某商业广场法定代表人以政府名义支付报酬")
+    assert "### Charge:" in cluster_sec_check, "built cluster section must contain ### Charge: headers"
+    print("[prompt structure] canonical header instructions present: OK")
+
+    # 7. fill section: no duplicate examples between cluster and fill sections
+    cluster_sec, fill_sec = m._build_sections("被告人何某偷走三轮摩托车")
+    # Both sections should be non-empty (cluster covers 盗窃 etc., fill adds more)
+    assert "### Charge:" in cluster_sec
+    print(f"[fill section] cluster has headers: OK, fill present: {bool(fill_sec.strip())}")
+
+    print("\nAll validation tests passed — label_cluster_memory OK.")
+
+
+if __name__ == "__main__":
+    run()

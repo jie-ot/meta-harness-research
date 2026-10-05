@@ -1,0 +1,30 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual scenario describes fraud that is carried out through the creation, signing, or performance of a contract (e.g., false representation of a business role, fictitious project, or fabricate
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+- When the factual description contains multiple distinct criminal acts (e.g., a traffic offense and a separate economic crime), the model must list every applicable charge, separating them with semicol
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明：2014年11月26日，被告人苏某和本县官港镇人虞1某来与望江县鹏运商品混凝土有限公司负责人帅某，签订了一份水泥供货合同。2014年11月26日苏某在池州海螺水泥股份有限公司装运了两车水泥，送到望江县鹏运商品混凝土有限公司。后因虞1某来不再出资，供货停止。之后苏某通过本县泥溪镇人蔡某，联系到蔡某的同学汪某，继续做水泥生意。三人谈好由汪某出资，并测算每吨利润为30元，帅某、苏某、蔡某每人得5元，剩下的利润全归汪某。后苏某便委托怀宁人杨某，在怀宁海螺水泥有限公司开票、调车、发货，每吨给其1元手续费。准备工作做好后，被告人苏某即叫蔡某打电话给汪某，让其汇款。2015年1月31日汪某汇款5万某到被告人苏某的账户。苏某将其中1.8万某汇至杨某账户，用于购买了一车水泥，并和蔡某从安庆押车至望江县鹏运商品混凝土有限公司交货。春节前，苏某为了还之前做生意所欠的外债，让蔡某打电话给汪某，谎称要继续向望江县鹏运商品混凝土有限公司供货，汪某又分四次汇款18万某至苏某账户。而苏某将汪某共计汇给他的23万某，除汇给杨某1.8万某用于购买水泥外，余款21.2万某大部用于偿还了个人债务。为使蔡某、汪某相信，苏某安排人在蔡某打电话核实是否发货时假称一直在发货。后汪某多次向苏某催要发货单，苏某便在安庆市找人伪造了13张怀宁海螺水泥有限公司散装水泥发货单，交给汪某。2015年4月汪某经与供货单位核实，发现苏某提供的13张发货单全部是假的，即要求苏某还款，但苏某以没有钱为由，不予还款，仅将其2014年11月26日，在池州海螺水泥股份有限公司购买未结账的两车水泥发货单，交与汪某结账抵款。后汪某因无法与苏某取得联系，于2015年6月24日向东至县公安局经济犯罪侦查大队报案。2015年8月13日，苏某被东至县公安局经济犯罪侦查大队民警抓获归案。
+案发后，汪某与望江县鹏运商品混凝土有限公司进行了结算，苏某交给他抵欠款的两车水泥发货单水泥价值3.5万某。
+被告人苏某曾因涉嫌犯××，于2011年4月20日被重庆市公安局渝北区分局刑事拘留，同年5月26日被依法逮捕，2012年4月25日被重庆市渝北区人民法院判处××，××，并处罚金人民币二万某。2012年4月25日被释放。××考验期自2012年5月7日起至2015年5月6日止。
+上述事实被告人苏某在开庭审理过程中均无异议，且有被害人汪某的报案材料、东至县公安局经济犯罪侦查大队的受案登记表、东至县公安局的立案决定书、“抓获经过”、苏某伪造的怀宁海螺水泥有限公司散装水泥发货（磅）单十三张、真实的怀宁海螺水泥有限公司散装水泥发货（磅）单复印件一张及池州市海螺水泥股份有限公司水泥发货单复印件二张、安徽怀宁海螺水泥有限公司办公室出具的证明、蔡某的记账本复印件一张、汪某与苏某的农村商业银行交易明细单、苏某的安徽农金网上银行业务客户回单、安徽农村合作金融第一联借方凭证、鹏运商品混凝土有限公司材料总结算单一张、供货合同、董店生出具的苏某还款情况的证明、东至县人民法院（2015）东民一初字第00190号民事调解书、重庆市渝北区人民法院（2012）渝北法刑初字第00091号刑事判决书、执行通知书、重庆市渝北区看守所的释放证明书、被告人苏某和被害人汪某及相关证人的人口基本信息查询结果单等书证；被害人汪某的陈述；蔡某、帅某、杨某、虞1某来、戴某、李某、汪某、张1某等人的证言；被告人苏某的多次供述与辩解；汪某、杨某、帅某辨认苏某的辨认笔录等证据证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

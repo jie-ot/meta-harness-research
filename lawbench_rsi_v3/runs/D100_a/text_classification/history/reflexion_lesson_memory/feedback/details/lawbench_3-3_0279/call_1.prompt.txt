@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- If the factual description indicates that the offender used their official position or entrusted authority to appropriate property for personal gain, rather than physically taking or stealthily removi
+- When the facts show that the defendant only provided shelter, assistance, or concealment for drug offenders and did not personally produce, possess, or traffic the narcotics, classify the offense as 窝
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:靖西县人民检察院指控：2011年，被告人张某在协助龙邦镇人民政府进行危房改造项目建设管理工作中，利用其担任靖西县龙邦镇念龙村村民委员会副主任负责整理和上报念龙村平明屯危房改造申请材料的工作便利，在明知自家不符合申请危房改造指标的情况下，仍以其妻子赵某的名义通过填报虚假农村危房改造申请材料的方式得到2011年危房改造指标一个，骗取危房改造补助款人民币16000元。为证明上述指控事实，公诉机关提供了相应的证据。公诉机关认为，被告人张某在担任靖西县龙邦镇念龙村村民委员会副主任期间，在协助龙邦镇人民政府进行农村危房改造项目的管理工作，利用职务上的便利，通过填报虚假危房改造申请材料的方式骗取危房改造补助款16000元，其行为已触犯《中华人民共和国刑法》××××、××××第三项之规定，犯罪事实清楚，证据确实充分，应当以××追究其刑事责任。提请本院依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

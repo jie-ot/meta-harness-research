@@ -1,0 +1,38 @@
+Bash [ERROR]
+
+command:
+python "D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/lawbench_rsi_v3/runs/D100_a/text_classification/.prototypes/contrastive_error_memory_proto.py"
+
+description: Run contrastive_error_memory prototype
+
+--- output ---
+Exit code 1
+=== VARIANT 1: input-similarity retrieval ===
+Stored 10 error pairs, 3 positive examples
+Retrieved 3 mistake pairs for query:
+  ✗ 错误: 挪用公款
+  ✓ 正确: 挪用资金
+  ✗ 错误: 拐卖妇女
+  ✓ 正确: 拐卖妇女、儿童
+  ✗ 错误: 贩卖毒品;徇私枉法
+  ✓ 正确: 走私、贩卖、运输、制造毒品;徇私枉法
+
+=== VARIANT 2: predicted-label overlap retrieval ===
+Top 3 pairs by combined score:
+  ✗ 挪用公款 → ✓ 挪用资金
+  ✗ 挪用资金 → ✓ 职务侵占
+  ✗ 拐卖妇女 → ✓ 拐卖妇女、儿童
+
+=== VARIANT 3: confusion-cluster grouping ===
+10 unique (wrong→correct) clusters:
+  ✗ 故意毁坏财物罪 → ✓ 故意毁坏财物  (出现1次)
+  ✗ 拐卖妇女 → ✓ 拐卖妇女、儿童  (出现1次)
+  ✗ 受贿 → ✓ 非国家工作人员受贿  (出现1次)
+  ✗ 伪造国家机关证件罪;诈骗罪 → ✓ 伪造、变造、买卖国家机关公文、证件、印章  (出现1次)
+  ✗ 敲诈勒索罪;非法控制计算机信息系统罪 → ✓ 破坏计算机信息系统  (出现1次)
+
+Traceback (most recent call last):
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_a\text_classification\.prototypes\contrastive_error_memory_proto.py", line 221, in <module>
+    assert len(v1.pairs) == 9, f"Expected 9 error pairs, got {len(v1.pairs)}"
+           ^^^^^^^^^^^^^^^^^^
+AssertionError: Expected 9 error pairs, got 10

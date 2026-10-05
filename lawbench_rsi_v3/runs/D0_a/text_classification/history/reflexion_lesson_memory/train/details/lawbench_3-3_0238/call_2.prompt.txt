@@ -1,0 +1,24 @@
+An AI classifier made an error on this case. Generate a compact correction lesson.
+
+**Correct label:** 失火
+**Wrong prediction:** [罪名]过失以危险方法危害公共安全<eoa>
+**Case facts (excerpt):**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:辽中县人民检察院指控：2014年11月3日，在辽中县某镇某村，被告人郭某某在无专业电焊技能的情况下，在其儿子郭某甲的大棚内用电焊焊大门。虽用彩钢板隔离，但电焊火星仍引燃大棚内草帘子，火势蔓延，导致周围32个大棚和大棚内农作物及其他物品烧毁。经鉴定，涉案物品损失价值人民币682260元。案发后，被告人家属已赔偿被害人经济损失并取得谅解。
+对上述事实，公诉机关向法庭提供了相关证据予以证明。公诉机关认为，被告人郭某某的行为已触犯了《中华人民共和国刑法》××之规定，应当以××追究刑事责任。
+
+
+Write a lesson that:
+1. States the KEY distinguishing feature that determines the correct label
+2. Explains what makes this different from "[罪名]过失以危险方法危害公共安全<eoa>"
+3. Gives a brief rule a classifier can apply to future cases
+
+Respond only in JSON:
+{"lesson": "<one to three sentences, in the same language as the case facts>", "final_answer": "失火"}

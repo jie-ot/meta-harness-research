@@ -1,0 +1,52 @@
+Bash
+
+command:
+python -c "
+import os, json
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+# Check USPTO log (only 26.7% - worst dataset)
+log_path = os.path.join(base, 'USPTO', 'symmetric_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+if os.path.exists(log_path):
+    lines = open(log_path).readlines()
+    print(f'Total lines: {len(lines)}')
+    # Show confusion pairs
+    confusion = {}
+    for l in lines:
+        d = json.loads(l)
+        if not d.get('was_correct'):
+            pred = d.get('prediction','')[:50]
+            gt = d.get('ground_truth','')[:50]
+            key = (pred, gt)
+            confusion[key] = confusion.get(key, 0) + 1
+    print('Top confusion pairs:')
+    for (p,g),c in sorted(confusion.items(), key=lambda x:-x[1])[:10]:
+        print(f'  pred={repr(p)} gt={repr(g)} count={c}')
+    # Check what memory state looks like
+    mem_path = os.path.join(base, 'USPTO', 'symmetric_confusion_memory', 'gpt-oss-120b', 'memory.json')
+    if os.path.exists(mem_path):
+        with open(mem_path) as f:
+            mem = json.load(f)
+        print(f'Memory keys: {list(mem.keys())}')
+        if 'confusion' in mem:
+            print(f'Confusion entries: {len(mem[\"confusion\"])}')
+            # Show a few
+            for k,v in list(mem['confusion'].items())[:5]:
+                print(f'  {k}: {v}')
+else:
+    print('No log file for USPTO')
+"
+
+
+description: Read USPTO error trace from symmetric_confusion_memory
+
+--- output ---
+Total lines: 104
+Top confusion pairs:
+  pred='' gt='' count=104
+Memory keys: ['examples', 'confusion']
+Confusion entries: 85
+  COC(=O)[C@@H](N)c1ccc(cc1)C.CC(C)(C)OC(=O)OC(=O)OC(C)(C)C: {'CC(C)(C)OC(=O)OC(=O)OC(C)(C)C.COC(=O)[C@@H]([NH3+])c1ccccc1C': 0.07694497527671314}
+  Clc1ncncc1.c1ccccc1C#C: {'C#Cc1ccccc1.Clc1ncncc1I': 0.08099471081759278}
+  O=C(NCC(=O)N1CCN(C(=O)c2ccccc2C(F)(F)F)CC1)c1ccc(-c2ccccc2OC(=O)C)cc1: {'O=C(NCC(=O)N1CCN(C(=O)c2ccccc2C(F)(F)F)CC1)c1ccc(-c2ccccc2OCc2ccccc2)cc1': 0.0852575903343082}
+  Cc1c(-c2ccc(=O)n(Cc3cccc(F)c3F)c2)c2cc(F)ccc2n1CC=O: {'Cc1c(-c2ccc(=O)n(Cc3cccc(F)c3F)c2)c2cc(F)ccc2n1CC(=O)O': 0.09446824413773762}
+  C[C@@H]1C[C@H](NC(=O)OC(C)(C)C)C(=O)N1CC(=O)OC(C)(C)C: {'CCOC(=O)CN1C(=O)[C@@H](NC(=O)OC(C)(C)C)C[C@H]1C': 0.09944025698709223}

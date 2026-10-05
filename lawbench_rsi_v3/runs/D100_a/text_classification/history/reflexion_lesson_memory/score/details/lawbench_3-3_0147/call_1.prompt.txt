@@ -1,0 +1,45 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the factual description contains multiple distinct criminal acts (e.g., a traffic offense and a separate economic crime), the model must list every applicable charge, separating them with semicol
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the facts describe a person performing any medical diagnosis, treatment, or related procedure without a valid medical license, classify the conduct under the statutory offense of “非法行医” rather th
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，2013年11月18日20时许，在滦平镇工贸城路口，高某的朋友温某某因王某某酒后说话带脏字与王某某发生争执，随后高某上前用砖头将王某某头部打伤。王某某受伤后，被送往滦平县医院住院治疗，经诊断为：1、前额头皮挫裂；2、急性酒精中毒。2013年11月22日，经滦平县司法医学鉴定中心鉴定王某某的伤情为轻伤。
+另查明，2012年7月5日，被告人高某因涉嫌××被滦平县公安局刑事拘留，同年7月27日被改变强制措施为取保候审。2012年11月14日因犯××，被本院判处××，××。
+公诉机关为证实自己的主张，提供了以下证据：
+一、被告人供述和辩解
+被告人高某的供述和辩解，2013年11月18日20时许，我和严某某、温某某从滦平镇工贸城金地缘歌厅出来，我和温某某走在前面，严某某在后面。温某某回头对严某某喊快点走，这时在路边有三个男子，其中两个男子扶着一个像是喝多了的男子（指王某某），王某某不知为何骂温某某，温某某说你骂谁呢，王某某说我骂你呢。温某某用手将王某某拽倒在地，我从路边捡起一块水泥砖，向王某某扔去，具体砸到王某某身体什么部位我记不清楚，只见到王某某面部有血。然后我和温某某坐上一辆出租车走了。
+（二）、被害人的陈述
+被害人王某某的陈述，2013年11月18日晚21时许，我和路某某、李某某吃完饭出来到工贸城××胡同口时，有两个小伙子问我们打车吗？因为当时我喝了点儿酒，说话可能有点儿冲，我说了句不打，就去对面了。然后这俩小伙子就过来了，瞪着我就问我想怎么着。我当时喝多了，别的就记不清楚了，然后我就觉着我额头处就流血了，就倒在地上了。
+（三）、证人证言
+1、证人李某某的证言证实，2013年11月18日晚21时许，我和王某某、路某某从工贸城金地缘歌厅唱完歌出来，见路边一群人站着，有一名头发稍长的男子喊了句打车走了，王某某就嚷嚷着接了一句，说这么近，不打车，他当时喝点儿酒说话语气比较冲，那名男子就上前说你嚷谁呢？还推了王某某胸脯一把，这时又有一名男子手里拿一个水泥六棱砖扑了过来，用水泥砖砸王某某左额头上一下，王某某当时就躺地上了，然后那俩人就迅速上了一辆QQ小轿车（车牌号冀H1R372）往西走了，路某某打电话报了警。
+2、证人温某某的证言证实，2013年11月18日20许，我、严某某、高某从滦平镇工贸城金地缘歌厅出来向北走，我对严某某喊你过来了吗？快点走!这时在路边有三个男子，其中两个男子扶着一个像是喝多了的男子（指王某某），王某某对我喊你妈的，我到了。我走上前去对王某某说你骂谁呢？王某某说骂你呢！我上去拽住王某某的肩部，我们就撕扯起来。后来王某某就倒下了。我和高某就坐上一个辆出租车向西走了。
+3、证人严某某的证言证实，2013年11月18日20许，我、高某、温某某唱完歌从歌厅出来，我跟在后面。走到工贸城胡同北口处，不知为何高某、温某某与三个男子互相厮打，具体谁打谁哪里我没看清。当我走过去他们已经打完架了，见到一个男子躺在地上。后来吃饭的时候高某、温某某和我说刚才在工贸城金亨美乐歌厅边上和人打架了，把一个小子给揍了。
+4、证人路某某的证言证实，2013年11月18日21时许，我、李某某、王某某从金地缘歌厅唱完歌出来，到了工贸城××胡同口处，路边有俩个小伙子问我们要打车吗？去哪啊？王某某说我们哪也不去，就去对面。因为当时都喝了点儿酒，可能说话有点儿冲，然后这俩小伙子就过来了，瞪着王某某说你想干啥？王某某说我们啥也不干。然后这俩个小伙子就上前推搡王某某，短发男子转身从地下捡起了一块方形砖砸向了王某某头上，王某某当场倒在地上。
+5、证人冯某某的证言证实，出租车司机。2013年11月18日21时许，我驾驶出租车刚到滦平镇工贸城金亨美乐歌厅附近，有两个男子将我拦下，一个男子坐在副驾驶位置，另一个坐在后排。坐在副驾驶的男子说去西街，并让我从老二小绕行到上道，向西行驶。坐在副驾驶位置的男子，在车里不知给谁打电话说你去看看那人有没有事，我们走了。这两个男子在豪爵摩托店门前下车向西走了。
+（四）书证
+1、被告人高某常住人口基本信息证实，被告人高某系完全行为能力人。
+2、滦平县人民法院（2012）滦刑初字第155号判决书证实，被告人高某因犯××被判处××情况。
+3、滦平县司法医学鉴定中心司法鉴定意见书，证实王某某的伤为轻伤。
+4、另外本院出示了被害人王某某的说明一份，证实被害人不要求被告人民事赔偿，对其行为不予谅解，要求对被告人从重处罚。
+上述事实，被告人高某在开庭审理过程中亦无异议，结合当庭质证的被告人供述和辩解，被害人的陈述，证人证言，滦平县司法医学鉴定中心司法鉴定意见书和被告人的基本信息表等证据，能够证实本案事实，本院予以确认。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

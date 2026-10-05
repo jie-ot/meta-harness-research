@@ -1,0 +1,112 @@
+Bash
+
+command:
+python -c "
+import os, json, re
+from collections import defaultdict
+
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+log_path = os.path.join(base, 'LawBench', 'symmetric_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+lines = open(log_path, encoding='utf-8').readlines()
+steps = [json.loads(l) for l in lines if json.loads(l).get('type') == 'step']
+
+_CJK_RE = re.compile(r'[\u4e00-\u9fff\u3040-\u30ff\uff00-\uffef]')
+def _has_cjk(t): return bool(_CJK_RE.search(t))
+def _tok_bigram(t):
+    t = re.sub(r'\s+', ' ', t.strip())
+    return frozenset(t[i:i+2] for i in range(len(t)-1)) if len(t)>=2 else frozenset()
+def _tok_word(t): return frozenset(re.findall(r'[A-Za-z0-9]+', t.lower()))
+def _tok(t): return _tok_bigram(t) if _has_cjk(t) else _tok_word(t)
+def _jaccard(a,b):
+    if not a and not b: return 0.0
+    return len(a&b)/len(a|b)
+
+# Build label vocabulary from ground truths
+label_vocab = {}
+for s in steps:
+    lbl = s['tgt']
+    if lbl not in label_vocab:
+        label_vocab[lbl] = _tok(lbl)
+
+# For each label, find its top-3 text-similar labels
+def label_neighbors(label, label_vocab, top_k=3):
+    lbl_tok = label_vocab[label]
+    sims = [(other, _jaccard(lbl_tok, _tok(other))) for other in label_vocab if other != label]
+    sims.sort(key=lambda x: -x[1])
+    return [l for l, s in sims[:top_k] if s > 0]
+
+# Show some example neighbors
+sample_labels = ['诈骗', '盗窃', '故意伤害', '拐卖妇女', '受贿']
+print('Label name neighbors:')
+for lbl in sample_labels:
+    if lbl in label_vocab:
+        neighbors = label_neighbors(lbl, label_vocab, top_k=3)
+        print(f'  {repr(lbl)} -> {[repr(n) for n in neighbors]}')
+
+# Now simulate: after seeing 100 examples, for an error query, does 
+# the correct GT appear as a text neighbor of the most-similar example's label?
+pool = []
+hits_label_neighbor = 0
+hits_confusion = 0
+confusion = defaultdict(lambda: defaultdict(float))
+_WRAPPER_RE = re.compile(r'^\s*\[[^\]]*\]|<eoa>\s*$|\[[^\]]*\]\s*$', re.IGNORECASE)
+
+def _normalize(p):
+    c = _WRAPPER_RE.sub('', p).strip()
+    return c if c else p
+
+def _decay(c, factor=0.95, prune=0.05):
+    for k in list(c):
+        for j in list(c[k]):
+            c[k][j] *= factor
+            if c[k][j] < prune: del c[k][j]
+        if not c[k]: del c[k]
+
+for s in steps:
+    q_tok = _tok(s.get('input_preview',''))
+    gt = s['tgt']
+    pred = s['pred']
+    ok = s.get('ok', False)
+    
+    if pool:
+        scored = sorted(pool, key=lambda ex: -_jaccard(q_tok, ex['tok']))
+        top_label = scored[0]['target'] if scored else None
+        top_labels = list({ex['target'] for ex in scored[:3]})
+        
+        if top_label and not ok:
+            # Label neighbor hit?
+            if top_label in label_vocab:
+                neighbors = label_neighbors(top_label, label_vocab, top_k=5)
+                if gt in neighbors: hits_label_neighbor += 1
+            # Confusion hit?
+            conf_targets = []
+            for lbl in top_labels:
+                for actual, cnt in confusion.get(lbl, {}).items():
+                    conf_targets.append(actual)
+            if gt in conf_targets: hits_confusion += 1
+    
+    pool.append({'input': s.get('input_preview',''), 'target': gt, 'tok': q_tok})
+    if not ok:
+        p = _normalize(pred)
+        if p and p != gt:
+            confusion[p][gt] += 1.0; confusion[gt][p] += 0.5
+    _decay(confusion)
+
+total_errors = sum(1 for s in steps if not s.get('ok'))
+print(f'Total errors: {total_errors}')
+print(f'GT found via label-name neighbors (top 5 neighbors): {hits_label_neighbor}/{total_errors}')
+print(f'GT found via confusion targets:                      {hits_confusion}/{total_errors}')
+"
+
+
+description:
+Prototype candidate 2: label-name neighbor coverage vs confusion matrix coverage on LawBench errors
+
+
+--- output ---
+Label name neighbors:
+  '故意伤害' -> ["'故意伤害;虐待'", "'故意伤害;妨害作证'", "'故意伤害;故意毁坏财物'"]
+  '受贿' -> ["'受贿;滥用职权'", "'非国家工作人员受贿'", "'危险驾驶;单位受贿'"]
+Total errors: 149
+GT found via label-name neighbors (top 5 neighbors): 3/149
+GT found via confusion targets:                      1/149

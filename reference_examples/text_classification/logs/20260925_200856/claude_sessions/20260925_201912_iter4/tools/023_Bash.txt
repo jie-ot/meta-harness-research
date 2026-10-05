@@ -1,0 +1,35 @@
+Bash
+
+command:
+cd "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples" && uv run python text_classification/proto_label_aware.py
+
+description: Run label-aware prompt prototype
+
+--- output ---
+=== Labels present in examples ===
+['Cycloaddition', 'Cycloaddition', 'Cycloaddition']
+
+Variant A context labels visible: ['Cycloaddition', 'Cycloaddition', 'Cycloaddition']
+  → Model may not know 'Cycloaddition' is even an option
+
+Variant B: injects all 10 labels explicitly
+Label header:
+  - Acylations
+  - Alkylations
+  - C-C bond formation
+  - Cycloaddition
+  - Elimination
+  - Oxidation
+  - Protections
+  - Rearrangement
+  - Reductions
+  - Substitution
+
+Prompt B extra chars vs A: +216
+
+With 60 labels: header adds 949 chars (~31 tokens)
+  → Feasible; 30000 char budget can absorb ~2000 char header
+
+Conclusion: Variant B is the better approach.
+PROTOTYPE PASSED: label header mechanism is sound.
+Shell cwd was reset to D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification

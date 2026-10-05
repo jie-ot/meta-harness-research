@@ -1,0 +1,72 @@
+{
+  "call_id": "574b19851f584eaa89d93cf5d6ebd436",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791026233-9vD8kqIabAbpaM3uJeKR",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"lesson\": \"- 当事实中只出现地名（如“沈阳市皇姑区人民”）而未描述具体违法行为时，切勿凭地名推断罪名；必须依据事实中出现的行为动词或情节。\\n- 关注关键动词和法律术语的原文表述，避免将相似词汇（如“献血”误写为“卖血”）替换成错误的罪名。\\n- 若事实段落中出现多个不同的违法行为描述（如走私、盗窃、掩饰收益），应逐一对应列出所有相关罪名，不能只选取最显眼的一个。\\n- 使用罪名时必须严格匹配《刑法》或相关法律的正式名称（如“非法持有毒品”，而不是省略“非法”或改写为“持有毒品罪”）。\\n- 当事实中出现特定的法律概念或专有名词（如“掩饰、隐瞒犯罪所得、犯罪所得收益”），即使其在句中位置较后，也必须识别并列入最终罪名列表。\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to infer patterns of errors. The cases show model mispredicts due to:\n\n1. Using location names (沈阳市皇姑区人民) as clue but misassigning crimes unrelated to location. Possibly the model overfits to \"人民\" leading to certain crimes like \"徇私舞弊罪;国家工作人员受贿\". Need rule: Do not infer crime solely from jurisdiction names; must rely on factual description of conduct.\n\n2. Model sometimes outputs generic or unrelated crime (非法组织献血罪) when actual is \"非法组织卖血\". So misinterpretation of key verb \"卖\" vs \"献\". Need rule: Pay attention to specific action verbs; avoid substituting similar terms.\n\n3. Model sometimes omits additional crimes that are present in facts (e.g., missing \"掩饰、隐瞒犯罪所得、犯罪所得收益\"). So need to capture all charges mentioned.\n\n4. Model sometimes uses slightly different naming (持有毒品罪 vs 非法持有毒品). Need rule: Use exact statutory crime name; avoid dropping \"非法\".\n\n5. Model sometimes mixes up crimes (走私普通货物、物品;盗窃) but predicted only theft and concealment. So need to detect presence of smuggling language.\n\nOverall, derive up to 5 lessons based on observable signals: presence of specific verbs, statutory terms, multiple charges, location names, and phrase patterns.\n\nLet's craft concise lessons.\n\n",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to infer patterns of errors. The cases show model mispredicts due to:\n\n1. Using location names (沈阳市皇姑区人民) as clue but misassigning crimes unrelated to location. Possibly the model overfits to \"人民\" leading to certain crimes like \"徇私舞弊罪;国家工作人员受贿\". Need rule: Do not infer crime solely from jurisdiction names; must rely on factual description of conduct.\n\n2. Model sometimes outputs generic or unrelated crime (非法组织献血罪) when actual is \"非法组织卖血\". So misinterpretation of key verb \"卖\" vs \"献\". Need rule: Pay attention to specific action verbs; avoid substituting similar terms.\n\n3. Model sometimes omits additional crimes that are present in facts (e.g., missing \"掩饰、隐瞒犯罪所得、犯罪所得收益\"). So need to capture all charges mentioned.\n\n4. Model sometimes uses slightly different naming (持有毒品罪 vs 非法持有毒品). Need rule: Use exact statutory crime name; avoid dropping \"非法\".\n\n5. Model sometimes mixes up crimes (走私普通货物、物品;盗窃) but predicted only theft and concealment. So need to detect presence of smuggling language.\n\nOverall, derive up to 5 lessons based on observable signals: presence of specific verbs, statutory terms, multiple charges, location names, and phrase patterns.\n\nLet's craft concise lessons.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to infer patterns of errors. The cases show model mispredicts due to:\n\n1. Using location names (沈阳市皇姑区人民) as clue but misassigning crimes unrelated to location. Possibly the model overfits to \"人民\" leading to certain crimes like \"徇私舞弊罪;国家工作人员受贿\". Need rule: Do not infer crime solely from jurisdiction names; must rely on factual description of conduct.\n\n2. Model sometimes outputs generic or unrelated crime (非法组织献血罪) when actual is \"非法组织卖血\". So misinterpretation of key verb \"卖\" vs \"献\". Need rule: Pay attention to specific action verbs; avoid substituting similar terms.\n\n3. Model sometimes omits additional crimes that are present in facts (e.g., missing \"掩饰、隐瞒犯罪所得、犯罪所得收益\"). So need to capture all charges mentioned.\n\n4. Model sometimes uses slightly different naming (持有毒品罪 vs 非法持有毒品). Need rule: Use exact statutory crime name; avoid dropping \"非法\".\n\n5. Model sometimes mixes up crimes (走私普通货物、物品;盗窃) but predicted only theft and concealment. So need to detect presence of smuggling language.\n\nOverall, derive up to 5 lessons based on observable signals: presence of specific verbs, statutory terms, multiple charges, location names, and phrase patterns.\n\nLet's craft concise lessons.\n\n",
+            "reasoning_content": "We need to infer patterns of errors. The cases show model mispredicts due to:\n\n1. Using location names (沈阳市皇姑区人民) as clue but misassigning crimes unrelated to location. Possibly the model overfits to \"人民\" leading to certain crimes like \"徇私舞弊罪;国家工作人员受贿\". Need rule: Do not infer crime solely from jurisdiction names; must rely on factual description of conduct.\n\n2. Model sometimes outputs generic or unrelated crime (非法组织献血罪) when actual is \"非法组织卖血\". So misinterpretation of key verb \"卖\" vs \"献\". Need rule: Pay attention to specific action verbs; avoid substituting similar terms.\n\n3. Model sometimes omits additional crimes that are present in facts (e.g., missing \"掩饰、隐瞒犯罪所得、犯罪所得收益\"). So need to capture all charges mentioned.\n\n4. Model sometimes uses slightly different naming (持有毒品罪 vs 非法持有毒品). Need rule: Use exact statutory crime name; avoid dropping \"非法\".\n\n5. Model sometimes mixes up crimes (走私普通货物、物品;盗窃) but predicted only theft and concealment. So need to detect presence of smuggling language.\n\nOverall, derive up to 5 lessons based on observable signals: presence of specific verbs, statutory terms, multiple charges, location names, and phrase patterns.\n\nLet's craft concise lessons.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 563,
+      "prompt_tokens": 941,
+      "total_tokens": 1504,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 363,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0001878,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0001878,
+        "upstream_inference_prompt_cost": 4.705e-05,
+        "upstream_inference_completions_cost": 0.00014075
+      }
+    }
+  },
+  "raw_response_missing": false
+}

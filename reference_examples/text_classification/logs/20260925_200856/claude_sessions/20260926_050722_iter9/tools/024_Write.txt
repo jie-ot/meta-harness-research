@@ -1,0 +1,154 @@
+Write: C:/tmp/proto_idf.py
+
+content:
+"""Prototype: IDF-weighted Jaccard vs plain Jaccard on USPTO-like SMILES inputs."""
+import re
+import math
+from collections import defaultdict
+
+def tokenize_word(text):
+    return list(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+def tokenize_bigram(text):
+    t = re.sub(r'\s+', ' ', text.strip())
+    if len(t) < 2:
+        return [t] if t else []
+    return [t[i:i+2] for i in range(len(t)-1)]
+
+def has_cjk(text):
+    return bool(re.search(r'[一-鿿぀-ゟ゠-ヿ＀-￯]', text))
+
+def tokenize_adaptive(text):
+    return tokenize_bigram(text) if has_cjk(text) else tokenize_word(text)
+
+def jaccard_plain(a_set, b_set):
+    if not a_set and not b_set:
+        return 0.0
+    return len(a_set & b_set) / len(a_set | b_set)
+
+def jaccard_idf(a_tokens, b_tokens, idf):
+    a_set = set(a_tokens)
+    b_set = set(b_tokens)
+    union = a_set | b_set
+    inter = a_set & b_set
+    w_inter = sum(idf.get(t, 1.0) for t in inter)
+    w_union = sum(idf.get(t, 1.0) for t in union)
+    if w_union == 0:
+        return 0.0
+    return w_inter / w_union
+
+def compute_idf(examples_tokens):
+    """examples_tokens: list of token lists"""
+    N = len(examples_tokens)
+    df = defaultdict(int)
+    for tokens in examples_tokens:
+        for t in set(tokens):
+            df[t] += 1
+    idf = {t: math.log((N + 1) / (cnt + 1)) + 1 for t, cnt in df.items()}
+    return idf
+
+# Simulate USPTO-style inputs: SMILES strings
+# Common tokens: c, o, n, C, cc, cc, co, nc — present in almost all SMILES
+# Rare discriminative tokens: specific functional groups that distinguish reaction types
+
+examples = [
+    # Protections: Boc group (OC(C)(C)C), Cbz group patterns
+    {"input": "COC(=O)C(NC(=O)OC(C)(C)C)c1ccccc1C", "label": "Protections"},
+    {"input": "CC(C)(C)OC(=O)NC1CCCCC1C(=O)O", "label": "Protections"},
+    {"input": "CC(C)(C)OC(=O)N1CCC(NC(=O)OC(C)(C)C)CC1", "label": "Protections"},
+
+    # Deprotections: removing Boc/Cbz, similar tokens but different context
+    {"input": "CC(C)(C)OC(=O)NC1CCCCC1", "label": "Deprotections"},
+    {"input": "COC(=O)C(N)c1ccccc1", "label": "Deprotections"},
+    {"input": "NC1CCCCC1C(=O)O", "label": "Deprotections"},
+
+    # Oxidations: often =O added, Cr, MnO2, PCC patterns
+    {"input": "OCC12CC3CC(CC(C3)C1)C2", "label": "Oxidations"},
+    {"input": "OC1CC2CC1CC2", "label": "Oxidations"},
+    {"input": "OCC1CCCCC1", "label": "Oxidations"},
+
+    # Reductions: NH3 added, NaBH4 context
+    {"input": "COc1cc(N+](=O)[O-])ccc1Oc1ccc(Cl)c(Cl)c1", "label": "Reductions"},
+    {"input": "COc1cc([N+](=O)[O-])ccc1F", "label": "Reductions"},
+    {"input": "O=Cc1ccccc1[N+](=O)[O-]", "label": "Reductions"},
+
+    # C-C bond formation: alkyne/alkene cross coupling patterns
+    {"input": "Clc1ncncc1C#Cc1ccccc1", "label": "C-C bond formation"},
+    {"input": "Brc1ccc(-c2ccccn2)cc1", "label": "C-C bond formation"},
+    {"input": "Ic1ccc(C#N)cc1", "label": "C-C bond formation"},
+
+    # Heteroatom alkylation: N-alkylation, O-alkylation
+    {"input": "CC1CCCN1c1c(C(=O)NC2C3CC4CC(C3)CC2C4)cnn1", "label": "Heteroatom alkylation"},
+    {"input": "CN(C)Cc1ccc(Cl)cc1", "label": "Heteroatom alkylation"},
+    {"input": "COc1ccc(CN2CCOCC2)cc1", "label": "Heteroatom alkylation"},
+]
+
+# Query: a Deprotection (removing Boc)
+query = "CC(C)(C)OC(=O)NC1CCCCC1C(=O)OC"  # Boc-protected amino acid → should match Deprotections
+
+q_tokens = tokenize_adaptive(query)
+q_set = frozenset(q_tokens)
+all_tokens = [tokenize_adaptive(ex["input"]) for ex in examples]
+idf = compute_idf(all_tokens)
+
+print(f"Query: {query[:60]}...")
+print(f"Query tokens ({len(q_tokens)}): {sorted(set(q_tokens))[:15]}...")
+print()
+
+# Plain Jaccard ranking
+plain_scored = []
+for ex in examples:
+    toks = frozenset(tokenize_adaptive(ex["input"]))
+    score = jaccard_plain(q_set, toks)
+    plain_scored.append((score, ex["label"], ex["input"][:50]))
+plain_scored.sort(reverse=True)
+
+print("=== Plain Jaccard top-5 ===")
+for score, label, inp in plain_scored[:5]:
+    print(f"  {score:.3f}  [{label}]  {inp}")
+
+print()
+
+# IDF-weighted Jaccard ranking
+idf_scored = []
+for ex in examples:
+    toks = tokenize_adaptive(ex["input"])
+    score = jaccard_idf(q_tokens, toks, idf)
+    idf_scored.append((score, ex["label"], ex["input"][:50]))
+idf_scored.sort(reverse=True)
+
+print("=== IDF-weighted Jaccard top-5 ===")
+for score, label, inp in idf_scored[:5]:
+    print(f"  {score:.3f}  [{label}]  {inp}")
+
+print()
+# Check IDF values for common vs rare tokens
+print("=== Sample IDF values (lower = more common) ===")
+sample_tokens = ["c", "o", "n", "cc", "oc", "boc", "oc", "nc", "br", "cl", "c#c", "no", "idf"]
+common = sorted(idf.items(), key=lambda x: x[1])[:8]
+rare = sorted(idf.items(), key=lambda x: x[1], reverse=True)[:8]
+print("Most common (low IDF):", [(t, f"{v:.2f}") for t, v in common])
+print("Most rare (high IDF):", [(t, f"{v:.2f}") for t, v in rare])
+
+print()
+# Test with a CJK query too (to ensure IDF still works with bigrams)
+cjk_query = "事实:被告人林某为筹措资金，陆续从马某某处借款73万元用于经营"
+cjk_tokens = tokenize_adaptive(cjk_query)
+cjk_examples = [
+    {"input": "事实:某市人民检察院起诉书指控，被告人张某以虚假手段骗取财物", "label": "诈骗"},
+    {"input": "事实:被告人李某甲以十堰市某商务酒店有限公司股东之间存在纠纷为由", "label": "故意毁坏财物"},
+    {"input": "事实:被告人林某伪造了假的房产证交还给马某某", "label": "伪造国家机关证件"},
+]
+cjk_all_tokens = [tokenize_adaptive(ex["input"]) for ex in cjk_examples]
+cjk_idf = compute_idf(cjk_all_tokens)
+print("CJK IDF-weighted ranking:")
+for ex in cjk_examples:
+    toks = tokenize_adaptive(ex["input"])
+    s_plain = jaccard_plain(frozenset(cjk_tokens), frozenset(toks))
+    s_idf = jaccard_idf(cjk_tokens, toks, cjk_idf)
+    print(f"  plain={s_plain:.3f} idf={s_idf:.3f}  [{ex['label']}]")
+
+
+
+--- output ---
+File created successfully at: C:/tmp/proto_idf.py (file state is current in your context — no need to Read it back)

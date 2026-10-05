@@ -1,0 +1,72 @@
+{
+  "call_id": "276f06cf07f44119ab7716f69ed4ba26",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791041662-OfVfrlnScdVecpg7muCW",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The driver operated a vehicle negligently, failing to check for pedestrians and caused the death of a child. This constitutes a negligent act leading to death, matching the crime of '过失致人死亡' from the provided list.\",\n  \"final_answer\": \"[罪名]过失致人死亡<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate crime(s) from list.\n\nFacts: Bus driver drives vehicle, after dropping off passengers, drives forward without checking, hits a child (1st grade student) on the road, causing death. This is a traffic accident causing death. The relevant crime list includes:\n\n- 危险驾驶 (dangerous driving)\n- 过失致人死亡 (over? Actually list includes \"过失致人死亡\" as a crime)\n- 重大责任事故 (major responsibility accident)\n- 过失以危险方法危害公共安全 (over? but that's for dangerous method causing public safety)\n- 危险驾驶 is used in earlier examples where driver under influence etc. Also \"危险驾驶;妨害公务\" earlier.\n\nBut here driver didn't have intoxication, but drove negligently causing death. Could be \"危险驾驶\" (dangerous driving) or \"重大责任事故\". In examples, \"重大责任事故\" used for construction accident causing death due to safety negligence. Also \"过失致人死亡\" is a specific crime (in Chinese criminal law). However list includes \"过失致人死亡\". Yes.\n\nWhich is appropriate? The scenario: driver didn't observe, causing death. That's likely \"危险驾驶\" (dangerous driving) or \"过失致人死亡\". The list includes both. In earlier example with bus driver? Not present. Let's see earlier examples: \"危険驾驶;妨害公务\" used for driver who bit police after accident. That case had dangerous driving (driving under influence). Another example: \"危険驾驶;私分国有资产\" for drunk driver. So dangerous driving used for DUI. Here no DUI, but negligence. Could be \"过失致人死亡\". The list includes that.\n\nAlso \"重大责任事故\" used for construction accidents, not traffic. So likely \"过失致人死亡\". Also maybe \"危险驾驶\" if law defines dangerous driving includes causing death due to negligence. But typical Chinese law: Article 133: Dangerous driving (including drunk driving) causing traffic accident leading to death is dangerous driving. However there is also \"过失致人死亡\" for non-traffic accidents. For traffic accidents, dangerous driving is used. But the driver was a professional bus driver, maybe violation of traffic rules. The fact that he drove without checking, causing death, could be \"危险驾驶\". The earlier example of dangerous driving included intoxication, but not required.\n\nThus choose \"危险驾驶\". Also maybe \"过失致人死亡\" not in list? It is in list: \"过失致人死亡\". Which is more precise? The case is a traffic accident, but the law may treat as dangerous driving if driver was under influence or reckless. The description says he drove without observing, causing death. That is negligence, could be \"过失致人死亡\". I think the appropriate charge is \"过失致人死亡\". Let's see if any example used that label. Not yet. But list includes it.\n\nThus answer: [罪名]过失致人死亡<eoa>\n\nReturn JSON.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate crime(s) from list.\n\nFacts: Bus driver drives vehicle, after dropping off passengers, drives forward without checking, hits a child (1st grade student) on the road, causing death. This is a traffic accident causing death. The relevant crime list includes:\n\n- 危险驾驶 (dangerous driving)\n- 过失致人死亡 (over? Actually list includes \"过失致人死亡\" as a crime)\n- 重大责任事故 (major responsibility accident)\n- 过失以危险方法危害公共安全 (over? but that's for dangerous method causing public safety)\n- 危险驾驶 is used in earlier examples where driver under influence etc. Also \"危险驾驶;妨害公务\" earlier.\n\nBut here driver didn't have intoxication, but drove negligently causing death. Could be \"危险驾驶\" (dangerous driving) or \"重大责任事故\". In examples, \"重大责任事故\" used for construction accident causing death due to safety negligence. Also \"过失致人死亡\" is a specific crime (in Chinese criminal law). However list includes \"过失致人死亡\". Yes.\n\nWhich is appropriate? The scenario: driver didn't observe, causing death. That's likely \"危险驾驶\" (dangerous driving) or \"过失致人死亡\". The list includes both. In earlier example with bus driver? Not present. Let's see earlier examples: \"危険驾驶;妨害公务\" used for driver who bit police after accident. That case had dangerous driving (driving under influence). Another example: \"危険驾驶;私分国有资产\" for drunk driver. So dangerous driving used for DUI. Here no DUI, but negligence. Could be \"过失致人死亡\". The list includes that.\n\nAlso \"重大责任事故\" used for construction accidents, not traffic. So likely \"过失致人死亡\". Also maybe \"危险驾驶\" if law defines dangerous driving includes causing death due to negligence. But typical Chinese law: Article 133: Dangerous driving (including drunk driving) causing traffic accident leading to death is dangerous driving. However there is also \"过失致人死亡\" for non-traffic accidents. For traffic accidents, dangerous driving is used. But the driver was a professional bus driver, maybe violation of traffic rules. The fact that he drove without checking, causing death, could be \"危险驾驶\". The earlier example of dangerous driving included intoxication, but not required.\n\nThus choose \"危险驾驶\". Also maybe \"过失致人死亡\" not in list? It is in list: \"过失致人死亡\". Which is more precise? The case is a traffic accident, but the law may treat as dangerous driving if driver was under influence or reckless. The description says he drove without observing, causing death. That is negligence, could be \"过失致人死亡\". I think the appropriate charge is \"过失致人死亡\". Let's see if any example used that label. Not yet. But list includes it.\n\nThus answer: [罪名]过失致人死亡<eoa>\n\nReturn JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine appropriate crime(s) from list.\n\nFacts: Bus driver drives vehicle, after dropping off passengers, drives forward without checking, hits a child (1st grade student) on the road, causing death. This is a traffic accident causing death. The relevant crime list includes:\n\n- 危险驾驶 (dangerous driving)\n- 过失致人死亡 (over? Actually list includes \"过失致人死亡\" as a crime)\n- 重大责任事故 (major responsibility accident)\n- 过失以危险方法危害公共安全 (over? but that's for dangerous method causing public safety)\n- 危险驾驶 is used in earlier examples where driver under influence etc. Also \"危险驾驶;妨害公务\" earlier.\n\nBut here driver didn't have intoxication, but drove negligently causing death. Could be \"危险驾驶\" (dangerous driving) or \"重大责任事故\". In examples, \"重大责任事故\" used for construction accident causing death due to safety negligence. Also \"过失致人死亡\" is a specific crime (in Chinese criminal law). However list includes \"过失致人死亡\". Yes.\n\nWhich is appropriate? The scenario: driver didn't observe, causing death. That's likely \"危险驾驶\" (dangerous driving) or \"过失致人死亡\". The list includes both. In earlier example with bus driver? Not present. Let's see earlier examples: \"危険驾驶;妨害公务\" used for driver who bit police after accident. That case had dangerous driving (driving under influence). Another example: \"危険驾驶;私分国有资产\" for drunk driver. So dangerous driving used for DUI. Here no DUI, but negligence. Could be \"过失致人死亡\". The list includes that.\n\nAlso \"重大责任事故\" used for construction accidents, not traffic. So likely \"过失致人死亡\". Also maybe \"危险驾驶\" if law defines dangerous driving includes causing death due to negligence. But typical Chinese law: Article 133: Dangerous driving (including drunk driving) causing traffic accident leading to death is dangerous driving. However there is also \"过失致人死亡\" for non-traffic accidents. For traffic accidents, dangerous driving is used. But the driver was a professional bus driver, maybe violation of traffic rules. The fact that he drove without checking, causing death, could be \"危险驾驶\". The earlier example of dangerous driving included intoxication, but not required.\n\nThus choose \"危险驾驶\". Also maybe \"过失致人死亡\" not in list? It is in list: \"过失致人死亡\". Which is more precise? The case is a traffic accident, but the law may treat as dangerous driving if driver was under influence or reckless. The description says he drove without observing, causing death. That is negligence, could be \"过失致人死亡\". I think the appropriate charge is \"过失致人死亡\". Let's see if any example used that label. Not yet. But list includes it.\n\nThus answer: [罪名]过失致人死亡<eoa>\n\nReturn JSON.",
+            "reasoning_content": "We need to determine appropriate crime(s) from list.\n\nFacts: Bus driver drives vehicle, after dropping off passengers, drives forward without checking, hits a child (1st grade student) on the road, causing death. This is a traffic accident causing death. The relevant crime list includes:\n\n- 危险驾驶 (dangerous driving)\n- 过失致人死亡 (over? Actually list includes \"过失致人死亡\" as a crime)\n- 重大责任事故 (major responsibility accident)\n- 过失以危险方法危害公共安全 (over? but that's for dangerous method causing public safety)\n- 危险驾驶 is used in earlier examples where driver under influence etc. Also \"危险驾驶;妨害公务\" earlier.\n\nBut here driver didn't have intoxication, but drove negligently causing death. Could be \"危险驾驶\" (dangerous driving) or \"重大责任事故\". In examples, \"重大责任事故\" used for construction accident causing death due to safety negligence. Also \"过失致人死亡\" is a specific crime (in Chinese criminal law). However list includes \"过失致人死亡\". Yes.\n\nWhich is appropriate? The scenario: driver didn't observe, causing death. That's likely \"危险驾驶\" (dangerous driving) or \"过失致人死亡\". The list includes both. In earlier example with bus driver? Not present. Let's see earlier examples: \"危険驾驶;妨害公务\" used for driver who bit police after accident. That case had dangerous driving (driving under influence). Another example: \"危険驾驶;私分国有资产\" for drunk driver. So dangerous driving used for DUI. Here no DUI, but negligence. Could be \"过失致人死亡\". The list includes that.\n\nAlso \"重大责任事故\" used for construction accidents, not traffic. So likely \"过失致人死亡\". Also maybe \"危险驾驶\" if law defines dangerous driving includes causing death due to negligence. But typical Chinese law: Article 133: Dangerous driving (including drunk driving) causing traffic accident leading to death is dangerous driving. However there is also \"过失致人死亡\" for non-traffic accidents. For traffic accidents, dangerous driving is used. But the driver was a professional bus driver, maybe violation of traffic rules. The fact that he drove without checking, causing death, could be \"危险驾驶\". The earlier example of dangerous driving included intoxication, but not required.\n\nThus choose \"危险驾驶\". Also maybe \"过失致人死亡\" not in list? It is in list: \"过失致人死亡\". Which is more precise? The case is a traffic accident, but the law may treat as dangerous driving if driver was under influence or reckless. The description says he drove without observing, causing death. That is negligence, could be \"过失致人死亡\". I think the appropriate charge is \"过失致人死亡\". Let's see if any example used that label. Not yet. But list includes it.\n\nThus answer: [罪名]过失致人死亡<eoa>\n\nReturn JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 716,
+      "prompt_tokens": 23217,
+      "total_tokens": 23933,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000992921,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000992921,
+        "upstream_inference_prompt_cost": 0.000859029,
+        "upstream_inference_completions_cost": 0.000133892
+      }
+    }
+  },
+  "raw_response_missing": false
+}

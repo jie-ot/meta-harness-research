@@ -1,0 +1,72 @@
+{
+  "call_id": "05aae22c08604bb89b39b848fdf4d69c",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017223-gHMGT9qUzCBDqqfPBd6c",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"案件中，被告人李某作为监狱民警，在制止在押罪犯谭某的争执过程中，使用拳头多次击打其面部，导致鼻骨骨折并构成轻伤二级。该行为属于故意实施暴力，致人身体受到伤害，符合《刑法》关于故意伤害的构成要件。案情中不存在受贿、贪污、盗窃、诈骗、非法拘禁等其他犯罪要素，也没有单位受贿或计算机系统篡改等情形。因此应以故意伤害罪定罪。\",\n  \"final_answer\": \"[罪名]故意伤害<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine charges. Facts: Prison guard (李某) assaulted inmate causing injury (light injury level 2). This is assault causing bodily injury. In Chinese criminal law, causing bodily injury to a prisoner by a police officer could be \"故意伤害罪\". Since victim is a prisoner, still assault. The guard used fists, causing fracture, light injury. So charge: 故意伤害. Also maybe \"非法拘禁\"? No, they moved him but he was already detained. The guard used force beyond necessary, causing injury. So likely \"故意伤害罪\". No bribery, no computer tampering, no theft. So single charge.\n\nNeed to output without 罪 suffix? The rule: When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification. So we output \"故意伤害\". Format: [罪名]故意伤害<eoa>\n\nReturn JSON with reasoning and final_answer.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine charges. Facts: Prison guard (李某) assaulted inmate causing injury (light injury level 2). This is assault causing bodily injury. In Chinese criminal law, causing bodily injury to a prisoner by a police officer could be \"故意伤害罪\". Since victim is a prisoner, still assault. The guard used fists, causing fracture, light injury. So charge: 故意伤害. Also maybe \"非法拘禁\"? No, they moved him but he was already detained. The guard used force beyond necessary, causing injury. So likely \"故意伤害罪\". No bribery, no computer tampering, no theft. So single charge.\n\nNeed to output without 罪 suffix? The rule: When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification. So we output \"故意伤害\". Format: [罪名]故意伤害<eoa>\n\nReturn JSON with reasoning and final_answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to determine charges. Facts: Prison guard (李某) assaulted inmate causing injury (light injury level 2). This is assault causing bodily injury. In Chinese criminal law, causing bodily injury to a prisoner by a police officer could be \"故意伤害罪\". Since victim is a prisoner, still assault. The guard used fists, causing fracture, light injury. So charge: 故意伤害. Also maybe \"非法拘禁\"? No, they moved him but he was already detained. The guard used force beyond necessary, causing injury. So likely \"故意伤害罪\". No bribery, no computer tampering, no theft. So single charge.\n\nNeed to output without 罪 suffix? The rule: When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification. So we output \"故意伤害\". Format: [罪名]故意伤害<eoa>\n\nReturn JSON with reasoning and final_answer.",
+            "reasoning_content": "We need to determine charges. Facts: Prison guard (李某) assaulted inmate causing injury (light injury level 2). This is assault causing bodily injury. In Chinese criminal law, causing bodily injury to a prisoner by a police officer could be \"故意伤害罪\". Since victim is a prisoner, still assault. The guard used fists, causing fracture, light injury. So charge: 故意伤害. Also maybe \"非法拘禁\"? No, they moved him but he was already detained. The guard used force beyond necessary, causing injury. So likely \"故意伤害罪\". No bribery, no computer tampering, no theft. So single charge.\n\nNeed to output without 罪 suffix? The rule: When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification. So we output \"故意伤害\". Format: [罪名]故意伤害<eoa>\n\nReturn JSON with reasoning and final_answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 380,
+      "prompt_tokens": 783,
+      "total_tokens": 1163,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 238,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00013415,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00013415,
+        "upstream_inference_prompt_cost": 3.915e-05,
+        "upstream_inference_completions_cost": 9.5e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

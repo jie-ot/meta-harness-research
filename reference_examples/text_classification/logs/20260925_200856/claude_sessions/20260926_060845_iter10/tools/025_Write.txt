@@ -1,0 +1,29 @@
+Write: logs\20260925_200856\pending_eval.json
+
+content:
+{
+  "iteration": 10,
+  "candidates": [
+    {
+      "name": "anchor_last_memory",
+      "file": "agents/anchor_last_memory.py",
+      "hypothesis": "Placing the single best-matching example per top candidate label at the very end of the context window (immediately before the question) will outperform similarity_retrieval_memory and the current frontier, because transformer attention has a recency/proximity bias and examples closest to the question exert stronger influence on the prediction than examples buried at the top of a long context.",
+      "axis": "exploitation",
+      "base_system": "adaptive_tokenizer_confusion_memory",
+      "components": ["anchor_at_end", "proximity_bias", "per_label_anchor", "adaptive_tokenizer", "fill_then_anchor", "prompt_architecture_axis"]
+    },
+    {
+      "name": "utility_weighted_memory",
+      "file": "agents/utility_weighted_memory.py",
+      "hypothesis": "Weighting retrieval by a per-example utility score (accumulated +1/−1 based on whether each example was in context when a prediction was correct/wrong) will outperform pure similarity retrieval, because examples that have historically helped the model predict correctly are better demonstrations than topically similar examples that happened to mislead it.",
+      "axis": "exploration",
+      "base_system": "similarity_retrieval_memory",
+      "components": ["per_example_utility", "outcome_feedback", "sigmoid_modifier", "adaptive_tokenizer", "retrieved_indices_metadata", "memory_content_axis", "selection_algorithm_axis"]
+    }
+  ]
+}
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\pending_eval.json (file state is current in your context — no need to Read it back)

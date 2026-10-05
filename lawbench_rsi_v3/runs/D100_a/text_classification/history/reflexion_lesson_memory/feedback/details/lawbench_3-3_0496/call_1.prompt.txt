@@ -1,0 +1,35 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- Only assign crimes that are directly supported by the factual description and statutory elements; do not label payments to private individuals for false testimony as 行贿 (bribery), but as 妨害作证 (obstruc
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，2015年7月8日下午，被告人喻1某从他人处得到被害人商某甲被窃的苹果牌iphone6plus型手机一部，并于当日15时42分至15时48分期间，通过修改该手机指纹识别信息的方式登录该手机上的支付宝账号，并使用该支付宝账号分5次付款共计消费人民币50，200元为自己的酷狗账号kgopenXXXXXXXXX购买网络虚拟货币“繁星币”，其中1，159元使用支付宝账户内余额付款，其余49，041元通过支付宝绑定的银行借记卡转账付款。2015年8月5日，被告人喻1某在其暂住地本市普陀区普善路XXX弄XXX号XXX室内被公安机关抓获，其购买的繁星币已被挥霍殆尽。喻1某到案后，在家属的配合下退出了被害人的经济损失共计人民币50，200元。
+认定上述事实的证据有：
+被害人商某某的陈述及公安人员出具的《到案经过》、《情况说明》，证实被害人商某甲发现手机被盗及该手机上的支付宝账户内钱款被盗刷后向公安机关报案，以及公安机关进行侦查并抓获被告人喻1某的经过；《搜查笔录》、《扣押清单》证实，公安机关在喻1某的暂住处进行搜查时，依法扣押涉案笔记本电脑一台等物品并通过刑事影印件的形式将上述物品固定在案。
+《常住人口查询信息》及《工商银行账户历史明细清单》证实，被害人商某甲与商某乙系父子关系，商某甲失窃的手机上的支付宝账号绑定的是其父亲商某乙的银行卡，该银行卡于2015年7月8日通过POS交易共消费人民币49，041元。
+证人郑某某的证言及辨认笔录、书证《调取证据清单》、《发还清单》，证实普善路XXX弄XXX号XXX室由郑某租给被告人喻1某，并以郑的名义开通网络，涉案路由器一只被公安机关依法调取，后依法发还给郑某某。
+《调取证据清单》、公安机关出具的《情况说明》及支付宝（中国）网络技术有限公司出具的涉案账户信息及电子数据光盘一张，证实2015年7月8日15时42分至15时48分，被害人商某甲的父亲商某乙的支付宝账号向广州酷狗计算机科技有限公司支付50，200元进行繁星币充值服务，被充值的用户名为kgopenXXXXXXXXX，以及商某乙于同日向支付宝公司投诉自己支付宝绑定的快捷卡被盗刷的情况。
+《调取证据清单》、广州酷狗计算机科技有限公司提供的涉案账户信息，证实kgopenXXXXXXXXX、对应ID为XXXXXXXXX的繁星账号案发时的登录、充值信息以及后续的消费记录。
+刑事影印件被告人喻1某的笔记本电脑上QQ账号截图、“酷狗音乐”软件截图，注册信息及公安机关出具的《情况说明》，证实涉案的QQ账号XXXXXXXXXX、XXXXXXXXXX、繁星账号kgopenXXXXXXXXX、kgopenXXXXXXXXX均系被告人喻1某本人的账号，喻1某系通过QQ第三方软件登录繁星账号，且QQ账号与繁星账号具有唯一对应性。
+以上证据均经公诉机关当庭举证，且经法庭查证属实。被告人喻1某亦供认不讳。所有证据相互关联，合法有效，本院均予以采信。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

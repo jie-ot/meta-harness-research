@@ -1,0 +1,23 @@
+An AI classifier made an error on this case. Generate a compact correction lesson.
+
+**Correct label:** 贪污
+**Wrong prediction:** [罪名]职务侵占<eoa>
+**Case facts (excerpt):**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:剑川县人民检察院指控，2008年至2009年间，在老君山镇富民村实施“千村扶贫、整村推进”开发项目中，被告人和某某利用职务之便，伙同罗×龙、李×林（均另案处理）将国家扶贫专项资金6万某予以私分，和某某分得3万某。其行为已触犯《中华人民共和国刑法》××××、××、××之规定，犯罪事实清楚，证据确实充分，应当以××追究刑事责任。鉴于被告人和某某在案发后能如实供述自己的犯罪事实，并主动退缴赃款，认罪态度较好，以及无前科劣迹等量刑情节，建议法庭对被告人作出公正的判决。对指控的上述事实，公诉机关提供了相应的证据。
+
+
+Write a lesson that:
+1. States the KEY distinguishing feature that determines the correct label
+2. Explains what makes this different from "[罪名]职务侵占<eoa>"
+3. Gives a brief rule a classifier can apply to future cases
+
+Respond only in JSON:
+{"lesson": "<one to three sentences, in the same language as the case facts>", "final_answer": "贪污"}

@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the factual description involves the theft or misappropriation of a species that is designated as a nationally protected plant or animal, the classification must include both the theft charge and t
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the facts describe the creation, alteration, or commercial transaction of forged state‑issued documents, certificates, or official seals, the charge must list all applicable offenses: 伪造、变造、以及买卖（
+- When the factual description includes actions of forging, altering, or trafficking state-issued documents, certificates, or seals, the classification must list all applicable offenses (e.g., 伪造、变造、买卖国
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控，被告人侯某某为自用，分别于2013年8月间，2014年8月15日，在敦化林业局柳树河林场20林班其承包的林蛙养殖沟系内，使用镰刀，非法毁坏国家重点保护植物水曲柳两株（径级为2厘米）。
+案发后，被告人侯某某于2014年8月19日被公安机关抓获。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

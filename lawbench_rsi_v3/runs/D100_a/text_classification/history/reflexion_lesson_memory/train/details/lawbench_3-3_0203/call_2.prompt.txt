@@ -1,0 +1,22 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:和静县人民检察院指控：2017年1月2日4时许，和静县公安局禁毒大队根据情报线索，在库尔勒市铂金宾馆501室将被告人刘某抓获，当场缴获疑似毒品白色晶体状物质13包。经讯问，被告人刘某对上述犯罪事实供认不讳，并交代毒品系其从彭某处购买，彭某正居住于铂金宾馆425房间，侦查人员根据其提供的线索在该房间内将彭某抓获。彭某涉嫌贩卖毒品一案已被侦查立案查证属实。公诉机关认为被告人刘某违反国家毒品管理法规，持有毒品海洛因十克以上，其行为构成持有毒品罪，提请本院判处。
+
+
+Wrong prediction: [罪名]持有毒品<eoa>
+Correct answer: 非法持有毒品
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

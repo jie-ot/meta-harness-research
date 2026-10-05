@@ -1,0 +1,72 @@
+{
+  "call_id": "4ed5b36366d14660a3327229a935d531",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791027528-0SlqxCGTRxPjvY60nsUT",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant, Yue, received construction progress payments but deliberately withheld the wages owed to workers on two construction projects, amounting to 907,906 yuan. He was ordered by the labor authority to pay the wages but failed to do so. Under Chinese criminal law, this conduct constitutes the crime of refusing to pay labor remuneration, i.e., 拒不支付劳动报酬罪. No other criminal conduct is evident in the facts.\",\n  \"final_answer\": \"[罪名]拒不支付劳动报酬<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate criminal charge(s) for the described facts.\n\nFacts: Contractor (Yue) contracted construction projects, received progress payments (total about 248.6 million? Actually 157.7 + 90.9313 = 248.6313? Wait units: 157.7万元 and 90.9313万元). Then he refused to pay workers wages, owing about 907,906 yuan. He was ordered to pay but didn't. He was arrested.\n\nThis is typical of \"拒不支付劳动报酬罪\" (refusal to pay labor remuneration) under Chinese criminal law. The crime is \"拒不支付劳动报酬罪\" (failure to pay wages). The label used in dataset? Look at previous examples: For similar case of not paying wages, we saw earlier: \"失火\", \"容留他人吸毒\", etc. Need to see pattern for wage non-payment. Search memory: In Chinese criminal law, article 275? Actually article 275 is \"拒不支付劳动报酬罪\". The label likely \"拒不支付劳动报酬\". Let's see if any example in dataset: Not present. But we need to output the exact official label used in dataset. The instruction says \"Use the EXACT official label — do not append or drop characters\". We need to infer the label format used in previous answers. For example, \"滥伐林木\" (for illegal logging). \"非法吸收公众存款\". \"非法占用农用地\". \"非法占用农用地\". So they use concise phrase.\n\nThus for wage non-payment, likely \"拒不支付劳动报酬\". Could also be \"拖欠工资\". But official crime name is \"拒不支付劳动报酬罪\". In dataset they may drop \"罪\". In examples they drop \"罪\". Eg \"滥伐林木\" (no 罪). \"非法吸收公众存款\". So we output \"拒不支付劳动报酬\". Possibly \"拒不支付劳动报酬罪\" but they omitted 罪 elsewhere. Let's check: Example \"非法占用农用地\" (no 罪). So we output without 罪.\n\nThus final answer: [罪名]拒不支付劳动报酬<eoa>\n\nCheck if any other charges: Could also be \"非法占用工程款\"? Not. The main crime is refusal to pay wages. So single charge.\n\nReturn JSON with reasoning and final answer.\n\n",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to determine appropriate criminal charge(s) for the described facts.\n\nFacts: Contractor (Yue) contracted construction projects, received progress payments (total about 248.6 million? Actually 157.7 + 90.9313 = 248.6313? Wait units: 157.7万元 and 90.9313万元). Then he refused to pay workers wages, owing about 907,906 yuan. He was ordered to pay but didn't. He was arrested.\n\nThis is typical of \"拒不支付劳动报酬罪\" (refusal to pay labor remuneration) under Chinese criminal law. The crime is \"拒不支付劳动报酬罪\" (failure to pay wages). The label used in dataset? Look at previous examples: For similar case of not paying wages, we saw earlier: \"失火\", \"容留他人吸毒\", etc. Need to see pattern for wage non-payment. Search memory: In Chinese criminal law, article 275? Actually article 275 is \"拒不支付劳动报酬罪\". The label likely \"拒不支付劳动报酬\". Let's see if any example in dataset: Not present. But we need to output the exact official label used in dataset. The instruction says \"Use the EXACT official label — do not append or drop characters\". We need to infer the label format used in previous answers. For example, \"滥伐林木\" (for illegal logging). \"非法吸收公众存款\". \"非法占用农用地\". \"非法占用农用地\". So they use concise phrase.\n\nThus for wage non-payment, likely \"拒不支付劳动报酬\". Could also be \"拖欠工资\". But official crime name is \"拒不支付劳动报酬罪\". In dataset they may drop \"罪\". In examples they drop \"罪\". Eg \"滥伐林木\" (no 罪). \"非法吸收公众存款\". So we output \"拒不支付劳动报酬\". Possibly \"拒不支付劳动报酬罪\" but they omitted 罪 elsewhere. Let's check: Example \"非法占用农用地\" (no 罪). So we output without 罪.\n\nThus final answer: [罪名]拒不支付劳动报酬<eoa>\n\nCheck if any other charges: Could also be \"非法占用工程款\"? Not. The main crime is refusal to pay wages. So single charge.\n\nReturn JSON with reasoning and final answer.\n\n",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate criminal charge(s) for the described facts.\n\nFacts: Contractor (Yue) contracted construction projects, received progress payments (total about 248.6 million? Actually 157.7 + 90.9313 = 248.6313? Wait units: 157.7万元 and 90.9313万元). Then he refused to pay workers wages, owing about 907,906 yuan. He was ordered to pay but didn't. He was arrested.\n\nThis is typical of \"拒不支付劳动报酬罪\" (refusal to pay labor remuneration) under Chinese criminal law. The crime is \"拒不支付劳动报酬罪\" (failure to pay wages). The label used in dataset? Look at previous examples: For similar case of not paying wages, we saw earlier: \"失火\", \"容留他人吸毒\", etc. Need to see pattern for wage non-payment. Search memory: In Chinese criminal law, article 275? Actually article 275 is \"拒不支付劳动报酬罪\". The label likely \"拒不支付劳动报酬\". Let's see if any example in dataset: Not present. But we need to output the exact official label used in dataset. The instruction says \"Use the EXACT official label — do not append or drop characters\". We need to infer the label format used in previous answers. For example, \"滥伐林木\" (for illegal logging). \"非法吸收公众存款\". \"非法占用农用地\". \"非法占用农用地\". So they use concise phrase.\n\nThus for wage non-payment, likely \"拒不支付劳动报酬\". Could also be \"拖欠工资\". But official crime name is \"拒不支付劳动报酬罪\". In dataset they may drop \"罪\". In examples they drop \"罪\". Eg \"滥伐林木\" (no 罪). \"非法吸收公众存款\". So we output \"拒不支付劳动报酬\". Possibly \"拒不支付劳动报酬罪\" but they omitted 罪 elsewhere. Let's check: Example \"非法占用农用地\" (no 罪). So we output without 罪.\n\nThus final answer: [罪名]拒不支付劳动报酬<eoa>\n\nCheck if any other charges: Could also be \"非法占用工程款\"? Not. The main crime is refusal to pay wages. So single charge.\n\nReturn JSON with reasoning and final answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to determine appropriate criminal charge(s) for the described facts.\n\nFacts: Contractor (Yue) contracted construction projects, received progress payments (total about 248.6 million? Actually 157.7 + 90.9313 = 248.6313? Wait units: 157.7万元 and 90.9313万元). Then he refused to pay workers wages, owing about 907,906 yuan. He was ordered to pay but didn't. He was arrested.\n\nThis is typical of \"拒不支付劳动报酬罪\" (refusal to pay labor remuneration) under Chinese criminal law. The crime is \"拒不支付劳动报酬罪\" (failure to pay wages). The label used in dataset? Look at previous examples: For similar case of not paying wages, we saw earlier: \"失火\", \"容留他人吸毒\", etc. Need to see pattern for wage non-payment. Search memory: In Chinese criminal law, article 275? Actually article 275 is \"拒不支付劳动报酬罪\". The label likely \"拒不支付劳动报酬\". Let's see if any example in dataset: Not present. But we need to output the exact official label used in dataset. The instruction says \"Use the EXACT official label — do not append or drop characters\". We need to infer the label format used in previous answers. For example, \"滥伐林木\" (for illegal logging). \"非法吸收公众存款\". \"非法占用农用地\". \"非法占用农用地\". So they use concise phrase.\n\nThus for wage non-payment, likely \"拒不支付劳动报酬\". Could also be \"拖欠工资\". But official crime name is \"拒不支付劳动报酬罪\". In dataset they may drop \"罪\". In examples they drop \"罪\". Eg \"滥伐林木\" (no 罪). \"非法吸收公众存款\". So we output \"拒不支付劳动报酬\". Possibly \"拒不支付劳动报酬罪\" but they omitted 罪 elsewhere. Let's check: Example \"非法占用农用地\" (no 罪). So we output without 罪.\n\nThus final answer: [罪名]拒不支付劳动报酬<eoa>\n\nCheck if any other charges: Could also be \"非法占用工程款\"? Not. The main crime is refusal to pay wages. So single charge.\n\nReturn JSON with reasoning and final answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 643,
+      "prompt_tokens": 24465,
+      "total_tokens": 25108,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 600,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00084969,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00084969,
+        "upstream_inference_prompt_cost": 0.00073395,
+        "upstream_inference_completions_cost": 0.00011574
+      }
+    }
+  },
+  "raw_response_missing": false
+}

@@ -1,0 +1,15 @@
+E4首条真实分类链路验证：成功；余下39条未启动
+
+条件：固定Codex wrapper + R4B rendered prompt，gpt-5.6-sol/max，每条新ephemeral线程。本实验属于新模型regime，不与旧gpt-oss分数合并。
+首条：lawbench_3-3_0481；prompt SHA-256=8c8a9a81a59618313eb294b4df164c47844afc2775024def0962e0a53d4c7a2f；30,802字符。
+结果：[罪名]单位行贿<eoa>；canonical=['单位行贿']；target=['单位行贿']；correct=True。
+耗时：23.875秒。token：input=30432，output=334，reasoning=255，total=30766，cachedInput=0。
+
+模型证据：完整目录含gpt-5.6-sol及max；thread/start回显model=gpt-5.6-sol、provider=openai、effort=max、ephemeral=true。Reasoning: medium只是保留的旧system文本，不代表当前effort；当前effort由max字段单独设置。
+wrapper：Codex应用目录instruction source，1098字节，content SHA-256=c5fe8350f0a4ca1fa251c2909b97bc2861ab8633dd2150043375a112cbcef065；实际thread重新核对相同。未检测到锁定题目ID、target、prompt片段、R4B/LawBench/历史模型标记或个性化标记。未保存原文/路径。
+工具隔离：11个官方临时feature开关均effective=false，web disabled；实际item中无工具动作。没有更改持久配置。
+
+额度前后：7天窗均used=89%、remaining=11%；整数显示未变化不能解释为零成本。查询时间见final_report.json。
+预算：余下39条按首条输入密度和同输出的点估计约1,203,871 token，1.5倍规划场景约1,805,806 token；这不是上界或额度换算。仅余11%且bucket容量未知，因此不保守批准自动运行。
+
+原代码、memory、manifest和score哈希复核未变；client/result cache未使用，reported cached input=0。答案没有重试。

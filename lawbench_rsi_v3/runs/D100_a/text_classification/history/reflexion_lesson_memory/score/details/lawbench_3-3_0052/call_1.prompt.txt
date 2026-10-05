@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the facts describe the creation, alteration, or commercial transaction of forged state‑issued documents, certificates, or official seals, the charge must list all applicable offenses: 伪造、变造、以及买卖（
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- When the factual description includes actions of forging, altering, or trafficking state-issued documents, certificates, or seals, the classification must list all applicable offenses (e.g., 伪造、变造、买卖国
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:北京市朝阳区人民检察院指控，被告人方1某于2010年至2013年3月间，通过他人冒充中国人民解放军南京军区常州军分区司令员的身份，伪造中国人民解放军车辆驾驶证1本、中国人民解放军行车执照1本、中国人民解放军军官证1本以及军用机动车号牌（空N39856）1副，并将上述军用号牌安装在自己驾驶的黑色别克牌轿车上在本市朝阳区、大兴区等地非法使用。被告人方1某后于2013年3月9日被抓获归案。
+公诉机关认为被告人方1某的行为已触犯了《中华人民共和国刑法》××××、××之规定，构成伪造武装部队证件罪、非法使用武装部队专用标志罪，且非法使用武装部队专用标志行为情节特别严重，其中就伪造武装部队证件罪，建议判处××至九个月；就非法使用武装部队专用标志罪，建议判处××至四年，并处罚金，数罪并罚。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

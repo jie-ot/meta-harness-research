@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the facts describe the manufacturing or sale of food, health products, or supplements that contain prohibited or harmful substances (e.g., prescription‑drug ingredients), classify the offense as 
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the alleged offender is not a public official (i.e., not a state functionary) but the conduct involves accepting or soliciting a bribe, the correct charge is '非国家工作人员受贿' rather than the generic '
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:黑龙江省哈尔滨市南岗区人民检察院指控，2015年8月23日13时45分，被告人修某某在教化电子大世界一楼万达电子经销部，非法销售带有窃听、窃照、窃录功能的器材。经公安机关工作在其工作的万达电子经销部扣押带有窃听、窃录、窃照功能的手表十块。经黑龙江省特种器材技术鉴定中心鉴定：修某某销售的带有窃听、窃照、窃录功能的器材具有专用间谍器材的技术特征和功能。经侦查，被告人修某某于2015年8月23日被公安机关在哈尔滨市南岗区抓获。
+公诉机关向本院移送了指控被告人修某某犯非法销售间谍专用器材罪的物证、书证、证人证言、被告人供述和辩解、鉴定意见等证据。公诉机关认为，被告人修某某的行为触犯了《中华人民共和国刑法》××之规定，应当以非法销售间谍专用器材罪追究其刑事责任，提请依法惩处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,55 @@
+Read: agents\cjk_bigram_confusion_memory.py
+
+limit: 50
+
+--- output ---
+1	"""CJK Bigram Confusion Disambiguation Memory.
+2	
+3	The base confusion_disambiguation_memory system uses a tokenizer that matches
+4	only ASCII characters ([A-Za-z0-9]+).  For Chinese-language legal text this
+5	produces near-zero overlap on every pair of examples — similarity is driven
+6	solely by shared date/number strings, making retrieval essentially random and
+7	making the confusion matrix signal useless (because every retrieved example
+8	looks equally similar regardless of content).
+9	
+10	This system replaces the tokenizer with CJK character bigrams plus ASCII
+11	tokens.  Bigrams over Chinese characters give genuine semantic overlap that
+12	tracks shared legal concepts and factual context, restoring the intended
+13	behaviour of the confusion disambiguation retrieval algorithm.
+14	
+15	Everything else — the confusion matrix, the disambiguation injection logic,
+16	the prompt template, the serialisation — is identical to the base system.
+17	The hypothesis is therefore tightly controlled: if accuracy improves, it is
+18	because real similarity signal was absent and bigrams supply it.
+19	"""
+20	
+21	import json
+22	import re
+23	from collections import defaultdict
+24	from typing import Any
+25	
+26	from ..llm import LLMCallable
+27	from ..memory_system import MemorySystem, extract_json_field
+28	
+29	PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+30	
+31	{examples_section}
+32	
+33	**Problem:**
+34	{input}
+35	
+36	**Instructions:**
+37	- Follow the patterns shown in the examples above
+38	- Respond in JSON format
+39	
+40	{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+41	
+42	MAX_CHARS = 30000
+43	_TOP_CANDIDATE_LABELS = 3
+44	_DISAMBIG_PER_CONFUSION = 2
+45	
+46	
+47	def _tokenize(text: str) -> frozenset:
+48	    """CJK character bigrams plus ASCII tokens.
+49	
+50	    Bigrams capture shared legal concepts (e.g. '故意', '伤害', '故意伤害')

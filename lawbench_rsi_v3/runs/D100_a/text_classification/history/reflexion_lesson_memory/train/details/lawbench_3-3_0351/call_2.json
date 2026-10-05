@@ -1,0 +1,72 @@
+{
+  "call_id": "d927718899ef4f228bd9fb2392617d04",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017974-e7NGxVR3W0pe17cMJgjl",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the facts describe the acquisition, processing, and sale of animal-derived products that are unsafe or of unknown origin, classify the offense under food safety statutes (e.g., 生产、销售不符合安全标准的食品) rather than under animal‑related crimes such as illegal slaughter or transport.\",\n  \"keywords\": [\n    \"死因不明的狗\",\n    \"加工后出售\",\n    \"动物卫生监督所证明\",\n    \"不符合安全标准\",\n    \"食品安全\",\n    \"销售金额\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with a rule to prevent classification error: The AI incorrectly labeled the crime as \"非法屠宰、收购、运输、出售病死动物\" whereas correct answer is \"生产、销售不符合安全标准的食品\". So the error is misclassifying the legal charge: using a specific animal-related crime instead of the broader food safety crime. The rule should ensure that when facts involve processing and selling animal products that are unsafe, the correct charge is \"生产、销售不符合安全标准的食品\" (production and sale of food not meeting safety standards), not \"illegal slaughter, purchase, transport, sale of diseased animals\". So rule: If the conduct involves processing, selling animal-derived food that is unsafe or from diseased sources, classify under food safety offenses rather than animal protection offenses. Keywords: \"死因不明的狗\", \"加工后出售\", \"销售金额\", \"动物卫生监督所证明\", \"不符合安全标准\", \"食品\". Provide JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with a rule to prevent classification error: The AI incorrectly labeled the crime as \"非法屠宰、收购、运输、出售病死动物\" whereas correct answer is \"生产、销售不符合安全标准的食品\". So the error is misclassifying the legal charge: using a specific animal-related crime instead of the broader food safety crime. The rule should ensure that when facts involve processing and selling animal products that are unsafe, the correct charge is \"生产、销售不符合安全标准的食品\" (production and sale of food not meeting safety standards), not \"illegal slaughter, purchase, transport, sale of diseased animals\". So rule: If the conduct involves processing, selling animal-derived food that is unsafe or from diseased sources, classify under food safety offenses rather than animal protection offenses. Keywords: \"死因不明的狗\", \"加工后出售\", \"销售金额\", \"动物卫生监督所证明\", \"不符合安全标准\", \"食品\". Provide JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with a rule to prevent classification error: The AI incorrectly labeled the crime as \"非法屠宰、收购、运输、出售病死动物\" whereas correct answer is \"生产、销售不符合安全标准的食品\". So the error is misclassifying the legal charge: using a specific animal-related crime instead of the broader food safety crime. The rule should ensure that when facts involve processing and selling animal products that are unsafe, the correct charge is \"生产、销售不符合安全标准的食品\" (production and sale of food not meeting safety standards), not \"illegal slaughter, purchase, transport, sale of diseased animals\". So rule: If the conduct involves processing, selling animal-derived food that is unsafe or from diseased sources, classify under food safety offenses rather than animal protection offenses. Keywords: \"死因不明的狗\", \"加工后出售\", \"销售金额\", \"动物卫生监督所证明\", \"不符合安全标准\", \"食品\". Provide JSON.",
+            "reasoning_content": "We need to produce a JSON with a rule to prevent classification error: The AI incorrectly labeled the crime as \"非法屠宰、收购、运输、出售病死动物\" whereas correct answer is \"生产、销售不符合安全标准的食品\". So the error is misclassifying the legal charge: using a specific animal-related crime instead of the broader food safety crime. The rule should ensure that when facts involve processing and selling animal products that are unsafe, the correct charge is \"生产、销售不符合安全标准的食品\" (production and sale of food not meeting safety standards), not \"illegal slaughter, purchase, transport, sale of diseased animals\". So rule: If the conduct involves processing, selling animal-derived food that is unsafe or from diseased sources, classify under food safety offenses rather than animal protection offenses. Keywords: \"死因不明的狗\", \"加工后出售\", \"销售金额\", \"动物卫生监督所证明\", \"不符合安全标准\", \"食品\". Provide JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 330,
+      "prompt_tokens": 445,
+      "total_tokens": 775,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 213,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 6.945e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 6.945e-05,
+        "upstream_inference_prompt_cost": 1.335e-05,
+        "upstream_inference_completions_cost": 5.61e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

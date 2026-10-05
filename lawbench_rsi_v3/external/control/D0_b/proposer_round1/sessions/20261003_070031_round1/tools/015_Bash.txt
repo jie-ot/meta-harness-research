@@ -1,0 +1,52 @@
+Bash
+
+command:
+python "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D0_b\text_classification\.prototypes\proto_correction_contrast.py"
+
+description: Run contrastive correction memory prototype
+
+--- output ---
+=== CORRECTION SECTION (injected before examples) ===
+  Input like: 被告人何某隐瞒事实真相，谎称出租车车主是自己，与被害人马某某签署了一份租车协议书，收取马某某一年的租金及车辆抵押金共计5...
+  Wrong: 诈骗  →  Correct: 合同诈骗
+  Input like: 被告人李某甲以牟利为目的，盗割正在使用中的公共照明电线，危害公共安全。...
+  Wrong: 盗窃;破坏电力设施  →  Correct: 破坏电力设备
+  Input like: 被告人叶某甲从青田县季宅乡黄放口村摘取几个罂粟果，将罂粟果种植在自家农田中，经现场清点被铲除的已结果的罂粟植株共计782...
+  Wrong: 非法种植罂粟  →  Correct: 非法种植毒品原植物
+
+=== TOP EXAMPLES ===
+Q: 被告人何某隐瞒事实真相，谎称出租车车主是自己，与被害人马某某签署了一份租车协议书，收取马某某一年的租金及车辆抵押金共计50600元，被告人何某拒不归还。...
+A: 合同诈骗
+
+Q: 被告人李某甲以牟利为目的，盗割正在使用中的公共照明电线，危害公共安全。...
+A: 破坏电力设备
+
+Q: 被告人何某某在三台县建设镇干坝王村私自焚烧秸秆不慎引发山火，造成的过火有林地面积为2.0071公顷。...
+A: 失火
+
+Q: 被告人叶某甲从青田县季宅乡黄放口村摘取几个罂粟果，将罂粟果种植在自家农田中，经现场清点被铲除的已结果的罂粟植株共计782株。...
+A: 非法种植毒品原植物
+
+Q: 被告单位通辽市某商业广场有限公司及其法定代表人沙某某，利用另案犯罪嫌疑人张某某的职务便利，以通辽市政府办公厅的名义出具了推荐函，为感谢张某某而向其支付了不正当报...
+A: 单位行贿...
+
+Top corrections retrieved:
+  sim=0.113  wrong=诈骗                      right=合同诈骗
+  sim=0.026  wrong=盗窃;破坏电力设施               right=破坏电力设备
+  sim=0.020  wrong=非法种植罂粟                  right=非法种植毒品原植物
+
+=== VARIANT: what if corrections section is empty (cold start)? ===
+Correction section: '(none yet)'  (graceful empty)
+Example section: ''  (empty pool, graceful)
+
+=== VARIANT: correction ordering — by recency vs similarity ===
+Similarity-ranked corrections:
+  sim=0.113  right=合同诈骗
+  sim=0.026  right=破坏电力设备
+  sim=0.020  right=非法种植毒品原植物
+Recency-ranked corrections:
+  sim=0.113  right=合同诈骗
+  sim=0.026  right=破坏电力设备
+  sim=0.020  right=非法种植毒品原植物
+
+Conclusion: similarity-ranked corrections are more relevant. Proceeding with that.

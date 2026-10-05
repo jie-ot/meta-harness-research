@@ -1,0 +1,72 @@
+{
+  "call_id": "3d9f604957104c3aa1d96a1ed503c87e",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791012716-uNvnvm6338NpAFc0kAs8",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": null,
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate crime label(s) for this case.\n\nFacts: Defendant Yang1 operating a three-no-ship (unregistered) fishing vessel, in a prohibited fishing area, using illegal net (minimum mesh size 9mm, which is prohibited) for single drag fishing, caught 12,250 kg, illegal profit 10,500 RMB. Caught by enforcement on Oct 26. Then arrested May 5 2017.\n\nThis is illegal fishing. The correction lessons mention:\n\n- Correct label 【非法狩猎】 (not “非法捕猎、收购、运输、出售国家重点保护的野生动物”) when behavior is illegal hunting of protected animals. Not relevant.\n\n- Correct label 【非法狩猎】 (not “非法捕猎、收购、运输、出售国家重点保护的野生动物”) for just illegal hunting.\n\nBut for fishing, the crime is “非法捕捞” maybe? In Chinese criminal law, there is a crime of “非法捕捞、收购、运输、出售国家重点保护的野生动物” but also “非法捕捞” for fish? Actually fish are not protected wildlife? There is a crime of “非法捕捞、收购、运输、出售国家重点保护的水生动物” maybe. However the label list includes “非法狩猎” which is used for illegal hunting of protected wildlife, but also for illegal fishing? The correction lesson says: \"Correct label 【非法狩猎】 (not 「[罪名]非法捕猎、收购、运输、出售国家重点保护的野生动物<eoa>」): 关键在于行为是否仅限于非法捕猎受保护动物；若仅是使用禁用工具捕猎并获利，则定为“非法狩猎”，而不是包括收购、运输、出售等多环节的‘非法捕猎、收购、运输、出售国家重点保护的野生动物’。\" This suggests that for illegal hunting (including fishing) using prohibited gear, the correct label is “非法狩猎”. So we should label as 【非法狩猎】.\n\nCheck other possible labels: maybe also “非法捕捞” but not in list. The list includes many labels but not that. So we use “非法狩猎”.\n\nThus final answer: [罪名]非法狩猎<eoa>\n\nReturn JSON with reasoning and final answer.{\n  \"reasoning\": \"The defendant used a prohibited fishing net in a designated no‑fishing zone, catching large quantities of fish for profit. This constitutes illegal hunting of protected wildlife (including fish) using prohibited equipment, which according to the correction lessons should be labeled as “非法狩猎”. No other crimes (e.g., smuggling, fraud) are indicated.\",\n  \"final_answer\": \"[罪名]非法狩猎<eoa>\"\n}",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate crime label(s) for this case.\n\nFacts: Defendant Yang1 operating a three-no-ship (unregistered) fishing vessel, in a prohibited fishing area, using illegal net (minimum mesh size 9mm, which is prohibited) for single drag fishing, caught 12,250 kg, illegal profit 10,500 RMB. Caught by enforcement on Oct 26. Then arrested May 5 2017.\n\nThis is illegal fishing. The correction lessons mention:\n\n- Correct label 【非法狩猎】 (not “非法捕猎、收购、运输、出售国家重点保护的野生动物”) when behavior is illegal hunting of protected animals. Not relevant.\n\n- Correct label 【非法狩猎】 (not “非法捕猎、收购、运输、出售国家重点保护的野生动物”) for just illegal hunting.\n\nBut for fishing, the crime is “非法捕捞” maybe? In Chinese criminal law, there is a crime of “非法捕捞、收购、运输、出售国家重点保护的野生动物” but also “非法捕捞” for fish? Actually fish are not protected wildlife? There is a crime of “非法捕捞、收购、运输、出售国家重点保护的水生动物” maybe. However the label list includes “非法狩猎” which is used for illegal hunting of protected wildlife, but also for illegal fishing? The correction lesson says: \"Correct label 【非法狩猎】 (not 「[罪名]非法捕猎、收购、运输、出售国家重点保护的野生动物<eoa>」): 关键在于行为是否仅限于非法捕猎受保护动物；若仅是使用禁用工具捕猎并获利，则定为“非法狩猎”，而不是包括收购、运输、出售等多环节的‘非法捕猎、收购、运输、出售国家重点保护的野生动物’。\" This suggests that for illegal hunting (including fishing) using prohibited gear, the correct label is “非法狩猎”. So we should label as 【非法狩猎】.\n\nCheck other possible labels: maybe also “非法捕捞” but not in list. The list includes many labels but not that. So we use “非法狩猎”.\n\nThus final answer: [罪名]非法狩猎<eoa>\n\nReturn JSON with reasoning and final answer.{\n  \"reasoning\": \"The defendant used a prohibited fishing net in a designated no‑fishing zone, catching large quantities of fish for profit. This constitutes illegal hunting of protected wildlife (including fish) using prohibited equipment, which according to the correction lessons should be labeled as “非法狩猎”. No other crimes (e.g., smuggling, fraud) are indicated.\",\n  \"final_answer\": \"[罪名]非法狩猎<eoa>\"\n}",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to determine appropriate crime label(s) for this case.\n\nFacts: Defendant Yang1 operating a three-no-ship (unregistered) fishing vessel, in a prohibited fishing area, using illegal net (minimum mesh size 9mm, which is prohibited) for single drag fishing, caught 12,250 kg, illegal profit 10,500 RMB. Caught by enforcement on Oct 26. Then arrested May 5 2017.\n\nThis is illegal fishing. The correction lessons mention:\n\n- Correct label 【非法狩猎】 (not “非法捕猎、收购、运输、出售国家重点保护的野生动物”) when behavior is illegal hunting of protected animals. Not relevant.\n\n- Correct label 【非法狩猎】 (not “非法捕猎、收购、运输、出售国家重点保护的野生动物”) for just illegal hunting.\n\nBut for fishing, the crime is “非法捕捞” maybe? In Chinese criminal law, there is a crime of “非法捕捞、收购、运输、出售国家重点保护的野生动物” but also “非法捕捞” for fish? Actually fish are not protected wildlife? There is a crime of “非法捕捞、收购、运输、出售国家重点保护的水生动物” maybe. However the label list includes “非法狩猎” which is used for illegal hunting of protected wildlife, but also for illegal fishing? The correction lesson says: \"Correct label 【非法狩猎】 (not 「[罪名]非法捕猎、收购、运输、出售国家重点保护的野生动物<eoa>」): 关键在于行为是否仅限于非法捕猎受保护动物；若仅是使用禁用工具捕猎并获利，则定为“非法狩猎”，而不是包括收购、运输、出售等多环节的‘非法捕猎、收购、运输、出售国家重点保护的野生动物’。\" This suggests that for illegal hunting (including fishing) using prohibited gear, the correct label is “非法狩猎”. So we should label as 【非法狩猎】.\n\nCheck other possible labels: maybe also “非法捕捞” but not in list. The list includes many labels but not that. So we use “非法狩猎”.\n\nThus final answer: [罪名]非法狩猎<eoa>\n\nReturn JSON with reasoning and final answer.{\n  \"reasoning\": \"The defendant used a prohibited fishing net in a designated no‑fishing zone, catching large quantities of fish for profit. This constitutes illegal hunting of protected wildlife (including fish) using prohibited equipment, which according to the correction lessons should be labeled as “非法狩猎”. No other crimes (e.g., smuggling, fraud) are indicated.\",\n  \"final_answer\": \"[罪名]非法狩猎<eoa>\"\n}",
+            "reasoning_content": "We need to determine appropriate crime label(s) for this case.\n\nFacts: Defendant Yang1 operating a three-no-ship (unregistered) fishing vessel, in a prohibited fishing area, using illegal net (minimum mesh size 9mm, which is prohibited) for single drag fishing, caught 12,250 kg, illegal profit 10,500 RMB. Caught by enforcement on Oct 26. Then arrested May 5 2017.\n\nThis is illegal fishing. The correction lessons mention:\n\n- Correct label 【非法狩猎】 (not “非法捕猎、收购、运输、出售国家重点保护的野生动物”) when behavior is illegal hunting of protected animals. Not relevant.\n\n- Correct label 【非法狩猎】 (not “非法捕猎、收购、运输、出售国家重点保护的野生动物”) for just illegal hunting.\n\nBut for fishing, the crime is “非法捕捞” maybe? In Chinese criminal law, there is a crime of “非法捕捞、收购、运输、出售国家重点保护的野生动物” but also “非法捕捞” for fish? Actually fish are not protected wildlife? There is a crime of “非法捕捞、收购、运输、出售国家重点保护的水生动物” maybe. However the label list includes “非法狩猎” which is used for illegal hunting of protected wildlife, but also for illegal fishing? The correction lesson says: \"Correct label 【非法狩猎】 (not 「[罪名]非法捕猎、收购、运输、出售国家重点保护的野生动物<eoa>」): 关键在于行为是否仅限于非法捕猎受保护动物；若仅是使用禁用工具捕猎并获利，则定为“非法狩猎”，而不是包括收购、运输、出售等多环节的‘非法捕猎、收购、运输、出售国家重点保护的野生动物’。\" This suggests that for illegal hunting (including fishing) using prohibited gear, the correct label is “非法狩猎”. So we should label as 【非法狩猎】.\n\nCheck other possible labels: maybe also “非法捕捞” but not in list. The list includes many labels but not that. So we use “非法狩猎”.\n\nThus final answer: [罪名]非法狩猎<eoa>\n\nReturn JSON with reasoning and final answer.{\n  \"reasoning\": \"The defendant used a prohibited fishing net in a designated no‑fishing zone, catching large quantities of fish for profit. This constitutes illegal hunting of protected wildlife (including fish) using prohibited equipment, which according to the correction lessons should be labeled as “非法狩猎”. No other crimes (e.g., smuggling, fraud) are indicated.\",\n  \"final_answer\": \"[罪名]非法狩猎<eoa>\"\n}"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 611,
+      "prompt_tokens": 27341,
+      "total_tokens": 27952,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 716,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.001115487,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.001115487,
+        "upstream_inference_prompt_cost": 0.001011617,
+        "upstream_inference_completions_cost": 0.00010387
+      }
+    }
+  },
+  "raw_response_missing": false
+}

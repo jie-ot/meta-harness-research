@@ -1,0 +1,97 @@
+Bash
+
+command:
+cd "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples" && uv run python - 2>&1 << 'PYEOF'
+import json, re, pathlib
+
+MAX_CHARS = 30000
+SKETCH_CHARS_A = 400
+LONG_THRESHOLD = 600
+
+log_path = pathlib.Path(
+    r"D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples"
+    r"\text_classification\logs\20260925_200856\LawBench\decayed_confusion_memory"
+    r"\gpt-oss-120b\log.jsonl"
+)
+
+examples = []
+with log_path.open(encoding='utf-8') as f:
+    for line in f:
+        obj = json.loads(line)
+        if obj.get('type') == 'checkpoint':
+            state = json.loads(obj['memory_state'])
+            examples = state.get('examples', [])
+            break
+
+print(f"LawBench pool size: {len(examples)} examples")
+lengths = [len(e.get('raw_question', e.get('input', ''))) for e in examples]
+print(f"raw_question lengths: min={min(lengths)}, max={max(lengths)}, avg={sum(lengths)/len(lengths):.0f}")
+
+def count_render(pool, budget, sketch=None):
+    total, count = 0, 0
+    for e in pool:
+        raw_q = e.get('raw_question', e.get('input', ''))
+        if sketch == 'A':
+            raw_q = raw_q[:SKETCH_CHARS_A]
+        elif sketch == 'B' and len(raw_q) > LONG_THRESHOLD:
+            raw_q = raw_q[:SKETCH_CHARS_A]
+        part = f"Q: {raw_q}\nA: {e['target']}"
+        if total + len(part) + 2 > budget:
+            break
+        total += len(part) + 2
+        count += 1
+    return count
+
+full_count = count_render(examples, MAX_CHARS)
+sketch_A_count = count_render(examples, MAX_CHARS, 'A')
+sketch_B_count = count_render(examples, MAX_CHARS, 'B')
+print(f"Examples in {MAX_CHARS} chars: full={full_count}, sketch-A={sketch_A_count}, sketch-B={sketch_B_count}")
+
+# Check USPTO
+log_path2 = pathlib.Path(
+    r"D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples"
+    r"\text_classification\logs\20260925_200856\USPTO\decayed_confusion_memory"
+    r"\gpt-oss-120b\log.jsonl"
+)
+ex_us = []
+with log_path2.open(encoding='utf-8') as f:
+    for line in f:
+        obj = json.loads(line)
+        if obj.get('type') == 'checkpoint':
+            state = json.loads(obj['memory_state'])
+            ex_us = state.get('examples', [])
+            break
+
+if ex_us:
+    lens_us = [len(e.get('raw_question', e.get('input', ''))) for e in ex_us]
+    print(f"\nUSPTO pool size: {len(ex_us)}, avg raw_q len={sum(lens_us)/len(lens_us):.0f}")
+    fc = count_render(ex_us, MAX_CHARS)
+    sc = count_render(ex_us, MAX_CHARS, 'A')
+    print(f"Examples in {MAX_CHARS} chars: full={fc}, sketch-A={sc} ({sc/max(fc,1):.1f}x)")
+
+# Check what reasoning looks like in learn_from_batch metadata
+# The metadata dict passed to learn_from_batch comes from predict()'s second return value
+# In decayed_confusion_memory, that metadata dict has key 'full_response'
+# Check the val.json for clues
+val_path = pathlib.Path(
+    r"D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples"
+    r"\text_classification\logs\20260925_200856\LawBench\decayed_confusion_memory"
+    r"\gpt-oss-120b\val.json"
+)
+if val_path.exists():
+    val = json.loads(val_path.read_text(encoding='utf-8'))
+    print(f"\nLawBench val accuracy: {val.get('accuracy', 'N/A')}")
+PYEOF
+
+description: Run fixed sketch prototype with inline heredoc
+
+--- output ---
+LawBench pool size: 1 examples
+raw_question lengths: min=341, max=341, avg=341
+Examples in 30000 chars: full=1, sketch-A=1, sketch-B=1
+
+USPTO pool size: 1, avg raw_q len=98
+Examples in 30000 chars: full=1, sketch-A=1 (1.0x)
+
+LawBench val accuracy: 0.4
+Shell cwd was reset to D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification

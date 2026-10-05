@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- If the facts only describe forging, altering, or selling state‑issued documents or certificates and do not contain any separate act of deceiving another party for financial gain, assign only the forge
+- When a death results from negligent operation of heavy machinery or equipment at a construction site (e.g., a loader, crane) rather than ordinary road traffic, the appropriate charge is 过失致人死亡 (neglig
+- When extracting charges, match the charge name to the specific subject described in the facts (e.g., use “单位受贿” for a unit’s bribery and “受贿” for an individual) and list the charges in the order they 
+- When the factual description involves the use of false documents or misrepresentation to conclude a contract and obtain money, classify the offense as the specific type of fraud (e.g., 合同诈骗) rather th
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控2015年8月15日1时20分许，被告人张某某乘坐李某某驾驶的甘AYXXXX号小型轿车，行驶至永某县刘家峡镇川南路后宫KTV门口路段时，发生致一人死亡的交通肇事，后李某某驾车逃逸。当日3时许，被告人张某某被传唤至永某县公安局交通警察大队，在询问时，被告人张某某作虚假证明包庇李某某交通肇事后逃逸的犯罪事实。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

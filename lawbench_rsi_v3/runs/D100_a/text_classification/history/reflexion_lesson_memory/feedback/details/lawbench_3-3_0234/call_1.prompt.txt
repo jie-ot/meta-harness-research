@@ -1,0 +1,30 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the facts describe the defendant selling seeds under false variety names or misrepresenting the seed type, and the issue is that the seeds are counterfeit or substandard rather than the illegal tra
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the facts describe the manufacturing or sale of food, health products, or supplements that contain prohibited or harmful substances (e.g., prescription‑drug ingredients), classify the offense as 
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，“HONEYWELL”、“Honeywell”字母均系注册商标，注册号第4955772、4925294号，注册人霍尼韦尔国际公司，核定使用商品第11类，均在注册有效期内。
+2012年5月开始，被告人孔某甲先后在浙江省杭州市余杭区崇贤镇沿山村水洪庙、海宁市盐仓开发区星星港湾金沙苑40幢3单元10＊室内擅自生产、组装假冒“Honeywell”品牌FF06系列的前置过滤器（依据仿冒程度不同分为“一般仿品”以及“高仿品”）并随货配送假冒“Honeywell”商标标签（“一般仿品”部分配送，“高仿品”每台均配送），后通过淘宝网络对外销售获利。2012年5月至2013年11月间，被告人孔某甲先后向赵某、李某、高某、刘某销售配有“Honeywell”标签的前置过滤器计一般仿品500台、高仿品836台，计非法经营数额120000余元，违法所得28980元。2013年11月26日下午，公安机关在对海宁市盐仓开发区星星港湾金沙苑40幢3单元10＊室进行检查时，现场查获标有“Honeywell”商标的前置过滤器4个、使用说明书1本，并在被告人孔某甲居住的星星港湾金沙苑21幢3单元20＊室内查获标有“Honeywell”商标的标签5张。经商标注册人及其授权委托的机构鉴定，上述产品均为假冒注册商标的产品。
+本案审理期间，被告人孔某甲退出违法所得28980元。
+上述事实，被告人孔某甲在开庭审理过程中亦无异议，并有证人张某、任某、徐某、孔某乙、高某、李某、刘某、杜某、赵某、叶某、梁某的证言，搜查笔录及照片，产品鉴定证明，商标注册证，电子数据提取笔录及说明，辨认笔录及照片，抓获经过，户籍证明，情况说明等证据予以证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

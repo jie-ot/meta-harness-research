@@ -1,0 +1,31 @@
+You are given prior cases and a relational summary of which charges
+tend to be charged together.
+
+Q: 事实:
+	二审审理查明的事实与证据和原审一致，本院予以确认。
+A: 非法转让、倒卖土地使用权;故意伤害
+
+**Co-occurrence summary:**
+- 非法转让、倒卖土地使用权: 故意伤害 (1)
+- 故意伤害: 妨害作证 (1), 寻衅滋事 (1), 强迫卖淫 (1), 故意毁坏财物 (1)
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:
+二审经审理查明的事实和采信的证据与原审一致。
+
+**Instructions:**
+- Decide the complete SET of charges, then list every one of them
+- A set that omits a charge scores as wrong, exactly like a wrong charge does
+- Use the established label wording, not a paraphrase
+- Separate multiple charges with a semicolon
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

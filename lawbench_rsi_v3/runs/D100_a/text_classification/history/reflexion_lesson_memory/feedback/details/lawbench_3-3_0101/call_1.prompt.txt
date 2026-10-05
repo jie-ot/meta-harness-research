@@ -1,0 +1,34 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description contains multiple distinct criminal acts (e.g., a traffic offense and a separate economic crime), the model must list every applicable charge, separating them with semicol
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明：
+1、2015年9月20日，被告人韦某路过海林市友谊楼门前时，发现被害人许某某停放在此处的白色哈佛H6型越野车，车门未锁，韦某将副驾驶车门打开，盗走男士背包一个，内有现金10600元，背包及其它物品被韦某扔在东山树林中。案发后赃款被挥霍。
+2、2015年10月16日，被告人韦某路过海林市卫生局门前时，发现被害人王某某停放在此处的白色丰田牌越野车，车后座放着一个深红色男士背包。韦某在地上捡起一块带尖的石头将车右后侧玻璃砸碎，盗走男士背包一个，内有现金15000余元及一些票据等，背包及票据等物品被韦某扔在白头山小区广场绿化带中。案发后，赃款4400元被扣押后返还失主，其余赃款被挥霍。
+综上，被告人韦某共实施盗窃犯罪2起，涉案总金额人民币25600元。
+经侦查，被告人韦某于2015年10月26日被公安机关抓获。
+另查明，被告人韦某因犯××于2015年5月3日被吉林省长春市农安县人民法院判处××，××。××考验期间：自2015年5月15日起至2018年5月14日。被告人韦某于2014年4月25日被刑事拘留，2014年5月30日被逮捕。2015年5月4日因取保被释放。被告人韦某因犯××被先行羁押1年零9天。
+上述事实，被告人韦某在开庭审理过程中亦无异议，并有证人韩某、胡某某、王某甲、彭某某的证言、被害人许某某、王某某的陈述、指认笔录、辨认笔录、现场照片、现场勘验笔录、提取痕迹、物证登记表、现场方位图、现场平面示意图、海林市公安局扣押清单、海林市公安局发还清单、指认现场笔录、海林市公安局情况说明、吉林省农安县人民法院（2015）农刑初字第49号刑事判决书、执行通知书、吉林省农安县公安局看守所出具的证明、收条、视听资料、被告人韦某的供述、犯罪嫌疑人基本情况、立案决定书、案件来源、受案登记表、抓捕经过、破案经过、户籍证明、现实表现等证据证实，足以认定。
+公诉机关认为，被告人韦某的行为已触犯《中华人民共和国刑法》××的规定，应当以××追究其刑事责任。建议判处被告人韦某一年六个月至二年六个月××，并处罚金；被告人韦某因犯××被判处××，××，其在××期内再犯新罪，应当撤销××，数罪并罚，建议合并执行三至五年××，并处罚金。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

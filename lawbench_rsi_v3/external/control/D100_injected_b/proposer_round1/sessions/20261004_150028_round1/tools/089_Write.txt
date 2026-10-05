@@ -1,0 +1,28 @@
+Write: .prototypes\_probe4.py
+
+content:
+"""Import-allowlist note (kept, small).
+
+`importlib.import_module` is rejected by the prototype guard. Plain package
+imports work:
+
+    from text_classification.agents.<module> import <Class>
+
+Both candidate modules import cleanly under that form.
+"""
+
+from text_classification.agents.charge_cooccurrence_count_memory import (
+    ChargeCooccurrenceCountMemory,
+)
+from text_classification.agents.label_lexicon_snap_memory import (
+    LabelLexiconSnapMemory,
+)
+
+print("agent A import OK:", LabelLexiconSnapMemory.__name__)
+print("agent B import OK:", ChargeCooccurrenceCountMemory.__name__)
+print("both extend:", [c.__mro__[1].__name__ for c in (LabelLexiconSnapMemory, ChargeCooccurrenceCountMemory)])
+
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\.prototypes\_probe4.py has been updated successfully. (file state is current in your context — no need to Read it back)

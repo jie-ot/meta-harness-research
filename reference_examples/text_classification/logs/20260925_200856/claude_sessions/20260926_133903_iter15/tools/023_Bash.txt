@@ -1,0 +1,133 @@
+Bash
+
+command:
+cat > /tmp/proto_sparse.py << 'PROTO'
+"""
+Prototype: sparse label boost.
+Score = jaccard(q, ex) + beta * sparsity_bonus(ex.label)
+sparsity_bonus(label) = 1 / log(1 + count(label))
+So labels with 1 example get bonus ~1.0, labels with 10 examples get ~0.43.
+"""
+import json, re, math
+from collections import defaultdict
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+
+def _has_cjk(text):
+    return bool(_CJK_RE.search(text))
+
+def _tokenize_word(text):
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+def _tokenize_bigram(text):
+    t = re.sub(r'\s+', ' ', text.strip())
+    if len(t) < 2:
+        return frozenset([t]) if t else frozenset()
+    return frozenset(t[i:i+2] for i in range(len(t)-1))
+
+def _tokenize_adaptive(text):
+    return _tokenize_bigram(text) if _has_cjk(text) else _tokenize_word(text)
+
+def _jaccard(a, b):
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+# Load LawBench frontier memory
+mem_path = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/LawBench/decayed_confusion_memory/gpt-oss-120b/memory.json'
+mem = json.load(open(mem_path, encoding='utf-8'))
+
+examples = []
+for ex in mem['examples']:
+    restored = dict(ex)
+    if isinstance(restored.get('tokens'), list):
+        restored['tokens'] = frozenset(restored['tokens'])
+    else:
+        raw_q = restored.get('raw_question', restored.get('input', ''))
+        restored['tokens'] = _tokenize_adaptive(raw_q)
+    examples.append(restored)
+
+# Load trace
+log = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/LawBench/decayed_confusion_memory/gpt-oss-120b/log.jsonl'
+lines = open(log, encoding='utf-8').readlines()
+steps = [json.loads(l) for l in lines if json.loads(l).get('type')=='step']
+
+# Count label distribution in the pool
+label_counts = defaultdict(int)
+for ex in examples:
+    label_counts[ex['target']] += 1
+
+print(f"Total labels in pool: {len(label_counts)}")
+print(f"Labels with 1 example: {sum(1 for c in label_counts.values() if c == 1)}")
+print(f"Labels with 2 examples: {sum(1 for c in label_counts.values() if c == 2)}")
+print(f"Labels with 3+ examples: {sum(1 for c in label_counts.values() if c >= 3)}")
+
+# Compare: does sparse boost help get the correct label into top-K?
+def build_top_k(query_tokens, pool, pool_counts, beta, k=8):
+    scored = []
+    for i, ex in enumerate(pool):
+        sim = _jaccard(query_tokens, ex['tokens'])
+        count = pool_counts[ex['target']]
+        boost = beta / math.log(1 + count)
+        scored.append((sim + boost, i, ex))
+    scored.sort(key=lambda x: (x[0], x[1]), reverse=True)
+    return [ex for _, _, ex in scored[:k]]
+
+# Simulate: for each val step, check if correct label appears in top-8
+# (we can only check for the full pool since we don't have per-step pool snapshots)
+# Use full pool as proxy
+q_tok_cache = {}
+pool = examples
+
+# Compare betas
+for beta in [0.0, 0.3, 0.6, 1.0]:
+    hits = 0
+    total = 0
+    for s in steps:
+        if s.get('type') != 'step': continue
+        total += 1
+        query = s.get('input_preview', '')
+        target = s.get('tgt', '')
+        q_tok = q_tok_cache.get(query)
+        if q_tok is None:
+            q_tok = _tokenize_adaptive(query)
+            q_tok_cache[query] = q_tok
+        top_k = build_top_k(q_tok, pool, label_counts, beta=beta, k=8)
+        top_labels = [ex['target'] for ex in top_k]
+        if target in top_labels:
+            hits += 1
+    print(f"beta={beta:.1f}: target in top-8 = {hits}/{total} = {hits/total*100:.1f}%")
+
+# Also check for errors only
+print("\nErrors only:")
+for beta in [0.0, 0.3, 0.6, 1.0]:
+    hits = 0
+    errors = [s for s in steps if s.get('type')=='step' and not s.get('ok')]
+    for s in errors:
+        query = s.get('input_preview', '')
+        target = s.get('tgt', '')
+        q_tok = _tokenize_adaptive(query)
+        top_k = build_top_k(q_tok, pool, label_counts, beta=beta, k=8)
+        top_labels = [ex['target'] for ex in top_k]
+        if target in top_labels:
+            hits += 1
+    print(f"beta={beta:.1f}: target in top-8 (errors) = {hits}/{len(errors)} = {hits/max(len(errors),1)*100:.1f}%")
+PROTO
+python /tmp/proto_sparse.py
+
+description: Prototype sparse label boost on LawBench data
+
+--- output ---
+Total labels in pool: 143
+Labels with 1 example: 107
+Labels with 2 examples: 23
+Labels with 3+ examples: 13
+beta=0.0: target in top-8 = 199/200 = 99.5%
+beta=0.3: target in top-8 = 157/200 = 78.5%
+beta=0.6: target in top-8 = 111/200 = 55.5%
+beta=1.0: target in top-8 = 106/200 = 53.0%
+
+Errors only:
+beta=0.0: target in top-8 (errors) = 145/146 = 99.3%
+beta=0.3: target in top-8 (errors) = 126/146 = 86.3%
+beta=0.6: target in top-8 (errors) = 93/146 = 63.7%
+beta=1.0: target in top-8 (errors) = 91/146 = 62.3%

@@ -1,0 +1,93 @@
+Retained progress from your own partial implementation:
+I'll pick up where the analysis left off: confirm inputs with one small chunk, then implement. Starting with the framework files and a 3-row slice of the compact train view.
+Framework confirmed. Now one 3-row slice of the compact train view to confirm the record shape.
+Both state files confirm the mechanism. Note row 3 of the train view: `故意毁坏财物罪` predicted against target `故意毁坏财物` — right conduct, one stray `罪`, scored wrong. That is the same string-fidelity failure at train step 2, and it makes the canonicalization axis empirically grounded rather than speculative.
+
+Writing the report, then the two prototypes.
+Now the two prototypes. Prototype A first — the canonicalization mechanism, exercised inline with a fake LLM before it becomes a candidate.
+Running the prototype to validate the mechanism (Part 2 will report the import state):
+The mechanism works on 6 of 7, but `开设赌场`→`赌博` missed: those two strings share no bigrams, so similarity-based alignment can't record the rewrite. That's a real gap — the model repeating a wrong string verbatim is exactly the failure I saw in 0282/0287. I'll add a verbatim payload-level rule layer alongside the fuzzy per-part layer.
+Now I'll update the prototype so its inline mirror matches the real mechanism (verbatim payload layer added), then run it.
+Now update `part1()` to compare the three variants before settling.
+Your latest saved workflow summary excerpt:
+s `None`, and no alias was recorded (the printed alias dict had 6 entries, missing `开设赌场`).
+     - **Fix applied at the agent level:** added the `payload_rules` layer, keyed by the whole answer payload vs. the whole truth payload, recorded for *every* `pred != truth` regardless of similarity, and consulted **first** in `_canonicalize`. The agent docstring states the rationale: "the failure is often a *verbatim* repeat with zero character overlap (开设赌场 vs 赌博); no similarity metric can recover those, only the stored observation can."
+     - **Fix NOT yet applied:** the prototype's inline `Canonicalizer` still carries the old `None/0.0` logic, so re-running the prototype as-is will still report `PART 1: SOME MISSES` for 0287. The inline mirror needs the equivalent payload-level rule.
+   - **Part 2 `ModuleNotFoundError: No module named 'text_classification.agents.canonical_charge_lexicon_memory'`** — was expected because the agent file did not exist yet; the prototype wraps the import in try/except. **This is now resolved**: the agent file has been created, so the next prototype run should print `REAL IMPORT: ok` and `PART 2: OK`.
+   - No user corrections or negative feedback were received in this segment.
+
+5. **Problem Solving:**
+   - Designed Candidate A around the empirically dominant failure bucket (A, ~26 items) plus the D-bucket empty outputs: exact-match scoring penalizes a correct concept under a non-statutory name, so the system accumulates an exact statutory-string lexicon from observed ground truths, learns both verbatim and alignment rewrite rules, injects the lexicon into the prompt as allowed vocabulary, and deterministically normalizes its own output into a lexicon member before returning.
+   - Replaced the broken `[A-Za-z0-9]+` tokenizer with character-bigram Jaccard for all similarity work, which is what lets `、`-containing statutory enumerations align.
+   - Preserved the `、`-vs-`;` distinction: `_split_charges` splits on `[;；]` only, so `虚开发票;盗窃` splits and `非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物` survives intact.
+   - Added the empty-output retry path (one terse retry) to address bucket D without changing model parameters.
+   - Open item: the prototype's inline mechanism must be brought in line with the agent's `payload_rules` so `part1()` reaches 7/7; and **Candidate B has not been prototyped or implemented at all yet.**
+
+6. **All user messages:**
+   - **Message 1 (full task, pre-compaction):** "Run iteration 1 of the locked LawBench v3 pilot. run_id=D100_injected_a, extra feedback D=100. Implement exactly two new candidate systems, A exploitation and B exploration. Both must introduce a mechanism change, using the supplied framework and injected LLM. Read evolution_summary.jsonl, frontier_val.json, config.yaml, and allowed history/. Read the listed diagnostics.jsonl files for complete item inputs, predictions, targets and was_correct... There are 100 fixed score items; only their exact-match correct count ranks candidates... Extra feedback is diagnostic and never changes ranking. Do not change D, k=2, the data, evaluator, framework, model parameters, or an existing candidate. Do not execute evaluations, make network/API requests, inspect credentials or other directories, or read any external test data/results. The controller performs all training and evaluation. Read examples with file tools. Prototype core logic with a fake LLM in .prototypes/<name>.py; allowed shell command: python .prototypes/<name>.py. Use literals from visible examples. The shell allows no external I/O, imports of os/sys/pathlib, or extra model calls. Then create agents/<new_name>.py. Execute a final import/mechanism check in .prototypes/<new_name>.py for each candidate. Never overwrite existing candidates. Write pending_eval.json with iteration, candidates in A/B order, and the original metadata schema. Use reports/ for short diagnosis. Stay within this run's working directory." Plus the `<INJECTED_H0_FEEDBACK>` block (100 records with `shared_input_prefix`, `case_text`, `prediction`, `target`, `was_correct`, `model_responses`) and: "Now complete one iteration and write exactly two candidates using the original A/B contract. Use relative paths inside this run: agents/confusion_disambiguation_memory.py, memory_system.py, llm.py, config.yaml, evolution_summary.jsonl, frontier_val.json. Read train/score JSONL in chunks of at most 5 rows. The 100 extra feedback records above are already complete; do not read them again. Bash is only for python .prototypes/<candidate>.py, not pwd, ls, shell operators or data-reading scripts."
+   - **Message 2 (summary request):** "CRITICAL: Respond with TEXT ONLY. Do NOT call any tools... create a detailed summary of the conversation so far..."
+   - **Message 3 (continuation, feedback re-injected):** "Complete unchanged H0 feedback retained across workflow compaction" followed by the full `<INJECTED_H0_FEEDBACK>` block verbatim and the continuation notice: "CONTINUATION OF THIS SAME RUN, NOT A NEW SEARCH ROUND. Your prior analysis was interrupted by the CLI context limit before any final candidate or evaluation. The following are your own retained notes... Reuse that analysis and proceed to implementing/testing the two prototypes and candidate files. Do not restart broad repository exploration. Read one train/score diagnostics chunk of at most 3 rows to confirm the inputs, then implement. PYTHONPATH already contains this package's parent, so from text_classification.memory_system and from text_classification.agents.<name> imports work in prototypes. Use the compact train/diagnostics.jsonl view; legacy train/log.jsonl includes huge checkpoint snapshots."
+   - **Message 4 (this summary request):** "CRITICAL: Respond with TEXT ONLY. Do NOT call any tools. - Do NOT use Read, Bash, Grep, Glob, Edit, Write, or ANY other tool. - You already have all the context you need in the conversation above. - Tool calls will be REJECTED and will waste your only turn — you will fail the task. - Your entire response must be plain text: an <analysis> block followed by a <summary> block."
+
+7. **Pending Tasks:**
+   - Bring the prototype's inline `Canonicalizer` in line with the agent's `payload_rules` layer (record a whole-payload rewrite whenever `pred != truth`, and consult it first in `canonical()`), then re-run `python .prototypes/canonical_charge_lexicon_memory.py` and confirm 7/7 → `PART 1: ALL OK`, `PART 2: OK`, `REAL IMPORT: ok`, `RESULT: PASS`.
+   - Try 2–3 variants of Candidate A's mechanism in the prototype before settling.
+   - Write and run `.prototypes/act_decomposition_union_memory.py` (Candidate B): split the fact on structural markers (`一、`, `二、`, `（一）`, `1、`), one call per act capped at 3, union + dedupe + order preservation, plus learned charge-set-size calibration (size prior from observed truth cardinality and suppression of predicted extra charges that were wrong); try 2–3 variants.
+   - Implement `agents/act_decomposition_union_memory.py` (B) by copy-then-edit from `agents/confusion_disambiguation_memory.py`.
+   - Mandatory self-critique on each finished candidate (genuinely new mechanism vs parameter variant); note that Candidate A already passes this — its `payload_rules`/`part_rules`/`lexicon` stages and output-time canonicalization have no counterpart in the base system.
+   - Final import/mechanism check for Candidate B in `.prototypes/act_decomposition_union_memory.py`.
+   - Write `pending_eval.json` with `iteration: 1` and both candidates in **A/B order** with fields `name`, `file`, `hypothesis`, `axis`, `base_system`, `components`.
+   - Output the final line: `CANDIDATES: canonical_charge_lexicon_memory, act_decomposition_union_memory`.
+
+8. **Current Work:**
+   Immediately before this summary request I had just completed the fix and creation of **Candidate A's agent file**, `agents/canonical_charge_lexicon_memory.py` (294 lines, full content verified by read-back and reproduced in section 3). The key change versus the previous prototype run was adding the whole-payload verbatim rule layer that resolves the one remaining prototype MISS:
+
+   ```python
+   pred = _clean(_payload(r.get("prediction", "")))
+   if pred and pred != truth:
+       # Layer 1: the literal rewrite the model needed. Survives zero
+       # character overlap between the two strings.
+       self.payload_rules[pred][truth] += 1
+       # Layer 2: part-wise alignment when the two agree on charge count.
+       pred_parts = [_clean(p) for p in _split_charges(pred)]
+       truth_parts = [_clean(t) for t in _split_charges(truth)]
+       if len(pred_parts) == len(truth_parts) and len(pred_parts) > 1:
+           ...
+   ```
+
+   and, in the output path:
+
+   ```python
+   def _canonicalize(self, raw: str) -> str:
+       payload = _clean(_payload(raw))
+       if not payload:
+           return ""
+       # Whole-payload verbatim rule first: it can map names with no shared
+       # characters, which per-part similarity cannot.
+       if payload in self.payload_rules and self.payload_rules[payload]:
+           mapped = max(self.payload_rules[payload].items(), key=lambda kv: kv[1])[0]
+           if mapped:
+               return _wrap(mapped)
+       ...
+   ```
+
+   My stated intent at that moment: "The mechanism works on 6 of 7, but `开设赌场`→`赌博` missed: those two strings share no bigrams, so similarity-based alignment can't record the rewrite. That's a real gap — the model repeating a wrong string verbatim is exactly the failure I saw in 0282/0287. I'll add a verbatim payload-level rule layer alongside the fuzzy per-part layer."
+
+   The prior prototype execution output that motivated this was:
+   ```
+   inventory size: 7
+   learned aliases: {'故意毁坏财物罪': {'故意毁坏财物': 1}, '侵犯注册商标专用权罪': {'假冒注册商标': 1}, '侵犯注册商标专用权': {'销售假冒注册商标的商品': 1}, '非法种植罂粟': {'非法种植毒品原植物': 1}, '非法制造枪支': {'非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物': 1}, '滥伐林木': {'盗伐林木': 1}}
+     lawbench_3-3_0287: [罪名]开设赌场<eoa> -> '开设赌场' target='赌博' MISS
+   PART 1: SOME MISSES
+   PART 2 skipped — import failed: ModuleNotFoundError: No module named 'text_classification.agents.canonical_charge_lexicon_memory'
+   REAL IMPORT: import failed: ModuleNotFoundError: No module named 'text_classification.agents.canonical_charge_lexicon_memory'
+   RESULT: PART1_MISSES
+   ```
+   Note the alias dict has 6 entries and is missing `开设赌场`, confirming the diagnosis. The `ModuleNotFoundError` should now be gone since the agent file exists.
+
+9. **Optional Next Step:**
+   Update the inline `Canonicalizer` in `.prototypes/canonical_charge_lexicon_memory.py` so `learn()` records a whole-payload rewrite for every `pred != truth` (not only non-zero-similarity part alignments) and `canonical()` consults that payload map before the per-part path — mirroring the agent file that was just written — then run the single allowed command `python .prototypes/canonical_charge_lexicon_memory.py` and confirm `lawbench_3-3_0287: ... -> '赌博' target='赌博' OK`, `PART 1: ALL OK`, `PART 2: OK`, `REAL IMPORT: ok`, `RESULT: PASS`. This follows directly from the task I was on, whose stated intent was: "I'll add a verbatim payload-level rule layer alongside the fuzzy per-part layer," and from the user's instruction to "Reuse that analysis and proceed to implementing/testing the two prototypes and candidate files." After that, write `.prototypes/act_decomposition_union_memory.py` and `agents/act_decomposition_union_memory.py` for Candidate B.
+
+If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: C:\Users\33841\.claude\projects\D-------------------------meta-harness-lawbench-rsi-v3-runs-D100-injected-a-text-classification\41a5e85c-402f-41a1-80eb-20ead4f62500.jsonl
+Continue the conversation from where it left off without asking the user any further questions. Resume directly — do not acknowledge the summary, do not recap what was happening, do not preface with "I'll continue" or similar. Pick up the last task as if the break never happened.
+Existing candidate: agents/canonical_charge_lexicon_memory.py; existing prototype: .prototypes/canonical_charge_lexicon_memory.py; diagnosis: reports/iteration_1_diagnosis.md. None has been evaluated. Finish these and the second planned candidate.

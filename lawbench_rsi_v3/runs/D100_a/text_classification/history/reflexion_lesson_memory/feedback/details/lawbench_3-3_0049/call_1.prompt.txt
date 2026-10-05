@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the facts describe an unintentional fire caused by negligence (e.g., accidental ignition during a ritual or domestic activity) that results in forest or property damage, the appropriate charge is
+- When the facts describe manufacturing or distributing drugs that are counterfeit, adulterated, or otherwise not meeting legal standards (i.e., ‘假药’), the appropriate charge is “生产、销售假药” rather than th
+- When the facts describe unauthorized cutting of forest trees that belong to a collective or state entity, label the crime as '盗伐林木' rather than the generic term '非法采伐林木'.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:明溪县人民检察院指控：2015年5月间，被告人龙某，以人民币28万元价格向明溪县恒丰林业有限责任公司购买了位于明溪县盖洋镇姜坊村半坑山场林某的采伐生产、销售权，2016年1月份，被告人龙某在未明确告知油锯手采伐山场四至范围的情况下，雇请一油锯手（身份不明）将上述山场的林某伐倒，致使采伐林某的山场界限超出其林某采伐许可证规定的范围，之后将伐倒的林某造材、调运并出售。经鉴定，现场位于明溪县盖洋镇姜坊村半坑山场，林业基本图座落在盖洋镇姜坊村的51林班1大班1①小班，林地属盖洋镇姜坊村民委员会所有，林某属明溪县恒丰林业有限责任公司所有，现场共被采伐林某381株，立某材积合计为10.9902立方米。
+2017年5月17日，被告人龙某自动到明溪县公安局森林分局投案，供述了犯罪事实，并退出林某折价款6222.6元，该款已于2017年4月10日由明溪县恒丰林业有限责任公司领取，该公司对被告人龙某的行为出具了谅解书。
+本案在审理过程中，被告人龙某自愿补植林某赔偿国家生态损失，并签订了生态公益补偿协议书，承诺于2017年12月31日前在林业行政主管部门统一划定的生态公益林地植树造林，面积为10亩，并缴纳保证金7150元。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

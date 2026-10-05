@@ -1,0 +1,30 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- If the factual scenario describes fraud that is carried out through the creation, signing, or performance of a contract (e.g., false representation of a business role, fictitious project, or fabricate
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:宁河县人民检察院起诉书指控，2014年1月4日上午，被告人单1某因琐事与单一×发生矛盾，单1某遂伙同李1某（另案处理）驾驶冀B×××××桑塔纳轿车将单一×驾驶的津G×××××奔驰轿车在天津市宁河县板桥镇滨玉公路西板桥村村口截住，单1某和李1某下车手持铁管将单一×打伤后，又将单一×驾驶的奔驰轿车砸坏。经鉴定，单一×的左手小指肌腱损伤致丧失一手功能达4%损伤程度为轻伤二级。肢体瘢痕、体表软组织挫伤程度为轻微伤。奔驰轿车损失评估价格为69119元。
+公诉机关认为，被告人单1某的行为已构成××、××，请求依法惩处，建议以××判处被告人单1某××至一年又六个月，以××判处被告人单1某××至四年。
+附带民事诉讼原告人单一×要求被告人单1某赔偿医疗费10000元、护理费1251元、误工费8816元、就医交通费1000元、住院伙食补助费800元、其他经济损失10万某，共计人民币121867元。起诉的事实及理由同上。
+附带民事诉讼原告人单2某要求被告人单1某赔偿被砸损的车辆损失69119元。起诉的事实及理由同上。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,24 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明：
+2014年12月下旬至2015年1月7日被告人项某多次召集顾某、周某、童xx、汪x、杨某等人，在安吉县递铺镇xx花园东门xx快递三楼其租房内以“炸鸡”的方式进行赌博活动，并从中非法获利人民币1万余元。
+上述事实，被告人项某在开庭审理过程中无异议，并有证人顾某、周某、童xx、杨某等人的证言，辨认笔录及照片，到案经过，情况说明，人口信息等证据证实，足以认定。
+
+
+Wrong prediction: [罪名]组织赌博<eoa>
+Correct answer: 赌博
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

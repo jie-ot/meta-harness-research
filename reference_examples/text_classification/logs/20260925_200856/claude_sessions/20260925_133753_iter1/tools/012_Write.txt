@@ -1,0 +1,58 @@
+Write: ..\..\..\..\..\..\tmp\test_error_driven.py
+
+content:
+"""Prototype: Error-driven retrieval with recency weighting."""
+
+import random
+from collections import defaultdict
+
+# Simulate training data
+examples = [
+    {"input": f"Q{i}", "target": f"A{i}", "correct": random.choice([True, False])}
+    for i in range(100)
+]
+
+# Strategy 1: Pure recency (last N errors)
+def get_recent_errors(examples, n=10):
+    errors = [ex for ex in examples if not ex.get("correct", True)]
+    return errors[-n:]
+
+# Strategy 2: Weighted sampling (recent errors + some successes)
+def get_weighted_mix(examples, n=10, error_weight=0.7):
+    errors = [ex for ex in examples if not ex.get("correct", True)]
+    successes = [ex for ex in examples if ex.get("correct", True)]
+
+    n_errors = int(n * error_weight)
+    n_successes = n - n_errors
+
+    selected = errors[-n_errors:] + successes[-n_successes:]
+    random.shuffle(selected)
+    return selected
+
+# Strategy 3: Decay-weighted random sampling
+def get_decay_weighted(examples, n=10, decay=0.95):
+    weights = [decay ** (len(examples) - i - 1) for i in range(len(examples))]
+
+    # Boost errors
+    for i, ex in enumerate(examples):
+        if not ex.get("correct", True):
+            weights[i] *= 3.0
+
+    # Normalize
+    total = sum(weights)
+    weights = [w / total for w in weights]
+
+    selected = random.choices(examples, weights=weights, k=min(n, len(examples)))
+    return selected
+
+# Test all three
+print("Strategy 1 (recent errors):", len(get_recent_errors(examples)))
+print("Strategy 2 (weighted mix):", len(get_weighted_mix(examples)))
+print("Strategy 3 (decay weighted):", len(get_decay_weighted(examples)))
+
+# Strategy 3 seems most balanced - uses decay + error boost
+
+
+
+--- output ---
+File created successfully at: /tmp/test_error_driven.py (file state is current in your context — no need to Read it back)

@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- If the facts describe a person in a managerial or official position receiving money or valuables in exchange for using their职务便利, classify the crime simply as "受贿" unless the source explicitly states 
+- When the case facts describe multiple distinct criminal conduct or explicitly mention additional offenses (e.g., “数罪并罚”, “其他罪”, “并且…”， “同时” etc.), output every applicable charge separated by semicolon
+- When extracting charges, match the charge name to the specific subject described in the facts (e.g., use “单位受贿” for a unit’s bribery and “受贿” for an individual) and list the charges in the order they 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:大关县人民检察院指控，2012年2月22日9时许，被告人王2某在大关县高桥镇中学对面公路处搭乘被害人朱某某驾驶的面包车前往木杆镇向阳村。乘车途中，被告人王2某乘朱某某及其他车上人员不备之机，盗走被害人朱某某放于驾驶位靠背椅后包内价值7800元的黑色索尼摄像机一台。后该摄像机于被告人王2某家中查获并已返还被害人朱某某。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

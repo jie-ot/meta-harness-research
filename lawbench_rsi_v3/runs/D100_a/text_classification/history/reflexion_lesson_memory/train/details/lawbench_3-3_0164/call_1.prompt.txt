@@ -1,0 +1,30 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- When the defendant’s negligent conduct involves the creation, installation, or use of a dangerous means (e.g., electric fences, explosives, hazardous equipment) that poses a risk to public safety, the
+- If the facts describe a person in a managerial or official position receiving money or valuables in exchange for using their职务便利, classify the crime simply as "受贿" unless the source explicitly states 
+- When the factual narrative describes that the defendant organized or led a crowd to disturb the order of a public place or traffic, the charge of 聚众扰乱公共场所秩序、交通秩序 must be added in addition to any other
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:北京市房山区人民检察院起诉书指控：
+（一）2013年11月9日晚22时许，郭×1（另案处理）在北京市房山区中医院与医生发生争执，后郭×1打电话叫来其父亲郭×2、男朋友晋×1（均另案处理），晋×1叫上被告人潘×1，在中医医院急诊内科办公室，郭×1指认医生后，被告人潘×1与郭×2、晋×1使用血压计、凳子、拳脚对值班医生李×1、付×、范×进行殴打，造成李×1头部多发软组织损伤，付×腹部软组织损伤，范×头部多发软组织损伤，经北京市公安司法鉴定中心鉴定，李×1、付×、范×三人均为轻微伤。
+（二）2014年1月30日23时许，被告人潘×1驾驶车牌号为京×的蓝色菲亚特轿车行驶至北京市房山区燕山迎风杏花西里社区塔湾岗亭北侧时，被巡逻民警查获，当场从车内后备箱起获黑色枪状物1支、带有警徽图样的匕首1把。经北京市公安司法鉴定中心鉴定，该枪状物为枪支，经北京市公安局房山分局认定，带有警徽图样的匕首为××刀具。被告人潘×1于2015年3月5日被抓获归案。
+公诉机关就以上指控向本院提供了被告人供述、被害人陈述、证人证言、鉴定意见等证据材料，认为被告人潘×1随意殴打他人，致三人轻微伤，情节恶劣；非法携带枪支进入公共场所，危及公共安全，情节严重，其行为分别触犯了《中华人民共和国刑法》××××第（一）项、××之规定，应以××、非法携带枪支危及公共安全罪对被告人潘×1数罪并罚，提请本院对其依法惩处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

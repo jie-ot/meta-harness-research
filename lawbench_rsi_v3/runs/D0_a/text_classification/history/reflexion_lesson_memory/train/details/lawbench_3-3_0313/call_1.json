@@ -1,0 +1,72 @@
+{
+  "call_id": "a8e80737f6674be2b995a030e43dd8ef",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791012832-VRDYiB0bbO5s7weCS5JU",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"被告人谢1某多次趁人不在或使用暴力踹门进入他人住宅，窃取现金、银行卡、身份证件等财物，构成盗窃罪。随后其捏造他人参与盗窃的事实，使王某、王某立被刑事拘留，属于诬告陷害罪。故应以盗窃和诬告陷害两罪起诉。\",\n  \"final_answer\": \"[罪名]盗窃;诬告陷害<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate crime labels.\n\nFacts: multiple burglaries (breaking into houses, stealing cash, IDs, etc.) => theft/robbery? The acts are described as \"踹门入室实施盗窃\" i.e., breaking door and stealing. That's burglary/robbery? In Chinese criminal law, \"盗窃\" is theft, \"抢夺\" is snatching, \"抢劫\" is robbery with violence. Here they break in, sometimes use force (kick door) but not threaten victim (often no one present). That's \"盗窃\" (theft). Also they stole cash, cards, etc. So multiple thefts => \"盗窃\". Also they fabricated false accusations causing others to be detained. That is false accusation? The label likely \"诬告陷害罪\"? In Chinese law, making false accusations leading to criminal detention is \"诬告陷害罪\". The correction lessons mention \"捏造...使其二人受到刑事拘留\" => that is false accusation. The label likely \"诬告陷害\". However the provided label list in examples includes many but not that. We need to see if any label matches. The correction lessons didn't mention false accusation. But we need to output correct label(s) from the set used in examples. Let's look at previous examples: they used labels like \"盗窃;侵占\", \"诈骗;聚众扰乱公共场所秩序、交通秩序\", \"非法组织卖血\", \"伪造、变造、买卖国家机关公文、证件、印章\", etc. So they have many possible labels.\n\nWe need to find appropriate label for false accusation. In Chinese criminal law, \"诬告陷害罪\" is a crime. The label likely \"诬告陷害\". Not seen in examples but could be used.\n\nThus final answer should include two crimes: 盗窃 and 诬告陷害.\n\nCheck if any other crimes: They also stole identity documents, but that's part of theft. No other.\n\nThus output: [罪名]盗窃;诬告陷害<eoa>\n\nReturn JSON with reasoning and final answer.\n\n",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate crime labels.\n\nFacts: multiple burglaries (breaking into houses, stealing cash, IDs, etc.) => theft/robbery? The acts are described as \"踹门入室实施盗窃\" i.e., breaking door and stealing. That's burglary/robbery? In Chinese criminal law, \"盗窃\" is theft, \"抢夺\" is snatching, \"抢劫\" is robbery with violence. Here they break in, sometimes use force (kick door) but not threaten victim (often no one present). That's \"盗窃\" (theft). Also they stole cash, cards, etc. So multiple thefts => \"盗窃\". Also they fabricated false accusations causing others to be detained. That is false accusation? The label likely \"诬告陷害罪\"? In Chinese law, making false accusations leading to criminal detention is \"诬告陷害罪\". The correction lessons mention \"捏造...使其二人受到刑事拘留\" => that is false accusation. The label likely \"诬告陷害\". However the provided label list in examples includes many but not that. We need to see if any label matches. The correction lessons didn't mention false accusation. But we need to output correct label(s) from the set used in examples. Let's look at previous examples: they used labels like \"盗窃;侵占\", \"诈骗;聚众扰乱公共场所秩序、交通秩序\", \"非法组织卖血\", \"伪造、变造、买卖国家机关公文、证件、印章\", etc. So they have many possible labels.\n\nWe need to find appropriate label for false accusation. In Chinese criminal law, \"诬告陷害罪\" is a crime. The label likely \"诬告陷害\". Not seen in examples but could be used.\n\nThus final answer should include two crimes: 盗窃 and 诬告陷害.\n\nCheck if any other crimes: They also stole identity documents, but that's part of theft. No other.\n\nThus output: [罪名]盗窃;诬告陷害<eoa>\n\nReturn JSON with reasoning and final answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to determine appropriate crime labels.\n\nFacts: multiple burglaries (breaking into houses, stealing cash, IDs, etc.) => theft/robbery? The acts are described as \"踹门入室实施盗窃\" i.e., breaking door and stealing. That's burglary/robbery? In Chinese criminal law, \"盗窃\" is theft, \"抢夺\" is snatching, \"抢劫\" is robbery with violence. Here they break in, sometimes use force (kick door) but not threaten victim (often no one present). That's \"盗窃\" (theft). Also they stole cash, cards, etc. So multiple thefts => \"盗窃\". Also they fabricated false accusations causing others to be detained. That is false accusation? The label likely \"诬告陷害罪\"? In Chinese law, making false accusations leading to criminal detention is \"诬告陷害罪\". The correction lessons mention \"捏造...使其二人受到刑事拘留\" => that is false accusation. The label likely \"诬告陷害\". However the provided label list in examples includes many but not that. We need to see if any label matches. The correction lessons didn't mention false accusation. But we need to output correct label(s) from the set used in examples. Let's look at previous examples: they used labels like \"盗窃;侵占\", \"诈骗;聚众扰乱公共场所秩序、交通秩序\", \"非法组织卖血\", \"伪造、变造、买卖国家机关公文、证件、印章\", etc. So they have many possible labels.\n\nWe need to find appropriate label for false accusation. In Chinese criminal law, \"诬告陷害罪\" is a crime. The label likely \"诬告陷害\". Not seen in examples but could be used.\n\nThus final answer should include two crimes: 盗窃 and 诬告陷害.\n\nCheck if any other crimes: They also stole identity documents, but that's part of theft. No other.\n\nThus output: [罪名]盗窃;诬告陷害<eoa>\n\nReturn JSON with reasoning and final answer.\n\n",
+            "reasoning_content": "We need to determine appropriate crime labels.\n\nFacts: multiple burglaries (breaking into houses, stealing cash, IDs, etc.) => theft/robbery? The acts are described as \"踹门入室实施盗窃\" i.e., breaking door and stealing. That's burglary/robbery? In Chinese criminal law, \"盗窃\" is theft, \"抢夺\" is snatching, \"抢劫\" is robbery with violence. Here they break in, sometimes use force (kick door) but not threaten victim (often no one present). That's \"盗窃\" (theft). Also they stole cash, cards, etc. So multiple thefts => \"盗窃\". Also they fabricated false accusations causing others to be detained. That is false accusation? The label likely \"诬告陷害罪\"? In Chinese law, making false accusations leading to criminal detention is \"诬告陷害罪\". The correction lessons mention \"捏造...使其二人受到刑事拘留\" => that is false accusation. The label likely \"诬告陷害\". However the provided label list in examples includes many but not that. We need to see if any label matches. The correction lessons didn't mention false accusation. But we need to output correct label(s) from the set used in examples. Let's look at previous examples: they used labels like \"盗窃;侵占\", \"诈骗;聚众扰乱公共场所秩序、交通秩序\", \"非法组织卖血\", \"伪造、变造、买卖国家机关公文、证件、印章\", etc. So they have many possible labels.\n\nWe need to find appropriate label for false accusation. In Chinese criminal law, \"诬告陷害罪\" is a crime. The label likely \"诬告陷害\". Not seen in examples but could be used.\n\nThus final answer should include two crimes: 盗窃 and 诬告陷害.\n\nCheck if any other crimes: They also stole identity documents, but that's part of theft. No other.\n\nThus output: [罪名]盗窃;诬告陷害<eoa>\n\nReturn JSON with reasoning and final answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 595,
+      "prompt_tokens": 27980,
+      "total_tokens": 28575,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 465,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00094055,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00094055,
+        "upstream_inference_prompt_cost": 0.0008394,
+        "upstream_inference_completions_cost": 0.00010115
+      }
+    }
+  },
+  "raw_response_missing": false
+}

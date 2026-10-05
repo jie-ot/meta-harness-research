@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- When the defendant’s conduct primarily involves unauthorized remote locking, erasing, or otherwise disabling computer or mobile device functions—causing the device to become unusable—classify the act 
+- When the conduct described involves the unauthorized collection, copying, or use of personal data (e.g., names, phone numbers, ID numbers) rather than the taking of tangible property, classify the cri
+- When the alleged offender holds a position in a private or non‑governmental entity (e.g., company executive, manager) rather than a public official, classify the offense as “非国家工作人员受贿” instead of the 
+- If the facts only describe forging, altering, or selling state‑issued documents or certificates and do not contain any separate act of deceiving another party for financial gain, assign only the forge
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，2016年12月20日至2016年12月21日期间，被告人朱某某在其家中上网后，用其在互联网上下载的软件程序抓取捕鱼大师游戏充值数据包，在未发生真实充值的情况下，通过虚假充值，向捕鱼大师游戏的网上支付平台扬州畅联网络科技有限公司提交该充值数据包，由于扬州畅联网络科技有限公司计算机信息系统的技术漏洞，不能识别，使系统误认为充值成功，被告人朱某某采用上述手段抓取和修改充值数据包448次，致被害单位扬州畅联网络科技有限公司经济损失人民币1316910元。
+案发后，被告人朱某某如实供述了自己的犯罪事实，先后在公安侦查和本院审理期间赔偿被害单位扬州畅联网络科技有限公司全部经济损失。公安机关还扣押作案工具苹果牌笔记本电脑1台，苹果牌、华为牌移动电话机各1部。
+上述事实，被告人朱某某在开庭审理过程中亦无异议，并有被告人朱某某供述笔录，未到庭证人崔某、蒋某的证言笔录，扣押物品清单，扬某（网）勘（2017）1号电子证据检查工作记录，支付宝收支明细证明，银行交易清单，充值交易记录，情况说明，收条，抓获经过，户籍证明等证据证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,252 @@
+Write: agents\label_vocab_memory.py
+
+content:
+"""Label Vocabulary Memory.
+
+The frontier system (chinese_bigram_confusion_memory, 38/100) retrieves similar
+examples well but the LLM still hallucinates approximate label strings — adding
+"罪" suffixes, truncating compound labels, or picking a near-miss specificity
+level — because it never sees the closed set of canonical label strings.
+
+This system adds a label vocabulary registry: every canonical label string seen
+in training is accumulated in a sorted list and injected into the prompt as a
+"Valid Labels" section before the examples. The LLM is explicitly constrained to
+pick from that closed set, directly addressing suffix-hallucination, specificity
+errors, and format variants.
+
+New mechanisms vs frontier:
+  - Axis B: separate label-set memory structure (not just raw examples)
+  - Axis A: prompt architecture with a label-priming section
+
+Hypothesis (falsifiable): injecting the full vocabulary of observed canonical
+label strings into the prompt will reduce label format errors and increase val
+accuracy above 38%.
+"""
+
+import json
+import re
+from collections import defaultdict
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+_LABEL_VOCAB_MAX_CHARS = 4000   # budget for the vocab section
+_EXAMPLES_MAX_CHARS = 26000     # remaining budget for examples
+_TOP_CANDIDATE_LABELS = 3
+_DISAMBIG_PER_CONFUSION = 2
+
+PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+
+{label_section}
+
+{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- You MUST choose label strings exactly from the Valid Labels list above
+- Multiple labels are separated by semicolons
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+
+def _tokenize(text: str) -> frozenset:
+    ascii_tokens = re.findall(r"[A-Za-z0-9]+", text.lower())
+    chars = re.findall(r"[一-鿿]", text)
+    bigrams = [chars[i] + chars[i + 1] for i in range(len(chars) - 1)]
+    return frozenset(ascii_tokens + bigrams)
+
+
+def _jaccard(a: frozenset, b: frozenset) -> float:
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+class LabelVocabMemory(MemorySystem):
+    """Confusion-disambiguation with bigram similarity and a label vocabulary section.
+
+    Builds on chinese_bigram_confusion_memory but adds a closed-set label registry
+    injected at the top of every prompt so the LLM cannot invent label strings.
+    """
+
+    def __init__(self, llm: LLMCallable):
+        super().__init__(llm)
+        self.examples: list[dict[str, Any]] = []
+        self.confusion: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+        self.label_vocab: dict[str, int] = defaultdict(int)
+
+    # ------------------------------------------------------------------
+    # Label vocabulary section
+    # ------------------------------------------------------------------
+
+    def _label_section(self) -> str:
+        if not self.label_vocab:
+            return ""
+        labels = sorted(self.label_vocab.keys())
+        lines = ["## 有效罪名（请从以下列表中选择，保持精确格式）:"]
+        total = len(lines[0])
+        for lbl in labels:
+            line = f"- {lbl}"
+            if total + len(line) + 1 > _LABEL_VOCAB_MAX_CHARS:
+                break
+            lines.append(line)
+            total += len(line) + 1
+        return "\n".join(lines)
+
+    # ------------------------------------------------------------------
+    # Example retrieval (same algorithm as frontier)
+    # ------------------------------------------------------------------
+
+    def _scored(self, query: str) -> list[tuple[float, int, dict]]:
+        q_tok = _tokenize(query)
+        result = [
+            (_jaccard(q_tok, ex["tokens"]), idx, ex)
+            for idx, ex in enumerate(self.examples)
+        ]
+        result.sort(key=lambda x: (x[0], x[1]), reverse=True)
+        return result
+
+    def _confusion_targets_for(self, labels: list[str]) -> list[str]:
+        label_set = set(labels)
+        counts: dict[str, int] = defaultdict(int)
+        for lbl in labels:
+            row = self.confusion.get(lbl, {})
+            for actual, cnt in row.items():
+                if actual not in label_set:
+                    counts[actual] += cnt
+        return [lbl for lbl, _ in sorted(counts.items(), key=lambda x: (-x[1], x[0]))]
+
+    def _build_parts(self, query: str) -> list[str]:
+        if not self.examples:
+            return []
+
+        ranked = self._scored(query)
+        top_labels = [ex["target"] for _, _, ex in ranked[:_TOP_CANDIDATE_LABELS]]
+        confused_with = self._confusion_targets_for(top_labels)
+
+        parts: list[str] = []
+        used_indices: set[int] = set()
+        total_chars = 0
+
+        def try_add(idx: int, ex: dict) -> bool:
+            nonlocal total_chars
+            if idx in used_indices:
+                return False
+            q = ex.get("raw_question", ex["input"])
+            part = f"Q: {q}\nA: {ex['target']}"
+            if total_chars + len(part) + 2 > _EXAMPLES_MAX_CHARS:
+                return False
+            parts.append(part)
+            used_indices.add(idx)
+            total_chars += len(part) + 2
+            return True
+
+        if confused_with:
+            disambig_labels_needed = set(confused_with[:_TOP_CANDIDATE_LABELS])
+            per_label_disambig: dict[str, list] = defaultdict(list)
+            for score, idx, ex in ranked:
+                if ex["target"] in disambig_labels_needed:
+                    per_label_disambig[ex["target"]].append((score, idx, ex))
+
+            for _round in range(_DISAMBIG_PER_CONFUSION):
+                for lbl in confused_with[:_TOP_CANDIDATE_LABELS]:
+                    pool = per_label_disambig.get(lbl, [])
+                    for score, idx, ex in pool:
+                        if idx not in used_indices:
+                            try_add(idx, ex)
+                            break
+
+        for _, idx, ex in ranked:
+            if total_chars >= _EXAMPLES_MAX_CHARS:
+                break
+            try_add(idx, ex)
+
+        return parts
+
+    # ------------------------------------------------------------------
+    # Interface
+    # ------------------------------------------------------------------
+
+    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+        parts = self._build_parts(input)
+        examples_section = "\n\n".join(parts)
+        label_section = self._label_section()
+        prompt = PROMPT_TEMPLATE.format(
+            label_section=label_section,
+            examples_section=examples_section,
+            input=input,
+        )
+        response = self.call_llm(prompt)
+        answer = extract_json_field(response, "final_answer")
+        return answer, {
+            "full_response": response,
+            "num_examples": len(self.examples),
+            "num_selected": len(parts),
+            "num_labels_in_vocab": len(self.label_vocab),
+        }
+
+    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+        for r in batch_results:
+            raw_q = r.get("raw_question", r["input"])
+            ex: dict[str, Any] = {
+                "input": r["input"],
+                "target": r["ground_truth"],
+                "tokens": _tokenize(raw_q),
+            }
+            if "raw_question" in r:
+                ex["raw_question"] = r["raw_question"]
+            self.examples.append(ex)
+
+            # accumulate canonical labels into vocabulary
+            for lbl in r["ground_truth"].split(";"):
+                lbl = lbl.strip()
+                if lbl:
+                    self.label_vocab[lbl] += 1
+
+            if not r.get("was_correct", True):
+                pred = r.get("prediction", "")
+                gt = r["ground_truth"]
+                if pred and pred != gt:
+                    self.confusion[pred][gt] += 1
+
+    def get_state(self) -> str:
+        serialisable = [
+            {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+            for ex in self.examples
+        ]
+        confusion_plain = {k: dict(v) for k, v in self.confusion.items()}
+        return json.dumps({
+            "examples": serialisable,
+            "confusion": confusion_plain,
+            "label_vocab": dict(self.label_vocab),
+        }, indent=2)
+
+    def set_state(self, state: str) -> None:
+        data = json.loads(state)
+        self.examples = []
+        for ex in data.get("examples", []):
+            restored = dict(ex)
+            if "tokens" in restored and isinstance(restored["tokens"], list):
+                restored["tokens"] = frozenset(restored["tokens"])
+            else:
+                raw_q = restored.get("raw_question", restored.get("input", ""))
+                restored["tokens"] = _tokenize(raw_q)
+            self.examples.append(restored)
+
+        self.confusion = defaultdict(lambda: defaultdict(int))
+        for pred, actuals in data.get("confusion", {}).items():
+            for actual, cnt in actuals.items():
+                self.confusion[pred][actual] = cnt
+
+        self.label_vocab = defaultdict(int)
+        for lbl, cnt in data.get("label_vocab", {}).items():
+            self.label_vocab[lbl] = cnt
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_a\text_classification\agents\label_vocab_memory.py (file state is current in your context — no need to Read it back)

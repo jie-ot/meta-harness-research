@@ -1,0 +1,72 @@
+{
+  "call_id": "32083a3758b44fb79117ec8cb1be1943",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791127458-vleRBGeeCrAvNHQsQBtG",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The facts describe two distinct criminal conduct: (1) the unit (教研中心) received kickbacks and stored them off‑books, which constitutes unit bribery, and the responsible individual (岳某) as the head of the unit is also liable for bribery. (2) 岳某 drove a vehicle while intoxicated and caused a traffic accident, which is the offense of dangerous driving (drunk driving). Therefore the appropriate charges are bribery and dangerous driving.\",\n  \"final_answer\": \"[罪名]受贿罪;危险驾驶罪<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine charges based on facts and co-occurrence summary. The facts involve two main crimes: unit bribery (受贿) and dangerous driving (醉酒驾驶). The first is about a unit receiving kickbacks (回扣) and storing in off-book petty cash, used for non-normal expenses. The charge likely is \"单位受贿\" (unit bribery) and \"受贿罪\" for the individual. The second is \"危险驾驶罪\" (dangerous driving) or \"醉酒驾驶\" which is a specific offense under Chinese criminal law: \"危险驾驶罪\" (dangerous driving) for drunk driving causing accident. The co-occurrence summary only includes some crimes: 虚开增值税专用发票, 经济犯, 故意伤害, 聚众扰乱社会秩序, 故意毁坏财物. It does not list bribery or dangerous driving. However, the instruction says use established label wording, not paraphrase. We need to infer the correct label for bribery and dangerous driving from prior examples? The examples given only include certain labels. But the problem likely expects us to output charges like \"受贿罪;危险驾驶罪\". The label wording should match typical Chinese criminal law terms. The prior examples used \"虚开增值税专用发票\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"故意伤害\", \"聚众扰乱社会秩序\", \"故意毁坏财物\". So they used concise terms. For bribery, likely \"受贿罪\". For unit bribery, maybe \"单位受贿罪\". The fact says \"单位受贿事实\". The prosecution says \"被告单位教研中心在经济往来中帐外收受回扣款，其行为构成××，被告人岳某作为该单位负责人，也构成××\". So they likely charge both the unit and the individual for \"受贿罪\". So we need two charges: \"受贿罪\" and \"危险驾驶罪\". Possibly also \"单位受贿罪\". But the instruction: \"请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" The format: [罪名]盗窃<eoa> for single, or [罪名]盗窃;诈骗<eoa> for multiple. So we need to output something like [罪名]受贿罪;危险驾驶罪<eoa>. Should we include \"单位受贿罪\"? The prior examples didn't include \"单位受贿罪\". But the text mentions \"单位受贿事实\". The prosecution says \"被告单位教研中心在经济往来中帐外收受回扣款，其行为构成××\". So they likely charge the unit with \"单位受贿罪\". However, the question asks to list charges (罪名). Usually, the unit is not a person, but the unit can be charged with \"单位受贿罪\". So we might need both \"受贿罪\" (for the individual) and \"单位受贿罪\" (for the unit). But the instruction says \"决定完整的罪名集合，然后列出每一个\". So we need to include all charges applicable. That includes both the unit and the individual. So three charges? Actually two: \"受贿罪\" (for the individual) and \"危险驾驶罪\". The unit's charge is separate but maybe not required as a \"罪名\" for the person? The question is about the defendant (both unit and individual). The prosecution charges both. So we might list \"受贿罪;危险驾驶罪\". The unit's charge is \"单位受贿罪\". But the label \"受贿罪\" might be enough. The prior examples didn't differentiate between unit and individual. So I think answer: [罪名]受贿罪;危险驾驶罪<eoa>.\n\nNow produce JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "reasoning": "We need to determine charges based on facts and co-occurrence summary. The facts involve two main crimes: unit bribery (受贿) and dangerous driving (醉酒驾驶). The first is about a unit receiving kickbacks (回扣) and storing in off-book petty cash, used for non-normal expenses. The charge likely is \"单位受贿\" (unit bribery) and \"受贿罪\" for the individual. The second is \"危险驾驶罪\" (dangerous driving) or \"醉酒驾驶\" which is a specific offense under Chinese criminal law: \"危险驾驶罪\" (dangerous driving) for drunk driving causing accident. The co-occurrence summary only includes some crimes: 虚开增值税专用发票, 经济犯, 故意伤害, 聚众扰乱社会秩序, 故意毁坏财物. It does not list bribery or dangerous driving. However, the instruction says use established label wording, not paraphrase. We need to infer the correct label for bribery and dangerous driving from prior examples? The examples given only include certain labels. But the problem likely expects us to output charges like \"受贿罪;危险驾驶罪\". The label wording should match typical Chinese criminal law terms. The prior examples used \"虚开增值税专用发票\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"故意伤害\", \"聚众扰乱社会秩序\", \"故意毁坏财物\". So they used concise terms. For bribery, likely \"受贿罪\". For unit bribery, maybe \"单位受贿罪\". The fact says \"单位受贿事实\". The prosecution says \"被告单位教研中心在经济往来中帐外收受回扣款，其行为构成××，被告人岳某作为该单位负责人，也构成××\". So they likely charge both the unit and the individual for \"受贿罪\". So we need two charges: \"受贿罪\" and \"危险驾驶罪\". Possibly also \"单位受贿罪\". But the instruction: \"请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" The format: [罪名]盗窃<eoa> for single, or [罪名]盗窃;诈骗<eoa> for multiple. So we need to output something like [罪名]受贿罪;危险驾驶罪<eoa>. Should we include \"单位受贿罪\"? The prior examples didn't include \"单位受贿罪\". But the text mentions \"单位受贿事实\". The prosecution says \"被告单位教研中心在经济往来中帐外收受回扣款，其行为构成××\". So they likely charge the unit with \"单位受贿罪\". However, the question asks to list charges (罪名). Usually, the unit is not a person, but the unit can be charged with \"单位受贿罪\". So we might need both \"受贿罪\" (for the individual) and \"单位受贿罪\" (for the unit). But the instruction says \"决定完整的罪名集合，然后列出每一个\". So we need to include all charges applicable. That includes both the unit and the individual. So three charges? Actually two: \"受贿罪\" (for the individual) and \"危险驾驶罪\". The unit's charge is separate but maybe not required as a \"罪名\" for the person? The question is about the defendant (both unit and individual). The prosecution charges both. So we might list \"受贿罪;危险驾驶罪\". The unit's charge is \"单位受贿罪\". But the label \"受贿罪\" might be enough. The prior examples didn't differentiate between unit and individual. So I think answer: [罪名]受贿罪;危险驾驶罪<eoa>.\n\nNow produce JSON with reasoning and final answer.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine charges based on facts and co-occurrence summary. The facts involve two main crimes: unit bribery (受贿) and dangerous driving (醉酒驾驶). The first is about a unit receiving kickbacks (回扣) and storing in off-book petty cash, used for non-normal expenses. The charge likely is \"单位受贿\" (unit bribery) and \"受贿罪\" for the individual. The second is \"危险驾驶罪\" (dangerous driving) or \"醉酒驾驶\" which is a specific offense under Chinese criminal law: \"危险驾驶罪\" (dangerous driving) for drunk driving causing accident. The co-occurrence summary only includes some crimes: 虚开增值税专用发票, 经济犯, 故意伤害, 聚众扰乱社会秩序, 故意毁坏财物. It does not list bribery or dangerous driving. However, the instruction says use established label wording, not paraphrase. We need to infer the correct label for bribery and dangerous driving from prior examples? The examples given only include certain labels. But the problem likely expects us to output charges like \"受贿罪;危险驾驶罪\". The label wording should match typical Chinese criminal law terms. The prior examples used \"虚开增值税专用发票\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"故意伤害\", \"聚众扰乱社会秩序\", \"故意毁坏财物\". So they used concise terms. For bribery, likely \"受贿罪\". For unit bribery, maybe \"单位受贿罪\". The fact says \"单位受贿事实\". The prosecution says \"被告单位教研中心在经济往来中帐外收受回扣款，其行为构成××，被告人岳某作为该单位负责人，也构成××\". So they likely charge both the unit and the individual for \"受贿罪\". So we need two charges: \"受贿罪\" and \"危险驾驶罪\". Possibly also \"单位受贿罪\". But the instruction: \"请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" The format: [罪名]盗窃<eoa> for single, or [罪名]盗窃;诈骗<eoa> for multiple. So we need to output something like [罪名]受贿罪;危险驾驶罪<eoa>. Should we include \"单位受贿罪\"? The prior examples didn't include \"单位受贿罪\". But the text mentions \"单位受贿事实\". The prosecution says \"被告单位教研中心在经济往来中帐外收受回扣款，其行为构成××\". So they likely charge the unit with \"单位受贿罪\". However, the question asks to list charges (罪名). Usually, the unit is not a person, but the unit can be charged with \"单位受贿罪\". So we might need both \"受贿罪\" (for the individual) and \"单位受贿罪\" (for the unit). But the instruction says \"决定完整的罪名集合，然后列出每一个\". So we need to include all charges applicable. That includes both the unit and the individual. So three charges? Actually two: \"受贿罪\" (for the individual) and \"危险驾驶罪\". The unit's charge is separate but maybe not required as a \"罪名\" for the person? The question is about the defendant (both unit and individual). The prosecution charges both. So we might list \"受贿罪;危险驾驶罪\". The unit's charge is \"单位受贿罪\". But the label \"受贿罪\" might be enough. The prior examples didn't differentiate between unit and individual. So I think answer: [罪名]受贿罪;危险驾驶罪<eoa>.\n\nNow produce JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": "We need to determine charges based on facts and co-occurrence summary. The facts involve two main crimes: unit bribery (受贿) and dangerous driving (醉酒驾驶). The first is about a unit receiving kickbacks (回扣) and storing in off-book petty cash, used for non-normal expenses. The charge likely is \"单位受贿\" (unit bribery) and \"受贿罪\" for the individual. The second is \"危险驾驶罪\" (dangerous driving) or \"醉酒驾驶\" which is a specific offense under Chinese criminal law: \"危险驾驶罪\" (dangerous driving) for drunk driving causing accident. The co-occurrence summary only includes some crimes: 虚开增值税专用发票, 经济犯, 故意伤害, 聚众扰乱社会秩序, 故意毁坏财物. It does not list bribery or dangerous driving. However, the instruction says use established label wording, not paraphrase. We need to infer the correct label for bribery and dangerous driving from prior examples? The examples given only include certain labels. But the problem likely expects us to output charges like \"受贿罪;危险驾驶罪\". The label wording should match typical Chinese criminal law terms. The prior examples used \"虚开增值税专用发票\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"故意伤害\", \"聚众扰乱社会秩序\", \"故意毁坏财物\". So they used concise terms. For bribery, likely \"受贿罪\". For unit bribery, maybe \"单位受贿罪\". The fact says \"单位受贿事实\". The prosecution says \"被告单位教研中心在经济往来中帐外收受回扣款，其行为构成××，被告人岳某作为该单位负责人，也构成××\". So they likely charge both the unit and the individual for \"受贿罪\". So we need two charges: \"受贿罪\" and \"危险驾驶罪\". Possibly also \"单位受贿罪\". But the instruction: \"请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" The format: [罪名]盗窃<eoa> for single, or [罪名]盗窃;诈骗<eoa> for multiple. So we need to output something like [罪名]受贿罪;危险驾驶罪<eoa>. Should we include \"单位受贿罪\"? The prior examples didn't include \"单位受贿罪\". But the text mentions \"单位受贿事实\". The prosecution says \"被告单位教研中心在经济往来中帐外收受回扣款，其行为构成××\". So they likely charge the unit with \"单位受贿罪\". However, the question asks to list charges (罪名). Usually, the unit is not a person, but the unit can be charged with \"单位受贿罪\". So we might need both \"受贿罪\" (for the individual) and \"单位受贿罪\" (for the unit). But the instruction says \"决定完整的罪名集合，然后列出每一个\". So we need to include all charges applicable. That includes both the unit and the individual. So three charges? Actually two: \"受贿罪\" (for the individual) and \"危险驾驶罪\". The unit's charge is separate but maybe not required as a \"罪名\" for the person? The question is about the defendant (both unit and individual). The prosecution charges both. So we might list \"受贿罪;危险驾驶罪\". The unit's charge is \"单位受贿罪\". But the label \"受贿罪\" might be enough. The prior examples didn't differentiate between unit and individual. So I think answer: [罪名]受贿罪;危险驾驶罪<eoa>.\n\nNow produce JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 999,
+      "prompt_tokens": 2349,
+      "total_tokens": 3348,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 941,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0003672,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0003672,
+        "upstream_inference_prompt_cost": 0.00011745,
+        "upstream_inference_completions_cost": 0.00024975
+      }
+    }
+  },
+  "raw_response_missing": false
+}

@@ -1,0 +1,36 @@
+Bash
+
+command:
+powershell -Command "cd 'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification'; uv run python C:\tmp\proto_compound.py"
+
+description: Run compound-label prototype
+
+--- output ---
+pred='[罪名]诈骗<eoa>' gt='诈骗;组织、领导传销活动;销售假冒注册商标的商品' -> missed=['销售假冒注册商标的商品', '领导传销活动', '组织']
+pred='[罪名]故意伤害;毁坏财物<eoa>' gt='故意伤害;非法持有枪支' -> missed=['非法持有枪支']
+pred='[罪名]强迫卖淫<eoa>' gt='组织卖淫;强迫卖淫;强奸' -> missed=['强奸', '组织卖淫']
+pred='[罪名]走私<eoa>' gt='走私贵重金属;走私普通货物、物品' -> missed=['走私贵重金属', '物品', '走私普通货物']
+pred='[罪名]故意伤害<eoa>' gt='故意伤害' -> missed=[]
+
+Missed component counts:
+  销售假冒注册商标的商品: 1
+  领导传销活动: 1
+  组织: 1
+  非法持有枪支: 1
+  强奸: 1
+  组织卖淫: 1
+  走私贵重金属: 1
+  物品: 1
+  走私普通货物: 1
+
+Scores with missed boost (total_steps=4):
+  组织、领导传销活动: base=0.30 boost=0.000 final=0.300
+  诈骗: base=0.80 boost=0.000 final=0.800
+  走私普通货物、物品: base=0.25 boost=0.000 final=0.250
+  故意伤害: base=0.60 boost=0.000 final=0.600
+
+Variant 2 - log-scaled missed boost:
+  组织、领导传销活动: base=0.30 log_boost=0.000 final=0.300
+  诈骗: base=0.80 log_boost=0.000 final=0.800
+  走私普通货物、物品: base=0.25 log_boost=0.000 final=0.250
+  故意伤害: base=0.60 log_boost=0.000 final=0.600

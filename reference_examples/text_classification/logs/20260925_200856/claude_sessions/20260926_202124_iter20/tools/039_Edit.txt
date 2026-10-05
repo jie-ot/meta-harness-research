@@ -1,0 +1,38 @@
+Edit: agents\notation_adaptive_memory.py
+
+replace_all: False
+old_string:
+def _tokenize_adaptive(text: str) -> frozenset:
+    return _tokenize_bigram(text) if _has_cjk(text) else _tokenize_word(text)
+
+new_string:
+def _is_structured_notation(text: str) -> bool:
+    """Return True for ASCII text dominated by non-alphanumeric characters.
+
+    Structured notations (chemical SMILES, molecular formulae, accession numbers,
+    bracket-heavy codes) have a high ratio of punctuation and symbols relative to
+    letters and digits. Natural-language ASCII text stays below ~0.25; structured
+    notation typically sits at 0.35 or above. CJK text is handled separately before
+    this check is reached.
+    """
+    stripped = text.replace(' ', '')
+    if not stripped:
+        return False
+    alnum_count = sum(1 for c in stripped if c.isalnum())
+    return (alnum_count / len(stripped)) < 0.65  # >35% non-alnum → structured notation
+
+
+def _tokenize_adaptive(text: str) -> frozenset:
+    # CJK scripts: bigrams capture morpheme boundaries better than words
+    if _has_cjk(text):
+        return _tokenize_bigram(text)
+    # Structured notation (SMILES, formulae, codes): bigrams capture bond patterns
+    # and bracket structure that word tokens fragment or drop entirely
+    if _is_structured_notation(text):
+        return _tokenize_bigram(text)
+    # Natural-language ASCII: word tokens are more informative
+    return _tokenize_word(text)
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\notation_adaptive_memory.py has been updated successfully.

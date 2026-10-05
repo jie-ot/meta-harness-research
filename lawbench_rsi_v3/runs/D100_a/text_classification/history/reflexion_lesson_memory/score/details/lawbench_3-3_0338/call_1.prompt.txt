@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description contains multiple distinct criminal acts (e.g., a traffic offense and a separate economic crime), the model must list every applicable charge, separating them with semicol
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- If the factual scenario describes fraud that is carried out through the creation, signing, or performance of a contract (e.g., false representation of a business role, fictitious project, or fabricate
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，2013年9月21日晚，代某某、田某某、代3某、代2某、田某（已判）将印江第一中学保安曹某某砍伤后，在逃跑至印江自治县第一中学后面杭瑞高速公路匝道时，田某打电话给代1某（已判），称有事让其到高速公路匝道处接应，代1某遂骑摩托车赶到高速公路匝道处。在了解到田某等人砍伤印江一中保安的事实后，代1某决定帮助田某等人逃跑。并由代3某骑代1某的摩托车将代某某、田某某、田某、代2某及代1某载至印江某中学下面公路上。后代1某打电话给被告人严某某让其前往接应，被告人严某某随即骑摩托车赶到印江某中学下面公路上。经在场人商量，由代1某骑摩托车载田某、田某某，被告人严某某骑摩托车载代某某、代3某、代2某，分头前往印江县城藏匿。同年9月23日20时许，被告人严某某与代4某又驾车将代某某、田某某、代3某、田某、代2某等人送至新寨乡某某村王某某（另处）处藏匿。
+上述事实，被告人严某某在开庭审理过程中亦无异议，并有证人代某某、田某某、代3某、代2某、田某、代4某、代1某的证言，被告人严某某的供述，户籍证明，受案登记表，立案决定书，抓获经过，拘留证，取保候审决定书，印江土家族苗族自治县人民法院（2014）印刑初字第64号刑事判决书等证据证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

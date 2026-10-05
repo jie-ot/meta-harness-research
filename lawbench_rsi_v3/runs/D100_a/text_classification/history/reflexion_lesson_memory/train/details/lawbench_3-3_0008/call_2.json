@@ -1,0 +1,72 @@
+{
+  "call_id": "a1d882eaef2641e7b5bf837b328da309",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017929-vDXFAMkX6lZrwehIUvTG",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all applicable crimes separated by semicolons.\",\n  \"keywords\": [\n    \"数罪并罚\",\n    \"漏罪\",\n    \"未得逞\",\n    \"犯罪未遂\",\n    \"判决宣告以前还有漏罪\",\n    \"多个罪名\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with rule and keywords. The error: AI predicted only theft (盗窃) but correct answer includes theft and 开设赌场 (operating a casino). The classification error likely due to missing multiple charges when facts mention multiple crimes. So rule: When the fact pattern includes multiple distinct criminal conduct elements, list all applicable crimes separated by semicolons. Keywords: \"数罪并罚\", \"漏罪\", \"未得逞\", \"犯罪未遂\", \"判决宣告以前还有漏罪\", \"数罪并罚\". Also \"开设赌场\" appears maybe not in excerpt but implied. So rule: Ensure to detect mention of additional crimes beyond the primary act, especially when prosecution mentions other offenses or multiple charges. Provide rule.\n\nReturn JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with rule and keywords. The error: AI predicted only theft (盗窃) but correct answer includes theft and 开设赌场 (operating a casino). The classification error likely due to missing multiple charges when facts mention multiple crimes. So rule: When the fact pattern includes multiple distinct criminal conduct elements, list all applicable crimes separated by semicolons. Keywords: \"数罪并罚\", \"漏罪\", \"未得逞\", \"犯罪未遂\", \"判决宣告以前还有漏罪\", \"数罪并罚\". Also \"开设赌场\" appears maybe not in excerpt but implied. So rule: Ensure to detect mention of additional crimes beyond the primary act, especially when prosecution mentions other offenses or multiple charges. Provide rule.\n\nReturn JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with rule and keywords. The error: AI predicted only theft (盗窃) but correct answer includes theft and 开设赌场 (operating a casino). The classification error likely due to missing multiple charges when facts mention multiple crimes. So rule: When the fact pattern includes multiple distinct criminal conduct elements, list all applicable crimes separated by semicolons. Keywords: \"数罪并罚\", \"漏罪\", \"未得逞\", \"犯罪未遂\", \"判决宣告以前还有漏罪\", \"数罪并罚\". Also \"开设赌场\" appears maybe not in excerpt but implied. So rule: Ensure to detect mention of additional crimes beyond the primary act, especially when prosecution mentions other offenses or multiple charges. Provide rule.\n\nReturn JSON.",
+            "reasoning_content": "We need to produce a JSON with rule and keywords. The error: AI predicted only theft (盗窃) but correct answer includes theft and 开设赌场 (operating a casino). The classification error likely due to missing multiple charges when facts mention multiple crimes. So rule: When the fact pattern includes multiple distinct criminal conduct elements, list all applicable crimes separated by semicolons. Keywords: \"数罪并罚\", \"漏罪\", \"未得逞\", \"犯罪未遂\", \"判决宣告以前还有漏罪\", \"数罪并罚\". Also \"开设赌场\" appears maybe not in excerpt but implied. So rule: Ensure to detect mention of additional crimes beyond the primary act, especially when prosecution mentions other offenses or multiple charges. Provide rule.\n\nReturn JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 268,
+      "prompt_tokens": 517,
+      "total_tokens": 785,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 200,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 176,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 9.285e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 9.285e-05,
+        "upstream_inference_prompt_cost": 2.585e-05,
+        "upstream_inference_completions_cost": 6.7e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

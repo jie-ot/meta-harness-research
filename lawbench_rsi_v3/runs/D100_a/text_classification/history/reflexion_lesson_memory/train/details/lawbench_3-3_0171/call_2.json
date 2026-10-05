@@ -1,0 +1,72 @@
+{
+  "call_id": "5594d5038e654790adeb7189548b1d85",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017201-TwC2Bjvi1WzR0fpYiOrJ",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When extracting charges, match the charge name to the specific subject described in the facts (e.g., use “单位受贿” for a unit’s bribery and “受贿” for an individual) and list the charges in the order they appear in the factual narrative.\",\n  \"keywords\": [\n    \"单位受贿\",\n    \"受贿\",\n    \"危险驾驶\",\n    \"单位\",\n    \"个人\",\n    \"犯罪名称\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a correction rule to prevent the error: The AI mis-ordered or mis-identified the correct charge names. The correct answer is \"危险驾驶;单位受贿\". The wrong prediction was \"受贿;危险驾驶\". So the error is swapping the order or mislabeling the specific term \"单位受贿\" vs generic \"受贿\". Also need to ensure correct naming: \"单位受贿\" is a specific crime, not just \"受贿\". So rule: When multiple charges include both a generic term and a specific variant, ensure to use the specific term as defined in the facts, and preserve order as presented in the facts (maybe order of occurrence). Also need to differentiate between \"受贿\" (individual) vs \"单位受贿\" (unit). So rule: Identify the subject of the offense (individual vs unit) and select the appropriate charge term.\n\nKeywords: \"单位受贿\", \"受贿\", \"危险驾驶\", \"单位\", \"个人\", \"犯罪名称\".\n\nReturn JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a correction rule to prevent the error: The AI mis-ordered or mis-identified the correct charge names. The correct answer is \"危险驾驶;单位受贿\". The wrong prediction was \"受贿;危险驾驶\". So the error is swapping the order or mislabeling the specific term \"单位受贿\" vs generic \"受贿\". Also need to ensure correct naming: \"单位受贿\" is a specific crime, not just \"受贿\". So rule: When multiple charges include both a generic term and a specific variant, ensure to use the specific term as defined in the facts, and preserve order as presented in the facts (maybe order of occurrence). Also need to differentiate between \"受贿\" (individual) vs \"单位受贿\" (unit). So rule: Identify the subject of the offense (individual vs unit) and select the appropriate charge term.\n\nKeywords: \"单位受贿\", \"受贿\", \"危险驾驶\", \"单位\", \"个人\", \"犯罪名称\".\n\nReturn JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a correction rule to prevent the error: The AI mis-ordered or mis-identified the correct charge names. The correct answer is \"危险驾驶;单位受贿\". The wrong prediction was \"受贿;危险驾驶\". So the error is swapping the order or mislabeling the specific term \"单位受贿\" vs generic \"受贿\". Also need to ensure correct naming: \"单位受贿\" is a specific crime, not just \"受贿\". So rule: When multiple charges include both a generic term and a specific variant, ensure to use the specific term as defined in the facts, and preserve order as presented in the facts (maybe order of occurrence). Also need to differentiate between \"受贿\" (individual) vs \"单位受贿\" (unit). So rule: Identify the subject of the offense (individual vs unit) and select the appropriate charge term.\n\nKeywords: \"单位受贿\", \"受贿\", \"危险驾驶\", \"单位\", \"个人\", \"犯罪名称\".\n\nReturn JSON.",
+            "reasoning_content": "We need to produce a correction rule to prevent the error: The AI mis-ordered or mis-identified the correct charge names. The correct answer is \"危险驾驶;单位受贿\". The wrong prediction was \"受贿;危险驾驶\". So the error is swapping the order or mislabeling the specific term \"单位受贿\" vs generic \"受贿\". Also need to ensure correct naming: \"单位受贿\" is a specific crime, not just \"受贿\". So rule: When multiple charges include both a generic term and a specific variant, ensure to use the specific term as defined in the facts, and preserve order as presented in the facts (maybe order of occurrence). Also need to differentiate between \"受贿\" (individual) vs \"单位受贿\" (unit). So rule: Identify the subject of the offense (individual vs unit) and select the appropriate charge term.\n\nKeywords: \"单位受贿\", \"受贿\", \"危险驾驶\", \"单位\", \"个人\", \"犯罪名称\".\n\nReturn JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 331,
+      "prompt_tokens": 655,
+      "total_tokens": 986,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 225,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 7.592e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 7.592e-05,
+        "upstream_inference_prompt_cost": 1.965e-05,
+        "upstream_inference_completions_cost": 5.627e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

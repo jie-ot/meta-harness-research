@@ -1,0 +1,72 @@
+{
+  "call_id": "14b0c768dc5543b3a55866bf89eca05f",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791021434-FeSPqY6wRIu27n95DrPG",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant, 岳某某, received construction project progress payments and then refused to pay the workers’ wages, resulting in a large amount of unpaid wages. Under Chinese criminal law, this conduct constitutes the crime of refusing to pay labor remuneration (拒不支付劳动报酬罪). No other criminal conduct is indicated in the facts.\\n\\nTherefore, the appropriate charge is 拒不支付劳动报酬.\",\n  \"final_answer\": \"[罪名]拒不支付劳动报酬<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the crime(s) based on facts. The case: contractor (岳某某) contracted construction projects, received progress payments, then refused to pay workers wages, causing wage arrears. This is typical crime of \"拒不支付劳动报酬罪\" (failure to pay wages) under Chinese criminal law, which is a crime of \"非法占有\" maybe \"拖欠工资\" is a crime under Article 275? Actually Chinese criminal law: Article 275 (formerly) deals with \"拒不支付劳动报酬罪\" (refusing to pay labor remuneration). The crime is \"拒不支付劳动报酬罪\" which is a type of \"非法占有\" but the label used in examples: they often use \"拖欠工资\" or \"拒不支付工资\" as the crime name. Let's see examples: In earlier examples, they had \"容留他人吸毒\", \"诈骗\", \"非法吸收公众存款\", \"贪污\", \"受贿\", \"非法制造爆炸物\", etc. For wage non-payment, we haven't seen an example. Need to infer typical label used in dataset. Possibly \"拖欠工资\" or \"拒不支付劳动报酬\". Let's search memory: In Chinese criminal law classification, the crime is \"拒不支付劳动报酬罪\". In many Chinese legal QA datasets, they label as \"拒不支付劳动报酬\". So answer likely \"拒不支付劳动报酬\". Could also be \"非法占有\" but that's generic. The dataset seems to use concise terms: e.g., \"诈骗\", \"非法吸收公众存款\", \"贪污\", \"受贿\", \"非法制造爆炸物\". So we should output \"[罪名]拒不支付劳动报酬<eoa>\".\n\nCheck if any other crimes: Possibly \"非法占有\" but not needed. Also could be \"挪用资金\" but not. The act is not about misappropriation of funds but failure to pay wages after receiving payments. That's a specific crime.\n\nThus final answer: [罪名]拒不支付劳动报酬<eoa>.\n\nReturn JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the crime(s) based on facts. The case: contractor (岳某某) contracted construction projects, received progress payments, then refused to pay workers wages, causing wage arrears. This is typical crime of \"拒不支付劳动报酬罪\" (failure to pay wages) under Chinese criminal law, which is a crime of \"非法占有\" maybe \"拖欠工资\" is a crime under Article 275? Actually Chinese criminal law: Article 275 (formerly) deals with \"拒不支付劳动报酬罪\" (refusing to pay labor remuneration). The crime is \"拒不支付劳动报酬罪\" which is a type of \"非法占有\" but the label used in examples: they often use \"拖欠工资\" or \"拒不支付工资\" as the crime name. Let's see examples: In earlier examples, they had \"容留他人吸毒\", \"诈骗\", \"非法吸收公众存款\", \"贪污\", \"受贿\", \"非法制造爆炸物\", etc. For wage non-payment, we haven't seen an example. Need to infer typical label used in dataset. Possibly \"拖欠工资\" or \"拒不支付劳动报酬\". Let's search memory: In Chinese criminal law classification, the crime is \"拒不支付劳动报酬罪\". In many Chinese legal QA datasets, they label as \"拒不支付劳动报酬\". So answer likely \"拒不支付劳动报酬\". Could also be \"非法占有\" but that's generic. The dataset seems to use concise terms: e.g., \"诈骗\", \"非法吸收公众存款\", \"贪污\", \"受贿\", \"非法制造爆炸物\". So we should output \"[罪名]拒不支付劳动报酬<eoa>\".\n\nCheck if any other crimes: Possibly \"非法占有\" but not needed. Also could be \"挪用资金\" but not. The act is not about misappropriation of funds but failure to pay wages after receiving payments. That's a specific crime.\n\nThus final answer: [罪名]拒不支付劳动报酬<eoa>.\n\nReturn JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine the crime(s) based on facts. The case: contractor (岳某某) contracted construction projects, received progress payments, then refused to pay workers wages, causing wage arrears. This is typical crime of \"拒不支付劳动报酬罪\" (failure to pay wages) under Chinese criminal law, which is a crime of \"非法占有\" maybe \"拖欠工资\" is a crime under Article 275? Actually Chinese criminal law: Article 275 (formerly) deals with \"拒不支付劳动报酬罪\" (refusing to pay labor remuneration). The crime is \"拒不支付劳动报酬罪\" which is a type of \"非法占有\" but the label used in examples: they often use \"拖欠工资\" or \"拒不支付工资\" as the crime name. Let's see examples: In earlier examples, they had \"容留他人吸毒\", \"诈骗\", \"非法吸收公众存款\", \"贪污\", \"受贿\", \"非法制造爆炸物\", etc. For wage non-payment, we haven't seen an example. Need to infer typical label used in dataset. Possibly \"拖欠工资\" or \"拒不支付劳动报酬\". Let's search memory: In Chinese criminal law classification, the crime is \"拒不支付劳动报酬罪\". In many Chinese legal QA datasets, they label as \"拒不支付劳动报酬\". So answer likely \"拒不支付劳动报酬\". Could also be \"非法占有\" but that's generic. The dataset seems to use concise terms: e.g., \"诈骗\", \"非法吸收公众存款\", \"贪污\", \"受贿\", \"非法制造爆炸物\". So we should output \"[罪名]拒不支付劳动报酬<eoa>\".\n\nCheck if any other crimes: Possibly \"非法占有\" but not needed. Also could be \"挪用资金\" but not. The act is not about misappropriation of funds but failure to pay wages after receiving payments. That's a specific crime.\n\nThus final answer: [罪名]拒不支付劳动报酬<eoa>.\n\nReturn JSON with reasoning and final answer.",
+            "reasoning_content": "We need to determine the crime(s) based on facts. The case: contractor (岳某某) contracted construction projects, received progress payments, then refused to pay workers wages, causing wage arrears. This is typical crime of \"拒不支付劳动报酬罪\" (failure to pay wages) under Chinese criminal law, which is a crime of \"非法占有\" maybe \"拖欠工资\" is a crime under Article 275? Actually Chinese criminal law: Article 275 (formerly) deals with \"拒不支付劳动报酬罪\" (refusing to pay labor remuneration). The crime is \"拒不支付劳动报酬罪\" which is a type of \"非法占有\" but the label used in examples: they often use \"拖欠工资\" or \"拒不支付工资\" as the crime name. Let's see examples: In earlier examples, they had \"容留他人吸毒\", \"诈骗\", \"非法吸收公众存款\", \"贪污\", \"受贿\", \"非法制造爆炸物\", etc. For wage non-payment, we haven't seen an example. Need to infer typical label used in dataset. Possibly \"拖欠工资\" or \"拒不支付劳动报酬\". Let's search memory: In Chinese criminal law classification, the crime is \"拒不支付劳动报酬罪\". In many Chinese legal QA datasets, they label as \"拒不支付劳动报酬\". So answer likely \"拒不支付劳动报酬\". Could also be \"非法占有\" but that's generic. The dataset seems to use concise terms: e.g., \"诈骗\", \"非法吸收公众存款\", \"贪污\", \"受贿\", \"非法制造爆炸物\". So we should output \"[罪名]拒不支付劳动报酬<eoa>\".\n\nCheck if any other crimes: Possibly \"非法占有\" but not needed. Also could be \"挪用资金\" but not. The act is not about misappropriation of funds but failure to pay wages after receiving payments. That's a specific crime.\n\nThus final answer: [罪名]拒不支付劳动报酬<eoa>.\n\nReturn JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 586,
+      "prompt_tokens": 25013,
+      "total_tokens": 25599,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 470,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00085001,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00085001,
+        "upstream_inference_prompt_cost": 0.00075039,
+        "upstream_inference_completions_cost": 9.962e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

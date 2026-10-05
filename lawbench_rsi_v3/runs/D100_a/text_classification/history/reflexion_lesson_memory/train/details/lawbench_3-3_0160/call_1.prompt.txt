@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+- When the factual description involves the use of false documents or misrepresentation to conclude a contract and obtain money, classify the offense as the specific type of fraud (e.g., 合同诈骗) rather th
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- If the facts describe a person in a managerial or official position receiving money or valuables in exchange for using their职务便利, classify the crime simply as "受贿" unless the source explicitly states 
+- When a death results from negligent operation of heavy machinery or equipment at a construction site (e.g., a loader, crane) rather than ordinary road traffic, the appropriate charge is 过失致人死亡 (neglig
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:昌宁县人民检察院指控，2011年，卡某镇农业综合服务中心动物食品检疫员李某为徇私情，通过出具虚假的《中国动物卫生监督禁止生产、经营的动物及产品单据》27份，帮助他人骗取50头病害猪无害化处理国家财政补助资金人民币29000元。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

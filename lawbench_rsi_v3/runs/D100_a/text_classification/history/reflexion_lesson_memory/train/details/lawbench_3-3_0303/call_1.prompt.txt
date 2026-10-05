@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When a single conduct simultaneously satisfies the elements of a higher‑level offense (e.g., rape) and also matches lower‑level offenses (e.g., illegal entry, forced indecency, or intentional injury),
+- When the statutory offense name in the facts contains multiple listed items separated by commas (e.g., “走私国家禁止进出口的货物、物品”), always output the complete official charge name including every listed item.
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:阜南县人民检察院指控：被告人郭某甲未取得医生执业资格，却在位于安徽省阜南县柴集镇梅郢村郭某乙的家中非法开办诊所。2014年3月份的一天，阜南县柴集镇孕妇周某找到被告人郭某甲，告知其在外地做B超检查怀孕的是女孩，并让郭某甲帮助其引产。后郭某甲用药物米某司酮和米索前列醇对孕妇周某非法进行选择性别的终止妊娠手术。不久，孕妇周某的胎儿被引流产。以上事实，公诉机关提供了相关证据予以证实，据以认为被告人郭某甲的行为触犯了《中华人民共和国刑法》××××的规定，构成××，提请本院依法对其判处刑罚。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

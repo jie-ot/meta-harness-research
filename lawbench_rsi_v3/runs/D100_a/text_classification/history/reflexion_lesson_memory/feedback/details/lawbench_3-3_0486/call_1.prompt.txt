@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the factual description mentions distinct illegal tax‑related actions (e.g., falsifying VAT invoices, fraudulently obtaining export rebates, and using fake invoices for tax deduction), enumerate 
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- Label the offense as '赌博' unless the factual description explicitly meets the statutory elements of '组织赌博' (e.g., the defendant organized, operated, or managed a gambling venue as defined by law).
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the facts describe a person performing any medical diagnosis, treatment, or related procedure without a valid medical license, classify the conduct under the statutory offense of “非法行医” rather th
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:青岛市市北区人民检察院指控，2012年1月至5月，被告人赵某在经营青岛××公路工程有限公司期间，为向青岛城阳××公路工程有限公司收取工程款项，先后从代开发票小广告处购买了2张税务机关代开统一发票（发票金额合计708433元），并将发票提供给青岛城阳××公路工程有限公司入账。后赵某被公安机关电话传唤到案。经鉴定，以上发票系假发票。
+公诉机关提供的证据有书证、证人证言、被告人供述等。公诉机关认为，被告人赵某虚开发票，情节严重，其行为触犯了《中华人民共和国刑法》××××，应当以××追究其刑事责任。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

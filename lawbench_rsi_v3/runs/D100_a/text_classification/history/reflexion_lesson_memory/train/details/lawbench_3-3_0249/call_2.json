@@ -1,0 +1,72 @@
+{
+  "call_id": "16f206c68fe84a7293593566732cfd7e",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791018939-QXOEvFtpuleW9xH8aA0N",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"If the facts state that the defendant knowingly acquired or dealt with property known to be stolen and thereby obtained or handled the proceeds of the crime, list both the concealment/cover‑up offense (掩饰、隐瞒犯罪所得) and the offense of receiving/benefiting from criminal proceeds (犯罪所得收益).\",\n  \"keywords\": [\n    \"明知\",\n    \"盗窃所得\",\n    \"收购\",\n    \"购买\",\n    \"赃物\",\n    \"收益\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with a rule to prevent the error: The AI omitted \"犯罪所得收益\" as an additional charge. The case: purchase of stolen property, known to be stolen, should be charged with both \"掩饰、隐瞒犯罪所得罪\" and \"犯罪所得收益罪\"? Actually Chinese criminal law: \"掩饰、隐瞒犯罪所得罪\" and \"非法获取犯罪所得收益罪\"? The correct answer includes both. The error was only giving one. So rule: When the facts involve both concealment of stolen property and receipt of proceeds, include both charges. So rule: If the defendant knowingly acquires stolen property and the property is returned, the charges include both concealment and receipt of criminal proceeds. Keywords: \"明知\", \"盗窃所得\", \"收购\", \"购买\", \"赃物\", \"收益\". Provide JSON.\n\n",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with a rule to prevent the error: The AI omitted \"犯罪所得收益\" as an additional charge. The case: purchase of stolen property, known to be stolen, should be charged with both \"掩饰、隐瞒犯罪所得罪\" and \"犯罪所得收益罪\"? Actually Chinese criminal law: \"掩饰、隐瞒犯罪所得罪\" and \"非法获取犯罪所得收益罪\"? The correct answer includes both. The error was only giving one. So rule: When the facts involve both concealment of stolen property and receipt of proceeds, include both charges. So rule: If the defendant knowingly acquires stolen property and the property is returned, the charges include both concealment and receipt of criminal proceeds. Keywords: \"明知\", \"盗窃所得\", \"收购\", \"购买\", \"赃物\", \"收益\". Provide JSON.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with a rule to prevent the error: The AI omitted \"犯罪所得收益\" as an additional charge. The case: purchase of stolen property, known to be stolen, should be charged with both \"掩饰、隐瞒犯罪所得罪\" and \"犯罪所得收益罪\"? Actually Chinese criminal law: \"掩饰、隐瞒犯罪所得罪\" and \"非法获取犯罪所得收益罪\"? The correct answer includes both. The error was only giving one. So rule: When the facts involve both concealment of stolen property and receipt of proceeds, include both charges. So rule: If the defendant knowingly acquires stolen property and the property is returned, the charges include both concealment and receipt of criminal proceeds. Keywords: \"明知\", \"盗窃所得\", \"收购\", \"购买\", \"赃物\", \"收益\". Provide JSON.\n\n",
+            "reasoning_content": "We need to produce a JSON with a rule to prevent the error: The AI omitted \"犯罪所得收益\" as an additional charge. The case: purchase of stolen property, known to be stolen, should be charged with both \"掩饰、隐瞒犯罪所得罪\" and \"犯罪所得收益罪\"? Actually Chinese criminal law: \"掩饰、隐瞒犯罪所得罪\" and \"非法获取犯罪所得收益罪\"? The correct answer includes both. The error was only giving one. So rule: When the facts involve both concealment of stolen property and receipt of proceeds, include both charges. So rule: If the defendant knowingly acquires stolen property and the property is returned, the charges include both concealment and receipt of criminal proceeds. Keywords: \"明知\", \"盗窃所得\", \"收购\", \"购买\", \"赃物\", \"收益\". Provide JSON.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 305,
+      "prompt_tokens": 445,
+      "total_tokens": 750,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 217,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 7.35e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 7.35e-05,
+        "upstream_inference_prompt_cost": 1.6465e-05,
+        "upstream_inference_completions_cost": 5.7035e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

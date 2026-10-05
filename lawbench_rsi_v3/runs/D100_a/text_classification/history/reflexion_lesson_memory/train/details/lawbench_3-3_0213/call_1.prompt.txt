@@ -1,0 +1,31 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the factual description involves providing a location for others to use narcotics, assign the statutory offense name "容留他人吸毒" rather than any longer descriptive phrase such as "容留他人吸食毒品".
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- When a fact pattern involves encouraging or inducing another person to use drugs, classify the offense using the precise statutory term "引诱、教唆、欺骗他人吸毒" instead of the generic phrase "教唆他人吸毒".
+- If the facts only describe forging, altering, or selling state‑issued documents or certificates and do not contain any separate act of deceiving another party for financial gain, assign only the forge
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:佛山市南海区人民检察院指控，2014年12月至2015年1月9日期间，被告人黄斌某在其租住的佛山市南海区狮山镇华涌首约村一出租屋302房内多次容留他人吸食毒品。具体事实如下：
+1、2014年12月25日22时许，黄斌某在上述302房容留吸毒人员徐肖某、杨冬某（均另作处理）以“煲猪肉”的方式吸食徐肖某带来的甲基苯丙胺（冰毒）。
+2、2015年1月4日20时许，黄斌某在上述302房再次容留徐肖某、杨冬某以“煲猪肉”的方式吸食徐肖某带来的甲基苯丙胺。
+3、同月9日凌晨2时许，黄斌某在上述302房容留徐肖某、杨冬某以及吸毒人员陶沛某（另作处理）、“阿春”（“八婆”）以“煲猪肉”的方式吸食徐肖某带来的甲基苯丙胺。当晚22时许，公安人员在该302房抓获黄斌某。
+就上述指控，公诉机关向法庭出示了相关在案证据予以证实，并认为被告人黄斌某容留他人吸食毒品，其行为触犯了《中华人民共和国刑法》××之规定，应当以××追究其刑事责任；被告人如实供述自己的罪行，应当依照《中华人民共和国刑法》××××之规定处罚。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

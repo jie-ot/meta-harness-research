@@ -1,0 +1,20 @@
+E3修复后：同一12阶段冻结复测的逐题资格审计
+目的：核验既有冻结评价可比性；不替代优化器或候选生成方差实验。
+设计：3版本×score/audit×2重复，每次100题；固定原12stage，源文件只读，新实验模型调用0。
+历史模型均gpt-oss-120b，temperature=0，Reasoning: medium；不标为SolMax。当前模型/effort不可独立确认。
+结果（CC/CW/WC/WW依次正确→正确、正确→错误、错误→正确、错误→错误；canonical flips是集合变化数）：
+R4B score: 25→29，Δ=+4pp，范围[25,29]；CC/CW/WC/WW=23/2/6/69；canonical flips=42，raw flips=42；actual prompt相同100/100；匹配但缓存或独立性未知。
+R4B audit: 29→26，Δ=-3pp，范围[26,29]；CC/CW/WC/WW=23/6/3/68；canonical flips=43，raw flips=43；actual prompt相同100/100；匹配但缓存或独立性未知。
+R7A score: 39→36，Δ=-3pp，范围[36,39]；CC/CW/WC/WW=31/8/5/56；canonical flips=36，raw flips=37；actual prompt相同100/100；匹配但缓存或独立性未知。
+R7A audit: 34→35，Δ=+1pp，范围[34,35]；CC/CW/WC/WW=30/4/5/61；canonical flips=27，raw flips=29；actual prompt相同100/100；匹配但缓存或独立性未知。
+R12B score: 39→40，Δ=+1pp，范围[39,40]；CC/CW/WC/WW=35/4/5/56；canonical flips=29，raw flips=29；actual prompt相同100/100；匹配但缓存或独立性未知。
+R12B audit: 44→45，Δ=+1pp，范围[44,45]；CC/CW/WC/WW=42/2/3/53；canonical flips=20，raw flips=23；actual prompt相同100/100；匹配但缓存或独立性未知。
+资格：12份原trace SHA均核对complete，代码、框架、初始memory字节hash、config、split顺序和逐题input/target全部核查；规范化标签按历史解析规则派生并与全部1200条原保存正确性相容，准确率不重新评估。
+各stage cache off/null、cache_hits0、persistent state_changed=false，成功trace共1200个call ID且跨stage不重复；仍不证明服务端缓存、同一backend或统计独立，原API大日志未完整扫描，所以不升为第一类。
+模板固定不代表实际prompt固定；实际prompt差异见qualification.csv/逐题表。若不同，只能称同配置/状态过程的重复差异，不能隔离为固定prompt噪声。
+R4B score原402中断后恢复，摘要18/17非计费拒绝、logical/API118/117，成功记录各100；其余stage各100请求。retry/incomplete仅依据摘要，完整API attempt核对unknown。
+H0恢复缓存、reused_h0副本去重，不增加重复；两个injected反馈共用同一D100_a源。audit是已暴露old test，不据其重选。跨harness原成对重复块缺证，不报告排名翻转。
+阈值1/2/5pp只作描述，100题对应1/2/5净病例，正反翻转可抵消。n=2不估方差/区间/显著性/改善概率，不校准patience。
+解析错误属于执行偏离：已查实question/input与repetition/rep字段，20项小型自检后增量保存再流式修复；初次未完成资格不是研究结论。详情见execution_deviations.json。
+累计原始读取上界386,429,049/419,430,400字节；大文件读取同时SHA，不为核验再次读轨迹。
+下一步影响：仅补齐既有重复记录的描述性资格；E2仍为历史prefix回放，不调整阈值或启动下一实验。

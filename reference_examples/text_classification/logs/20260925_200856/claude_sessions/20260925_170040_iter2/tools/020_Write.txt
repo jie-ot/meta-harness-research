@@ -1,0 +1,125 @@
+Write: ..\..\..\..\..\..\tmp\proto_label_balanced.py
+
+content:
+"""Prototype: label-balanced selection algorithm.
+
+Tests whether round-robin-by-label fills context better than recency,
+using real examples extracted from a training log.
+"""
+import collections
+import random
+
+# Simulated pool of examples from Symptom2Disease (22 possible labels)
+# Pulled from actual log structure — just raw_question + target pairs
+SYMPTOM_LABELS = [
+    "typhoid", "psoriasis", "allergy", "fungal infection", "chicken pox",
+    "diabetes", "hypertension", "cervical spondylosis", "bronchial asthma",
+    "varicose veins", "malaria", "dengue", "arthritis", "impetigo",
+    "common cold", "gastroesophageal reflux disease", "urinary tract infection",
+    "pneumonia", "peptic ulcer disease", "jaundice", "migraine", "drug reaction",
+]
+
+# Generate synthetic pool: 200 training examples with skewed label distribution
+rng = random.Random(42)
+pool = []
+for i in range(200):
+    # Skew: first 5 labels appear more often (mimics real imbalance)
+    if rng.random() < 0.4:
+        label = rng.choice(SYMPTOM_LABELS[:5])
+    else:
+        label = rng.choice(SYMPTOM_LABELS)
+    pool.append({"raw_question": f"Patient symptom description {i}", "target": label})
+
+
+def recency_select(pool, max_examples=50, max_chars=30000):
+    """Current fewshot_all approach: take most recent, respect char budget."""
+    selected = pool[-max_examples:]
+    parts = []
+    total = 0
+    for ex in selected:
+        part = f"Q: {ex['raw_question']}\nA: {ex['target']}"
+        if total + len(part) > max_chars:
+            break
+        parts.append(part)
+        total += len(part) + 2
+    return parts
+
+
+def label_balanced_select(pool, max_chars=30000):
+    """Round-robin by label: fill one slot per label before any label gets two."""
+    # Group by label
+    by_label = collections.defaultdict(list)
+    for ex in pool:
+        by_label[ex["target"]].append(ex)
+
+    # Sort each bucket by recency (keep latest examples)
+    for label in by_label:
+        by_label[label] = by_label[label]  # already ordered by arrival
+
+    # Build deques for round-robin
+    label_order = sorted(by_label.keys())
+    queues = {label: collections.deque(reversed(by_label[label])) for label in label_order}
+
+    parts = []
+    total = 0
+    while any(queues[l] for l in label_order):
+        for label in label_order:
+            if not queues[label]:
+                continue
+            ex = queues[label].popleft()
+            part = f"Q: {ex['raw_question']}\nA: {ex['target']}"
+            if total + len(part) > max_chars:
+                return parts
+            parts.append(part)
+            total += len(part) + 2
+    return parts
+
+
+# Compare label coverage
+recency = recency_select(pool, max_examples=9999)
+balanced = label_balanced_select(pool)
+
+def count_unique_labels(selected_parts):
+    labels = set()
+    for p in selected_parts:
+        # Extract label from "Q: ...\nA: <label>"
+        labels.add(p.split("\nA: ")[-1])
+    return len(labels)
+
+print(f"Recency:  {len(recency)} examples, {count_unique_labels(recency)} unique labels")
+print(f"Balanced: {len(balanced)} examples, {count_unique_labels(balanced)} unique labels")
+
+# With small char budget, show divergence
+print("\n--- With tight char budget (5000 chars) ---")
+recency_tight = recency_select(pool, max_examples=9999)
+# Manually apply tight budget
+tight_recency = []
+total = 0
+for p in recency_tight:
+    if total + len(p) > 5000: break
+    tight_recency.append(p)
+    total += len(p) + 2
+
+tight_balanced = label_balanced_select(pool, max_chars=5000)
+
+print(f"Recency:  {len(tight_recency)} examples, {count_unique_labels(tight_recency)} unique labels")
+print(f"Balanced: {len(tight_balanced)} examples, {count_unique_labels(tight_balanced)} unique labels")
+
+# Verify balanced has better label coverage at medium budget (6000 chars = ~contrastive budget)
+print("\n--- At contrastive_error_memory's actual budget (6294 chars) ---")
+balanced_med = label_balanced_select(pool, max_chars=6294)
+recency_med = []
+total = 0
+for p in recency_select(pool, max_examples=9999):
+    if total + len(p) > 6294: break
+    recency_med.append(p)
+    total += len(p) + 2
+
+print(f"Recency:  {len(recency_med)} examples, {count_unique_labels(recency_med)} unique labels")
+print(f"Balanced: {len(balanced_med)} examples, {count_unique_labels(balanced_med)} unique labels")
+print("Hypothesis: balanced should show more unique labels at same char budget")
+
+
+
+--- output ---
+File created successfully at: /tmp/proto_label_balanced.py (file state is current in your context — no need to Read it back)

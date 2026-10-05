@@ -1,0 +1,59 @@
+Edit: agents\symmetric_confusion_memory.py
+
+replace_all: False
+old_string:
+    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+        for r in batch_results:
+            raw_q = r.get("raw_question", r["input"])
+            ex: dict[str, Any] = {
+                "input": r["input"],
+                "target": r["ground_truth"],
+                "tokens": _tokenize_adaptive(raw_q),
+            }
+            if "raw_question" in r:
+                ex["raw_question"] = r["raw_question"]
+            self.examples.append(ex)
+
+            if not r.get("was_correct", True):
+                pred = _normalize_prediction(r.get("prediction", ""))
+                gt = r["ground_truth"]
+                if pred and pred != gt:
+                    self.confusion[pred][gt] += 1.0
+
+        # Decay after processing the full batch
+        self._decay_confusion()
+
+new_string:
+    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+        for r in batch_results:
+            raw_q = r.get("raw_question", r["input"])
+            ex: dict[str, Any] = {
+                "input": r["input"],
+                "target": r["ground_truth"],
+                "tokens": _tokenize_adaptive(raw_q),
+            }
+            if "raw_question" in r:
+                ex["raw_question"] = r["raw_question"]
+            self.examples.append(ex)
+
+            if not r.get("was_correct", True):
+                pred = _normalize_prediction(r.get("prediction", ""))
+                gt = r["ground_truth"]
+                if pred and pred != gt:
+                    # Forward edge: pred was confused with gt
+                    self.confusion[pred][gt] += 1.0
+                    # Reverse edge at half weight: gt is also confused with pred.
+                    # The disambiguation phase looks up stored examples by the top
+                    # candidate labels retrieved from the example pool, which are
+                    # ground-truth labels — not raw predictions. Without the reverse
+                    # edge, those lookups almost never find a match. Adding gt→pred
+                    # at 0.5 makes the phase fire for the majority of queries while
+                    # keeping forward errors at higher priority.
+                    self.confusion[gt][pred] += 0.5
+
+        # Decay after processing the full batch
+        self._decay_confusion()
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\symmetric_confusion_memory.py has been updated successfully.

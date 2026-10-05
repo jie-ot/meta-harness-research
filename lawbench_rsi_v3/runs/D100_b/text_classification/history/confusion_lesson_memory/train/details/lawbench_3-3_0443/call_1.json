@@ -1,0 +1,72 @@
+{
+  "call_id": "5d42ebf9a0224088a35a7737bd6c0ca5",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791041240-NTnx0V8V1lBy5dHDbNS0",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant, a company sales employee, used his position to take customer payments and keep the money for personal use, misappropriating company funds (70920 RMB) to buy lottery tickets. This is a misuse of funds entrusted to him due to his job, fitting the crime of misappropriating (misusing) funds. Since the entity is a private company, the appropriate statutory offense is 挪用资金 rather than 挪用公款 (which applies to public funds) or 职务侵占 (which applies to public officials).\",\n  \"final_answer\": \"挪用资金\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the correct charge label(s) for the given facts.\n\nFacts: \"2014年6月至2014年12月期间，被告人林某某利用其担任漳州市某公司业务员的职务便利，采用收取客户货款不上缴的手段，共挪用公司货款人民币70920元用于个人购买中国体育彩票。案发后，已退还全部赃款。公诉机关认为被告人林某某利用职务上的便利，挪用本单位资金归个人用于营利活动，数额较大，其行为已构成××，提请本院依照《中华人民共和国刑法》××的规定，予以惩处。\"\n\nWe need to map to charge list. The act is \"挪用公司货款\" i.e., misappropriation of company funds for personal use. This is \"挪用公款\" (misappropriation of public funds) or \"挪用资金\". The list includes \"挪用公款\", \"挪用特定款物\", \"挪用资金\". Which is appropriate? The person is a business employee, not a public official. The term \"挪用公款\" is used for public funds (state). However in examples, they used \"挪用公款\" for a school employee misappropriating school funds (public). For private company, maybe \"挪用资金\" is more generic. The list includes \"挪用资金\". In earlier examples, they used \"挪用公款\" for school (public). For private, they used \"挪用资金\"? Let's see training examples: There's an example: \"王3某在担任上海市松江区车墩学校出纳、报账员期间...挪用公款332,600元\". That's public school, so \"挪用公款\". Another example: \"林某某利用其担任漳州市某公司业务员的职务便利...挪用公司货款\". This is private company. The appropriate charge likely \"挪用资金\". The list includes \"挪用资金\". So answer: [罪名]挪用资金<eoa>\n\nCheck if any other charge like \"职务侵占\" could apply? The act is misappropriation of company funds using position. \"职务侵占\" is for public officials? Actually \"职务侵占\" is for public employees? It is a crime of misappropriation by a person in a position of trust within a unit (public or private?). In Chinese law, \"职务侵占\" applies to public sector employees (state). For private, \"挪用资金\" is used. So choose \"挪用资金\".\n\nThus final answer JSON with reasoning and final answer.\n\n",
+          "provider_specific_fields": {
+            "reasoning": "We need to determine the correct charge label(s) for the given facts.\n\nFacts: \"2014年6月至2014年12月期间，被告人林某某利用其担任漳州市某公司业务员的职务便利，采用收取客户货款不上缴的手段，共挪用公司货款人民币70920元用于个人购买中国体育彩票。案发后，已退还全部赃款。公诉机关认为被告人林某某利用职务上的便利，挪用本单位资金归个人用于营利活动，数额较大，其行为已构成××，提请本院依照《中华人民共和国刑法》××的规定，予以惩处。\"\n\nWe need to map to charge list. The act is \"挪用公司货款\" i.e., misappropriation of company funds for personal use. This is \"挪用公款\" (misappropriation of public funds) or \"挪用资金\". The list includes \"挪用公款\", \"挪用特定款物\", \"挪用资金\". Which is appropriate? The person is a business employee, not a public official. The term \"挪用公款\" is used for public funds (state). However in examples, they used \"挪用公款\" for a school employee misappropriating school funds (public). For private company, maybe \"挪用资金\" is more generic. The list includes \"挪用资金\". In earlier examples, they used \"挪用公款\" for school (public). For private, they used \"挪用资金\"? Let's see training examples: There's an example: \"王3某在担任上海市松江区车墩学校出纳、报账员期间...挪用公款332,600元\". That's public school, so \"挪用公款\". Another example: \"林某某利用其担任漳州市某公司业务员的职务便利...挪用公司货款\". This is private company. The appropriate charge likely \"挪用资金\". The list includes \"挪用资金\". So answer: [罪名]挪用资金<eoa>\n\nCheck if any other charge like \"职务侵占\" could apply? The act is misappropriation of company funds using position. \"职务侵占\" is for public officials? Actually \"职务侵占\" is for public employees? It is a crime of misappropriation by a person in a position of trust within a unit (public or private?). In Chinese law, \"职务侵占\" applies to public sector employees (state). For private, \"挪用资金\" is used. So choose \"挪用资金\".\n\nThus final answer JSON with reasoning and final answer.\n\n",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the correct charge label(s) for the given facts.\n\nFacts: \"2014年6月至2014年12月期间，被告人林某某利用其担任漳州市某公司业务员的职务便利，采用收取客户货款不上缴的手段，共挪用公司货款人民币70920元用于个人购买中国体育彩票。案发后，已退还全部赃款。公诉机关认为被告人林某某利用职务上的便利，挪用本单位资金归个人用于营利活动，数额较大，其行为已构成××，提请本院依照《中华人民共和国刑法》××的规定，予以惩处。\"\n\nWe need to map to charge list. The act is \"挪用公司货款\" i.e., misappropriation of company funds for personal use. This is \"挪用公款\" (misappropriation of public funds) or \"挪用资金\". The list includes \"挪用公款\", \"挪用特定款物\", \"挪用资金\". Which is appropriate? The person is a business employee, not a public official. The term \"挪用公款\" is used for public funds (state). However in examples, they used \"挪用公款\" for a school employee misappropriating school funds (public). For private company, maybe \"挪用资金\" is more generic. The list includes \"挪用资金\". In earlier examples, they used \"挪用公款\" for school (public). For private, they used \"挪用资金\"? Let's see training examples: There's an example: \"王3某在担任上海市松江区车墩学校出纳、报账员期间...挪用公款332,600元\". That's public school, so \"挪用公款\". Another example: \"林某某利用其担任漳州市某公司业务员的职务便利...挪用公司货款\". This is private company. The appropriate charge likely \"挪用资金\". The list includes \"挪用资金\". So answer: [罪名]挪用资金<eoa>\n\nCheck if any other charge like \"职务侵占\" could apply? The act is misappropriation of company funds using position. \"职务侵占\" is for public officials? Actually \"职务侵占\" is for public employees? It is a crime of misappropriation by a person in a position of trust within a unit (public or private?). In Chinese law, \"职务侵占\" applies to public sector employees (state). For private, \"挪用资金\" is used. So choose \"挪用资金\".\n\nThus final answer JSON with reasoning and final answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": "We need to determine the correct charge label(s) for the given facts.\n\nFacts: \"2014年6月至2014年12月期间，被告人林某某利用其担任漳州市某公司业务员的职务便利，采用收取客户货款不上缴的手段，共挪用公司货款人民币70920元用于个人购买中国体育彩票。案发后，已退还全部赃款。公诉机关认为被告人林某某利用职务上的便利，挪用本单位资金归个人用于营利活动，数额较大，其行为已构成××，提请本院依照《中华人民共和国刑法》××的规定，予以惩处。\"\n\nWe need to map to charge list. The act is \"挪用公司货款\" i.e., misappropriation of company funds for personal use. This is \"挪用公款\" (misappropriation of public funds) or \"挪用资金\". The list includes \"挪用公款\", \"挪用特定款物\", \"挪用资金\". Which is appropriate? The person is a business employee, not a public official. The term \"挪用公款\" is used for public funds (state). However in examples, they used \"挪用公款\" for a school employee misappropriating school funds (public). For private company, maybe \"挪用资金\" is more generic. The list includes \"挪用资金\". In earlier examples, they used \"挪用公款\" for school (public). For private, they used \"挪用资金\"? Let's see training examples: There's an example: \"王3某在担任上海市松江区车墩学校出纳、报账员期间...挪用公款332,600元\". That's public school, so \"挪用公款\". Another example: \"林某某利用其担任漳州市某公司业务员的职务便利...挪用公司货款\". This is private company. The appropriate charge likely \"挪用资金\". The list includes \"挪用资金\". So answer: [罪名]挪用资金<eoa>\n\nCheck if any other charge like \"职务侵占\" could apply? The act is misappropriation of company funds using position. \"职务侵占\" is for public officials? Actually \"职务侵占\" is for public employees? It is a crime of misappropriation by a person in a position of trust within a unit (public or private?). In Chinese law, \"职务侵占\" applies to public sector employees (state). For private, \"挪用资金\" is used. So choose \"挪用资金\".\n\nThus final answer JSON with reasoning and final answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 734,
+      "prompt_tokens": 17575,
+      "total_tokens": 18309,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 644,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00106225,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00106225,
+        "upstream_inference_prompt_cost": 0.00087875,
+        "upstream_inference_completions_cost": 0.0001835
+      }
+    }
+  },
+  "raw_response_missing": false
+}

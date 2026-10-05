@@ -1,0 +1,23 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:成都市青白江区人民检察院指控，2003年，被告人李某某被成都市青白江区粮食局聘任为财务审计科科长，2011年起，被告人李某某受区粮食局委派，开始对区粮食局下属的各个粮站进行每年两次的财务检查。2012年至2014年期间，时任大弯粮站站长黄某先后11次以“借款”从事粮食经营为由，挪用公款240余万某用于个人投资股票、赌博等，造成230余万某无法追回。李某某在2013年、2014年年底检查时，发现大弯粮站财务反映有黄某个人借款情况，李某某没有在会议上指出问题并向局领导汇报，只是私下提醒黄某，李某某的工作存在严重失职。
+对以上指控事实，公诉机关提交了证人证言、被告人供述、书证及到案经过等证据予以证明，请求本院以××追究被告人李某某的刑事责任。
+
+
+Wrong prediction: [罪名]玩忽职务<eoa>
+Correct answer: 玩忽职守
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

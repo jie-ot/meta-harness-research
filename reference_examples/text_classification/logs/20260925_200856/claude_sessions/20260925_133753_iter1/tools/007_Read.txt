@@ -1,0 +1,16 @@
+Read: agents\fewshot_all.py
+
+
+--- output ---
+1	"""Few-Shot Memory using ALL training examples (no cap)."""
+2	
+3	from ..llm import LLMCallable
+4	from .fewshot_memory import FewShotMemory
+5	
+6	
+7	class FewShotAll(FewShotMemory):
+8	    """Few-shot baseline using all training examples, 50k token limit."""
+9	
+10	    def __init__(self, llm: LLMCallable):
+11	        super().__init__(llm, max_examples=9999)
+12	

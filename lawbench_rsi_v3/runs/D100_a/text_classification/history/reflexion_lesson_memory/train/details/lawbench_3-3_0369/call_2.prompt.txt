@@ -1,0 +1,24 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，被告人查某某以24万元的价格承包了集安市伊品斋火锅店装修工程。2015年11月至12月份，查某某雇用刘某某、钟某某等人进行装修，工程结束时，查某某陆续领取工程款22万元后离开集安。施工期间查某某支付工人部分劳动报酬，尚欠刘某某、钟某某等十人劳动报酬57000.00余元。经集安市人力资源和社会保障局责令支付，查某某以逃匿的方式拒不支付工人劳动报酬。
+在公安机关立案后，被告人查某某支付了拖欠的劳动报酬。
+上述事实，被告人查某某在开庭审理过程中亦无异议,并有其在公安机关的供述，证人刘某某、钟某某、陈某某、张某某、李某某、谭某某、李某1、王某某证言，责令整改决定书，收据等，证据确实、充分，足以定案。
+
+
+Wrong prediction: [罪名]诈骗<eoa>
+Correct answer: 拒不支付劳动报酬
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

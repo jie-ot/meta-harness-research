@@ -1,0 +1,22 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:临沂市兰山区人民检察院指控，2017年7月24日10时许，被告人王某甲在未取得叉车操作证的情况下，在临沂市兰山区义堂镇葛疃村其经营的补皮厂驾驶叉车运送木皮时，叉车上的木皮不慎滑落，将在一侧工作的符某砸到在地，后经医院抢救无效死亡。经鉴定，符某符合创伤性休克合并胸部闭合性损伤死亡。案发后，王某甲拨打报警电话，并抢救被害人。后双方达成和解协议，王某甲赔偿被害人符某近亲属各项损失计40万元，并取得被害人亲属对王某甲的谅解。
+
+
+Wrong prediction: [罪名]过失致人死亡<eoa>
+Correct answer: 重大责任事故
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

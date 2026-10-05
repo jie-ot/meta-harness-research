@@ -1,0 +1,29 @@
+Write: logs\20260925_200856\pending_eval.json
+
+content:
+{
+  "iteration": 16,
+  "candidates": [
+    {
+      "name": "hard_buffer_memory",
+      "file": "agents/hard_buffer_memory.py",
+      "hypothesis": "Maintaining a bounded FIFO hard buffer of error examples (max 60) that is scored independently against each query and injected (up to 3 slots, similarity >= 0.10) before the general-pool fill will outperform decayed_confusion_memory, because errors are physically retained as retrievable text rather than aggregated into a sparse count matrix whose keys must exactly match normalised predictions — making the error signal available on every query that resembles a past failure, not just those whose labels collide with a stored confusion key.",
+      "axis": "exploitation",
+      "base_system": "decayed_confusion_memory",
+      "components": ["hard_error_buffer", "fifo_eviction", "similarity_gated_injection", "two_pool_retrieval", "confusion_matrix", "decay", "prediction_normalization", "memory_structure_axis", "selection_algorithm_axis"]
+    },
+    {
+      "name": "label_centroid_memory",
+      "file": "agents/label_centroid_memory.py",
+      "hypothesis": "Routing retrieval through per-label token-frequency centroids (tokens present in >= 30% of a label's training examples) to identify the top-3 candidate labels, then retrieving within-candidate-label examples first before filling from the full pool, will outperform decayed_confusion_memory, because centroid routing fires on every query using a smooth aggregate signal rather than the brittle exact-key confusion lookup that failed to match for the majority of error cases across iterations.",
+      "axis": "exploration",
+      "base_system": "decayed_confusion_memory",
+      "components": ["per_label_centroid", "frequency_threshold_tokens", "coarse_to_fine_retrieval", "within_label_priority", "global_fill", "adaptive_tokenizer", "selection_algorithm_axis", "memory_content_axis"]
+    }
+  ]
+}
+
+
+
+--- output ---
+File created successfully at: D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/pending_eval.json (file state is current in your context — no need to Read it back)

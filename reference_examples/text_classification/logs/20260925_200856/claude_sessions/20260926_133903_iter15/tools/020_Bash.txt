@@ -1,0 +1,46 @@
+Bash
+
+command:
+python -c "
+import json, os
+# Check if memory.json exists for the frontier
+for ds in ['LawBench', 'USPTO', 'Symptom2Disease']:
+    path = f'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/{ds}/decayed_confusion_memory/gpt-oss-120b/memory.json'
+    if os.path.exists(path):
+        d = json.load(open(path, encoding='utf-8'))
+        examples = d.get('examples', [])
+        confusion = d.get('confusion', {})
+        print(f'{ds}: {len(examples)} examples, {sum(len(v) for v in confusion.values())} confusion pairs')
+        # Show first few examples
+        for ex in examples[:3]:
+            print(f'  target={repr(ex.get(\"target\",\"\")[:50])}, input={repr(ex.get(\"input\",\"\")[:80])}')
+        # Show top confusion pairs
+        pairs = []
+        for p, actuals in confusion.items():
+            for a, cnt in actuals.items():
+                pairs.append((cnt, p, a))
+        pairs.sort(reverse=True)
+        print('  Top confusion pairs:', pairs[:5])
+    else:
+        print(f'{ds}: memory.json NOT FOUND')
+"
+
+
+description: Check memory state for frontier system
+
+--- output ---
+LawBench: 200 examples, 41 confusion pairs
+  target='伪造、变造、买卖国家机关公文、证件、印章', input='请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\n\n格式示例：\n- 单个罪名: [罪名]盗窃<eoa>\n- 多个'
+  target='破坏计算机信息系统', input='请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\n\n格式示例：\n- 单个罪名: [罪名]盗窃<eoa>\n- 多个'
+  target='故意毁坏财物', input='请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\n\n格式示例：\n- 单个罪名: [罪名]盗窃<eoa>\n- 多个'
+  Top confusion pairs: [(0.95, '受贿;滥用职权', '受贿'), (0.8573749999999999, '盗窃', '职务侵占'), (0.8145062499999999, '故意伤害', '虐待被监管人'), (0.7737809374999999, '虚开增值税专用发票罪;逃税罪', '虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;逃税'), (0.7350918906249998, '故意伤害', '故意伤害;窝藏、包庇')]
+USPTO: 50 examples, 45 confusion pairs
+  target='CC(C)(C)OC(=O)OC(=O)OC(C)(C)C.COC(=O)[C@@H]([NH3+]', input='You are an expert organic chemist specializing in retrosynthesis analysis.\n\nRetr'
+  target='C#Cc1ccccc1.Clc1ncncc1I', input='You are an expert organic chemist specializing in retrosynthesis analysis.\n\nRetr'
+  target='O=C(NCC(=O)N1CCN(C(=O)c2ccccc2C(F)(F)F)CC1)c1ccc(-', input='You are an expert organic chemist specializing in retrosynthesis analysis.\n\nRetr'
+  Top confusion pairs: [(0.95, 'CC(C)(C)OC(=O)OC(=O)OC(C)(C)C.CO c1cccc(F)c1C1CCN(c2cnn(N)c(=O)c2Br)CC1', 'CC(C)(C)OC(=O)OC(=O)OC(C)(C)C.COc1cccc(F)c1C1CCN(c2cn[nH]c(=O)c2Br)CC1'), (0.9025, 'CCNc1nccc2c1c(C(=O)O)nn2-c1cccc(C#C[C@]2(O)CCN(C)C2=O)c1.N', 'CCNc1nccc2c1c(C(=O)OC)nn2-c1cccc(C#C[C@]2(O)CCN(C)C2=O)c1.N'), (0.8573749999999999, 'COc1cccc(Nc2c(C(N)=O)cnc3c(C)cc(Sc4cccc(C(=O)Nc5ccc(-c6ccc(CO)cc6)cc5)c4)cc23)c1', 'COc1cccc(Nc2c(C(N)=O)cnc3c(C)cc(S(=O)(=O)c4cccc(C(=O)Nc5ccc(-c6ccc(CO)cc6)cc5)c4)cc23)c1'), (0.8145062499999999, 'CC(C)(C)OC(=O)OC(=O)OC(C)(C)C.N1Cc2ccc([N+](=O)[O-])cc2C1=O', 'CC(C)(C)OC(=O)OC(=O)OC(C)(C)C.O=C1NCc2ccc([N+](=O)[O-])cc21'), (0.7737809374999999, 'Cc1nc(N)sc1CCO[N+](=O)[O-].ClC(=O)CCCCC2CCSS2', 'Cc1nc(N)sc1CCO[N+](=O)[O-].O=C(O)CCCCC1CCSS1')]
+Symptom2Disease: 200 examples, 10 confusion pairs
+  target='typhoid', input="You are an expert medical diagnostician. Based on the patient's symptoms, provid"
+  target='psoriasis', input="You are an expert medical diagnostician. Based on the patient's symptoms, provid"
+  target='psoriasis', input="You are an expert medical diagnostician. Based on the patient's symptoms, provid"
+  Top confusion pairs: [(0.7350918906249998, 'hypertension', 'drug reaction'), (0.6634204312890623, 'migraine', 'drug reaction'), (0.48767497911552943, 'fungal infection', 'psoriasis'), (0.44012666865176525, 'impetigo', 'psoriasis'), (0.35848592240854177, 'psoriasis', 'drug reaction')]

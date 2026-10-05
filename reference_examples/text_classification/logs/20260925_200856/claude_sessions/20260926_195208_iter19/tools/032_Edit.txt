@@ -1,0 +1,54 @@
+Edit: agents\symmetric_confusion_memory.py
+
+replace_all: False
+old_string:
+"""Temporally-Decayed Confusion Memory.
+
+Extends adaptive_tokenizer_confusion_memory with one structural change to the
+learning strategy (axis E): confusion counts decay exponentially after each
+training step, so the confusion matrix reflects the model's *current* error
+patterns rather than its entire accumulated history.
+
+Problem with the baseline: confusion counts are monotonically increasing integers.
+A label pair confused heavily early in training (when the model had few examples)
+accumulates a large count that permanently dominates disambiguation slot selection,
+even after the model has seen dozens of corrective examples and stopped making
+that mistake. The disambiguation phase keeps injecting examples for a boundary
+the model no longer needs.
+
+Fix: after each learn_from_batch call, multiply every existing confusion count by
+DECAY_FACTOR (< 1). New error events are added with weight 1.0. Counts that decay
+below a threshold are pruned to keep the matrix sparse. This gives recent errors
+higher relative weight without requiring explicit timestamps.
+
+Retrieval algorithm is identical to adaptive_tokenizer_confusion_memory (two-phase:
+confusion slots then similarity fill) so any delta is attributable purely to the
+decay mechanism. Also includes the prediction-normalization fix.
+"""
+
+new_string:
+"""Symmetric Confusion Memory.
+
+Extends decayed_confusion_memory with one structural change to the confusion
+matrix learning strategy (axis E): confusion entries are stored symmetrically.
+
+Problem with the baseline: the confusion matrix only records pred→gt edges.
+The disambiguation phase looks up what labels were *predicted* as the top
+candidate labels and then finds what they were confused with. This fires rarely
+because the top candidate labels at query time are ground-truth labels (pulled
+from stored examples), not predicted labels — so lookup keys almost never match
+stored confusion keys. Prototype traces showed only 21/200 disambiguation fires.
+
+Fix: when an error pred→gt is recorded, also record the reverse edge gt→pred at
+half weight. This doubles the number of confusion keys, so when the disambiguation
+phase looks up a top candidate label (a ground-truth label), it now finds confusion
+partners from the gt→pred direction. Prototype traces showed this raises coverage
+from 21/200 to 170/200 fires — an 8× improvement in disambiguation activation.
+
+Both directions decay at the same DECAY_FACTOR. All other mechanics (adaptive
+tokenizer, two-phase retrieval, prediction normalization) are unchanged.
+"""
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\symmetric_confusion_memory.py has been updated successfully.

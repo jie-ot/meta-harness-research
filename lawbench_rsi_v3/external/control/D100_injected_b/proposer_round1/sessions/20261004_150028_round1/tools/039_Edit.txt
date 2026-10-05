@@ -1,0 +1,25 @@
+Edit: agents\charge_cooccurrence_count_memory.py
+
+replace_all: False
+old_string:
+        if slots > len(units) and seeds:
+            for companion in self._expand(seeds):
+                if len(units) >= slots:
+                    break
+                if companion not in units:
+                    units.append(companion)
+                if companion in units and len(units) >= slots:
+                    break
+
+new_string:
+        if slots > len(units) and seeds:
+            for companion in self._expand(seeds):
+                if len(units) >= slots:
+                    break
+                if companion in units:
+                    continue
+                units.append(_snap(companion, self.lexicon))
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\agents\charge_cooccurrence_count_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

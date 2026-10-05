@@ -1,0 +1,21 @@
+{
+  "iteration": 2,
+  "candidates": [
+    {
+      "name": "lesson_memo_memory",
+      "file": "agents/lesson_memo_memory.py",
+      "hypothesis": "Calling the LLM once per error batch to synthesize compact generalizable rules (stored as 'lesson memos' and retrieved by bigram similarity at predict time) will improve over raw example retrieval by encoding patterns like 'use unit-form charges when the subject is a legal entity' that apply across unseen cases, pushing score above 39/100.",
+      "axis": "exploitation",
+      "base_system": "bigram_confusion_memory",
+      "components": ["bigram_tokenization", "llm_lesson_synthesis", "lesson_retrieval", "similarity_retrieval", "rules_injection"]
+    },
+    {
+      "name": "label_cluster_memory",
+      "file": "agents/label_cluster_memory.py",
+      "hypothesis": "Organizing retrieval by charge-label clusters (multi-charge targets split on ';', top-4 labels ranked by max-example similarity, one '### Charge: {label}' section per label with canonical header and explicit format instructions) will reduce suffix-format and wrong-sub-category errors compared to the flat similarity list, pushing score above 39/100.",
+      "axis": "exploration",
+      "base_system": "bigram_confusion_memory",
+      "components": ["bigram_tokenization", "label_cluster_index", "two_tier_selection", "canonical_header_prompt", "similarity_fill"]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "call_id": "b8122dace89c4891a59828597962663a",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791028113-8ThiYqS5b2eIPKpnd3eG",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"事实中被告人利用职务便利，收取客户货款不上缴，挪用公司货款用于个人购买体育彩票，属于挪用本单位资金的行为。根据刑法对应罪名为‘挪用公款’。因此应判定的罪名为挪用公款。\",\n  \"final_answer\": \"[罪名]挪用公款<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to extract the crime(s) from the fact. The fact: \"林某某利用其担任漳州市某公司业务员的职务便利，采用收取客户货款不上缴的手段，共挪用公司货款人民币70920元用于个人购买中国体育彩票。案发后，已退还全部赃款。公诉机关认为被告人林某某利用职务上的便利，挪用本单位资金归个人用于营利活动，数额较大，其行为已构成××，提请本院依照《中华人民共和国刑法》××的规定，予以惩处。\"\n\nThus the crime is \"挪用本单位资金\" i.e., \"挪用公款\" or \"挪用资金\". In examples: For similar case, they gave \"挪用公款\". The key rule: Use exact phrase from fact. The fact uses \"挪用公司货款\". The crime phrase likely \"挪用公款\". But the fact says \"挪用本单位资金\". The examples: earlier example \"挪用公款\". So we should output \"[罪名]挪用公款<eoa>\"? The rule: \"直接抽取事实文本中出现的罪名关键词，不自行添加“罪”或其他修饰词\". But they want the crime name without \"罪\"? In examples they output \"盗窃\" etc. So we output \"挪用公款\". The fact didn't explicitly say \"挪用公款罪\", but the crime is \"挪用公款\". Use that.\n\nThus final answer: [罪名]挪用公款<eoa>\n\nReturn JSON with reasoning and final_answer.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to extract the crime(s) from the fact. The fact: \"林某某利用其担任漳州市某公司业务员的职务便利，采用收取客户货款不上缴的手段，共挪用公司货款人民币70920元用于个人购买中国体育彩票。案发后，已退还全部赃款。公诉机关认为被告人林某某利用职务上的便利，挪用本单位资金归个人用于营利活动，数额较大，其行为已构成××，提请本院依照《中华人民共和国刑法》××的规定，予以惩处。\"\n\nThus the crime is \"挪用本单位资金\" i.e., \"挪用公款\" or \"挪用资金\". In examples: For similar case, they gave \"挪用公款\". The key rule: Use exact phrase from fact. The fact uses \"挪用公司货款\". The crime phrase likely \"挪用公款\". But the fact says \"挪用本单位资金\". The examples: earlier example \"挪用公款\". So we should output \"[罪名]挪用公款<eoa>\"? The rule: \"直接抽取事实文本中出现的罪名关键词，不自行添加“罪”或其他修饰词\". But they want the crime name without \"罪\"? In examples they output \"盗窃\" etc. So we output \"挪用公款\". The fact didn't explicitly say \"挪用公款罪\", but the crime is \"挪用公款\". Use that.\n\nThus final answer: [罪名]挪用公款<eoa>\n\nReturn JSON with reasoning and final_answer.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to extract the crime(s) from the fact. The fact: \"林某某利用其担任漳州市某公司业务员的职务便利，采用收取客户货款不上缴的手段，共挪用公司货款人民币70920元用于个人购买中国体育彩票。案发后，已退还全部赃款。公诉机关认为被告人林某某利用职务上的便利，挪用本单位资金归个人用于营利活动，数额较大，其行为已构成××，提请本院依照《中华人民共和国刑法》××的规定，予以惩处。\"\n\nThus the crime is \"挪用本单位资金\" i.e., \"挪用公款\" or \"挪用资金\". In examples: For similar case, they gave \"挪用公款\". The key rule: Use exact phrase from fact. The fact uses \"挪用公司货款\". The crime phrase likely \"挪用公款\". But the fact says \"挪用本单位资金\". The examples: earlier example \"挪用公款\". So we should output \"[罪名]挪用公款<eoa>\"? The rule: \"直接抽取事实文本中出现的罪名关键词，不自行添加“罪”或其他修饰词\". But they want the crime name without \"罪\"? In examples they output \"盗窃\" etc. So we output \"挪用公款\". The fact didn't explicitly say \"挪用公款罪\", but the crime is \"挪用公款\". Use that.\n\nThus final answer: [罪名]挪用公款<eoa>\n\nReturn JSON with reasoning and final_answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to extract the crime(s) from the fact. The fact: \"林某某利用其担任漳州市某公司业务员的职务便利，采用收取客户货款不上缴的手段，共挪用公司货款人民币70920元用于个人购买中国体育彩票。案发后，已退还全部赃款。公诉机关认为被告人林某某利用职务上的便利，挪用本单位资金归个人用于营利活动，数额较大，其行为已构成××，提请本院依照《中华人民共和国刑法》××的规定，予以惩处。\"\n\nThus the crime is \"挪用本单位资金\" i.e., \"挪用公款\" or \"挪用资金\". In examples: For similar case, they gave \"挪用公款\". The key rule: Use exact phrase from fact. The fact uses \"挪用公司货款\". The crime phrase likely \"挪用公款\". But the fact says \"挪用本单位资金\". The examples: earlier example \"挪用公款\". So we should output \"[罪名]挪用公款<eoa>\"? The rule: \"直接抽取事实文本中出现的罪名关键词，不自行添加“罪”或其他修饰词\". But they want the crime name without \"罪\"? In examples they output \"盗窃\" etc. So we output \"挪用公款\". The fact didn't explicitly say \"挪用公款罪\", but the crime is \"挪用公款\". Use that.\n\nThus final answer: [罪名]挪用公款<eoa>\n\nReturn JSON with reasoning and final_answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 472,
+      "prompt_tokens": 4819,
+      "total_tokens": 5291,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 395,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00100605,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00100605,
+        "upstream_inference_prompt_cost": 0.00072285,
+        "upstream_inference_completions_cost": 0.0002832
+      }
+    }
+  },
+  "raw_response_missing": false
+}

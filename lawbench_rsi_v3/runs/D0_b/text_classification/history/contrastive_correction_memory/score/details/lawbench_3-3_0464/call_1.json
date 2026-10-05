@@ -1,0 +1,72 @@
+{
+  "call_id": "081d61bb4af24512ae35de7ba0a25760",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791015938-u5HWlGtCpMCm8uMVuIoh",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"被告人方某在两家火锅店长期销售已超过保质期的羊肉，属于销售不符合食品安全标准的食品。根据《刑法》相关规定，这构成“生产、销售不符合食品安全标准的食品”罪。\",\n  \"final_answer\": \"[罪名]生产、销售不符合食品安全标准的食品<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the crime(s) based on facts. The case: selling expired meat (羊肉) in firepot restaurants. This is a food safety violation. The relevant Chinese criminal law: selling expired food is \"生产、销售假药\" is for drugs, but for food it's \"生产、销售有毒、有害食品\" or \"非法生产、销售不符合食品安全标准的食品\". In examples, they used \"生产、销售有毒、有害食品\" for selling health product containing sildenafil. For expired meat, it's not necessarily toxic, but it's \"销售不符合食品安全标准的食品\" which is covered under \"生产、销售有毒、有害食品\" maybe also \"非法生产、销售不符合食品安全标准的食品\". In Chinese criminal law, article 173: \"生产、销售不符合食品安全标准的食品\" is a crime. The label used in dataset likely \"生产、销售不符合食品安全标准的食品\". Let's see examples: they have \"生产、销售有毒、有害食品\". That's for toxic/harmful. For expired meat, it's not necessarily toxic but still illegal. Might be \"销售不符合食品安全标准的食品\". In earlier example: \"生产、销售假药\" for fake medicine. For food, they used \"生产、销售有毒、有害食品\". Another example: \"非法行医\". So we need correct label.\n\nSearch memory: In Chinese criminal law, the crime is \"生产、销售不符合食品安全标准的食品罪\". The dataset likely uses \"生产、销售不符合食品安全标准的食品\". Let's see if any example includes that phrase. Not in given examples. But they used \"生产、销售有毒、有害食品\". Might be a broader category. However expired meat is not necessarily toxic, but still illegal. The crime could be \"非法生产、销售不符合食品安全标准的食品\". The dataset may have a label \"非法生产、销售不符合食品安全标准的食品\". But we need to guess.\n\nLook at the mistake list: they corrected \"非法买卖假币\" to \"出售、购买、运输假币\". So they want precise multi-part. For food, maybe they want \"生产、销售不符合食品安全标准的食品\". Let's output that.\n\nThus final answer: [罪名]生产、销售不符合食品安全标准的食品<eoa>\n\nReturn JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to determine the crime(s) based on facts. The case: selling expired meat (羊肉) in firepot restaurants. This is a food safety violation. The relevant Chinese criminal law: selling expired food is \"生产、销售假药\" is for drugs, but for food it's \"生产、销售有毒、有害食品\" or \"非法生产、销售不符合食品安全标准的食品\". In examples, they used \"生产、销售有毒、有害食品\" for selling health product containing sildenafil. For expired meat, it's not necessarily toxic, but it's \"销售不符合食品安全标准的食品\" which is covered under \"生产、销售有毒、有害食品\" maybe also \"非法生产、销售不符合食品安全标准的食品\". In Chinese criminal law, article 173: \"生产、销售不符合食品安全标准的食品\" is a crime. The label used in dataset likely \"生产、销售不符合食品安全标准的食品\". Let's see examples: they have \"生产、销售有毒、有害食品\". That's for toxic/harmful. For expired meat, it's not necessarily toxic but still illegal. Might be \"销售不符合食品安全标准的食品\". In earlier example: \"生产、销售假药\" for fake medicine. For food, they used \"生产、销售有毒、有害食品\". Another example: \"非法行医\". So we need correct label.\n\nSearch memory: In Chinese criminal law, the crime is \"生产、销售不符合食品安全标准的食品罪\". The dataset likely uses \"生产、销售不符合食品安全标准的食品\". Let's see if any example includes that phrase. Not in given examples. But they used \"生产、销售有毒、有害食品\". Might be a broader category. However expired meat is not necessarily toxic, but still illegal. The crime could be \"非法生产、销售不符合食品安全标准的食品\". The dataset may have a label \"非法生产、销售不符合食品安全标准的食品\". But we need to guess.\n\nLook at the mistake list: they corrected \"非法买卖假币\" to \"出售、购买、运输假币\". So they want precise multi-part. For food, maybe they want \"生产、销售不符合食品安全标准的食品\". Let's output that.\n\nThus final answer: [罪名]生产、销售不符合食品安全标准的食品<eoa>\n\nReturn JSON with reasoning and final answer.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the crime(s) based on facts. The case: selling expired meat (羊肉) in firepot restaurants. This is a food safety violation. The relevant Chinese criminal law: selling expired food is \"生产、销售假药\" is for drugs, but for food it's \"生产、销售有毒、有害食品\" or \"非法生产、销售不符合食品安全标准的食品\". In examples, they used \"生产、销售有毒、有害食品\" for selling health product containing sildenafil. For expired meat, it's not necessarily toxic, but it's \"销售不符合食品安全标准的食品\" which is covered under \"生产、销售有毒、有害食品\" maybe also \"非法生产、销售不符合食品安全标准的食品\". In Chinese criminal law, article 173: \"生产、销售不符合食品安全标准的食品\" is a crime. The label used in dataset likely \"生产、销售不符合食品安全标准的食品\". Let's see examples: they have \"生产、销售有毒、有害食品\". That's for toxic/harmful. For expired meat, it's not necessarily toxic but still illegal. Might be \"销售不符合食品安全标准的食品\". In earlier example: \"生产、销售假药\" for fake medicine. For food, they used \"生产、销售有毒、有害食品\". Another example: \"非法行医\". So we need correct label.\n\nSearch memory: In Chinese criminal law, the crime is \"生产、销售不符合食品安全标准的食品罪\". The dataset likely uses \"生产、销售不符合食品安全标准的食品\". Let's see if any example includes that phrase. Not in given examples. But they used \"生产、销售有毒、有害食品\". Might be a broader category. However expired meat is not necessarily toxic, but still illegal. The crime could be \"非法生产、销售不符合食品安全标准的食品\". The dataset may have a label \"非法生产、销售不符合食品安全标准的食品\". But we need to guess.\n\nLook at the mistake list: they corrected \"非法买卖假币\" to \"出售、购买、运输假币\". So they want precise multi-part. For food, maybe they want \"生产、销售不符合食品安全标准的食品\". Let's output that.\n\nThus final answer: [罪名]生产、销售不符合食品安全标准的食品<eoa>\n\nReturn JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to determine the crime(s) based on facts. The case: selling expired meat (羊肉) in firepot restaurants. This is a food safety violation. The relevant Chinese criminal law: selling expired food is \"生产、销售假药\" is for drugs, but for food it's \"生产、销售有毒、有害食品\" or \"非法生产、销售不符合食品安全标准的食品\". In examples, they used \"生产、销售有毒、有害食品\" for selling health product containing sildenafil. For expired meat, it's not necessarily toxic, but it's \"销售不符合食品安全标准的食品\" which is covered under \"生产、销售有毒、有害食品\" maybe also \"非法生产、销售不符合食品安全标准的食品\". In Chinese criminal law, article 173: \"生产、销售不符合食品安全标准的食品\" is a crime. The label used in dataset likely \"生产、销售不符合食品安全标准的食品\". Let's see examples: they have \"生产、销售有毒、有害食品\". That's for toxic/harmful. For expired meat, it's not necessarily toxic but still illegal. Might be \"销售不符合食品安全标准的食品\". In earlier example: \"生产、销售假药\" for fake medicine. For food, they used \"生产、销售有毒、有害食品\". Another example: \"非法行医\". So we need correct label.\n\nSearch memory: In Chinese criminal law, the crime is \"生产、销售不符合食品安全标准的食品罪\". The dataset likely uses \"生产、销售不符合食品安全标准的食品\". Let's see if any example includes that phrase. Not in given examples. But they used \"生产、销售有毒、有害食品\". Might be a broader category. However expired meat is not necessarily toxic, but still illegal. The crime could be \"非法生产、销售不符合食品安全标准的食品\". The dataset may have a label \"非法生产、销售不符合食品安全标准的食品\". But we need to guess.\n\nLook at the mistake list: they corrected \"非法买卖假币\" to \"出售、购买、运输假币\". So they want precise multi-part. For food, maybe they want \"生产、销售不符合食品安全标准的食品\". Let's output that.\n\nThus final answer: [罪名]生产、销售不符合食品安全标准的食品<eoa>\n\nReturn JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 597,
+      "prompt_tokens": 8075,
+      "total_tokens": 8672,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000410414,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000410414,
+        "upstream_inference_prompt_cost": 0.000298775,
+        "upstream_inference_completions_cost": 0.000111639
+      }
+    }
+  },
+  "raw_response_missing": false
+}

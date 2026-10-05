@@ -1,0 +1,171 @@
+Read: agents\mmr_memory.py
+
+
+--- output ---
+1	"""MMR Memory — Maximum Marginal Relevance retrieval.
+2	
+3	At each greedy step, selects the stored example that maximises:
+4	
+5	    score(e) = λ * sim(e, query) − (1−λ) * max_{s ∈ selected} sim(e, s)
+6	
+7	This balances relevance to the current query against redundancy with
+8	already-chosen examples, so the context window receives a diverse,
+9	topically-relevant set without requiring explicit label bookkeeping.
+10	
+11	Unlike pure similarity ranking (which clusters on the most frequent
+12	topic) or round-robin (which treats every label as equally useful),
+13	MMR adapts the diversity penalty to the actual redundancy observed in
+14	the retrieved set.
+15	
+16	Similarity is measured on raw_question only to avoid dilution from
+17	shared instruction boilerplate. λ=0.6 weights relevance slightly
+18	over diversity, preserving topical focus while penalising near-duplicate
+19	examples.
+20	
+21	Reference: Carbonell & Goldstein, SIGIR 1998.
+22	"""
+23	
+24	import json
+25	import re
+26	from typing import Any
+27	
+28	from ..llm import LLMCallable
+29	from ..memory_system import MemorySystem, extract_json_field
+30	
+31	PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+32	
+33	{examples_section}
+34	
+35	**Problem:**
+36	{input}
+37	
+38	**Instructions:**
+39	- Follow the patterns shown in the examples above
+40	- Respond in JSON format
+41	
+42	{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+43	
+44	MAX_CHARS = 30000
+45	LAMBDA = 0.6  # relevance weight; 1-LAMBDA is diversity weight
+46	
+47	
+48	def _tokenize(text: str) -> frozenset[str]:
+49	    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+50	
+51	
+52	def _jaccard(a: frozenset[str], b: frozenset[str]) -> float:
+53	    if not a and not b:
+54	        return 0.0
+55	    return len(a & b) / len(a | b)
+56	
+57	
+58	class MmrMemory(MemorySystem):
+59	    """Greedy MMR selection: relevant to query, diverse from already-chosen examples."""
+60	
+61	    def __init__(self, llm: LLMCallable):
+62	        super().__init__(llm)
+63	        self.examples: list[dict[str, Any]] = []
+64	
+65	    def _select_mmr(self, query: str) -> list[str]:
+66	        if not self.examples:
+67	            return []
+68	
+69	        q_tok = _tokenize(query)
+70	
+71	        # Pre-compute relevance and token sets for all stored examples
+72	        pool = [
+73	            {
+74	                "ex": ex,
+75	                "tok": ex["tokens"],
+76	                "rel": _jaccard(q_tok, ex["tokens"]),
+77	                "idx": i,
+78	            }
+79	            for i, ex in enumerate(self.examples)
+80	        ]
+81	
+82	        selected_parts: list[str] = []
+83	        selected_toks: list[frozenset[str]] = []
+84	        total_chars = 0
+85	        remaining = list(range(len(pool)))
+86	
+87	        while remaining:
+88	            best_score: float | None = None
+89	            best_ri: int | None = None
+90	
+91	            for ri in remaining:
+92	                item = pool[ri]
+93	                rel = item["rel"]
+94	                if selected_toks:
+95	                    redundancy = max(_jaccard(item["tok"], st) for st in selected_toks)
+96	                else:
+97	                    redundancy = 0.0
+98	                mmr = LAMBDA * rel - (1 - LAMBDA) * redundancy
+99	
+100	                if best_score is None or mmr > best_score:
+101	                    best_score = mmr
+102	                    best_ri = ri
+103	
+104	            item = pool[best_ri]
+105	            ex = item["ex"]
+106	            q = ex.get("raw_question", ex["input"])
+107	            part = f"Q: {q}\nA: {ex['target']}"
+108	
+109	            if total_chars + len(part) + 2 > MAX_CHARS:
+110	                break
+111	
+112	            selected_parts.append(part)
+113	            selected_toks.append(item["tok"])
+114	            total_chars += len(part) + 2
+115	            remaining.remove(best_ri)
+116	
+117	        return selected_parts
+118	
+119	    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+120	        parts = self._select_mmr(input)
+121	        examples_section = "\n\n".join(parts)
+122	        prompt = PROMPT_TEMPLATE.format(
+123	            examples_section=examples_section,
+124	            input=input,
+125	        )
+126	        response = self.call_llm(prompt)
+127	        answer = extract_json_field(response, "final_answer")
+128	        return answer, {
+129	            "full_response": response,
+130	            "num_examples": len(self.examples),
+131	            "num_selected": len(parts),
+132	        }
+133	
+134	    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+135	        for r in batch_results:
+136	            raw_q = r.get("raw_question", r["input"])
+137	            ex: dict[str, Any] = {
+138	                "input": r["input"],
+139	                "target": r["ground_truth"],
+140	                "tokens": _tokenize(raw_q),
+141	            }
+142	            if "raw_question" in r:
+143	                ex["raw_question"] = r["raw_question"]
+144	            self.examples.append(ex)
+145	
+146	    def get_context_length(self) -> int:
+147	        return sum(len(p) + 2 for p in self._select_mmr(""))
+148	
+149	    def get_state(self) -> str:
+150	        serialisable = [
+151	            {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+152	            for ex in self.examples
+153	        ]
+154	        return json.dumps({"examples": serialisable}, indent=2)
+155	
+156	    def set_state(self, state: str) -> None:
+157	        data = json.loads(state)
+158	        self.examples = []
+159	        for ex in data.get("examples", []):
+160	            restored = dict(ex)
+161	            if "tokens" in restored and isinstance(restored["tokens"], list):
+162	                restored["tokens"] = frozenset(restored["tokens"])
+163	            else:
+164	                raw_q = restored.get("raw_question", restored.get("input", ""))
+165	                restored["tokens"] = _tokenize(raw_q)
+166	            self.examples.append(restored)
+167	

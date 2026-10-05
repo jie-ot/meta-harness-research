@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the factual description contains multiple distinct criminal acts (e.g., a traffic offense and a separate economic crime), the model must list every applicable charge, separating them with semicol
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the facts describe a person performing any medical diagnosis, treatment, or related procedure without a valid medical license, classify the conduct under the statutory offense of “非法行医” rather th
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:怀远县人民检察院指控：2015年11月18日晚，被告人罗某醉酒后驾驶“皖C×××××”号小型汽车，从怀远县城关镇文昌街到老西门，沿禹王路自东向西行驶至邮电局路段时，被公安民警当场查获。安徽大禹司法鉴定检验：罗某静脉血液中乙醇含量为92.26mg／100ml；安徽朝阳司法鉴定检验：罗某静脉血液中乙醇含量为92.9mg／100ml。
+公诉机关针对上述指控的事实，提供了相关证据证实。起诉认为，被告人罗某违反交通管理法规，醉酒后驾驶机动车辆，其行为触犯了《中华人民共和国刑法》××××的规定，构成××。提请本院依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

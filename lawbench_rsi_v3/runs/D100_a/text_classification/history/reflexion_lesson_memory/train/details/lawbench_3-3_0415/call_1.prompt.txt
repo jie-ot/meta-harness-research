@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+- When the factual description contains multiple distinct illegal actions (e.g., theft of property and illegal harvesting of protected flora or fauna), list every applicable crime separated by semicolon
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- If the factual description involves unapproved plowing, clearing, or sowing of crops on forest land, thereby converting the forest area into agricultural use, classify the offense as illegal occupatio
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:虎林市人民检察院指控，2013年4月3日，被告人陈××与××市××镇××村村民委员会签订合同，承包位于该村四组方某共计23.26亩土地，用于建设虎林市“××”水稻种植农民专业合作社。2013年5月至2014年5月22日间，被告人陈××在未办理相关占地手续的情况下，非法在该地上陆续建造了仓储、烘干等设施。此间，虎林市国土资源局曾向其发出《责令停止违法行为通知书》、《行政处罚决定书》、《国土资源违法后果预先告知书》，但被告人陈××继续非法占用耕地。经虎林市国土资源局测量认定，被告人陈××实际占用耕地共计14.79亩。被告人陈××于2014年6月24日被公安机关传唤到案。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

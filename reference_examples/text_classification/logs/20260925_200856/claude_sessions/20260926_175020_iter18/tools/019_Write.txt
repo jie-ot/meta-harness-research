@@ -1,0 +1,115 @@
+Write: C:/tmp/proto_sketch.py
+
+content:
+"""Prototype: sketched context memory.
+
+Full examples stored with full tokens for accurate similarity scoring,
+but rendered as truncated sketches in the prompt to fit more examples.
+
+Tests two variants:
+  A - sketch = first SKETCH_CHARS of raw_question + full answer
+  B - sketch = adaptive: short examples shown in full, long ones truncated
+Compare coverage (examples that fit) against the full-render baseline.
+"""
+import json, re, pathlib
+
+MAX_CHARS = 30000
+SKETCH_CHARS_A = 400
+LONG_THRESHOLD = 600  # variant B: only truncate if raw_q > this
+
+log_path = pathlib.Path(
+    r"D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples"
+    r"\text_classification\logs\20260925_200856\LawBench\decayed_confusion_memory"
+    r"\gpt-oss-120b\log.jsonl"
+)
+
+# Load examples from checkpoints
+examples = []
+with log_path.open(encoding='utf-8') as f:
+    for line in f:
+        obj = json.loads(line)
+        if obj.get('type') == 'checkpoint':
+            state = json.loads(obj['memory_state'])
+            examples = state.get('examples', [])
+            break
+
+print(f"Pool size: {len(examples)} examples")
+lengths = [len(e.get('raw_question', e.get('input', ''))) for e in examples]
+print(f"raw_question lengths: min={min(lengths)}, max={max(lengths)}, avg={sum(lengths)/len(lengths):.0f}")
+
+# Simulate how many examples fit in budget with full vs sketched rendering
+def count_full(pool, budget=MAX_CHARS):
+    total, count = 0, 0
+    for e in pool:
+        raw_q = e.get('raw_question', e.get('input', ''))
+        part = f"Q: {raw_q}\nA: {e['target']}"
+        if total + len(part) + 2 > budget:
+            break
+        total += len(part) + 2
+        count += 1
+    return count
+
+def count_sketch_A(pool, budget=MAX_CHARS):
+    total, count = 0, 0
+    for e in pool:
+        raw_q = e.get('raw_question', e.get('input', ''))[:SKETCH_CHARS_A]
+        part = f"Q: {raw_q}\nA: {e['target']}"
+        if total + len(part) + 2 > budget:
+            break
+        total += len(part) + 2
+        count += 1
+    return count
+
+def count_sketch_B(pool, budget=MAX_CHARS):
+    total, count = 0, 0
+    for e in pool:
+        raw_q = e.get('raw_question', e.get('input', ''))
+        if len(raw_q) > LONG_THRESHOLD:
+            raw_q = raw_q[:SKETCH_CHARS_A]
+        part = f"Q: {raw_q}\nA: {e['target']}"
+        if total + len(part) + 2 > budget:
+            break
+        total += len(part) + 2
+        count += 1
+    return count
+
+full_count = count_full(examples)
+sketch_A_count = count_sketch_A(examples)
+sketch_B_count = count_sketch_B(examples)
+
+print(f"\nExamples fitting in {MAX_CHARS} char budget (all examples ranked by similarity, no reranking):")
+print(f"  Full render:       {full_count}")
+print(f"  Sketch A (trunc {SKETCH_CHARS_A}): {sketch_A_count}  ({sketch_A_count/full_count:.1f}x)")
+print(f"  Sketch B (adaptive): {sketch_B_count}  ({sketch_B_count/full_count:.1f}x)")
+
+# Check what the answer field looks like (needed for full answer)
+sample = examples[0]
+print(f"\nSample target: {sample['target']!r}")
+print(f"Sample raw_q length: {len(sample.get('raw_question', sample.get('input','')))}")
+print(f"Sample sketch: {sample.get('raw_question', sample.get('input',''))[:SKETCH_CHARS_A]!r[:100]}...")
+
+# Check USPTO too
+uspto_path = pathlib.Path(
+    r"D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples"
+    r"\text_classification\logs\20260925_200856\USPTO\decayed_confusion_memory"
+    r"\gpt-oss-120b\log.jsonl"
+)
+if uspto_path.exists():
+    with uspto_path.open(encoding='utf-8') as f:
+        for line in f:
+            obj = json.loads(line)
+            if obj.get('type') == 'checkpoint':
+                state = json.loads(obj['memory_state'])
+                ex_us = state.get('examples', [])
+                if ex_us:
+                    lens_us = [len(e.get('raw_question', e.get('input', ''))) for e in ex_us]
+                    print(f"\nUSPTO pool: {len(ex_us)} examples, avg raw_q len={sum(lens_us)/len(lens_us):.0f}")
+                    fc = count_full(ex_us)
+                    sc = count_sketch_A(ex_us)
+                    print(f"  Full fit: {fc}, Sketch-A fit: {sc}  ({sc/max(fc,1):.1f}x)")
+                break
+
+
+
+--- output ---
+File created successfully at: C:/tmp/proto_sketch.py (file state is current in your context — no need to Read it back)

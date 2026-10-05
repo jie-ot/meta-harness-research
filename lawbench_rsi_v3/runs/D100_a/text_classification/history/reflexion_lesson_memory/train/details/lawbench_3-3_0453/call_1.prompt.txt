@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- If the facts only describe forging, altering, or selling state‑issued documents or certificates and do not contain any separate act of deceiving another party for financial gain, assign only the forge
+- If the facts describe a death caused by the illegal handling, storage, transport, or use of explosives or other hazardous materials, classify the offense as “危险物品肇事” rather than the generic “危险作业致人死亡”
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+- When the defendant’s negligent conduct involves the creation, installation, or use of a dangerous means (e.g., electric fences, explosives, hazardous equipment) that poses a risk to public safety, the
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:蒲县人民检察院指控，2004年10月7日23时30分左右，蒲县XX煤矿因工人在井下生产作业中违规操作，致使发生冒顶事故，导致井下作业的四名工人死亡。事故发生后，XX煤矿与死者家属达成赔偿协议，将事故隐瞒不报，后经举报被查实。2014年9月经事故调查组调查认定，被告人刘XX在事故发生时为蒲县XX煤矿实际控股人，对安全生产管理工作重视不够，对煤矿日常生产、安全等工作撒手不管，以包代管，致使安全事故发生，对该起事故的发生负直接责任。被告人刘2某X身为蒲县XX煤矿法定代表人、矿长，在煤矿安全管理机构不健全，安全管理混乱的情况下，重生产、轻安全，以包代管，致使工人违规作业发生安全事故，并且在事故发生后隐瞒不报，对事故的发生及瞒报负直接责任。公诉机关提供有书证、证人证言、被告人供述与辩解等证据，指控被告人刘XX、刘2某X之行为触犯《中华人民共和国刑法》，构成××。同时认为，被告人刘XX、刘2某X归案后能够如实供述自己的犯罪事实，认罪态度较好，有悔罪表现，事故发生后，积极赔偿被害人损失，酌情可以从轻处罚，建议对被告人刘XX、刘2某X均在三至四年××幅度内量刑，并可以考虑适用××。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

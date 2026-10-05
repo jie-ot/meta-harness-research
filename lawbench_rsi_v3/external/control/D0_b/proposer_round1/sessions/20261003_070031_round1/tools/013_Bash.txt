@@ -1,0 +1,35 @@
+Bash
+
+command:
+python "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D0_b\text_classification\.prototypes\proto_bigram_retrieval.py"
+
+description: Run bigram tokenizer prototype
+
+--- output ---
+Query target: 单位行贿
+  ASCII tokens (1): ['20']...
+  Bigram tokens (75): ['20', '万元', '不正', '业广', '为感', '义出', '了不', '了推']...
+  Scores (ascii / bigram):
+    [故意伤害                ]  ascii=0.000  bigram=0.027
+    [行贿                  ]  ascii=0.000  bigram=0.024
+    [单位行贿                ]  ascii=0.000  bigram=0.333 <-- target
+    [合同诈骗                ]  ascii=0.000  bigram=0.008
+
+Query target: 合同诈骗
+  ASCII tokens (1): ['50600']...
+  Bigram tokens (59): ['50600', '一份', '一年', '不归', '与被', '主是', '书收', '了一']...
+  Scores (ascii / bigram):
+    [故意伤害                ]  ascii=0.000  bigram=0.053
+    [行贿                  ]  ascii=0.000  bigram=0.027
+    [单位行贿                ]  ascii=0.000  bigram=0.009
+    [合同诈骗                ]  ascii=0.000  bigram=0.049 <-- target
+
+
+=== Variant comparison on QUERY_1 (target: 单位行贿) ===
+  ascii_only        best=故意伤害                 (0.000)  target_score=0.000
+  bigram+ascii      best=单位行贿                 (0.333)  target_score=0.333
+  bigram_only       best=单位行贿                 (0.337)  target_score=0.337
+  unigram           best=单位行贿                 (0.493)  target_score=0.493
+
+Conclusion: bigram+ascii gives highest target retrieval scores.
+Proceeding with bigram+ascii tokenization for Candidate A.

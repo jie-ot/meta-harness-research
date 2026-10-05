@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- If the facts describe the use of a false or deceptive contract (e.g., a sale, lease, transfer agreement) to obtain money or property, classify the offense as “合同诈骗” rather than the generic “诈骗”.
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- If the factual scenario describes fraud that is carried out through the creation, signing, or performance of a contract (e.g., false representation of a business role, fictitious project, or fabricate
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，河南汝州农村商业银行股份有限公司诉王某金融借款合同纠纷一案，本院于2017年2月10日作出（2016）豫0482民初6035号民事判决书，判决王某、郭某于判决生效后十日内偿还原告河南汝州农村商业银行股份有限公司50000元及利息，被告龚某承担连带清偿责任。判决生效后，被告人王某等人未履行判决书确定的义务。后河南汝州农村商业银行股份有限公司申请强制执行，本院立案受理后，向王某等人送达了执行通知书、申报财产通知书，王某等人仍未履行生效法律文书确定的义务。因王某拒不申报财产、拒不执行判决、裁定，本院于2017年8月22日、9月6日分别对王某司法拘留。被告人有劳动能力、有财产收入，有能力履行判决确定的义务而拒不履行。后本院以王某涉嫌犯××向公安机关移送有关材料，公安机关暂不予受理，自诉人河南汝州农村商业银行股份有限公司向本院提起自诉，要求追究被告人王某××的刑事责任。
+在本案审理过程中，被告人王某与自诉人达成执行和解协议，自诉人河南汝州农村商业银行股份有限公司对王某的行为表示谅解。
+上述事实，被告人王某在开庭审理过程中无异议，并表示认罪。且有本院（2016）豫0482民初6035号民事判决书、生效证明、执行立案审批表、强制执行申请书、执行通知书、申报财产通知书、移送函、追记、拘留决定书、执行回执、调查报告等证据在案证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

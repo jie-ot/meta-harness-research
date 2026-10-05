@@ -1,0 +1,31 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+- When the case facts explicitly describe separate actions of selling, buying, or transporting counterfeit currency, label each distinct offense (e.g., 出售假币, 购买假币, 运输假币) rather than using a generic term
+- When the facts describe the illegal manufacturing and/or trading of police uniforms, caps, or other police gear, the charge must be the specific statutory offense '非法生产、买卖警用装备' rather than a generic t
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明：2012年12月6日，盐城市公安局亭湖分局对被告人季某某等人涉嫌非法买卖制毒物品案立案侦查。次日，被告人季某某被该局监视居住，同年12月14日被该局刑事拘留，被羁押在大丰市看守所。2013年10月24日早晨6时许，被告人季某某在大丰市看守所108监室内，因琐事与同监室的丁某发生口角，被告人季某某采用拳打脚踢的手段，对丁某进行殴打，致其头面部多处受伤。经大丰市公安局物证鉴定室鉴定：被害人丁某左侧筛骨纸板骨折，损伤程度属轻微伤；左侧上颌骨额突骨折，损伤程度属轻微伤；左侧眼眶底壁骨折，损伤程度属轻伤二级。
+另查明：事发当日，被害人丁某向大丰市公安局报案，该局于2013年11月20日立案侦查，被告人季某某如实供述了其在看守所羁押期间的罪行。
+又查明：2014年10月20日，盐城市亭湖区人民法院作出（2014）亭刑初字第0110号刑事判决，以××判处被告人季某某××，并处罚金人民币××元。该判决现已生效，罚金刑已履行完毕。
+案发后，被告人季某某的父母代为赔偿被害人丁某人民币22035元，得到被害人丁某的谅解。
+上述事实，被告人季某某在开庭审理过程中亦无异议，并有书证立案决定书、异地羁押被监管人员呈批表、查、破案经过说明、大丰市人民医院数字影像CT检查报告单、盐城市亭湖区人民法院刑事判决书、在押人员基本信息表、民事赔偿协议书、收条、谅解书等；被害人丁某的陈述；证人杨某、周某的证言；大丰市公安局物证鉴定室法医学人体损伤程度鉴定书及大丰市公安局情况说明等证据证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

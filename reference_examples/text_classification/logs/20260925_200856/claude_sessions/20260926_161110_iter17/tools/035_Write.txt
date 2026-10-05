@@ -1,0 +1,29 @@
+Write: logs\20260925_200856\pending_eval.json
+
+content:
+{
+  "iteration": 17,
+  "candidates": [
+    {
+      "name": "rrf_confusion_memory",
+      "file": "agents/rrf_confusion_memory.py",
+      "hypothesis": "Replacing the two-phase confusion-slot/fill retrieval with parameter-free Reciprocal Rank Fusion of (1) adaptive Jaccard similarity rank and (2) confusion column-affinity rank will outperform decayed_confusion_memory, because RRF surfaces confusion-target examples only when they are also topically similar to the query — ending the pattern where fixed confusion slots displace higher-utility similarity examples — without requiring a tuned alpha parameter as unified_confusion_retrieval_memory did.",
+      "axis": "exploitation",
+      "base_system": "decayed_confusion_memory",
+      "components": ["rrf_fusion", "column_affinity_rank", "similarity_rank", "parameter_free", "adaptive_tokenizer", "decay", "prediction_normalization", "selection_algorithm_axis"]
+    },
+    {
+      "name": "difficulty_sorted_memory",
+      "file": "agents/difficulty_sorted_memory.py",
+      "hypothesis": "After the standard two-phase retrieval, re-ordering selected examples ascending by confusion column affinity of their label — so that labels most often mis-predicted by the model appear last, immediately before the question — will outperform decayed_confusion_memory, because transformer attention has a recency/proximity bias and examples of the hardest-to-predict labels should exert the strongest influence at the position closest to the generation boundary.",
+      "axis": "exploration",
+      "base_system": "decayed_confusion_memory",
+      "components": ["difficulty_sorted_ordering", "column_affinity_sort", "recency_bias_exploitation", "post_selection_reorder", "adaptive_tokenizer", "decay", "prediction_normalization", "prompt_architecture_axis"]
+    }
+  ]
+}
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\pending_eval.json (file state is current in your context — no need to Read it back)

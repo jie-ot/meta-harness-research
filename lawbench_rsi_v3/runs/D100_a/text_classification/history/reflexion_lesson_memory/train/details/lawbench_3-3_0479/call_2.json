@@ -1,0 +1,72 @@
+{
+  "call_id": "289d5154b8b04e96994ecc12bde6076c",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017439-LlVRM2U1qF8Qn9PXbDPr",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the facts describe illegal capture or killing of protected wildlife using hunting methods and there is no element of illegal trade (purchase, sale, transport, or brokerage), assign the specific charge '非法狩猎' instead of broader wildlife‑trafficking offenses.\",\n  \"keywords\": [\n    \"非法捕猎\",\n    \"捕获\",\n    \"狩猎\",\n    \"国家保护野生动物\",\n    \"未涉及买卖\",\n    \"黑水鸡\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with a rule to prevent the classification error. The error: AI gave \"非法捕猎、收购、出售国家重点保护野生动物\" but correct answer is \"非法狩猎\". So the rule should ensure that we use the precise legal term \"非法狩猎\" rather than broader \"非法捕猎、收购、出售国家重点保护野生动物\". So rule: When the conduct involves illegal hunting of protected wildlife without involving purchase/sale, use the specific offense \"非法狩猎\". Keywords: \"捕获\", \"黑水鸡\", \"野生动物\", \"非法捕猎\", \"狩猎\", \"国家保护\". Provide JSON.\n\nLet's craft: {\"rule\":\"If the factual scenario describes the unlawful capture or killing of protected wildlife using hunting methods and does not involve the illegal trade (purchase, sale, transport) of the animals, assign the offense '非法狩猎' rather than broader wildlife trafficking charges.\", \"keywords\":[...]}",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with a rule to prevent the classification error. The error: AI gave \"非法捕猎、收购、出售国家重点保护野生动物\" but correct answer is \"非法狩猎\". So the rule should ensure that we use the precise legal term \"非法狩猎\" rather than broader \"非法捕猎、收购、出售国家重点保护野生动物\". So rule: When the conduct involves illegal hunting of protected wildlife without involving purchase/sale, use the specific offense \"非法狩猎\". Keywords: \"捕获\", \"黑水鸡\", \"野生动物\", \"非法捕猎\", \"狩猎\", \"国家保护\". Provide JSON.\n\nLet's craft: {\"rule\":\"If the factual scenario describes the unlawful capture or killing of protected wildlife using hunting methods and does not involve the illegal trade (purchase, sale, transport) of the animals, assign the offense '非法狩猎' rather than broader wildlife trafficking charges.\", \"keywords\":[...]}",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with a rule to prevent the classification error. The error: AI gave \"非法捕猎、收购、出售国家重点保护野生动物\" but correct answer is \"非法狩猎\". So the rule should ensure that we use the precise legal term \"非法狩猎\" rather than broader \"非法捕猎、收购、出售国家重点保护野生动物\". So rule: When the conduct involves illegal hunting of protected wildlife without involving purchase/sale, use the specific offense \"非法狩猎\". Keywords: \"捕获\", \"黑水鸡\", \"野生动物\", \"非法捕猎\", \"狩猎\", \"国家保护\". Provide JSON.\n\nLet's craft: {\"rule\":\"If the factual scenario describes the unlawful capture or killing of protected wildlife using hunting methods and does not involve the illegal trade (purchase, sale, transport) of the animals, assign the offense '非法狩猎' rather than broader wildlife trafficking charges.\", \"keywords\":[...]}",
+            "reasoning_content": "We need to produce a JSON with a rule to prevent the classification error. The error: AI gave \"非法捕猎、收购、出售国家重点保护野生动物\" but correct answer is \"非法狩猎\". So the rule should ensure that we use the precise legal term \"非法狩猎\" rather than broader \"非法捕猎、收购、出售国家重点保护野生动物\". So rule: When the conduct involves illegal hunting of protected wildlife without involving purchase/sale, use the specific offense \"非法狩猎\". Keywords: \"捕获\", \"黑水鸡\", \"野生动物\", \"非法捕猎\", \"狩猎\", \"国家保护\". Provide JSON.\n\nLet's craft: {\"rule\":\"If the factual scenario describes the unlawful capture or killing of protected wildlife using hunting methods and does not involve the illegal trade (purchase, sale, transport) of the animals, assign the offense '非法狩猎' rather than broader wildlife trafficking charges.\", \"keywords\":[...]}"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 319,
+      "prompt_tokens": 490,
+      "total_tokens": 809,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 262,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 7.212e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 7.212e-05,
+        "upstream_inference_prompt_cost": 1.47e-05,
+        "upstream_inference_completions_cost": 5.742e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

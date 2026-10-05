@@ -1,0 +1,72 @@
+{
+  "call_id": "8bde0893a24449e2bea9f0bf742e99de",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791008839-dUz2rtVPif99SB5vfwdm",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"被告人王某某在矿井工作面上盗走14根炸药，总重量2.1千克，构成对他人财物的非法占有，符合《刑法》关于盗窃罪的规定。同时，炸药属于危险物品，非法持有、私藏爆炸物亦触犯《刑法》关于非法持有、私藏、买卖、运输、制造、使用爆炸物罪的规定。因此应当以盗窃罪和非法持有、私藏爆炸物罪追究。\",\n  \"final_answer\": \"[罪名]盗窃;非法持有、私藏爆炸物<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": " need to determine crime(s) based on facts. The facts: theft of explosives (炸药) from a mine, 2.1 kg, then placed on a window. He voluntarily surrendered. Crime likely \"盗窃\" (theft) of explosives, maybe also \"非法持有、私藏爆炸物罪\" or \"非法制造、买卖、运输、储存、使用爆炸物罪\". Chinese criminal law: Article 122 (illegal possession of explosive devices) maybe \"非法持有、私藏、买卖、运输、制造、使用爆炸物罪\". However theft of explosives is also theft. The act: he stole explosives from workplace. So theft of explosives is theft (盗窃) plus illegal possession of explosives (非法持有爆炸物). In examples, they often list multiple crimes: e.g., \"非法携带枪支、弹药、管制刀具、危险物品危及公共安全;寻衅滋事\". For explosives, typical charge: \"非法持有、私藏、买卖、运输、制造、使用爆炸物罪\". Also \"盗窃\" because he stole property. The question: \"请你模拟法官依据下面事实给出罪名\". In examples, they list crimes separated by semicolons. For similar case: earlier example \"非法携带枪支、弹药、管制刀具、危险物品危及公共安全;寻衅滋事\". Another example: \"非法持有、私藏枪支、弹药\". So we should output both: 盗窃;非法持有爆炸物 (or \"非法持有、私藏爆炸物罪\").\n\nCheck typical Chinese crime naming: \"非法持有、私藏、买卖、运输、制造、使用爆炸物罪\" is article 122. Could be shortened to \"非法持有爆炸物\". In dataset, they may use \"非法持有、私藏爆炸物\". Let's see earlier examples: For gun case they used \"非法携带枪支、弹药、管制刀具、危险物品危及公共安全\". For explosives they might use \"非法持有、私藏爆炸物\". Not seen earlier. But we can guess.\n\nThus answer: [罪名]盗窃;非法持有、私藏爆炸物<eoa>\n\nReturn JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "reasoning": " need to determine crime(s) based on facts. The facts: theft of explosives (炸药) from a mine, 2.1 kg, then placed on a window. He voluntarily surrendered. Crime likely \"盗窃\" (theft) of explosives, maybe also \"非法持有、私藏爆炸物罪\" or \"非法制造、买卖、运输、储存、使用爆炸物罪\". Chinese criminal law: Article 122 (illegal possession of explosive devices) maybe \"非法持有、私藏、买卖、运输、制造、使用爆炸物罪\". However theft of explosives is also theft. The act: he stole explosives from workplace. So theft of explosives is theft (盗窃) plus illegal possession of explosives (非法持有爆炸物). In examples, they often list multiple crimes: e.g., \"非法携带枪支、弹药、管制刀具、危险物品危及公共安全;寻衅滋事\". For explosives, typical charge: \"非法持有、私藏、买卖、运输、制造、使用爆炸物罪\". Also \"盗窃\" because he stole property. The question: \"请你模拟法官依据下面事实给出罪名\". In examples, they list crimes separated by semicolons. For similar case: earlier example \"非法携带枪支、弹药、管制刀具、危险物品危及公共安全;寻衅滋事\". Another example: \"非法持有、私藏枪支、弹药\". So we should output both: 盗窃;非法持有爆炸物 (or \"非法持有、私藏爆炸物罪\").\n\nCheck typical Chinese crime naming: \"非法持有、私藏、买卖、运输、制造、使用爆炸物罪\" is article 122. Could be shortened to \"非法持有爆炸物\". In dataset, they may use \"非法持有、私藏爆炸物\". Let's see earlier examples: For gun case they used \"非法携带枪支、弹药、管制刀具、危险物品危及公共安全\". For explosives they might use \"非法持有、私藏爆炸物\". Not seen earlier. But we can guess.\n\nThus answer: [罪名]盗窃;非法持有、私藏爆炸物<eoa>\n\nReturn JSON with reasoning and final answer.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": " need to determine crime(s) based on facts. The facts: theft of explosives (炸药) from a mine, 2.1 kg, then placed on a window. He voluntarily surrendered. Crime likely \"盗窃\" (theft) of explosives, maybe also \"非法持有、私藏爆炸物罪\" or \"非法制造、买卖、运输、储存、使用爆炸物罪\". Chinese criminal law: Article 122 (illegal possession of explosive devices) maybe \"非法持有、私藏、买卖、运输、制造、使用爆炸物罪\". However theft of explosives is also theft. The act: he stole explosives from workplace. So theft of explosives is theft (盗窃) plus illegal possession of explosives (非法持有爆炸物). In examples, they often list multiple crimes: e.g., \"非法携带枪支、弹药、管制刀具、危险物品危及公共安全;寻衅滋事\". For explosives, typical charge: \"非法持有、私藏、买卖、运输、制造、使用爆炸物罪\". Also \"盗窃\" because he stole property. The question: \"请你模拟法官依据下面事实给出罪名\". In examples, they list crimes separated by semicolons. For similar case: earlier example \"非法携带枪支、弹药、管制刀具、危险物品危及公共安全;寻衅滋事\". Another example: \"非法持有、私藏枪支、弹药\". So we should output both: 盗窃;非法持有爆炸物 (or \"非法持有、私藏爆炸物罪\").\n\nCheck typical Chinese crime naming: \"非法持有、私藏、买卖、运输、制造、使用爆炸物罪\" is article 122. Could be shortened to \"非法持有爆炸物\". In dataset, they may use \"非法持有、私藏爆炸物\". Let's see earlier examples: For gun case they used \"非法携带枪支、弹药、管制刀具、危险物品危及公共安全\". For explosives they might use \"非法持有、私藏爆炸物\". Not seen earlier. But we can guess.\n\nThus answer: [罪名]盗窃;非法持有、私藏爆炸物<eoa>\n\nReturn JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": " need to determine crime(s) based on facts. The facts: theft of explosives (炸药) from a mine, 2.1 kg, then placed on a window. He voluntarily surrendered. Crime likely \"盗窃\" (theft) of explosives, maybe also \"非法持有、私藏爆炸物罪\" or \"非法制造、买卖、运输、储存、使用爆炸物罪\". Chinese criminal law: Article 122 (illegal possession of explosive devices) maybe \"非法持有、私藏、买卖、运输、制造、使用爆炸物罪\". However theft of explosives is also theft. The act: he stole explosives from workplace. So theft of explosives is theft (盗窃) plus illegal possession of explosives (非法持有爆炸物). In examples, they often list multiple crimes: e.g., \"非法携带枪支、弹药、管制刀具、危险物品危及公共安全;寻衅滋事\". For explosives, typical charge: \"非法持有、私藏、买卖、运输、制造、使用爆炸物罪\". Also \"盗窃\" because he stole property. The question: \"请你模拟法官依据下面事实给出罪名\". In examples, they list crimes separated by semicolons. For similar case: earlier example \"非法携带枪支、弹药、管制刀具、危险物品危及公共安全;寻衅滋事\". Another example: \"非法持有、私藏枪支、弹药\". So we should output both: 盗窃;非法持有爆炸物 (or \"非法持有、私藏爆炸物罪\").\n\nCheck typical Chinese crime naming: \"非法持有、私藏、买卖、运输、制造、使用爆炸物罪\" is article 122. Could be shortened to \"非法持有爆炸物\". In dataset, they may use \"非法持有、私藏爆炸物\". Let's see earlier examples: For gun case they used \"非法携带枪支、弹药、管制刀具、危险物品危及公共安全\". For explosives they might use \"非法持有、私藏爆炸物\". Not seen earlier. But we can guess.\n\nThus answer: [罪名]盗窃;非法持有、私藏爆炸物<eoa>\n\nReturn JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 665,
+      "prompt_tokens": 25225,
+      "total_tokens": 25890,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.002855,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.002855,
+        "upstream_inference_prompt_cost": 0.0025225,
+        "upstream_inference_completions_cost": 0.0003325
+      }
+    }
+  },
+  "raw_response_missing": false
+}

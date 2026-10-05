@@ -1,0 +1,72 @@
+{
+  "call_id": "365eaed6e34b436eadaee13e5115a3a9",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017197-8QBWV4TeLGmJlUzVQyWG",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the factual description shows the defendant giving money or kickbacks to another party (e.g., “给予…回扣”, “支付…贿赂款” etc.), the correct charge is 行贿 (bribery by the giver); only classify as 受贿 when the defendant is described as receiving the bribe.\",\n  \"keywords\": [\n    \"给予回扣\",\n    \"支付贿赂款\",\n    \"向…提供回扣\",\n    \"给…回扣款\",\n    \"受贿\",\n    \"行贿\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a correction rule to avoid misclassifying \"行贿\" vs \"受贿\" for non-state actors. The error: predicted \"非国家工作人员受贿\" (i.e., bribery by a non-state official receiving bribe) but correct is \"对非国家工作人员行贿\" (i.e., bribery of non-state actors). So rule: ensure that when the defendant is the bribe giver (offers bribe) rather than receiver, classify as \"行贿\". Keywords: \"给予...回扣\", \"回扣款\", \"承接工程\", \"与...事先商定\", \"回扣\", \"受贿\" vs \"行贿\". So rule: Identify the role: if the text describes the defendant paying money to others as a kickback, it's bribery (行贿). If the defendant receives money, it's受贿. Provide JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a correction rule to avoid misclassifying \"行贿\" vs \"受贿\" for non-state actors. The error: predicted \"非国家工作人员受贿\" (i.e., bribery by a non-state official receiving bribe) but correct is \"对非国家工作人员行贿\" (i.e., bribery of non-state actors). So rule: ensure that when the defendant is the bribe giver (offers bribe) rather than receiver, classify as \"行贿\". Keywords: \"给予...回扣\", \"回扣款\", \"承接工程\", \"与...事先商定\", \"回扣\", \"受贿\" vs \"行贿\". So rule: Identify the role: if the text describes the defendant paying money to others as a kickback, it's bribery (行贿). If the defendant receives money, it's受贿. Provide JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a correction rule to avoid misclassifying \"行贿\" vs \"受贿\" for non-state actors. The error: predicted \"非国家工作人员受贿\" (i.e., bribery by a non-state official receiving bribe) but correct is \"对非国家工作人员行贿\" (i.e., bribery of non-state actors). So rule: ensure that when the defendant is the bribe giver (offers bribe) rather than receiver, classify as \"行贿\". Keywords: \"给予...回扣\", \"回扣款\", \"承接工程\", \"与...事先商定\", \"回扣\", \"受贿\" vs \"行贿\". So rule: Identify the role: if the text describes the defendant paying money to others as a kickback, it's bribery (行贿). If the defendant receives money, it's受贿. Provide JSON.",
+            "reasoning_content": "We need to produce a correction rule to avoid misclassifying \"行贿\" vs \"受贿\" for non-state actors. The error: predicted \"非国家工作人员受贿\" (i.e., bribery by a non-state official receiving bribe) but correct is \"对非国家工作人员行贿\" (i.e., bribery of non-state actors). So rule: ensure that when the defendant is the bribe giver (offers bribe) rather than receiver, classify as \"行贿\". Keywords: \"给予...回扣\", \"回扣款\", \"承接工程\", \"与...事先商定\", \"回扣\", \"受贿\" vs \"行贿\". So rule: Identify the role: if the text describes the defendant paying money to others as a kickback, it's bribery (行贿). If the defendant receives money, it's受贿. Provide JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 328,
+      "prompt_tokens": 655,
+      "total_tokens": 983,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 190,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00029505,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00029505,
+        "upstream_inference_prompt_cost": 9.825e-05,
+        "upstream_inference_completions_cost": 0.0001968
+      }
+    }
+  },
+  "raw_response_missing": false
+}

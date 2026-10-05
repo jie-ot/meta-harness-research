@@ -1,0 +1,27 @@
+Bash
+
+command:
+python -c "
+import json, os
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+# Sample 5 error cases from decayed_confusion LawBench log for analysis
+log = os.path.join(base, 'LawBench', 'decayed_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+errors = []
+with open(log) as f:
+    for line in f:
+        r = json.loads(line)
+        if not r.get('was_correct', True):
+            errors.append(r)
+        if len(errors) >= 5:
+            break
+for e in errors:
+    print('pred:', e.get('prediction','')[:60])
+    print('gt  :', e.get('ground_truth','')[:60])
+    print('num_selected:', e.get('metadata', {}).get('num_selected'))
+    print()
+" 2>&1
+
+description: Sample error cases from LawBench decayed_confusion log
+
+--- output ---
+(Bash completed with no output)

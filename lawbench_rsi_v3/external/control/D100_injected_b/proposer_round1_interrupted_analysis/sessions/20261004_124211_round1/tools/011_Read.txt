@@ -1,0 +1,46 @@
+Read: inner_loop.py
+
+offset: 240
+limit: 40
+
+--- output ---
+240	        global_idx = step_offset + total_steps + idx
+241	        correct += int(ok)
+242	
+243	        if logger:
+244	            logger.log(
+245	                "eval_step",
+246	                step=global_idx,
+247	                input_preview=ex["input"][:200],
+248	                pred=pred,
+249	                tgt=ex["target"],
+250	                ok=ok,
+251	                prompt_len=prompt_info["prompt_len"],
+252	                prompt_hash=prompt_info["prompt_hash"],
+253	            )
+254	
+255	        if trajectory is not None:
+256	            trajectory.append(
+257	                {
+258	                    "step": global_idx,
+259	                    "input": ex["input"],
+260	                    "prediction": pred,
+261	                    "target": ex["target"],
+262	                    "was_correct": ok,
+263	                    "metrics": metrics,
+264	                    "metadata": meta,
+265	                }
+266	            )
+267	
+268	    return {
+269	        "accuracy": correct / len(examples) if examples else 0.0,
+270	        "correct": correct,
+271	        "total": len(examples),
+272	        "trajectory": trajectory,
+273	        "num_epochs": num_epochs,
+274	    }
+275	
+276	
+277	def run_inner_loop(
+278	    memory: MemorySystem,
+279	    examples: list[dict[str, Any]],

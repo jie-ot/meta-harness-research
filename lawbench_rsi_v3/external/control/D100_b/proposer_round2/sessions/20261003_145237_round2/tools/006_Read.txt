@@ -1,0 +1,203 @@
+Read: agents\label_glossary_memory.py
+
+
+--- output ---
+1	"""Label Glossary Memory — anchors predictions to canonical label strings.
+2	
+3	Diagnosis from score diagnostics (71 wrong out of 100):
+4	  - Surface-form near-misses: model predicts a paraphrase of the correct label
+5	    instead of the exact canonical string (e.g. "销售假冒注册商标商品" vs
+6	    "销售假冒注册商标的商品", "非法种植罂粟" vs "非法种植毒品原植物").
+7	  - Specificity errors: model predicts a general label when a specific one is
+8	    correct ("诈骗" vs "合同诈骗", "行贿" vs "单位行贿").
+9	
+10	Root cause: the base system's prompt shows examples in Q/A format but gives
+11	the LLM no inventory of exact canonical label strings. The LLM paraphrases
+12	from memory rather than copying the precise string it has seen in training.
+13	
+14	This system accumulates every ground-truth label string encountered during
+15	learn_from_batch and injects them as a reference glossary section in the
+16	prompt, after the examples. The LLM is explicitly instructed to choose from
+17	that list. At cold start (no labels learned yet) the prompt degrades
+18	gracefully to the base format without a glossary section.
+19	
+20	Retrieval uses CJK character bigrams for genuine similarity over Chinese text
+21	(same fix as cjk_bigram_confusion_memory). The novelty here is the prompt
+22	architecture: a live-built glossary as a grounding constraint.
+23	"""
+24	
+25	import json
+26	import re
+27	from collections import defaultdict
+28	from typing import Any
+29	
+30	from ..llm import LLMCallable
+31	from ..memory_system import MemorySystem, extract_json_field
+32	
+33	# Prompt when we have a glossary to anchor to
+34	PROMPT_WITH_GLOSSARY = """Solve the problem below based on the examples provided.
+35	
+36	{examples_section}
+37	
+38	**Problem:**
+39	{input}
+40	
+41	**Canonical charge labels seen in training (use exact text from this list):**
+42	{glossary}
+43	
+44	**Instructions:**
+45	- Analyse the facts and identify the charge(s)
+46	- Your final_answer MUST use exact label text from the list above
+47	- For multiple charges use semicolons: Label1;Label2
+48	- Respond in JSON format
+49	
+50	{{"reasoning": "[your reasoning]", "final_answer": "[exact label(s) from list]"}}"""
+51	
+52	# Prompt when no glossary is available yet (cold start)
+53	PROMPT_NO_GLOSSARY = """Solve the problem below based on the examples provided.
+54	
+55	{examples_section}
+56	
+57	**Problem:**
+58	{input}
+59	
+60	**Instructions:**
+61	- Follow the patterns shown in the examples above
+62	- Respond in JSON format
+63	
+64	{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+65	
+66	MAX_CHARS = 30000
+67	# Reserve chars for glossary and prompt boilerplate
+68	_EXAMPLE_BUDGET = 24000
+69	
+70	
+71	def _tokenize(text: str) -> frozenset:
+72	    """CJK character bigrams plus ASCII tokens."""
+73	    cjk_chars = re.findall(r'[一-鿿㐀-䶿]', text)
+74	    bigrams = frozenset(
+75	        cjk_chars[i] + cjk_chars[i + 1] for i in range(len(cjk_chars) - 1)
+76	    )
+77	    ascii_toks = frozenset(re.findall(r'[A-Za-z0-9]+', text.lower()))
+78	    return bigrams | ascii_toks
+79	
+80	
+81	def _jaccard(a: frozenset, b: frozenset) -> float:
+82	    if not a and not b:
+83	        return 0.0
+84	    return len(a & b) / len(a | b)
+85	
+86	
+87	class LabelGlossaryMemory(MemorySystem):
+88	    """Retrieval with a live canonical-label glossary to prevent near-miss errors."""
+89	
+90	    def __init__(self, llm: LLMCallable):
+91	        super().__init__(llm)
+92	        # Stored training examples for retrieval
+93	        self.examples: list[dict[str, Any]] = []
+94	        # Ordered list of unique canonical label strings seen during training
+95	        self.label_glossary: list[str] = []
+96	
+97	    # ------------------------------------------------------------------
+98	    # Glossary management
+99	    # ------------------------------------------------------------------
+100	
+101	    def _add_labels(self, ground_truth: str) -> None:
+102	        """Extract individual labels from a (possibly multi-label) ground truth."""
+103	        for lbl in ground_truth.split(';'):
+104	            lbl = lbl.strip()
+105	            if lbl and lbl not in self.label_glossary:
+106	                self.label_glossary.append(lbl)
+107	
+108	    def _build_glossary_str(self) -> str:
+109	        return '\n'.join(f'- {lbl}' for lbl in sorted(self.label_glossary))
+110	
+111	    # ------------------------------------------------------------------
+112	    # Retrieval
+113	    # ------------------------------------------------------------------
+114	
+115	    def _build_parts(self, query: str) -> list[str]:
+116	        if not self.examples:
+117	            return []
+118	        q_tok = _tokenize(query)
+119	        ranked = sorted(
+120	            [(_jaccard(q_tok, ex['tokens']), idx, ex)
+121	             for idx, ex in enumerate(self.examples)],
+122	            reverse=True,
+123	            key=lambda x: (x[0], x[1])
+124	        )
+125	        parts: list[str] = []
+126	        total = 0
+127	        for _, _, ex in ranked:
+128	            q = ex.get('raw_question', ex['input'])
+129	            part = f"Q: {q}\nA: {ex['target']}"
+130	            if total + len(part) + 2 > _EXAMPLE_BUDGET:
+131	                break
+132	            parts.append(part)
+133	            total += len(part) + 2
+134	        return parts
+135	
+136	    # ------------------------------------------------------------------
+137	    # MemorySystem interface
+138	    # ------------------------------------------------------------------
+139	
+140	    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+141	        parts = self._build_parts(input)
+142	        examples_section = '\n\n'.join(parts)
+143	
+144	        if self.label_glossary:
+145	            glossary_str = self._build_glossary_str()
+146	            prompt = PROMPT_WITH_GLOSSARY.format(
+147	                examples_section=examples_section,
+148	                input=input,
+149	                glossary=glossary_str,
+150	            )
+151	        else:
+152	            prompt = PROMPT_NO_GLOSSARY.format(
+153	                examples_section=examples_section,
+154	                input=input,
+155	            )
+156	
+157	        response = self.call_llm(prompt)
+158	        answer = extract_json_field(response, 'final_answer')
+159	        return answer, {
+160	            'full_response': response,
+161	            'num_examples': len(self.examples),
+162	            'num_selected': len(parts),
+163	            'num_glossary_labels': len(self.label_glossary),
+164	        }
+165	
+166	    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+167	        for r in batch_results:
+168	            raw_q = r.get('raw_question', r['input'])
+169	            ex: dict[str, Any] = {
+170	                'input': r['input'],
+171	                'target': r['ground_truth'],
+172	                'tokens': _tokenize(raw_q),
+173	            }
+174	            if 'raw_question' in r:
+175	                ex['raw_question'] = r['raw_question']
+176	            self.examples.append(ex)
+177	            # Always accumulate the ground truth label into the glossary
+178	            self._add_labels(r['ground_truth'])
+179	
+180	    def get_state(self) -> str:
+181	        serialisable = [
+182	            {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+183	            for ex in self.examples
+184	        ]
+185	        return json.dumps({
+186	            'examples': serialisable,
+187	            'label_glossary': self.label_glossary,
+188	        }, indent=2)
+189	
+190	    def set_state(self, state: str) -> None:
+191	        data = json.loads(state)
+192	        self.examples = []
+193	        for ex in data.get('examples', []):
+194	            restored = dict(ex)
+195	            raw_q = restored.get('raw_question', restored.get('input', ''))
+196	            restored['tokens'] = _tokenize(raw_q)
+197	            self.examples.append(restored)
+198	        self.label_glossary = data.get('label_glossary', [])
+199	

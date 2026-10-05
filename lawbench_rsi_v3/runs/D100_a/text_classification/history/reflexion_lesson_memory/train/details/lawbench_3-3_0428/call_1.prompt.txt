@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the facts describe bribery directed at persons who are not state officials or at a legal entity (unit), the charge must be specified as “对非国家工作人员行贿” and/or “对单位行贿” rather than the generic “行贿”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+- When the factual description involves the use of false documents or misrepresentation to conclude a contract and obtain money, classify the offense as the specific type of fraud (e.g., 合同诈骗) rather th
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控，2014年3月11日以来，被告人张某在义乌市某街道某路某号某楼经营某饰品加工厂，厂内有工人六名，工人负责喷墨、印花，被告人张某负责烂花及清洗饰品，在清洗饰品过程中会产生废水，该废水未处理直接通过车间内的下水孔外排至化粪池内。同年4月1日，该厂被义乌市环保局工作人员查获。经义乌市环境保护监测站检测，被告人张某厂内废水外排水的总铬超标4.4倍以上，总镍超标9.6倍以上。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

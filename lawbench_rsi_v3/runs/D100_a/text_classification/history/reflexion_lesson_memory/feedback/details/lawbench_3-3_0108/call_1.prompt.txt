@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the alleged bribery is committed by a legal entity (e.g., a company) or its legal representative, the correct charge is "单位行贿" rather than the individual offense "行贿".
+- When the facts describe an unintentional fire caused by negligence (e.g., accidental ignition during a ritual or domestic activity) that results in forest or property damage, the appropriate charge is
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description involves unapproved plowing, clearing, or sowing of crops on forest land, thereby converting the forest area into agricultural use, classify the offense as illegal occupatio
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:莫旗人民检察院指控，被告人孟某系莫旗某乡巴音知农养殖专业合作社法定代表人。2013至2014年，被告人孟某为方便合作社散养猪管理，未经林业主管部门审批，将位于本村东南5华里处国有天然林内他人砍伐的林木1451棵盗窃，用于合作社内及附近山林围封。经鉴定，孟某盗窃林木价值为27465元。
+2012年至今，被告人孟某在向相关部门申请办理合作社建设用地审批手续的同时，在本村东南3华里处放马沟内占用地块建设养猪场等配套设施并使用。经现场勘查及鉴定，猪场占地位于库如奇林场59林班3、7、11小班。其中7小班系防护林中水源涵养林，建筑占林地1.92亩，砂石硬化占林地3.60亩；11小班系防护林中水源涵养林，猪舍占林地0.45亩。共计5.97亩。2017年1月10日，被告人孟某投案。被告人孟某的行为已触犯《中华人民共和国刑法》××、××之规定，应当以××、××追究其刑事责任。其同时具有自首情节，依法可以从轻或者减轻处罚，建议判处××至二年，并处罚金。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

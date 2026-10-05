@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- Label the offense as '赌博' unless the factual description explicitly meets the statutory elements of '组织赌博' (e.g., the defendant organized, operated, or managed a gambling venue as defined by law).
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When extracting the crime name, output the exact statutory offense term (e.g., “行贿”) without adding descriptive prefixes or qualifiers such as “对国家工作人员”。
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明：2014年2月13日至17日凌晨，被告人范某组织周某某、朱某某、王某某、文某某等人先后在瑞昌市立信宾馆、西雅图宾馆和华天宾馆多次用麻将牌进行“二八杠”赌博（参赌人员四方坐定，一方坐庄，每方抓两张麻将牌的筒牌或白板比大小定输赢），每场输赢数万元，其中周某某仅2014年2月16日至次日凌晨即输掉十余万元，被告人范某不仅参与赌博，还抽头渔利一万余元。
+另查明，被告人范某于2015年2月4日被南京市公安局雨花台公安分局共青团路派出所民警抓获归案，到案后，其如实供述了上述事实经过。
+上述事实，被告人范某在开庭审理过程中均无异议，并有其在公安机关侦查阶段的供述；证人叶某某、周某某、朱某某、王某某、文某某的证言；辨认笔录及照片；书证：抓获经过、办案情况说明、户籍信息等证据证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

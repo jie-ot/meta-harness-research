@@ -1,0 +1,32 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- When the facts show that the defendant only provided shelter, assistance, or concealment for drug offenders and did not personally produce, possess, or traffic the narcotics, classify the offense as 窝
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:苏州市吴江区人民检察院指控：2014年2月23日至同月24日期间，被告人肖1某在苏州市吴江区震泽镇朱家浜村其和舒某（另案处理）合租的租房内，单独或共同容留陈某以“烫吸”的方式吸食毒品甲基苯丙胺3次。具体分述如下：
+1、2014年2月24日下午，被告人肖1某伙同舒某在上述地点，容留陈某以“烫吸”的方式吸食毒品甲基苯丙胺1次。
+2、2014年2月24日晚上，被告人肖1某伙同舒某在上述地点，容留陈某以“烫吸”的方式吸食毒品甲基苯丙胺1次。
+3、2014年2月23日晚上，被告人肖1某在上述地点，容留陈某以“烫吸”的方式吸食毒品甲基苯丙胺1次。
+被告人肖1某因涉嫌吸食毒品被传唤后，如实供述了自己容留他人吸毒的犯罪事实。
+为证实上述指控的犯罪事实，公诉机关提供了相应的证据，并据此认为：被告人肖1某单独或者伙同他人共同为他人吸食毒品提供场所，其行为已构成××。在共同犯罪中，被告人肖1某起主要作用，系主犯。被告人肖1某系累犯。被告人肖1某系自首。请依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

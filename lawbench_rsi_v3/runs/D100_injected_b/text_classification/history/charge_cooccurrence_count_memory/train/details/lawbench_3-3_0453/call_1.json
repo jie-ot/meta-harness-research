@@ -1,0 +1,72 @@
+{
+  "call_id": "e3109bd23ac94877a4098d131af1c51e",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791127309-wGYMkAFRV957q9mXODcp",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"案件中被告人作为矿山实际控股人和法定代表人、矿长，未履行安全生产管理职责，导致矿井冒顶事故，造成四名工人死亡，且事后隐瞒不报。根据《刑法》第133条，负有安全生产管理职责的人员因玩忽职守导致重大事故的，构成“重大责任事故罪”。同时，根据《刑法》第138条，事故发生后未及时报告、隐瞒事故的行为构成“隐瞒事故罪”。因此应当以这两项罪名追究被告人的刑事责任。\",\n  \"final_answer\": \"[罪名]重大责任事故罪;隐瞒事故罪<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to infer the appropriate crime(s) based on facts. The case: mining accident due to safety negligence, failure to report accident, causing death. Likely crimes: \"重大责任事故罪\" (Crime of major responsibility accident) under Chinese criminal law, also possibly \"玩忽职守罪\" (Negligence of duty) or \"安全生产事故罪\". In Chinese law, there is a specific offense: \"重大责任事故罪\" (Article 133 of Criminal Law) for persons in charge of production safety who cause major accidents due to negligence. Also \"隐瞒事故罪\"? Actually there is \"隐瞒事故罪\" (Article 138) for failing to report accidents. But typical charges: \"重大责任事故罪\" and \"隐瞒事故罪\". However the summary of co-occurrence only includes crimes like 诈骗, 组织、强迫、引诱、容留、介绍卖淫, 引诱、容留、介绍卖淫, 放火, 违法发放贷款, 信用卡诈骗, 非法组织卖血. The given list is limited to those? The prior examples show mapping: they gave facts and answer label like \"违法发放贷款\", \"诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫\", \"非法组织卖血\", \"信用卡诈骗\", \"放火\". So the label set seems limited to these specific crimes. The new case is about mining accident. None of those labels match. Perhaps the expected label is \"重大责任事故\" but not in list. However the instruction says \"Use the established label wording, not a paraphrase\". The established labels are those seen in examples. But maybe there are more labels not shown. The co-occurrence summary only includes some crimes; not exhaustive. So we can output a label like \"重大责任事故罪\". Need to decide.\n\nThe facts: The defendants are the actual controlling person and legal representative/miner manager. They neglected safety, caused death, and concealed accident. So charges: \"重大责任事故罪\" (major responsibility accident) and \"隐瞒事故罪\". However Chinese law: Article 138 (隐瞒事故罪) applies to persons who conceal a major accident that results in death, etc. So both could apply. The prosecution may charge both. The text says \"构成××\". The placeholder likely for \"重大责任事故罪\". Also they mention \"可以适用××\". Possibly \"从轻处罚\". So answer likely \"重大责任事故罪\". Could also include \"隐瞒事故罪\". Which is more appropriate? The facts include both negligence and concealment. Usually prosecutors charge both if both elements satisfied. So answer: \"重大责任事故罪;隐瞒事故罪\". Need to match label wording exactly. Use Chinese characters.\n\nThus final answer JSON with reasoning and final answer string.\n\n",
+          "provider_specific_fields": {
+            "reasoning": "We need to infer the appropriate crime(s) based on facts. The case: mining accident due to safety negligence, failure to report accident, causing death. Likely crimes: \"重大责任事故罪\" (Crime of major responsibility accident) under Chinese criminal law, also possibly \"玩忽职守罪\" (Negligence of duty) or \"安全生产事故罪\". In Chinese law, there is a specific offense: \"重大责任事故罪\" (Article 133 of Criminal Law) for persons in charge of production safety who cause major accidents due to negligence. Also \"隐瞒事故罪\"? Actually there is \"隐瞒事故罪\" (Article 138) for failing to report accidents. But typical charges: \"重大责任事故罪\" and \"隐瞒事故罪\". However the summary of co-occurrence only includes crimes like 诈骗, 组织、强迫、引诱、容留、介绍卖淫, 引诱、容留、介绍卖淫, 放火, 违法发放贷款, 信用卡诈骗, 非法组织卖血. The given list is limited to those? The prior examples show mapping: they gave facts and answer label like \"违法发放贷款\", \"诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫\", \"非法组织卖血\", \"信用卡诈骗\", \"放火\". So the label set seems limited to these specific crimes. The new case is about mining accident. None of those labels match. Perhaps the expected label is \"重大责任事故\" but not in list. However the instruction says \"Use the established label wording, not a paraphrase\". The established labels are those seen in examples. But maybe there are more labels not shown. The co-occurrence summary only includes some crimes; not exhaustive. So we can output a label like \"重大责任事故罪\". Need to decide.\n\nThe facts: The defendants are the actual controlling person and legal representative/miner manager. They neglected safety, caused death, and concealed accident. So charges: \"重大责任事故罪\" (major responsibility accident) and \"隐瞒事故罪\". However Chinese law: Article 138 (隐瞒事故罪) applies to persons who conceal a major accident that results in death, etc. So both could apply. The prosecution may charge both. The text says \"构成××\". The placeholder likely for \"重大责任事故罪\". Also they mention \"可以适用××\". Possibly \"从轻处罚\". So answer likely \"重大责任事故罪\". Could also include \"隐瞒事故罪\". Which is more appropriate? The facts include both negligence and concealment. Usually prosecutors charge both if both elements satisfied. So answer: \"重大责任事故罪;隐瞒事故罪\". Need to match label wording exactly. Use Chinese characters.\n\nThus final answer JSON with reasoning and final answer string.\n\n",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to infer the appropriate crime(s) based on facts. The case: mining accident due to safety negligence, failure to report accident, causing death. Likely crimes: \"重大责任事故罪\" (Crime of major responsibility accident) under Chinese criminal law, also possibly \"玩忽职守罪\" (Negligence of duty) or \"安全生产事故罪\". In Chinese law, there is a specific offense: \"重大责任事故罪\" (Article 133 of Criminal Law) for persons in charge of production safety who cause major accidents due to negligence. Also \"隐瞒事故罪\"? Actually there is \"隐瞒事故罪\" (Article 138) for failing to report accidents. But typical charges: \"重大责任事故罪\" and \"隐瞒事故罪\". However the summary of co-occurrence only includes crimes like 诈骗, 组织、强迫、引诱、容留、介绍卖淫, 引诱、容留、介绍卖淫, 放火, 违法发放贷款, 信用卡诈骗, 非法组织卖血. The given list is limited to those? The prior examples show mapping: they gave facts and answer label like \"违法发放贷款\", \"诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫\", \"非法组织卖血\", \"信用卡诈骗\", \"放火\". So the label set seems limited to these specific crimes. The new case is about mining accident. None of those labels match. Perhaps the expected label is \"重大责任事故\" but not in list. However the instruction says \"Use the established label wording, not a paraphrase\". The established labels are those seen in examples. But maybe there are more labels not shown. The co-occurrence summary only includes some crimes; not exhaustive. So we can output a label like \"重大责任事故罪\". Need to decide.\n\nThe facts: The defendants are the actual controlling person and legal representative/miner manager. They neglected safety, caused death, and concealed accident. So charges: \"重大责任事故罪\" (major responsibility accident) and \"隐瞒事故罪\". However Chinese law: Article 138 (隐瞒事故罪) applies to persons who conceal a major accident that results in death, etc. So both could apply. The prosecution may charge both. The text says \"构成××\". The placeholder likely for \"重大责任事故罪\". Also they mention \"可以适用××\". Possibly \"从轻处罚\". So answer likely \"重大责任事故罪\". Could also include \"隐瞒事故罪\". Which is more appropriate? The facts include both negligence and concealment. Usually prosecutors charge both if both elements satisfied. So answer: \"重大责任事故罪;隐瞒事故罪\". Need to match label wording exactly. Use Chinese characters.\n\nThus final answer JSON with reasoning and final answer string.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": "We need to infer the appropriate crime(s) based on facts. The case: mining accident due to safety negligence, failure to report accident, causing death. Likely crimes: \"重大责任事故罪\" (Crime of major responsibility accident) under Chinese criminal law, also possibly \"玩忽职守罪\" (Negligence of duty) or \"安全生产事故罪\". In Chinese law, there is a specific offense: \"重大责任事故罪\" (Article 133 of Criminal Law) for persons in charge of production safety who cause major accidents due to negligence. Also \"隐瞒事故罪\"? Actually there is \"隐瞒事故罪\" (Article 138) for failing to report accidents. But typical charges: \"重大责任事故罪\" and \"隐瞒事故罪\". However the summary of co-occurrence only includes crimes like 诈骗, 组织、强迫、引诱、容留、介绍卖淫, 引诱、容留、介绍卖淫, 放火, 违法发放贷款, 信用卡诈骗, 非法组织卖血. The given list is limited to those? The prior examples show mapping: they gave facts and answer label like \"违法发放贷款\", \"诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫\", \"非法组织卖血\", \"信用卡诈骗\", \"放火\". So the label set seems limited to these specific crimes. The new case is about mining accident. None of those labels match. Perhaps the expected label is \"重大责任事故\" but not in list. However the instruction says \"Use the established label wording, not a paraphrase\". The established labels are those seen in examples. But maybe there are more labels not shown. The co-occurrence summary only includes some crimes; not exhaustive. So we can output a label like \"重大责任事故罪\". Need to decide.\n\nThe facts: The defendants are the actual controlling person and legal representative/miner manager. They neglected safety, caused death, and concealed accident. So charges: \"重大责任事故罪\" (major responsibility accident) and \"隐瞒事故罪\". However Chinese law: Article 138 (隐瞒事故罪) applies to persons who conceal a major accident that results in death, etc. So both could apply. The prosecution may charge both. The text says \"构成××\". The placeholder likely for \"重大责任事故罪\". Also they mention \"可以适用××\". Possibly \"从轻处罚\". So answer likely \"重大责任事故罪\". Could also include \"隐瞒事故罪\". Which is more appropriate? The facts include both negligence and concealment. Usually prosecutors charge both if both elements satisfied. So answer: \"重大责任事故罪;隐瞒事故罪\". Need to match label wording exactly. Use Chinese characters.\n\nThus final answer JSON with reasoning and final answer string.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 776,
+      "prompt_tokens": 2306,
+      "total_tokens": 3082,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000230434,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000230434,
+        "upstream_inference_prompt_cost": 8.5322e-05,
+        "upstream_inference_completions_cost": 0.000145112
+      }
+    }
+  },
+  "raw_response_missing": false
+}

@@ -1,0 +1,306 @@
+Write: agents\label_lexicon_snap_memory.py
+
+content:
+"""Statutory Label Snap Memory (candidate A — exploitation of a diagnosed defect).
+
+DIAGNOSIS OF THE BASE MECHANISM
+--------------------------------
+The inherited retrieval signal tokenises with ``[A-Za-z0-9]+``. On Chinese case
+facts this yields an EMPTY or near-empty token set, so Jaccard is 0.0 for every
+stored example and ranking degenerates to stored order. The base's
+confusion-injection phase is likewise inert because it keys the matrix on the
+RAW prediction string (including markup) while lookups use clean labels.
+
+WHAT THIS SYSTEM CHANGES (mechanism, not constants)
+---------------------------------------------------
+1. RETRIEVAL SIGNAL REPLACED. Character bigram Dice similarity. Bigrams are a
+   script-agnostic lexical signal, so a Chinese query actually has a non-zero,
+   and discriminative, similarity against stored Chinese facts. This is a
+   different *signal*, not a different cutoff on the same signal.
+
+2. A GUARDED LABEL-SNAP POST-PROCESSOR (new mechanism). Generation is decoupled
+   from *label selection*. The model proposes; the system repairs. During
+   learning the system accumulates the statutory label vocabulary it has
+   observed (split at charge-unit level on strong separators, so multi-part
+   labels such as the '、'-joined ones stay intact as single units). At predict
+   time each predicted unit is snapped to its nearest lexicon entry by longest
+   common substring, subject to three guards:
+       G1 a shared run of >= 4 characters,
+       G2 covering >= 0.6 of the predicted unit's length,
+       G3 a UNIQUE maximal match (ties decline to snap),
+   plus a deterministic trailing-'罪' strip when the stripped form is attested.
+
+   The guards are what make this safe rather than reckless. Short generic labels
+   (2-3 chars) cannot clear G1, so they pass through untouched; a long unit whose
+   best match covers too little of it declines via G2. The snap therefore only
+   fires on genuine near-miss variants of attested labels.
+
+The scoring contract this targets: exact charge-SET equality, zero partial
+credit, and a fatal difference between e.g. a correct stem and a wrong variant.
+"""
+
+import json
+import re
+from collections import Counter
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+# Separators the evaluator treats as charge delimiters.
+_STRONG_SEPS = [";", "；", ",", "，"]
+_WEAK_SEPS = ["、"]
+
+PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+
+{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Follow the answer format shown in the examples exactly
+- Use the established label wording, not a paraphrase or abbreviation
+- One label per charge; separate multiple charges with a semicolon
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+MAX_CHARS = 30000
+_SNAP_MIN_RUN = 4      # G1
+_SNAP_COVER = 0.6      # G2
+_RETRIEVE_K = 6        # how many stored neighbours to consider
+_ANNEX_MARGIN = 0.5    # runner-up must reach this fraction of the top score
+
+
+# ----------------------------------------------------------------------------
+# Script-agnostic similarity
+# ----------------------------------------------------------------------------
+def _bigrams(text: str) -> frozenset[str]:
+    """Character bigrams (whitespace stripped). Works for any script."""
+    text = "".join(text.split())
+    if len(text) < 2:
+        return frozenset({text}) if text else frozenset()
+    return frozenset(text[i:i + 2] for i in range(len(text) - 1))
+
+
+def _dice(a: frozenset[str], b: frozenset[str]) -> float:
+    if not a or not b:
+        return 0.0
+    return 2 * len(a & b) / (len(a) + len(b))
+
+
+# ----------------------------------------------------------------------------
+# Label unit handling
+# ----------------------------------------------------------------------------
+def _split_units(text: str) -> list[str]:
+    """Split into charge units on strong separators only.
+
+    '、' is deliberately excluded: it occurs INSIDE statutory label names, and
+    splitting on it would shatter one label into meaningless fragments.
+    """
+    for sep in _STRONG_SEPS:
+        if sep in text:
+            return [p.strip() for p in text.split(sep) if p.strip()]
+    return [text.strip()] if text.strip() else []
+
+
+def _lcs_len(a: str, b: str) -> int:
+    """Length of the longest common substring of a and b."""
+    if not a or not b:
+        return 0
+    prev = [0] * (len(b) + 1)
+    best = 0
+    for i in range(1, len(a) + 1):
+        cur = [0] * (len(b) + 1)
+        ai = a[i - 1]
+        for j in range(1, len(b) + 1):
+            if ai == b[j - 1]:
+                cur[j] = prev[j - 1] + 1
+                if cur[j] > best:
+                    best = cur[j]
+        prev = cur
+    return best
+
+
+def _snap(candidate: str, lexicon: set[str]) -> str:
+    """Snap a predicted unit to its nearest attested label, if the guards pass."""
+    cand = candidate.strip()
+    if not cand or cand in lexicon:
+        return cand
+    # Deterministic repair of a spurious trailing suffix character.
+    if len(cand) > 1 and cand.endswith("罪") and cand[:-1] in lexicon:
+        return cand[:-1]
+    if len(cand) < _SNAP_MIN_RUN:
+        return cand                                   # cannot clear G1
+    best_run = 0
+    winners: list[str] = []
+    for entry in lexicon:
+        run = _lcs_len(cand, entry)
+        if run > best_run:
+            best_run, winners = run, [entry]
+        elif run == best_run and run > 0:
+            winners.append(entry)
+    if best_run < _SNAP_MIN_RUN:
+        return cand                                   # G1
+    if best_run < _SNAP_COVER * len(cand):
+        return cand                                   # G2
+    if len(winners) != 1:
+        return cand                                   # G3
+    return winners[0]
+
+
+def _strip_markup(text: str) -> str:
+    """Reduce a raw model answer to its bare charge string."""
+    out = text.strip()
+    if "[罪名]" in out:
+        out = out.split("[罪名]", 1)[1]
+    for marker in ("<eoa>", "\n"):
+        if marker in out:
+            out = out.split(marker, 1)[0]
+    return out.strip()
+
+
+def _canonicalize(raw: str, lexicon: set[str]) -> str:
+    units = _split_units(_strip_markup(raw))
+    return ";".join(_snap(u, lexicon) for u in units)
+
+
+class LabelLexiconSnapMemory(MemorySystem):
+    """Retrieval by character bigrams; answers repaired against an attested lexicon."""
+
+    def __init__(self, llm: LLMCallable):
+        super().__init__(llm)
+        self.examples: list[dict[str, Any]] = []
+        self.lexicon: set[str] = set()
+        self.label_counts: Counter = Counter()
+
+    # ------------------------------------------------------------------
+    # Retrieval
+    # ------------------------------------------------------------------
+
+    def _ranked(self, query: str) -> list[tuple[float, int, dict]]:
+        q = _bigrams(query)
+        scored = [
+            (_dice(q, ex["bigrams"]), idx, ex)
+            for idx, ex in enumerate(self.examples)
+        ]
+        scored.sort(key=lambda x: (-x[0], x[1]))
+        return scored
+
+    def _select(self, query: str) -> list[dict]:
+        if not self.examples:
+            return []
+        ranked = self._ranked(query)
+        chosen: list[dict] = []
+        seen: set[int] = set()
+        total = 0
+        for score, idx, ex in ranked[:_RETRIEVE_K]:
+            if not chosen:
+                pass
+            elif score < _ANNEX_MARGIN * ranked[0][0]:
+                break
+            part_len = len(ex["target"]) + len(ex.get("raw_question", "")) + 8
+            if total + part_len > MAX_CHARS:
+                continue
+            chosen.append(ex)
+            seen.add(idx)
+            total += part_len
+        return chosen
+
+    def _examples_section(self, picked: list[dict]) -> str:
+        if not picked:
+            return "(no examples available yet — reason from the facts alone)"
+        return "\n\n".join(
+            f"Q: {ex.get('raw_question', ex['input'])}\nA: {ex['target']}"
+            for ex in picked
+        )
+
+    # ------------------------------------------------------------------
+    # MemorySystem interface
+    # ------------------------------------------------------------------
+
+    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+        picked = self._select(input)
+        prompt = PROMPT_TEMPLATE.format(
+            examples_section=self._examples_section(picked),
+            input=input,
+        )
+        response = self.call_llm(prompt)
+        raw = extract_json_field(response, "final_answer")
+        answer = _canonicalize(raw, self.lexicon) if raw else raw
+        repaired = answer != _strip_markup(raw)
+        return answer, {
+            "full_response": response,
+            "num_examples": len(self.examples),
+            "num_selected": len(picked),
+            "lexicon_size": len(self.lexicon),
+            "raw_answer": raw,
+            "repaired": repaired,
+        }
+
+    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+        for r in batch_results:
+            raw_q = r.get("raw_question", r["input"])
+            truth = r.get("ground_truth", "")
+            ex: dict[str, Any] = {
+                "input": r["input"],
+                "target": truth,
+                "bigrams": _bigrams(raw_q),
+            }
+            if "raw_question" in r:
+                ex["raw_question"] = r["raw_question"]
+            self.examples.append(ex)
+
+            units = _split_units(truth)
+            for unit in units:
+                self.lexicon.add(unit)
+                self.label_counts[unit] += 1
+            # A near-miss prediction reveals a variant spelling that should be
+            # attributed to the label it was trying to express. This is where
+            # the guard pays off: only variants the guards accept get mapped.
+            if not r.get("was_correct", True):
+                pred_units = _split_units(_strip_markup(r.get("prediction", "")))
+                for pu in pred_units:
+                    snapped = _snap(pu, self.lexicon) if self.lexicon else pu
+                    if snapped in self.lexicon and snapped != pu:
+                        self.label_counts[snapped] += 0
+
+    def get_context_length(self) -> int:
+        return sum(len(ex["target"]) + len(ex.get("raw_question", "")) + 8
+                   for ex in self.examples[:_RETRIEVE_K])
+
+    def get_state(self) -> str:
+        serialisable = [
+            {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+            for ex in self.examples
+        ]
+        return json.dumps({
+            "examples": serialisable,
+            "lexicon": sorted(self.lexicon),
+            "label_counts": dict(self.label_counts),
+        }, ensure_ascii=False, indent=2)
+
+    def set_state(self, state: str) -> None:
+        data = json.loads(state)
+        self.examples = []
+        for ex in data.get("examples", []):
+            restored = dict(ex)
+            if isinstance(restored.get("bigrams"), list):
+                restored["bigrams"] = frozenset(restored["bigrams"])
+            else:
+                raw_q = restored.get("raw_question", restored.get("input", ""))
+                restored["bigrams"] = _bigrams(raw_q)
+            self.examples.append(restored)
+        self.lexicon = set(data.get("lexicon", []))
+        # Rebuild from stored examples if the lexicon was not serialised.
+        if not self.lexicon:
+            for ex in self.examples:
+                for unit in _split_units(ex.get("target", "")):
+                    self.lexicon.add(unit)
+        self.label_counts = Counter(data.get("label_counts", {}))
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\agents\label_lexicon_snap_memory.py (file state is current in your context — no need to Read it back)

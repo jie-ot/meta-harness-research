@@ -1,0 +1,312 @@
+command: uv run --project D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification python -m text_classification.inner_loop --memory agents/missed_component_memory.py --dataset Symptom2Disease --seed 42 --model openrouter/openai/gpt-oss-120b --mode online --val-output D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\Symptom2Disease\missed_component_memory\gpt-oss-120b\val.json --save-memory D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\Symptom2Disease\missed_component_memory\gpt-oss-120b\memory.json --log D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\Symptom2Disease\missed_component_memory\gpt-oss-120b\log.jsonl --num-train 200 --num-val 50 --num-test 212 --temperature 0.0
+PYTHONPATH=D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples
+
+Loading dataset: Symptom2Disease
+Train: 200, Val: 50, Test: 212
+[0/200] mode=online 0.0s
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+Traceback (most recent call last):
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpx\_transports\default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpx\_transports\default.py", line 127, in __iter__
+    for part in self._httpcore_stream:
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpcore\_sync\connection_pool.py", line 407, in __iter__
+    raise exc from None
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpcore\_sync\connection_pool.py", line 403, in __iter__
+    for part in self._stream:
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpcore\_sync\http11.py", line 342, in __iter__
+    raise exc
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpcore\_sync\http11.py", line 334, in __iter__
+    for chunk in self._connection._receive_response_body(**kwargs):
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpcore\_sync\http11.py", line 203, in _receive_response_body
+    event = self._receive_event(timeout=timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpcore\_sync\http11.py", line 213, in _receive_event
+    with map_exceptions({h11.RemoteProtocolError: RemoteProtocolError}):
+  File "D:\DevEnvs\Python\uv\cpython-3.11-windows-x86_64-none\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.RemoteProtocolError: peer closed connection without sending complete message body (incomplete chunked read)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\llms\custom_httpx\llm_http_handler.py", line 265, in _make_common_sync_call
+    response = sync_httpx_client.post(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\llms\custom_httpx\http_handler.py", line 1149, in post
+    raise e
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\llms\custom_httpx\http_handler.py", line 1137, in post
+    response = self.client.send(req, stream=stream)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpx\_client.py", line 928, in send
+    raise exc
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpx\_client.py", line 922, in send
+    response.read()
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpx\_models.py", line 881, in read
+    self._content = b"".join(self.iter_bytes())
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpx\_models.py", line 897, in iter_bytes
+    for raw_bytes in self.iter_raw():
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpx\_models.py", line 951, in iter_raw
+    for raw_stream_bytes in self.stream:
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpx\_client.py", line 153, in __iter__
+    for chunk in self._stream:
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpx\_transports\default.py", line 126, in __iter__
+    with map_httpcore_exceptions():
+  File "D:\DevEnvs\Python\uv\cpython-3.11-windows-x86_64-none\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.RemoteProtocolError: peer closed connection without sending complete message body (incomplete chunked read)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\main.py", line 3325, in completion
+    response = base_llm_http_handler.completion(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\llms\custom_httpx\llm_http_handler.py", line 589, in completion
+    response = self._make_common_sync_call(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\llms\custom_httpx\llm_http_handler.py", line 292, in _make_common_sync_call
+    raise self._handle_error(e=e, provider_config=provider_config)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\llms\custom_httpx\llm_http_handler.py", line 5130, in _handle_error
+    raise provider_config.get_error_class(
+litellm.llms.openrouter.common_utils.OpenRouterException: peer closed connection without sending complete message body (incomplete chunked read)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\inner_loop.py", line 720, in <module>
+    chunk_results = run_inner_loop(
+                    ^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\inner_loop.py", line 337, in run_inner_loop
+    pred_results = [predict_one(0, batch[0])]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\inner_loop.py", line 328, in predict_one
+    pred, meta = memory.predict(ex["input"])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\missed_component_memory.py", line 210, in predict
+    response = self.call_llm(prompt)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\memory_system.py", line 79, in call_llm
+    return self._llm(prompt)
+           ^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\llm.py", line 393, in __call__
+    results = self._provider.generate(
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\llm.py", line 292, in generate
+    return [[self._generate_one(prompts, system_prompt, kwargs)]]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\llm.py", line 280, in _generate_one
+    result = self._call_completion(prompt, system_prompt, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\tenacity\__init__.py", line 393, in <lambda>
+    self._add_action_func(lambda rs: rs.outcome.result())
+                                     ^^^^^^^^^^^^^^^^^^^
+  File "D:\DevEnvs\Python\uv\cpython-3.11-windows-x86_64-none\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "D:\DevEnvs\Python\uv\cpython-3.11-windows-x86_64-none\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\llm.py", line 246, in _call_completion
+    response = litellm_completion(model=model, messages=messages, **call_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\utils.py", line 1772, in wrapper
+    raise e
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\utils.py", line 1593, in wrapper
+    result = original_function(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\main.py", line 4420, in completion
+    raise exception_type(
+          ^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\litellm_core_utils\exception_mapping_utils.py", line 2466, in exception_type
+    raise e
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\litellm_core_utils\exception_mapping_utils.py", line 2398, in exception_type
+    raise APIError(
+litellm.exceptions.APIError: litellm.APIError: APIError: OpenrouterException - peer closed connection without sending complete message body (incomplete chunked read)
+
+exit=1
+
+============================================================
+retry 1
+============================================================
+Loading dataset: Symptom2Disease
+Train: 200, Val: 50, Test: 212
+[0/200] mode=online 0.0s
+
+[1;31mGive Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new[0m
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+Traceback (most recent call last):
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpx\_transports\default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpx\_transports\default.py", line 127, in __iter__
+    for part in self._httpcore_stream:
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpcore\_sync\connection_pool.py", line 407, in __iter__
+    raise exc from None
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpcore\_sync\connection_pool.py", line 403, in __iter__
+    for part in self._stream:
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpcore\_sync\http11.py", line 342, in __iter__
+    raise exc
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpcore\_sync\http11.py", line 334, in __iter__
+    for chunk in self._connection._receive_response_body(**kwargs):
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpcore\_sync\http11.py", line 203, in _receive_response_body
+    event = self._receive_event(timeout=timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpcore\_sync\http11.py", line 213, in _receive_event
+    with map_exceptions({h11.RemoteProtocolError: RemoteProtocolError}):
+  File "D:\DevEnvs\Python\uv\cpython-3.11-windows-x86_64-none\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.RemoteProtocolError: peer closed connection without sending complete message body (incomplete chunked read)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\llms\custom_httpx\llm_http_handler.py", line 265, in _make_common_sync_call
+    response = sync_httpx_client.post(
+               ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\llms\custom_httpx\http_handler.py", line 1149, in post
+    raise e
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\llms\custom_httpx\http_handler.py", line 1137, in post
+    response = self.client.send(req, stream=stream)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpx\_client.py", line 928, in send
+    raise exc
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpx\_client.py", line 922, in send
+    response.read()
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpx\_models.py", line 881, in read
+    self._content = b"".join(self.iter_bytes())
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpx\_models.py", line 897, in iter_bytes
+    for raw_bytes in self.iter_raw():
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpx\_models.py", line 951, in iter_raw
+    for raw_stream_bytes in self.stream:
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpx\_client.py", line 153, in __iter__
+    for chunk in self._stream:
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpx\_transports\default.py", line 126, in __iter__
+    with map_httpcore_exceptions():
+  File "D:\DevEnvs\Python\uv\cpython-3.11-windows-x86_64-none\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.RemoteProtocolError: peer closed connection without sending complete message body (incomplete chunked read)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\main.py", line 3325, in completion
+    response = base_llm_http_handler.completion(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\llms\custom_httpx\llm_http_handler.py", line 589, in completion
+    response = self._make_common_sync_call(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\llms\custom_httpx\llm_http_handler.py", line 292, in _make_common_sync_call
+    raise self._handle_error(e=e, provider_config=provider_config)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\llms\custom_httpx\llm_http_handler.py", line 5130, in _handle_error
+    raise provider_config.get_error_class(
+litellm.llms.openrouter.common_utils.OpenRouterException: peer closed connection without sending complete message body (incomplete chunked read)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\inner_loop.py", line 720, in <module>
+    chunk_results = run_inner_loop(
+                    ^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\inner_loop.py", line 337, in run_inner_loop
+    pred_results = [predict_one(0, batch[0])]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\inner_loop.py", line 328, in predict_one
+    pred, meta = memory.predict(ex["input"])
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\missed_component_memory.py", line 210, in predict
+    response = self.call_llm(prompt)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\memory_system.py", line 79, in call_llm
+    return self._llm(prompt)
+           ^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\llm.py", line 393, in __call__
+    results = self._provider.generate(
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\llm.py", line 292, in generate
+    return [[self._generate_one(prompts, system_prompt, kwargs)]]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\llm.py", line 280, in _generate_one
+    result = self._call_completion(prompt, system_prompt, kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\tenacity\__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\tenacity\__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\tenacity\__init__.py", line 371, in iter
+    result = action(retry_state)
+             ^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\tenacity\__init__.py", line 393, in <lambda>
+    self._add_action_func(lambda rs: rs.outcome.result())
+                                     ^^^^^^^^^^^^^^^^^^^
+  File "D:\DevEnvs\Python\uv\cpython-3.11-windows-x86_64-none\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "D:\DevEnvs\Python\uv\cpython-3.11-windows-x86_64-none\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\tenacity\__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\llm.py", line 246, in _call_completion
+    response = litellm_completion(model=model, messages=messages, **call_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\utils.py", line 1772, in wrapper
+    raise e
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\utils.py", line 1593, in wrapper
+    result = original_function(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\main.py", line 4420, in completion
+    raise exception_type(
+          ^^^^^^^^^^^^^^^
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\litellm_core_utils\exception_mapping_utils.py", line 2466, in exception_type
+    raise e
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\.venv\Lib\site-packages\litellm\litellm_core_utils\exception_mapping_utils.py", line 2398, in exception_type
+    raise APIError(
+litellm.exceptions.APIError: litellm.APIError: APIError: OpenrouterException - peer closed connection without sending complete message body (incomplete chunked read)
+
+exit=1
+
+============================================================
+retry 2
+============================================================
+Loading dataset: Symptom2Disease
+Train: 200, Val: 50, Test: 212
+[0/200] mode=online 0.0s
+[200/200] 993.9s
+Saved memory state to D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\Symptom2Disease\missed_component_memory\gpt-oss-120b\memory.json
+Done: train=77% val=82% time=1031.7s cost=$0.0559
+Saved val results to D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\Symptom2Disease\missed_component_memory\gpt-oss-120b\val.json
+
+exit=0

@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- If the facts describe a public official who, while performing administrative duties, deliberately fails to transfer a case that must be prosecuted criminally (e.g., to achieve personal or unit economi
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+- If the conduct described involves a public official or person in a position of authority misusing their official power to divert public funds, assets, or benefits for personal or relatives' gain, the 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:贺兰县人民检察院指控，2011年9月至12月，被告人刘某某伙同阳某某、徐某某、杨某某（三人均在逃）、刘某某、秦某某（二人均已判刑）六人，利用互联网进行网络资本运作，非法面向社会吸收公众存款。通过王某、周某某、曹某某（三人均已判刑）在贺兰县一品尚都A区、长城惠兰园A区、富荣花园开设的报单点，采用投资2000元，三至七天后连本带利返还2400元的模式，通过召开宣讲会、推介会，诱使社会群众苏某、王某某等25人进行投资，报单点每报一单，被告人曹某某、周某某、王某便可从中得到30元至40元的报酬。投资的人员每拉来一名投资人，给160元的推荐奖。被告人刘某某负责收取王某报单点的资金并辅导该报单点工作，王某共吸收公众存款13.4万元，且案发后未追回，给当事人造成直接经济损失。
+公诉机关认为，被告人刘某某不具备依法吸收公众存款的资格，伙同他人擅自设立“报单点”，采用高额返利的模式，通过召开宣讲会、推介会的方式变相向社会群众吸收巨额资金，案发后无法归还，给存款人造成直接经济损失达13.4万元，其行为已触犯了《中华人民共和国刑法》××之规定，犯罪事实清楚，证据确实、充分，应当以××追究其刑事责任。同时公诉机关认为被告人刘某某在归案后能如实供述自己的罪行，系坦白，具有法定从轻处罚情节，建议对其在××至一年六个月的幅度内量刑，并处罚金。针对上述指控的犯罪事实，公诉机关向法庭提交了书证、被害人陈述、证人证言、同案犯供述和辩解、被告人供述和辩解、辨认笔录等证据，提请本院依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,17 @@
+Edit: .prototypes\label_vocab_memory.py
+
+replace_all: False
+old_string:
+def extract_json_field(response: str, field: str) -> str:
+    import re as _re
+    m = _re.search(r'"' + field + r'"\s*:\s*"([^"]*)"', response)
+    return m.group(1) if m else response.strip()
+
+new_string:
+def extract_json_field(response: str, field: str) -> str:
+    m = re.search(r'"' + field + r'"\s*:\s*"([^"]*)"', response)
+    return m.group(1) if m else response.strip()
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_a\text_classification\.prototypes\label_vocab_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

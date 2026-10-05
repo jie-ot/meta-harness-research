@@ -1,0 +1,34 @@
+Bash
+
+command:
+cd "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification" && uv run python C:/tmp/proto_label_prototype.py 2>&1
+
+description: Run per-label prototype memory prototype
+
+--- output ---
+LawBench: 200 steps, 144 wrong, 56 correct
+
+Labels with most errors: 合同诈骗(3) 伪造、变造、买卖国家机关公文、证件、印章(2) 非国家工作人员受贿(2) 盗窃;掩饰、隐瞒犯罪所得、犯罪所得收益(2) 爆炸(2) 
+
+=== Prototype for '合同诈骗':
+  Error count: 3
+  Common confusors: ['诈骗']
+  Would ask LLM: 'Write 1-2 sentences describing what makes '合同诈骗' distinct from ['诈骗']'
+
+=== Prototype for '伪造、变造、买卖国家机关公文、证件、印章':
+  Error count: 2
+  Common confusors: ['伪造国家机关证件罪', '买卖国家机关印章']
+  Would ask LLM: 'Write 1-2 sentences describing what makes '伪造、变造、买卖国家机关公文、证件、印章' distinct from ['伪造国家机关证件罪', '买卖国家机关印章']'
+
+Labels eligible for prototype generation (>= 3 errors): 1
+  合同诈骗: 3 errors
+
+Top prototype labels for test query '被告人利用职务便利，私自挪用公款用于个人经营，数额巨大。...':
+  score=0.009 label=贷款诈骗
+  score=0.009 label=破坏计算机信息系统
+  score=0.009 label=拒不执行判决、裁定
+  score=0.000 label=非法采伐、毁坏国家重点保护植物;非法占用农用地
+  score=0.000 label=非法进行节育手术
+
+Prototype 2 design looks viable: O(N) prototypes, triggered at error threshold, similarity-retrieved.
+Cold-start works: no prototypes = falls back to pure example retrieval.

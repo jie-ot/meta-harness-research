@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- If the facts state that the defendant knowingly acquired or dealt with property known to be stolen and thereby obtained or handled the proceeds of the crime, list both the concealment/cover‑up offense
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:杭州市余杭区人民检察院指控：被告人余某租住在杭州市余杭区良渚镇谢村村8组冯家浜13号101室。2011年1月20日左右的一天晚上，被告人余某采用踢门的方式进入该户102室被害人庄某租房，窃得煤气瓶1只，赃物价值人民币55元。同年2月1日中午，被告人余某采用撬锁、踢门的方式进入该户301室被害人董某租房，但未窃得财物；随后被告人余某又采用撬锁的方式撬开该户201室被害人陈某甲租房房门，后因害怕被人发现而未进入房内行窃。
+公诉机关认为，被告人余某的行为已构成××，提请本院依照《中华人民共和国刑法》××××之规定惩处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

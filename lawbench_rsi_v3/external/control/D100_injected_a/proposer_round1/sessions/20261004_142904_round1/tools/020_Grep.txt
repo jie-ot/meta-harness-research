@@ -1,0 +1,38 @@
+Grep
+
+pattern: learn_from_batch|ground_truth|raw_question|batch_results|\"input\"
+path:
+D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_a\text_classification\inner_loop.py
+
+output_mode: content
+-n: True
+
+--- output ---
+46:    kwargs = {k: v for k, v in ex.items() if k not in ("input", "target")}
+125:    1. Train phase: batch examples → learn_from_batch, multiple epochs
+146:            # Create batch_results with ground truth as "prediction"
+147:            batch_results = []
+150:                    "input": ex["input"],
+152:                    "ground_truth": ex["target"],
+155:                # Forward extra fields (e.g. raw_question) for memory systems
+157:                    if k not in ("input", "target") and k not in r:
+159:                batch_results.append(r)
+162:            memory.learn_from_batch(batch_results)
+225:        pred, meta = memory.predict(ex["input"])
+247:                input_preview=ex["input"][:200],
+259:                    "input": ex["input"],
+330:        pred, meta = memory.predict(ex["input"])
+350:        # Build batch_results for learn_from_batch
+351:        batch_results = []
+354:            inp, tgt = ex["input"], ex["target"]
+360:                "input": inp,
+362:                "ground_truth": tgt,
+368:            # Forward extra fields (e.g. raw_question) for memory systems
+370:                if k not in ("input", "target") and k not in result:
+372:            batch_results.append(result)
+391:                        "input": inp,
+402:        memory.learn_from_batch(batch_results)
+410:                batch_size=len(batch_results),
+449:            pred, returned_metadata = memory.predict(ex["input"])
+459:        context_len = max(0, prompt_len - len(ex["input"])) if prompt_len else 0
+464:            "input": ex["input"],

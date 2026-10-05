@@ -1,0 +1,38 @@
+# Iteration 11 Report
+
+## What changed
+Two candidates targeting the frontier (`adaptive_tokenizer_confusion_memory`, 51.6% avg):
+
+- **contrastive_boundary_memory** (exploitation, axis A): Added a dedicated "Common Confusions"
+  section with `[NOT: wrong_label]` annotations next to each disambiguation example, attempting to
+  give the model an explicit negative signal at confused label boundaries.
+
+- **cluster_confusion_memory** (exploration, axis C): Expanded disambiguation lookup from direct
+  confusion targets to the full connected component in the undirected confusion graph (BFS over both
+  prediction→actual and actual→prediction edges), injecting one representative per cluster member.
+
+## Results
+Both candidates regressed versus the frontier:
+- `contrastive_boundary_memory`: 46.7% (-4.9). USPTO ?, Symptom2Disease ?, LawBench ?.
+- `cluster_confusion_memory`: 50.2% (-1.4). Tied LawBench at 38% but lost ground on Symptom2Disease.
+
+## Why they regressed
+
+**contrastive_boundary_memory**: The `[NOT: wrong_label]` annotation broke the expected Q/A format.
+The model likely treated the annotation text as part of the answer string rather than as meta-guidance,
+introducing noise rather than disambiguation signal. Prompt-format changes that deviate from the
+familiar Q→A pattern consistently hurt this benchmark.
+
+**cluster_confusion_memory**: BFS over the full undirected graph pulls in transitively-related labels
+(A↔B, B↔C → A and C both injected), but transitive confusion chains are often coincidental rather
+than structurally related. The extra cluster members occupied context budget without providing useful
+boundary signal, diluting the examples that directly map to the query's label space.
+
+## Takeaway for future iterations
+- Prompt architecture changes that deviate from flat Q/A reliably regress; avoid them.
+- Broader confusion-graph traversal does not help — the one-hop direct confusion targets are already
+  the useful signal; anything deeper is noise.
+- The frontier mechanism (adaptive tokenizer + single-hop confusion + similarity fill) is well-tuned
+  on axis C. Future gains should come from changing what is *stored* (memory content axis B) or
+  from a fundamentally different scoring function that unifies disambiguation and similarity rather
+  than running two phases sequentially.

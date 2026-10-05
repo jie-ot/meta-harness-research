@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- When the factual description contains multiple distinct illegal actions (e.g., theft of property and illegal harvesting of protected flora or fauna), list every applicable crime separated by semicolon
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控，2011年12月8日，被告人林某某以自己的名义向中国建设银行股份有限公司漳州分行申请办理一张信用卡，卡号为×××6779，截止2013年3月6日，涉案的信用卡透支本金人民币22983.48元。经发卡银行多次催收，被告人林某某超过三个月仍不归还。2013年10月15日，被告人林某某主动到龙海市公安局经济犯罪侦查大队投案。
+针对以上指控，公诉机关提供的证据有书证物证、被害单位的报案书及被告人的供述和辩解等证据。认为被告人林某某利用信用卡恶意透支本金22983.48元，数额较大，案发后，有自首情节。请求依照《中华人民共和国刑法》××××第（四）项和××××的规定，以××追究被告人林某某的相应刑事责任。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,72 @@
+{
+  "call_id": "4140c31b3c504578b3ae1916061a2020",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791028691-7DbvPfZs8FNa4btbp9xl",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The facts describe that the defendant forged military documents (vehicle driving license, travel permit, officer ID, and military vehicle license plate) and installed the military plate on a civilian car for illegal use. These actions correspond to the crimes of forging armed forces certificates (伪造武装部队证件罪) and illegal use of armed forces special signs (非法使用武装部队专用标志罪). No other crimes are mentioned.\",\n  \"final_answer\": \"[罪名]伪造武装部队证件;非法使用武装部队专用标志<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to extract crimes from facts. The facts: defendant forged military documents and used military vehicle license plates. Crimes: 伪造武装部队证件罪 (forgery of armed forces certificates) and 非法使用武装部队专用标志罪 (illegal use of armed forces special signs). Must output exactly as per format: [罪名]伪造武装部队证件;非法使用武装部队专用标志<eoa> maybe order as appears: first 伪造..., then 非法使用... The rule: use semicolon ; no spaces. Output JSON with reasoning and final_answer.\n\nCheck examples: they output \"A: 盗窃;开设赌场\". So final answer should be like \"[罪名]伪造武装部队证件;非法使用武装部队专用标志<eoa>\"\n\nMake sure no extra spaces. Provide reasoning text.\n\nReturn JSON with keys \"reasoning\" and \"final_answer\".",
+          "provider_specific_fields": {
+            "reasoning": "We need to extract crimes from facts. The facts: defendant forged military documents and used military vehicle license plates. Crimes: 伪造武装部队证件罪 (forgery of armed forces certificates) and 非法使用武装部队专用标志罪 (illegal use of armed forces special signs). Must output exactly as per format: [罪名]伪造武装部队证件;非法使用武装部队专用标志<eoa> maybe order as appears: first 伪造..., then 非法使用... The rule: use semicolon ; no spaces. Output JSON with reasoning and final_answer.\n\nCheck examples: they output \"A: 盗窃;开设赌场\". So final answer should be like \"[罪名]伪造武装部队证件;非法使用武装部队专用标志<eoa>\"\n\nMake sure no extra spaces. Provide reasoning text.\n\nReturn JSON with keys \"reasoning\" and \"final_answer\".",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to extract crimes from facts. The facts: defendant forged military documents and used military vehicle license plates. Crimes: 伪造武装部队证件罪 (forgery of armed forces certificates) and 非法使用武装部队专用标志罪 (illegal use of armed forces special signs). Must output exactly as per format: [罪名]伪造武装部队证件;非法使用武装部队专用标志<eoa> maybe order as appears: first 伪造..., then 非法使用... The rule: use semicolon ; no spaces. Output JSON with reasoning and final_answer.\n\nCheck examples: they output \"A: 盗窃;开设赌场\". So final answer should be like \"[罪名]伪造武装部队证件;非法使用武装部队专用标志<eoa>\"\n\nMake sure no extra spaces. Provide reasoning text.\n\nReturn JSON with keys \"reasoning\" and \"final_answer\".",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": "We need to extract crimes from facts. The facts: defendant forged military documents and used military vehicle license plates. Crimes: 伪造武装部队证件罪 (forgery of armed forces certificates) and 非法使用武装部队专用标志罪 (illegal use of armed forces special signs). Must output exactly as per format: [罪名]伪造武装部队证件;非法使用武装部队专用标志<eoa> maybe order as appears: first 伪造..., then 非法使用... The rule: use semicolon ; no spaces. Output JSON with reasoning and final_answer.\n\nCheck examples: they output \"A: 盗窃;开设赌场\". So final answer should be like \"[罪名]伪造武装部队证件;非法使用武装部队专用标志<eoa>\"\n\nMake sure no extra spaces. Provide reasoning text.\n\nReturn JSON with keys \"reasoning\" and \"final_answer\"."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 350,
+      "prompt_tokens": 5127,
+      "total_tokens": 5477,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 225,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 432,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00034385,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00034385,
+        "upstream_inference_prompt_cost": 0.00025635,
+        "upstream_inference_completions_cost": 8.75e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

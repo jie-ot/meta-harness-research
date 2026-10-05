@@ -1,0 +1,30 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+- When the case facts explicitly describe separate actions of selling, buying, or transporting counterfeit currency, label each distinct offense (e.g., 出售假币, 购买假币, 运输假币) rather than using a generic term
+- When the factual scenario describes a deception that is carried out through the formation, performance, or manipulation of a contract (e.g., falsifying lease terms, misusing a rental agreement, or obt
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- When the factual description involves the use of false documents or misrepresentation to conclude a contract and obtain money, classify the offense as the specific type of fraud (e.g., 合同诈骗) rather th
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明：2012年上半年的一天晚上，被告人张3某为了找时任龙感湖管理区副书记、主任陈某(已判刑)在湖北洛源房地产有限公司所购买的龙感湖老高中地块规划修路事宜给予关照和帮忙，张3某来到陈某所居住的龙感湖国税局宿舍楼。在陈某家的客厅内，张3某先是向陈某汇报了其公司所购买龙感湖管理区老高中地块的情况，然后请陈某帮忙在这块地的东边规划、并由政府出资修建出一条接通城区的水泥路。之后，张3某就将随身带来的装有10万元人民币的蓝色文件袋放在陈某家的沙发上，希望陈某给予关照，陈某点头答应。之后，陈某就着手为湖北洛源房地产有限公司所购买的这块地东边规划出一条水泥路而跟有关部门人员进行安排。
+2012年下半年的一天，陈某得知龙感湖管理区有关部门人员被查处，害怕受到牵连，担心张3某送给他的10万元钱的事情被暴露，于是陈某在他的办公室里将这笔10万元钱退还给了张3某。张3某请求陈某帮忙规划并修建的这条道路也因为陈某在不久后被有关机关查处而没有规划修建。
+另查明，陈某所退还的10万元人民币于2013年3月10日由黄冈市人民检察院龙感湖检察处收缴并上交给黄冈市龙感湖管理区预算外资金管理局。
+上述事实，被告单位湖北洛源房地产有限公司、被告人张3某在开庭审理过程中供认不讳，且有湖北洛源房地产有限公司的公司设立登记审核表、登记申请书、股东名录、法定代表人登记表、货币资金出资清单、组建公司协议书、第一次股东会决议、租赁合同、营业执照、机构代码、房地产转让合同书、协议书、拍卖成交确认书、资金往来票据、陈某的刑事判决书等书证；证人陈某、潘某等人的证言；被告人张3某的供述与辩解；刑事照片；从龙感湖管理区建设局规划数据库调取的航拍图；被告人张3某的身份证明等证据证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

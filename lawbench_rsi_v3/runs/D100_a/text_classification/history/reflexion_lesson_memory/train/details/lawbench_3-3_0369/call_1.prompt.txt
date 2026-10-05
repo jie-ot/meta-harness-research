@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- When the defendant was entrusted with another's money or a financial instrument and later unlawfully appropriates or withdraws the funds for personal use, the proper charge is theft (盗窃) or misappropr
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，被告人查某某以24万元的价格承包了集安市伊品斋火锅店装修工程。2015年11月至12月份，查某某雇用刘某某、钟某某等人进行装修，工程结束时，查某某陆续领取工程款22万元后离开集安。施工期间查某某支付工人部分劳动报酬，尚欠刘某某、钟某某等十人劳动报酬57000.00余元。经集安市人力资源和社会保障局责令支付，查某某以逃匿的方式拒不支付工人劳动报酬。
+在公安机关立案后，被告人查某某支付了拖欠的劳动报酬。
+上述事实，被告人查某某在开庭审理过程中亦无异议,并有其在公安机关的供述，证人刘某某、钟某某、陈某某、张某某、李某某、谭某某、李某1、王某某证言，责令整改决定书，收据等，证据确实、充分，足以定案。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

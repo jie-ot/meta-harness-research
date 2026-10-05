@@ -1,0 +1,31 @@
+Grep
+
+pattern: ok = |def evaluate|normalize_answer|metrics
+path:
+D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\inner_loop.py
+
+output_mode: content
+head_limit: 30
+
+--- output ---
+53:    """Normalize evaluator output to (ok, metrics).
+57:    - dict: {"was_correct": bool, "metrics": {...}}
+60:        return raw["was_correct"], raw.get("metrics", {})
+65:    """Compute Micro-F1 from predictions with tp/fp/fn metrics.
+73:        m = p.get("metrics", {})
+96:    # Compute rich metrics if any prediction has them
+98:        p["metrics"]["f1"] for p in preds if p.get("metrics", {}).get("f1") is not None
+228:        ok, metrics = _unpack_eval_result(raw)
+229:        return idx, ex, pred, meta, ok, metrics, prompt_info
+235:            idx, ex, pred, meta, ok, metrics, prompt_info = future.result()
+236:            results[idx] = (ex, pred, meta, ok, metrics, prompt_info)
+239:    for idx, (ex, pred, meta, ok, metrics, prompt_info) in enumerate(results):
+263:                    "metrics": metrics,
+356:            ok, metrics = _unpack_eval_result(raw)
+366:            if metrics:
+367:                result["metrics"] = metrics
+395:                        "metrics": metrics,
+425:def evaluate_memory(
+461:        ok, metrics = _unpack_eval_result(raw)
+478:        if metrics:
+479:            result["metrics"] = metrics

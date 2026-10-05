@@ -1,0 +1,27 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:上海市浦东新区人民检察院指控：
+一、××
+2011年12月，被告人沙某某受被害人杜某某所托，将杜某某的人民币15万元以被告人沙某某名义存入上海银行并将存单交给杜某某。后被告人沙某某在杜某某不知情情况下，挂失该存单，并补办了一张存单，利用该补办的存单秘密将杜某某所存的钱款全部取出供其个人使用。
+二、伪造金融票证罪
+2012年11月，被告人沙某某及丈夫李某某受杜某某所托，以李某某名义代杜某某至建设银行存入人民币10万元并获取一张该行面额10万元的存单，该存单及密码由被告人沙某某及李某某暂为保管。后被告人沙某某为了取出存单内的钱款并防止他人察觉，遂让人以上述存单为样伪造了一张存单。其后，被告人沙某某持上述真实存单及李某某身份证至银行将杜某某所存的钱款全部取出供其个人使用。
+2014年8月7日，被告人沙某某接公安机关电话通知后自行到案，如实供述上述犯罪事实。
+
+
+Wrong prediction: [罪名]诈骗;伪造金融票证罪<eoa>
+Correct answer: 盗窃;侵占
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

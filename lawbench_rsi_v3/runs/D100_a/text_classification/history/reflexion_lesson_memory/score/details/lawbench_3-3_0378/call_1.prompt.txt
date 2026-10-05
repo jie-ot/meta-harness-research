@@ -1,0 +1,30 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- If the facts describe the use of a false or deceptive contract (e.g., a sale, lease, transfer agreement) to obtain money or property, classify the offense as “合同诈骗” rather than the generic “诈骗”.
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，被告人杜某系武汉江龙公交有限公司客车司机。2016年2月23日7时许，被告人杜某驾驶该公司牌号鄂A×××××的金龙牌大型普通客车进行接送学生上学的通勤服务。8时许，被告人杜某驾驶上述客车行驶至本区武汉市光谷左岭第一小学操场升旗杆处，该处系公共交通管理范围之外。被告人杜某待车上人员下车后，被告人杜某在没有观察车身附近是否有人的情况下即驾驶车辆前行，导致蹲在该车左前方处的被害人李某乙（该校一年级学生）被撞倒并被碾压。后被害人李某乙被该校老师送至医院，经抢救无效于当日死亡。经鉴定，被害人李某乙系被机动车辆碾压头部致严重颅脑损伤死亡。
+另查明，2016年2月23日8时许，公安机关接光谷左岭第一小学报警后赶至学校，经调取事故现场监控视频后，锁定被告人杜某。民警前往距离事故现场约60米远的该校指定的车辆集中停靠点，将正在与其他司机闲聊的被告人杜某抓获归案。到案后，被告人杜某供述其并未发觉将人撞倒，后在民警向其播放所调取的事故现场监控视频资料后，被告人杜某如实供述了犯罪事实。
+公安机关侦查期间，经本区左岭街道办事处人民调解委员会调解，武汉江龙公交有限公司赔偿被害人李某乙近亲属经济损失人民币98万元。
+上述事实，被告人杜某在开庭审理过程中无异议，有经查证属实的公安机关出具的抓获、破案经过及情况说明，证人李某甲、彭某、李某、张某的证言，事故现场图及事故现场勘查笔录，司法鉴定意见书、补充说明及鉴定意见通知书，法医学尸体检验鉴定书及鉴定意见通知书，居民死亡医学证明（推断）书、死亡医学证明书及居民死亡殡葬证，人民调解协议书及收条，机动车驾驶证，租车合同及中标通知书，被告人杜某的供述及其基本身份信息等证据证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,124 @@
+Bash
+
+command:
+cat > /tmp/proto_cqc.py << 'ENDSCRIPT'
+"""Prototype: context_quality_confusion_memory
+Test that confusion weights vary by retrieval quality and
+produce different disambiguation priorities vs uniform weights.
+"""
+import sys, json, re, os
+from collections import defaultdict
+
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+_WRAPPER_RE = re.compile(r'^\s*\[[^\]]*\]|<eoa>\s*$|\[[^\]]*\]\s*$', re.IGNORECASE)
+
+def has_cjk(t): return bool(_CJK_RE.search(t))
+def tok_word(t): return frozenset(re.findall(r"[A-Za-z0-9]+", t.lower()))
+def tok_bigram(t):
+    t = re.sub(r'\s+', ' ', t.strip())
+    return frozenset(t[i:i+2] for i in range(len(t)-1)) if len(t)>=2 else frozenset()
+def tok(t): return tok_bigram(t) if has_cjk(t) else tok_word(t)
+def jaccard(a, b): return len(a&b)/len(a|b) if a or b else 0.0
+def normalize(p):
+    if not p: return p
+    c = _WRAPPER_RE.sub('', p).strip()
+    return c if c else p
+
+# Load LawBench log
+log_path = os.path.join(base, 'LawBench', 'decayed_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+steps = []
+with open(log_path, encoding='utf-8') as f:
+    for line in f:
+        d = json.loads(line)
+        if d.get('type') == 'step':
+            steps.append(d)
+
+print(f"Total steps: {len(steps)}")
+
+# Simulate: replay first 100 steps, build two confusion matrices:
+# (A) uniform weight 1.0 per error  
+# (B) context-quality weighted
+
+# We need to simulate retrieval quality. For each step, we'll approximate
+# the similarity by looking at how much the prompt grew vs baseline.
+# Actually, we can use prompt_len as a proxy for context quality:
+# - prompt_len near baseline (~300) means cold start (no examples yet)
+# - prompt_len much larger means rich context
+
+# Compute baseline prompt_len from first few steps
+early_lens = [s['prompt_len'] for s in steps[:5]]
+BASE_LEN = min(early_lens)
+print(f"Baseline prompt_len (cold start): {BASE_LEN}")
+
+conf_uniform = defaultdict(lambda: defaultdict(float))
+conf_quality = defaultdict(lambda: defaultdict(float))
+
+for i, step in enumerate(steps[:150]):
+    if not step.get('ok', True):
+        pred = normalize(step['pred'])
+        gt = step['tgt']
+        if pred and pred != gt:
+            # Uniform weight
+            conf_uniform[pred][gt] += 1.0
+            
+            # Quality weight: based on prompt_len relative to max seen so far
+            max_len = max(s['prompt_len'] for s in steps[:i+1])
+            # Normalized quality: 0 = cold start, 1 = full context
+            quality = (step['prompt_len'] - BASE_LEN) / max(max_len - BASE_LEN, 1)
+            quality = max(0.0, min(1.0, quality))
+            # Weight: 0.3 for low quality, 2.0 for high quality
+            weight = 0.3 + 1.7 * quality
+            conf_quality[pred][gt] += weight
+
+# Compare top pairs
+def top_pairs(conf, n=8):
+    pairs = [(cnt, p, a) for p, acts in conf.items() for a, cnt in acts.items()]
+    pairs.sort(reverse=True)
+    return pairs[:n]
+
+print("\nTop confusion pairs — UNIFORM:")
+for cnt, p, a in top_pairs(conf_uniform):
+    print(f"  {cnt:.2f}  {p[:30]} -> {a[:30]}")
+
+print("\nTop confusion pairs — QUALITY-WEIGHTED:")
+for cnt, p, a in top_pairs(conf_quality):
+    print(f"  {cnt:.2f}  {p[:30]} -> {a[:30]}")
+
+# Count how often top pairs differ
+unif_set = {(p,a) for _,p,a in top_pairs(conf_uniform, 5)}
+qual_set = {(p,a) for _,p,a in top_pairs(conf_quality, 5)}
+print(f"\nTop-5 pairs in common: {len(unif_set & qual_set)}")
+print(f"Different between methods: uniform-only={unif_set - qual_set}, qual-only={qual_set - unif_set}")
+ENDSCRIPT
+python /tmp/proto_cqc.py
+
+description: Prototype context-quality-weighted confusion matrix
+
+--- output ---
+Total steps: 200
+Baseline prompt_len (cold start): 684
+
+Top confusion pairs — UNIFORM:
+  2.00  诈骗 -> 合同诈骗
+  2.00  盗窃 -> 盗窃;掩饰、隐瞒犯罪所得、犯罪所得收益
+  2.00  强制猥亵妇女 -> 强制猥亵、侮辱妇女
+  1.00  非法集资 -> 集资诈骗
+  1.00  非法采伐林木 -> 滥伐林木
+  1.00  非法采伐国家重点保护植物;非法占用农用地 -> 非法采伐、毁坏国家重点保护植物;非法占用农用地
+  1.00  非法行医;非法堕胎 -> 非法进行节育手术
+  1.00  非法获取社会保险金 -> 贪污
+
+Top confusion pairs — QUALITY-WEIGHTED:
+  4.00  诈骗 -> 合同诈骗
+  3.84  强制猥亵妇女 -> 强制猥亵、侮辱妇女
+  3.63  盗窃 -> 盗窃;掩饰、隐瞒犯罪所得、犯罪所得收益
+  2.00  非法采伐林木 -> 滥伐林木
+  2.00  非法获取公民个人信息罪 -> 非法获取公民个人信息
+  2.00  非法种植罂粟 -> 非法种植毒品原植物
+  2.00  非法使用爆炸物罪;过失致人死亡罪 -> 危险物品肇事
+  2.00  重大责任事故罪 -> 重大责任事故
+
+Top-5 pairs in common: 4
+Different between methods: uniform-only={('非法集资', '集资诈骗')}, qual-only={('非法获取公民个人信息罪', '非法获取公民个人信息')}

@@ -1,0 +1,72 @@
+{
+  "call_id": "8734750bfa7046bc9cf8ae1b22339775",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791023627-iQvXLVhQwtHdqWvGSe9y",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"被告人林某乙未经许可，擅自砍伐集体所有的马尾松，属于对森林资源的非法采伐。根据《中华人民共和国刑法》相关规定，此行为构成非法采伐、毁坏国家重点保护植物罪。案件事实未涉及其他犯罪行为，故仅适用该罪名。\",\n  \"final_answer\": \"[罪名]非法采伐、毁坏国家重点保护植物<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate charge based on facts: illegal cutting of collective forest trees (马尾松) belonging to collective. This is illegal logging of state-owned or collective forest resources. In examples, similar case: \"非法采伐、毁坏国家重点保护植物;非法占用农用地\" for illegal cutting of protected species. Another example: \"非法采伐、毁坏国家重点保护植物\" used for illegal cutting of protected species. Here it's collective forest, not necessarily protected species. Could be \"非法采伐森林木材\" or \"非法采伐、毁坏国家重点保护植物\". The example for illegal cutting of yellow bark (黄檗) used \"非法采伐、毁坏国家重点保护植物;非法占用农用地\". For generic illegal logging, maybe \"非法采伐森林木材\". But we need to match label used in dataset. Look at earlier examples: The label \"非法采伐、毁坏国家重点保护植物\" appears. Also \"非法采伐、毁坏国家重点保护植物;非法占用农用地\". Another example: \"非法占用农用地\". There's also \"非法占用农用地\" alone. For illegal logging of non-protected species, maybe \"非法采伐森林木材\". Not seen in examples. Let's search mental memory: Chinese criminal law article 322: \"非法采伐、毁坏国家重点保护植物罪\". So the charge is for protected plants. If not protected, maybe \"非法采伐森林木材罪\"? Actually article 322 also covers illegal logging of forest resources, not just protected. The wording: \"非法采伐、毁坏国家重点保护植物或者国家重点保护的野生动物\" maybe. But there is also article 337 for illegal occupation of forest land. However examples use \"非法采伐、毁坏国家重点保护植物\". So likely they will use that label.\n\nThus answer: [罪名]非法采伐、毁坏国家重点保护植物<eoa>\n\nCheck if need semicolon? Only one charge.\n\nReturn JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate charge based on facts: illegal cutting of collective forest trees (马尾松) belonging to collective. This is illegal logging of state-owned or collective forest resources. In examples, similar case: \"非法采伐、毁坏国家重点保护植物;非法占用农用地\" for illegal cutting of protected species. Another example: \"非法采伐、毁坏国家重点保护植物\" used for illegal cutting of protected species. Here it's collective forest, not necessarily protected species. Could be \"非法采伐森林木材\" or \"非法采伐、毁坏国家重点保护植物\". The example for illegal cutting of yellow bark (黄檗) used \"非法采伐、毁坏国家重点保护植物;非法占用农用地\". For generic illegal logging, maybe \"非法采伐森林木材\". But we need to match label used in dataset. Look at earlier examples: The label \"非法采伐、毁坏国家重点保护植物\" appears. Also \"非法采伐、毁坏国家重点保护植物;非法占用农用地\". Another example: \"非法占用农用地\". There's also \"非法占用农用地\" alone. For illegal logging of non-protected species, maybe \"非法采伐森林木材\". Not seen in examples. Let's search mental memory: Chinese criminal law article 322: \"非法采伐、毁坏国家重点保护植物罪\". So the charge is for protected plants. If not protected, maybe \"非法采伐森林木材罪\"? Actually article 322 also covers illegal logging of forest resources, not just protected. The wording: \"非法采伐、毁坏国家重点保护植物或者国家重点保护的野生动物\" maybe. But there is also article 337 for illegal occupation of forest land. However examples use \"非法采伐、毁坏国家重点保护植物\". So likely they will use that label.\n\nThus answer: [罪名]非法采伐、毁坏国家重点保护植物<eoa>\n\nCheck if need semicolon? Only one charge.\n\nReturn JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to determine appropriate charge based on facts: illegal cutting of collective forest trees (马尾松) belonging to collective. This is illegal logging of state-owned or collective forest resources. In examples, similar case: \"非法采伐、毁坏国家重点保护植物;非法占用农用地\" for illegal cutting of protected species. Another example: \"非法采伐、毁坏国家重点保护植物\" used for illegal cutting of protected species. Here it's collective forest, not necessarily protected species. Could be \"非法采伐森林木材\" or \"非法采伐、毁坏国家重点保护植物\". The example for illegal cutting of yellow bark (黄檗) used \"非法采伐、毁坏国家重点保护植物;非法占用农用地\". For generic illegal logging, maybe \"非法采伐森林木材\". But we need to match label used in dataset. Look at earlier examples: The label \"非法采伐、毁坏国家重点保护植物\" appears. Also \"非法采伐、毁坏国家重点保护植物;非法占用农用地\". Another example: \"非法占用农用地\". There's also \"非法占用农用地\" alone. For illegal logging of non-protected species, maybe \"非法采伐森林木材\". Not seen in examples. Let's search mental memory: Chinese criminal law article 322: \"非法采伐、毁坏国家重点保护植物罪\". So the charge is for protected plants. If not protected, maybe \"非法采伐森林木材罪\"? Actually article 322 also covers illegal logging of forest resources, not just protected. The wording: \"非法采伐、毁坏国家重点保护植物或者国家重点保护的野生动物\" maybe. But there is also article 337 for illegal occupation of forest land. However examples use \"非法采伐、毁坏国家重点保护植物\". So likely they will use that label.\n\nThus answer: [罪名]非法采伐、毁坏国家重点保护植物<eoa>\n\nCheck if need semicolon? Only one charge.\n\nReturn JSON with reasoning and final answer.",
+            "reasoning_content": "We need to determine appropriate charge based on facts: illegal cutting of collective forest trees (马尾松) belonging to collective. This is illegal logging of state-owned or collective forest resources. In examples, similar case: \"非法采伐、毁坏国家重点保护植物;非法占用农用地\" for illegal cutting of protected species. Another example: \"非法采伐、毁坏国家重点保护植物\" used for illegal cutting of protected species. Here it's collective forest, not necessarily protected species. Could be \"非法采伐森林木材\" or \"非法采伐、毁坏国家重点保护植物\". The example for illegal cutting of yellow bark (黄檗) used \"非法采伐、毁坏国家重点保护植物;非法占用农用地\". For generic illegal logging, maybe \"非法采伐森林木材\". But we need to match label used in dataset. Look at earlier examples: The label \"非法采伐、毁坏国家重点保护植物\" appears. Also \"非法采伐、毁坏国家重点保护植物;非法占用农用地\". Another example: \"非法占用农用地\". There's also \"非法占用农用地\" alone. For illegal logging of non-protected species, maybe \"非法采伐森林木材\". Not seen in examples. Let's search mental memory: Chinese criminal law article 322: \"非法采伐、毁坏国家重点保护植物罪\". So the charge is for protected plants. If not protected, maybe \"非法采伐森林木材罪\"? Actually article 322 also covers illegal logging of forest resources, not just protected. The wording: \"非法采伐、毁坏国家重点保护植物或者国家重点保护的野生动物\" maybe. But there is also article 337 for illegal occupation of forest land. However examples use \"非法采伐、毁坏国家重点保护植物\". So likely they will use that label.\n\nThus answer: [罪名]非法采伐、毁坏国家重点保护植物<eoa>\n\nCheck if need semicolon? Only one charge.\n\nReturn JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 564,
+      "prompt_tokens": 24998,
+      "total_tokens": 25562,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.001030394,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.001030394,
+        "upstream_inference_prompt_cost": 0.000924926,
+        "upstream_inference_completions_cost": 0.000105468
+      }
+    }
+  },
+  "raw_response_missing": false
+}

@@ -1,0 +1,22 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控：2015年9月5日3时许，在舒兰市某洗浴，被告人冯某在明知邱某是幼女的情况下，为嫖客李某、刘某及幼女邱某开房。李某同邱某在某洗浴225包房卖淫嫖娼一次。案发后，被告人冯某到公安机关投案。
+
+
+Wrong prediction: [罪名]组织卖淫<eoa>
+Correct answer: 组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

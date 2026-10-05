@@ -1,0 +1,72 @@
+{
+  "call_id": "cd34b0151cb4425982709fea7b813c47",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791026939-hZi1bZuUEDrkm0X1zked",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"事实中被告人李2某明知原木炭是国家禁止进出口的货物，仍采购并伪报品名向海关申报出口，构成走私国家禁止进出口的货物行为。事实仅涉及此一犯罪行为，未出现其他罪名关键词。\",\n  \"final_answer\": \"[罪名]走私国家禁止进出口的货物<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to extract crime(s) from facts. Fact: defendant knowingly smuggled prohibited goods (raw charcoal) and falsified declaration. So crime: 走私国家禁止进出口的货物罪 (smuggling of goods prohibited from import/export). According to key rules: directly extract crime keyword, no extra \"罪\". The examples show they output \"走私珍贵动物、珍贵动物制品\" (they didn't add \"罪\"). So we should output \"走私国家禁止进出口的货物\". Possibly include \"走私国家禁止进出口的货物\". No extra punctuation. If multiple crimes? Only one. So final answer: [罪名]走私国家禁止进出口的货物<eoa>\n\nNeed JSON with reasoning and final_answer. Provide final_answer string exactly as format.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to extract crime(s) from facts. Fact: defendant knowingly smuggled prohibited goods (raw charcoal) and falsified declaration. So crime: 走私国家禁止进出口的货物罪 (smuggling of goods prohibited from import/export). According to key rules: directly extract crime keyword, no extra \"罪\". The examples show they output \"走私珍贵动物、珍贵动物制品\" (they didn't add \"罪\"). So we should output \"走私国家禁止进出口的货物\". Possibly include \"走私国家禁止进出口的货物\". No extra punctuation. If multiple crimes? Only one. So final answer: [罪名]走私国家禁止进出口的货物<eoa>\n\nNeed JSON with reasoning and final_answer. Provide final_answer string exactly as format.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to extract crime(s) from facts. Fact: defendant knowingly smuggled prohibited goods (raw charcoal) and falsified declaration. So crime: 走私国家禁止进出口的货物罪 (smuggling of goods prohibited from import/export). According to key rules: directly extract crime keyword, no extra \"罪\". The examples show they output \"走私珍贵动物、珍贵动物制品\" (they didn't add \"罪\"). So we should output \"走私国家禁止进出口的货物\". Possibly include \"走私国家禁止进出口的货物\". No extra punctuation. If multiple crimes? Only one. So final answer: [罪名]走私国家禁止进出口的货物<eoa>\n\nNeed JSON with reasoning and final_answer. Provide final_answer string exactly as format.",
+            "reasoning_content": "We need to extract crime(s) from facts. Fact: defendant knowingly smuggled prohibited goods (raw charcoal) and falsified declaration. So crime: 走私国家禁止进出口的货物罪 (smuggling of goods prohibited from import/export). According to key rules: directly extract crime keyword, no extra \"罪\". The examples show they output \"走私珍贵动物、珍贵动物制品\" (they didn't add \"罪\"). So we should output \"走私国家禁止进出口的货物\". Possibly include \"走私国家禁止进出口的货物\". No extra punctuation. If multiple crimes? Only one. So final answer: [罪名]走私国家禁止进出口的货物<eoa>\n\nNeed JSON with reasoning and final_answer. Provide final_answer string exactly as format."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 274,
+      "prompt_tokens": 4940,
+      "total_tokens": 5214,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000234018,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000234018,
+        "upstream_inference_prompt_cost": 0.00018278,
+        "upstream_inference_completions_cost": 5.1238e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

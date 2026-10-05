@@ -1,0 +1,38 @@
+Bash
+
+command:
+python -c "
+import os, json
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+# Check symmetric_confusion log for LawBench (hardest dataset, 40% accuracy)
+log_path = os.path.join(base, 'LawBench', 'symmetric_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+if os.path.exists(log_path):
+    lines = open(log_path).readlines()
+    print(f'Total lines: {len(lines)}')
+    errors = []
+    for l in lines:
+        d = json.loads(l)
+        if not d.get('was_correct'):
+            errors.append(d)
+    print(f'Errors: {len(errors)}')
+    # Show first 5 errors
+    for e in errors[:5]:
+        inp = e.get('input','')[:80]
+        pred = e.get('prediction','')[:40]
+        gt = e.get('ground_truth','')[:40]
+        print(f'  pred={repr(pred)} gt={repr(gt)} input={repr(inp)}')
+else:
+    print('No log file')
+"
+
+
+description: Read LawBench error trace from symmetric_confusion_memory
+
+--- output ---
+Total lines: 404
+Errors: 404
+  pred='' gt='' input=''
+  pred='' gt='' input=''
+  pred='' gt='' input=''
+  pred='' gt='' input=''
+  pred='' gt='' input=''

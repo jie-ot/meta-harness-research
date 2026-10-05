@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- When the facts show that the defendant only provided shelter, assistance, or concealment for drug offenders and did not personally produce, possess, or traffic the narcotics, classify the offense as 窝
+- When the alleged offender is not a public official (i.e., not a state functionary) but the conduct involves accepting or soliciting a bribe, the correct charge is '非国家工作人员受贿' rather than the generic '
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:邯郸县人民检察院指控，2008年至2011年期间，被告人李某某明知其子李某某甲（已判刑）因犯罪被邯郸县公安局抓捕，仍在2008年案发不久公安人员到家抓捕李某某甲未果后给李某某甲400元让其逃跑。其后长期容留李某某甲在家吃住。2010年7月26日至10月14日和2011年6月22日至6月23日李某某甲因受伤在河北工程大学附属医院治疗期间，为其报假名“李某某乙”以躲避公安机关的追查，在治病期间为李某某甲提供医疗费陪护。公诉机关认为起诉书指控的被告人李某某犯罪事实清楚，证据确实充分，并且有被告人供述、证人证言、抓获证明、刑事判决书、书证等证据，证明被告人李某某的行为触犯了《中华人民共和国刑法》××之规定，应当以窝藏罪追究其刑事责任。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

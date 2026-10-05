@@ -1,0 +1,119 @@
+Bash
+
+command:
+python -c "
+import json, os, re
+from collections import defaultdict
+
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+_WRAPPER_RE = re.compile(r'^\s*\[[^\]]*\]|<eoa>\s*$|\[[^\]]*\]\s*$', re.IGNORECASE)
+def has_cjk(t): return bool(_CJK_RE.search(t))
+def tok_word(t): return frozenset(re.findall(r'[A-Za-z0-9]+', t.lower()))
+def tok_bigram(t):
+    t = re.sub(r'\s+', ' ', t.strip())
+    return frozenset(t[i:i+2] for i in range(len(t)-1)) if len(t)>=2 else frozenset()
+def tok(t): return tok_bigram(t) if has_cjk(t) else tok_word(t)
+def jaccard(a, b): return len(a&b)/len(a|b) if a or b else 0.0
+def normalize(p):
+    if not p: return p
+    c = _WRAPPER_RE.sub('', p).strip()
+    return c if c else p
+
+log = os.path.join(base, 'LawBench', 'decayed_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+steps = []
+with open(log, encoding='utf-8') as f:
+    for line in f:
+        d = json.loads(line)
+        if d.get('type') == 'step':
+            steps.append(d)
+
+# Prototype coverage-gap retrieval
+# For each label: track error_count and example_count
+# coverage_gap = error_count / max(1, example_count)
+# Boost selection score for high-gap labels
+
+# Simulate: after each step, track the gap and measure whether top-5 examples
+# by jaccard alone differ from top-5 examples by jaccard+gap_boost
+
+# Build a pool from first 40 examples, then test gap-boosted retrieval on next 10 errors
+examples = []
+error_count = defaultdict(int)
+
+BOOST = 0.4  # additive boost per unit of gap
+
+results_plain = []
+results_gap = []
+
+for i, step in enumerate(steps):
+    # Predict phase - query is the input_preview
+    query_tok = tok(step['input_preview'][:300])
+    gt = step['tgt']
+    
+    if examples and not step.get('ok', True) and i >= 20:
+        # Score with plain jaccard
+        scores_plain = sorted([(jaccard(query_tok, e['tok']), j) for j, e in enumerate(examples)], reverse=True)
+        top5_plain_labels = [examples[j]['label'] for _, j in scores_plain[:5]]
+        
+        # Score with gap boost
+        scores_gap = []
+        for j, e in enumerate(examples):
+            ex_cnt = sum(1 for ex in examples if ex['label'] == e['label'])
+            gap = error_count[e['label']] / max(1, ex_cnt)
+            score = jaccard(query_tok, e['tok']) + BOOST * gap
+            scores_gap.append((score, j))
+        scores_gap.sort(reverse=True)
+        top5_gap_labels = [examples[j]['label'] for _, j in scores_gap[:5]]
+        
+        # Did the correct label appear in top-5?
+        results_plain.append(gt in top5_plain_labels)
+        results_gap.append(gt in top5_gap_labels)
+        
+        if len(results_plain) >= 30:
+            break
+    
+    # Learn phase
+    examples.append({'tok': tok(step['input_preview'][:300]), 'label': gt})
+    if not step.get('ok', True):
+        pred = normalize(step['pred'])
+        error_count[pred] += 1
+
+print(f'Errors tested: {len(results_plain)}')
+print(f'Ground truth in top-5 (plain jaccard): {sum(results_plain)}/{len(results_plain)} = {sum(results_plain)/len(results_plain)*100:.0f}%')
+print(f'Ground truth in top-5 (gap-boosted):   {sum(results_gap)}/{len(results_gap)} = {sum(results_gap)/len(results_gap)*100:.0f}%')
+print()
+# Variant: higher boost
+BOOST2 = 0.8
+results_gap2 = []
+examples2 = []
+error_count2 = defaultdict(int)
+for i, step in enumerate(steps):
+    query_tok = tok(step['input_preview'][:300])
+    gt = step['tgt']
+    if examples2 and not step.get('ok', True) and i >= 20:
+        scores_gap2 = []
+        for j, e in enumerate(examples2):
+            ex_cnt = sum(1 for ex in examples2 if ex['label'] == e['label'])
+            gap = error_count2[e['label']] / max(1, ex_cnt)
+            score = jaccard(query_tok, e['tok']) + BOOST2 * gap
+            scores_gap2.append((score, j))
+        scores_gap2.sort(reverse=True)
+        top5_gap2 = [examples2[j]['label'] for _, j in scores_gap2[:5]]
+        results_gap2.append(gt in top5_gap2)
+        if len(results_gap2) >= 30:
+            break
+    examples2.append({'tok': tok(step['input_preview'][:300]), 'label': gt})
+    if not step.get('ok', True):
+        pred = normalize(step['pred'])
+        error_count2[pred] += 1
+print(f'Ground truth in top-5 (gap-boosted 0.8): {sum(results_gap2)}/{len(results_gap2)} = {sum(results_gap2)/len(results_gap2)*100:.0f}%')
+" 2>&1
+
+description: Prototype coverage-gap retrieval — measure top-5 recall improvement
+
+--- output ---
+Errors tested: 30
+Ground truth in top-5 (plain jaccard): 0/30 = 0%
+Ground truth in top-5 (gap-boosted):   0/30 = 0%
+
+Ground truth in top-5 (gap-boosted 0.8): 0/30 = 0%

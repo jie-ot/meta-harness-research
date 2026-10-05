@@ -1,0 +1,24 @@
+An AI classifier made an error on this case. Generate a compact correction lesson.
+
+**Correct label:** 非法拘禁
+**Wrong prediction:** [罪名]非法拘禁;故意伤害<eoa>
+**Case facts (excerpt):**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:广州市花都区人民检察院指控，2012年8月21日晚上，被告人尹某与同案人郑某（已判决）为向陈1某索取债务，将陈1某的女友谢某先后非法拘禁到花都区新华街布心村布心路5号302房、318房，并将谢某打至轻微伤。2012年8月25日上午10时许，公安人员接报后赶至上址解救出被害人谢某。
+公诉机关并提供了相应的证据，认为被告人尹某的行为触犯了《中华人民共和国刑法》××××、××之规定，构成××；结合被告人尹某非法拘禁他人、未取得被害人谅解等情节，建议本院对被告人尹某判处××以下。提请本院依法判处。
+
+
+Write a lesson that:
+1. States the KEY distinguishing feature that determines the correct label
+2. Explains what makes this different from "[罪名]非法拘禁;故意伤害<eoa>"
+3. Gives a brief rule a classifier can apply to future cases
+
+Respond only in JSON:
+{"lesson": "<one to three sentences, in the same language as the case facts>", "final_answer": "非法拘禁"}

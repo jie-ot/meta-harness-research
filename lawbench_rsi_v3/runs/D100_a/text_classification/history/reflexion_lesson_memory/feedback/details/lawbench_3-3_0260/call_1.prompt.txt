@@ -1,0 +1,30 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the facts describe a defendant’s role in a scheme that withdraws money from victims’ bank or credit‑card accounts, classify the conduct under the specific statutory offenses of fraud (诈骗) and, if
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明：2011年4月7日，被告人汪某某向中国银行惠安支行申领了一张中银信用卡（信用额度人民币20000元），并于同年7月开始使用。截至2013年10月10日，该卡共透支本金人民币16945.76元。之后，经中国银行惠安支行采取信函、上门等形式多次进行催收，被告人汪某某超过三个月仍未归还全部透支款息。2014年5月12日，中国银行惠安支行报案至惠安县公安局，惠安县公安局于同日立案侦查。
+2014年6月10日，被告人汪某某自动到惠安县公安局崇武派出所投案，并如实供述自己的罪行。
+另查明：审理过程中，中国银行惠安支行表示同意被告人汪某某延期还款。
+上述事实，被告人汪某某在开庭审理中无异议，且有证人曾某某证言、受立案材料、到案经过、报案报告、信用卡申报资料、信用卡交易明细及对账单、银行催收记录、户籍证明、被告人汪某某供述等证据证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

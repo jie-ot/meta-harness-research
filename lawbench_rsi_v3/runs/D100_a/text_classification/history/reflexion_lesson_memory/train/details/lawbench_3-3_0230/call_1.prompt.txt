@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the factual description states that the perpetrator directly seized the victim’s property by force, threat, or while the victim was caught off‑guard (e.g., “抢走”, “趁…不备”), the offense should be clas
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- If the facts describe a person in a managerial or official position receiving money or valuables in exchange for using their职务便利, classify the crime simply as "受贿" unless the source explicitly states 
+- When the case facts explicitly describe separate actions of selling, buying, or transporting counterfeit currency, label each distinct offense (e.g., 出售假币, 购买假币, 运输假币) rather than using a generic term
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:石狮市人民检察院指控，2017年3月26日6时许，被告人张某在石狮市民生路***号门口，趁被害人林某不备，抢夺走林的1个包，内有1部三星GT-I9168I型手机（价值人民币250元）、1部华为荣耀6型手机（价值人民币500元）及现金人民币545元。案发后，三星GT-I9168I型手机及人民币500元被追回。
+被告人张某于2017年3月27日在石狮市嘉禾酒店216房间内被公安人员抓获。2017年4月3日，被告人张某家属替其退出违法所得人民币545元。上述赃款赃物均已发还给被害人林某。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

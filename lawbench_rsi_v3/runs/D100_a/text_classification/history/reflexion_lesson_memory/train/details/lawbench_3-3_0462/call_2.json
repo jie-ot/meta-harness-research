@@ -1,0 +1,72 @@
+{
+  "call_id": "30da821f426a40998f626c2721911e29",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791018299-wvCT5VJ9DcOOL9sNdfdg",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the factual scenario involves a defendant biting or otherwise assaulting a police officer while resisting law‑enforcement duties, charge only 妨害公务 (obstruction of official duties) unless there is separate evidence of intent to cause bodily injury that satisfies the elements of 故意伤害罪.\",\n  \"keywords\": [\n    \"咬伤警察\",\n    \"抵抗执法\",\n    \"妨害公务\",\n    \"故意伤害\",\n    \"轻微伤\",\n    \"执法人员受伤\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a correction rule to prevent the AI from incorrectly adding a crime (故意伤害罪) when not appropriate. The case: The defendant bit police, causing minor injury. The correct charges: dangerous driving (危险驾驶) and obstruction of official duties (妨害公务). Not intentional injury because the bite may be considered assault but maybe not enough for intentional injury? Actually biting police could be considered assault, but maybe classified under妨害公务. So the error was adding故意伤害罪. The rule: Only include intentional injury if the act meets the legal elements of intentional injury (e.g., causing bodily injury with intent to injure). If the act is directed at police in the context of resisting law enforcement, charge as妨害公务, not故意伤害. So rule: Do not assign故意伤害罪 when the injury results from resistance to police and the primary offense is妨害公务, unless intent to cause injury is proven separate.\n\nKeywords: \"咬伤\", \"警察\", \"妨害公务\", \"故意伤害\", \"抵抗执法\", \"伤害程度轻微\". Provide JSON.\n\n",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a correction rule to prevent the AI from incorrectly adding a crime (故意伤害罪) when not appropriate. The case: The defendant bit police, causing minor injury. The correct charges: dangerous driving (危险驾驶) and obstruction of official duties (妨害公务). Not intentional injury because the bite may be considered assault but maybe not enough for intentional injury? Actually biting police could be considered assault, but maybe classified under妨害公务. So the error was adding故意伤害罪. The rule: Only include intentional injury if the act meets the legal elements of intentional injury (e.g., causing bodily injury with intent to injure). If the act is directed at police in the context of resisting law enforcement, charge as妨害公务, not故意伤害. So rule: Do not assign故意伤害罪 when the injury results from resistance to police and the primary offense is妨害公务, unless intent to cause injury is proven separate.\n\nKeywords: \"咬伤\", \"警察\", \"妨害公务\", \"故意伤害\", \"抵抗执法\", \"伤害程度轻微\". Provide JSON.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a correction rule to prevent the AI from incorrectly adding a crime (故意伤害罪) when not appropriate. The case: The defendant bit police, causing minor injury. The correct charges: dangerous driving (危险驾驶) and obstruction of official duties (妨害公务). Not intentional injury because the bite may be considered assault but maybe not enough for intentional injury? Actually biting police could be considered assault, but maybe classified under妨害公务. So the error was adding故意伤害罪. The rule: Only include intentional injury if the act meets the legal elements of intentional injury (e.g., causing bodily injury with intent to injure). If the act is directed at police in the context of resisting law enforcement, charge as妨害公务, not故意伤害. So rule: Do not assign故意伤害罪 when the injury results from resistance to police and the primary offense is妨害公务, unless intent to cause injury is proven separate.\n\nKeywords: \"咬伤\", \"警察\", \"妨害公务\", \"故意伤害\", \"抵抗执法\", \"伤害程度轻微\". Provide JSON.\n\n",
+            "reasoning_content": "We need to produce a correction rule to prevent the AI from incorrectly adding a crime (故意伤害罪) when not appropriate. The case: The defendant bit police, causing minor injury. The correct charges: dangerous driving (危险驾驶) and obstruction of official duties (妨害公务). Not intentional injury because the bite may be considered assault but maybe not enough for intentional injury? Actually biting police could be considered assault, but maybe classified under妨害公务. So the error was adding故意伤害罪. The rule: Only include intentional injury if the act meets the legal elements of intentional injury (e.g., causing bodily injury with intent to injure). If the act is directed at police in the context of resisting law enforcement, charge as妨害公务, not故意伤害. So rule: Do not assign故意伤害罪 when the injury results from resistance to police and the primary offense is妨害公务, unless intent to cause injury is proven separate.\n\nKeywords: \"咬伤\", \"警察\", \"妨害公务\", \"故意伤害\", \"抵抗执法\", \"伤害程度轻微\". Provide JSON.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 367,
+      "prompt_tokens": 703,
+      "total_tokens": 1070,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 291,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 8.715e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 8.715e-05,
+        "upstream_inference_prompt_cost": 2.109e-05,
+        "upstream_inference_completions_cost": 6.606e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

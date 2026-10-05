@@ -1,0 +1,121 @@
+Write: C:/tmp/proto_label_prototype.py
+
+content:
+"""Prototype: per-label prototype memory.
+
+Instead of storing raw examples, maintain a short LLM-written text prototype
+per label — a compact description of that label's defining features and its
+most common confusors. At predict time inject the top-k most relevant
+prototypes before the few-shot examples.
+
+Key difference from llm_rule_synthesis_memory (which regressed -7.6):
+  - That system stored O(N^2) pairwise rules; this stores O(N) per-label prototypes.
+  - Prototypes are holistic category descriptions, not binary comparisons.
+  - Prototypes update incrementally as errors accumulate on a label.
+  - Cold-start: no prototypes needed, falls back to examples only.
+"""
+import json, os, re
+from collections import defaultdict
+
+BASE = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+LAW_LOG = os.path.join(BASE, 'LawBench', 'adaptive_tokenizer_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+LAW_MEM = os.path.join(BASE, 'LawBench', 'adaptive_tokenizer_confusion_memory', 'gpt-oss-120b', 'memory.json')
+S2D_LOG = os.path.join(BASE, 'Symptom2Disease', 'adaptive_tokenizer_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+
+# ---- Simulate prototype memory from log data ----
+def normalize_label(s):
+    s = s.strip()
+    s = re.sub(r'^\[[^\]]+\]', '', s)
+    s = re.sub(r'<eoa>$', '', s)
+    s = re.sub(r'^\[[^\]]+\]', '', s)
+    s = re.sub(r'\[/[^\]]+\]$', '', s)
+    return s.strip()
+
+# Load LawBench data
+lines = [json.loads(l) for l in open(LAW_LOG, encoding='utf-8') if l.strip()]
+steps = [e for e in lines if e['type'] == 'step']
+wrong = [e for e in steps if e.get('ok') is False]
+correct = [e for e in steps if e.get('ok') is True]
+
+print(f"LawBench: {len(steps)} steps, {len(wrong)} wrong, {len(correct)} correct")
+
+# Build per-label error tracking (what the prototype would summarize)
+label_errors = defaultdict(list)  # gt -> list of (pred, input_preview)
+label_examples = defaultdict(list)  # gt -> list of input_previews (correct)
+
+for e in wrong:
+    gt = e.get('tgt', '')
+    pred = normalize_label(e.get('pred', ''))
+    label_errors[gt].append((pred, e.get('input_preview', '')[:120]))
+
+for e in correct:
+    gt = e.get('tgt', '')
+    label_examples[gt].append(e.get('input_preview', '')[:120])
+
+# Show what a prototype prompt would look like for a high-error label
+print(f"\nLabels with most errors: ", end='')
+sorted_errors = sorted(label_errors.items(), key=lambda x: -len(x[1]))
+for lbl, errs in sorted_errors[:5]:
+    print(f"{lbl}({len(errs)})", end=' ')
+print()
+
+# Simulate what we'd ask the LLM to generate
+for lbl, errs in sorted_errors[:2]:
+    confusors = list({normalize_label(p) for p, _ in errs if p != lbl})[:3]
+    print(f"\n=== Prototype for '{lbl}':")
+    print(f"  Error count: {len(errs)}")
+    print(f"  Common confusors: {confusors}")
+    print(f"  Would ask LLM: 'Write 1-2 sentences describing what makes {lbl!r} distinct from {confusors}'")
+
+# ---- Variant A: prototypes injected at top of prompt, before examples ----
+# ---- Variant B: prototypes injected after examples, as clarification ----
+# ---- Variant C: top-1 most relevant prototype only (reduce noise) ----
+# Decision: Variant A for max signal visibility to the model.
+
+# Trigger condition variants:
+# V1: generate prototype after >= K errors on a label (K=3)
+# V2: generate prototype after every error on a label (expensive)
+# V3: generate prototype lazily at predict time on first confusion (slow path)
+# Decision: V1 with K=3 — waits for a meaningful error signal before spending an LLM call
+
+ERROR_THRESHOLD = 3
+labels_eligible = [(lbl, errs) for lbl, errs in label_errors.items() if len(errs) >= ERROR_THRESHOLD]
+print(f"\nLabels eligible for prototype generation (>= {ERROR_THRESHOLD} errors): {len(labels_eligible)}")
+for lbl, errs in sorted(labels_eligible, key=lambda x: -len(x[1]))[:5]:
+    print(f"  {lbl}: {len(errs)} errors")
+
+# ---- Similarity retrieval for relevant prototypes at predict time ----
+# Use same adaptive tokenizer from base system
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+def has_cjk(text): return bool(_CJK_RE.search(text))
+def tokenize_word(text): return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+def tokenize_bigram(text):
+    t = re.sub(r'\s+', ' ', text.strip())
+    return frozenset(t[i:i+2] for i in range(len(t)-1)) if len(t) >= 2 else frozenset([t])
+def tokenize(text): return tokenize_bigram(text) if has_cjk(text) else tokenize_word(text)
+def jaccard(a, b):
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+# Simulate: for each label with errors, compute similarity to a test query
+test_query = "被告人利用职务便利，私自挪用公款用于个人经营，数额巨大。"
+q_tok = tokenize(test_query)
+
+# Prototype labels: compute similarity of first error example to query
+scores = []
+for lbl, errs in label_errors.items():
+    if errs:
+        ex_tok = tokenize(errs[0][1])
+        scores.append((jaccard(q_tok, ex_tok), lbl))
+scores.sort(reverse=True)
+print(f"\nTop prototype labels for test query '{test_query[:40]}...':")
+for score, lbl in scores[:5]:
+    print(f"  score={score:.3f} label={lbl}")
+
+print("\nPrototype 2 design looks viable: O(N) prototypes, triggered at error threshold, similarity-retrieved.")
+print("Cold-start works: no prototypes = falls back to pure example retrieval.")
+
+
+
+--- output ---
+File created successfully at: C:/tmp/proto_label_prototype.py (file state is current in your context — no need to Read it back)

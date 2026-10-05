@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- When the factual description includes both the creation (编造) and the intentional dissemination (故意传播) of false terrorist information, the charge must list both elements as “编造、故意传播虚假恐怖信息”.
+- When a public official’s conduct involves (1) the illegal receipt of money or valuables in exchange for using official power, and (2) the abuse of that power to approve actions that cause state loss, 
+- If the facts only describe forging, altering, or selling state‑issued documents or certificates and do not contain any separate act of deceiving another party for financial gain, assign only the forge
+- When the alleged offender holds a position in a private or non‑governmental entity (e.g., company executive, manager) rather than a public official, classify the offense as “非国家工作人员受贿” instead of the 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:安徽省砀山县人民检察院指控：被告人刁2某于1998年至2005年在砀山县程庄信用社工作期间，采取冒用段某1、宋某1等人身份并编造虚假身份信息的手段，从程庄信用社办理并发放贷款计1970390元。给信用社造成重大损失。
+2014年10月15日，被告人刁2某在常州市被民警抓获归案。
+为证明上述事实，公诉人当庭宣读、出示了相关证据。公诉机关认为，被告人刁2某身为银行工作人员，利用职务便利，违反规定冒用他人身份、采用虚假身份发放贷款，数额巨大，其行为触犯《中华人民共和国刑法》××××的规定，犯罪事实清楚，证据确实、充分，应当以××追究其刑事责任。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

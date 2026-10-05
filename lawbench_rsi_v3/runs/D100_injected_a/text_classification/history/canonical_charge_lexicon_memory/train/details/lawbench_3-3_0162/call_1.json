@@ -1,0 +1,72 @@
+{
+  "call_id": "04a7393f0c5c43c5b64013c1eac0165e",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791127950-kJLVskKvMAz4YK0ka0X2",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The fact describes that the defendant participated in the production of methamphetamine (冰毒). This constitutes the crime of manufacturing illegal drugs. The provided charge lexicon does not contain a matching entry for this offense, so we must use the correct statutory name.\",\n  \"final_answer\": \"[罪名]制造毒品罪<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to read the fact: manufacturing methamphetamine (ice). The lexicon includes many charges but not \"制造毒品罪\" directly. The list includes \"非法持有毒品\", \"包庇毒品犯罪分子\", \"非法种植毒品原植物\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\" (not relevant), \"非法持有、私藏枪支、弹药\". There's also \"非法持有毒品\". But manufacturing is \"制造毒品\". Not in list. The instruction: \"If no listed name fits, use the correct statutory name anyway.\" So we should output \"制造毒品罪\". However the lexicon does not have that string. So we must output the correct statutory name: \"制造毒品罪\". The format: [罪名]制造毒品罪<eoa>\n\nWe need to include reasoning in JSON? The instruction says output JSON with \"reasoning\" and \"final_answer\". Actually the example at end says: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"}. So we need to output a JSON object with those fields. The final answer field should contain the string with [罪名]...<eoa>. So produce:\n\n{\n \"reasoning\": \"The fact describes manufacturing methamphetamine, which is the crime of manufacturing illegal drugs. The lexicon does not contain a matching entry, so we use the statutory name '制造毒品罪'.\",\n \"final_answer\": \"[罪名]制造毒品罪<eoa>\"\n}\n\nMake sure JSON formatting correct.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to read the fact: manufacturing methamphetamine (ice). The lexicon includes many charges but not \"制造毒品罪\" directly. The list includes \"非法持有毒品\", \"包庇毒品犯罪分子\", \"非法种植毒品原植物\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\" (not relevant), \"非法持有、私藏枪支、弹药\". There's also \"非法持有毒品\". But manufacturing is \"制造毒品\". Not in list. The instruction: \"If no listed name fits, use the correct statutory name anyway.\" So we should output \"制造毒品罪\". However the lexicon does not have that string. So we must output the correct statutory name: \"制造毒品罪\". The format: [罪名]制造毒品罪<eoa>\n\nWe need to include reasoning in JSON? The instruction says output JSON with \"reasoning\" and \"final_answer\". Actually the example at end says: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"}. So we need to output a JSON object with those fields. The final answer field should contain the string with [罪名]...<eoa>. So produce:\n\n{\n \"reasoning\": \"The fact describes manufacturing methamphetamine, which is the crime of manufacturing illegal drugs. The lexicon does not contain a matching entry, so we use the statutory name '制造毒品罪'.\",\n \"final_answer\": \"[罪名]制造毒品罪<eoa>\"\n}\n\nMake sure JSON formatting correct.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to read the fact: manufacturing methamphetamine (ice). The lexicon includes many charges but not \"制造毒品罪\" directly. The list includes \"非法持有毒品\", \"包庇毒品犯罪分子\", \"非法种植毒品原植物\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\" (not relevant), \"非法持有、私藏枪支、弹药\". There's also \"非法持有毒品\". But manufacturing is \"制造毒品\". Not in list. The instruction: \"If no listed name fits, use the correct statutory name anyway.\" So we should output \"制造毒品罪\". However the lexicon does not have that string. So we must output the correct statutory name: \"制造毒品罪\". The format: [罪名]制造毒品罪<eoa>\n\nWe need to include reasoning in JSON? The instruction says output JSON with \"reasoning\" and \"final_answer\". Actually the example at end says: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"}. So we need to output a JSON object with those fields. The final answer field should contain the string with [罪名]...<eoa>. So produce:\n\n{\n \"reasoning\": \"The fact describes manufacturing methamphetamine, which is the crime of manufacturing illegal drugs. The lexicon does not contain a matching entry, so we use the statutory name '制造毒品罪'.\",\n \"final_answer\": \"[罪名]制造毒品罪<eoa>\"\n}\n\nMake sure JSON formatting correct.",
+            "refusal": null,
+            "reasoning_content": "We need to read the fact: manufacturing methamphetamine (ice). The lexicon includes many charges but not \"制造毒品罪\" directly. The list includes \"非法持有毒品\", \"包庇毒品犯罪分子\", \"非法种植毒品原植物\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\" (not relevant), \"非法持有、私藏枪支、弹药\". There's also \"非法持有毒品\". But manufacturing is \"制造毒品\". Not in list. The instruction: \"If no listed name fits, use the correct statutory name anyway.\" So we should output \"制造毒品罪\". However the lexicon does not have that string. So we must output the correct statutory name: \"制造毒品罪\". The format: [罪名]制造毒品罪<eoa>\n\nWe need to include reasoning in JSON? The instruction says output JSON with \"reasoning\" and \"final_answer\". Actually the example at end says: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"}. So we need to output a JSON object with those fields. The final answer field should contain the string with [罪名]...<eoa>. So produce:\n\n{\n \"reasoning\": \"The fact describes manufacturing methamphetamine, which is the crime of manufacturing illegal drugs. The lexicon does not contain a matching entry, so we use the statutory name '制造毒品罪'.\",\n \"final_answer\": \"[罪名]制造毒品罪<eoa>\"\n}\n\nMake sure JSON formatting correct."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 426,
+      "prompt_tokens": 1860,
+      "total_tokens": 2286,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 343,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0006651,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0006651,
+        "upstream_inference_prompt_cost": 0.0002604,
+        "upstream_inference_completions_cost": 0.0004047
+      }
+    }
+  },
+  "raw_response_missing": false
+}

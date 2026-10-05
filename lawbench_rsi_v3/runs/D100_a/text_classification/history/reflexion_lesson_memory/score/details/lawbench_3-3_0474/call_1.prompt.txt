@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the facts describe a person performing any medical diagnosis, treatment, or related procedure without a valid medical license, classify the conduct under the statutory offense of “非法行医” rather th
+- When the facts describe manufacturing or distributing drugs that are counterfeit, adulterated, or otherwise not meeting legal standards (i.e., ‘假药’), the appropriate charge is “生产、销售假药” rather than th
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the facts describe manufacturing or selling drugs without the required drug production license and using false or misleading packaging/labels (i.e., the product is a counterfeit or unapproved dru
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:安远县人民检察院指控，2013年2月底，被告人刘某甲、刘某乙（另案处理）合伙从一定南张老板（另案处理）手里买了一个稀土矿，该矿点位于车头镇龙头村犁妈山的山场，被告人刘某甲伙同刘某乙在未办采矿许可证的情况下，以原山浸矿的方式非法开采稀土，安远县公安局于2013年4月13日在刘某甲等人的非法矿点扣押其生产的湿稀土285包，经称重为9640公斤。2013年4月19日，刘某甲主动到公安机关投案。
+经江西省国土资源厅（赣国土资函（2013）415号）关于刘某甲等人涉嫌非法采矿造成矿产资源破坏价值的鉴定结论：刘某甲等人非法开采稀土为55.15吨，90000元／吨，非法采矿造成的矿产资源破坏价值为4963500元。
+公诉机关对上述指控提供了相应的证据。据此认为，被告人刘某甲的行为触犯了《中华人民共和国刑法》××××之规定，应以××追究其刑事责任。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

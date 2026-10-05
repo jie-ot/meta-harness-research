@@ -1,0 +1,132 @@
+Read: memory_system.py
+
+
+--- output ---
+1	"""Abstract interface for memory systems."""
+2	
+3	import hashlib
+4	import json
+5	import re
+6	import threading
+7	from abc import ABC, abstractmethod
+8	from typing import Any
+9	
+10	from .llm import LLMCallable
+11	
+12	
+13	def extract_json_field(text: str, field: str, default: str = "") -> str:
+14	    """Helper function to extract a field from JSON in LLM response."""
+15	    # Try direct parse
+16	    try:
+17	        data = json.loads(text)
+18	        if isinstance(data, dict):
+19	            return str(data.get(field, default))
+20	    except json.JSONDecodeError:
+21	        pass
+22	
+23	    # Try code blocks: ```json ... ``` or ``` ... ```
+24	    for match in re.finditer(r"```(?:json)?\s*([\s\S]*?)\s*```", text):
+25	        try:
+26	            data = json.loads(match.group(1))
+27	            if isinstance(data, dict):
+28	                return str(data.get(field, default))
+29	        except json.JSONDecodeError:
+30	            pass
+31	
+32	    # Find balanced braces and try parsing
+33	    for start in range(len(text)):
+34	        if text[start] != "{":
+35	            continue
+36	        depth, pos, in_str = 1, start + 1, False
+37	        while pos < len(text) and depth > 0:
+38	            c = text[pos]
+39	            if c == '"' and (pos == 0 or text[pos - 1] != "\\"):
+40	                in_str = not in_str
+41	            elif not in_str:
+42	                depth += 1 if c == "{" else (-1 if c == "}" else 0)
+43	            pos += 1
+44	        if depth == 0:
+45	            candidate = text[start:pos]
+46	            candidate = re.sub(
+47	                r",\s*([\]}])", r"\1", candidate
+48	            )  # Remove trailing commas
+49	            try:
+50	                data = json.loads(candidate)
+51	                if isinstance(data, dict):
+52	                    return str(data.get(field, default))
+53	            except json.JSONDecodeError:
+54	                pass
+55	
+56	    # Regex fallback
+57	    match = re.findall(rf'"{field}"\s*:\s*"([^"]*)"', text)
+58	    return match[-1] if match else default
+59	
+60	
+61	class MemorySystem(ABC):
+62	    """Memory system interface for online and offline learning.
+63	
+64	    Args:
+65	        llm: Callable that takes a prompt string and returns a response string.
+66	    """
+67	
+68	    def __init__(self, llm: LLMCallable):
+69	        self._llm = llm
+70	        self._prompt_local = threading.local()
+71	
+72	    def call_llm(self, prompt: str) -> str:
+73	        """Call the LLM with a prompt. Tracks last prompt length/hash per thread."""
+74	        self._prompt_local.last_prompt_len = len(prompt)
+75	        self._prompt_local.last_prompt_hash = hashlib.md5(prompt.encode()).hexdigest()[
+76	            :8
+77	        ]
+78	        self._prompt_local.last_prompt_text = prompt
+79	        return self._llm(prompt)
+80	
+81	    def get_last_prompt_info(self) -> dict[str, Any]:
+82	        """Return length, hash, and full text of the last prompt sent via call_llm (thread-local)."""
+83	        return {
+84	            "prompt_len": getattr(self._prompt_local, "last_prompt_len", None),
+85	            "prompt_hash": getattr(self._prompt_local, "last_prompt_hash", None),
+86	            "prompt_text": getattr(self._prompt_local, "last_prompt_text", None),
+87	        }
+88	
+89	    @abstractmethod
+90	    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+91	        """Generate prediction BEFORE seeing ground truth. Returns (answer, metadata)."""
+92	        pass
+93	
+94	    @abstractmethod
+95	    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+96	        """Learn from a batch of evaluation results.
+97	
+98	        Args:
+99	            batch_results: List of dicts, each containing:
+100	                - input: str
+101	                - prediction: str
+102	                - ground_truth: str
+103	                - was_correct: bool
+104	                - metadata: dict (optional)
+105	
+106	        This is called AFTER all predictions in the batch are complete.
+107	        The memory system can analyze patterns across the batch.
+108	        """
+109	        pass
+110	
+111	    def get_context_length(self) -> int:
+112	        """Return the character length of context actually injected per query.
+113	
+114	        Override in subclasses where the injected context differs from stored state
+115	        (e.g., fewshot memories that store all examples but only inject N).
+116	        """
+117	        return len(self.get_state())
+118	
+119	    @abstractmethod
+120	    def get_state(self) -> str:
+121	        """Return serializable state for checkpointing."""
+122	        pass
+123	
+124	    @abstractmethod
+125	    def set_state(self, state: str) -> None:
+126	        """Restore state from serialized representation."""
+127	        pass
+128	

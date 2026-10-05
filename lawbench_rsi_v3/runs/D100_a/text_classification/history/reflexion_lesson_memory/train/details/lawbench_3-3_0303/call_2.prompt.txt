@@ -1,0 +1,22 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:阜南县人民检察院指控：被告人郭某甲未取得医生执业资格，却在位于安徽省阜南县柴集镇梅郢村郭某乙的家中非法开办诊所。2014年3月份的一天，阜南县柴集镇孕妇周某找到被告人郭某甲，告知其在外地做B超检查怀孕的是女孩，并让郭某甲帮助其引产。后郭某甲用药物米某司酮和米索前列醇对孕妇周某非法进行选择性别的终止妊娠手术。不久，孕妇周某的胎儿被引流产。以上事实，公诉机关提供了相关证据予以证实，据以认为被告人郭某甲的行为触犯了《中华人民共和国刑法》××××的规定，构成××，提请本院依法对其判处刑罚。
+
+
+Wrong prediction: [罪名]非法行医;非法堕胎<eoa>
+Correct answer: 非法进行节育手术
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

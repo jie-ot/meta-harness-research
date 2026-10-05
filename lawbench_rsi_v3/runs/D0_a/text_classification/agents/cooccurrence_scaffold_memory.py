@@ -1,0 +1,238 @@
+"""Co-occurrence Scaffold Memory — charge co-occurrence graph drives multi-charge prediction.
+
+Mechanism change from reflexion_lesson_memory:
+
+The frontier system (reflexion_lesson_memory) stores per-error lessons and
+retrieves similar examples by Jaccard similarity. Both mechanisms treat each
+prediction as an independent single-label problem; neither has any representation
+of which charges tend to appear together.
+
+CooccurrenceScaffoldMemory builds an explicit charge co-occurrence graph from
+ALL training ground_truth labels: for every multi-charge case, each pair of
+charges increments a shared count. At predict time, the system infers a likely
+primary charge from the top-k similar examples, looks up that charge's graph
+neighbours, and injects a "Companion charge check" scaffold listing the top
+co-occurring partners before the case. The model is then asked to include each
+companion ONLY if the case facts support it. Correct examples are still kept for
+similarity-based fill; error pairs are not separately stored.
+
+This targets the dominant remaining failure mode: under-prediction of secondary
+charges (about 30% of errors in iteration 1), which example retrieval and
+reflexion lessons do not address.
+
+Axes changed:
+- A (Prompt template): new explicit companion-charge scaffold section with
+  fact-verification instruction, replacing the lessons format
+- B (Memory content): co-occurrence graph added alongside examples pool
+- C (Selection algorithm): primary charge inferred via majority vote over
+  top-k similar examples; companions ranked by graph edge weight
+- E (Learning trigger): graph updated from every ground_truth (not just errors)
+"""
+
+import json
+import re
+from collections import defaultdict
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+# ---------------------------------------------------------------------------
+# Prompt templates
+# ---------------------------------------------------------------------------
+
+PREDICT_TEMPLATE = """Solve the classification problem below.
+
+{scaffold_section}{examples_section}**Problem:**
+{input}
+
+**Instructions:**
+- A case may require MORE THAN ONE charge. For each companion charge listed above, include it ONLY if the case facts explicitly support it.
+- Use the EXACT official label — do not append or drop characters
+- Separate multiple charges with a semicolon
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[exact label(s), semicolon-separated if multiple]"}}"""
+
+# ---------------------------------------------------------------------------
+# Constants
+# ---------------------------------------------------------------------------
+
+MAX_CHARS = 30000
+# How many similar examples to use when inferring the primary charge
+_PRIMARY_K = 3
+# Max co-occurring companions shown in scaffold
+_COMPANION_LIMIT = 4
+
+
+def _tokenize(text: str) -> frozenset[str]:
+    """CJK character bigrams + ASCII tokens for fallback similarity."""
+    chars = re.findall(r"[一-鿿㐀-䶿豈-﫿]", text)
+    if len(chars) >= 2:
+        return frozenset(chars[i] + chars[i + 1] for i in range(len(chars) - 1))
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+
+def _jaccard(a: frozenset[str], b: frozenset[str]) -> float:
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+def _parse_charges(label: str) -> list[str]:
+    return [c.strip() for c in label.split(";") if c.strip()]
+
+
+# ---------------------------------------------------------------------------
+# Memory system
+# ---------------------------------------------------------------------------
+
+class CooccurrenceScaffoldMemory(MemorySystem):
+    """Co-occurrence graph over charge labels guides multi-charge prediction."""
+
+    def __init__(self, llm: LLMCallable):
+        super().__init__(llm)
+        # co_occur[A][B] = number of training cases where A and B co-appeared
+        self.co_occur: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+        # Raw examples for similarity-based context fill
+        self.examples: list[dict[str, Any]] = []
+
+    # ------------------------------------------------------------------
+    # Learning: update co-occurrence graph from every ground truth
+    # ------------------------------------------------------------------
+
+    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+        for r in batch_results:
+            raw_q = r.get("raw_question", r["input"])
+            gt = r["ground_truth"]
+            self.examples.append({
+                "input": r["input"],
+                "target": gt,
+                "tokens": _tokenize(raw_q),
+                "raw_question": raw_q,
+            })
+            # Update co-occurrence graph — every ground truth, not just errors
+            charges = _parse_charges(gt)
+            for ca in charges:
+                for cb in charges:
+                    if ca != cb:
+                        self.co_occur[ca][cb] += 1
+
+    # ------------------------------------------------------------------
+    # Retrieval helpers
+    # ------------------------------------------------------------------
+
+    def _primary_charge(self, query: str) -> str:
+        """Majority first-charge among the _PRIMARY_K most similar examples."""
+        if not self.examples:
+            return ""
+        q_tok = _tokenize(query)
+        ranked = sorted(
+            self.examples,
+            key=lambda ex: -_jaccard(q_tok, ex["tokens"]),
+        )[:_PRIMARY_K]
+        votes: dict[str, int] = defaultdict(int)
+        for ex in ranked:
+            charges = _parse_charges(ex["target"])
+            if charges:
+                votes[charges[0]] += 1
+        if not votes:
+            return ""
+        return max(votes.items(), key=lambda kv: kv[1])[0]
+
+    def _companions(self, primary: str) -> list[tuple[str, int]]:
+        """Top co-occurring companions for primary, ranked by frequency."""
+        partners = self.co_occur.get(primary, {})
+        return sorted(partners.items(), key=lambda kv: (-kv[1], kv[0]))[:_COMPANION_LIMIT]
+
+    def _build_scaffold_section(self, query: str) -> str:
+        primary = self._primary_charge(query)
+        if not primary:
+            return ""
+        companions = self._companions(primary)
+        if not companions:
+            return ""
+        lines = [
+            f"**Companion charge check** — the primary charge is likely [{primary}]. "
+            "These charges frequently co-occur with it in training; include each ONLY "
+            "if the case facts support it:"
+        ]
+        for ch, cnt in companions:
+            lines.append(f"- {ch} (co-occurred {cnt}x)")
+        return "\n".join(lines) + "\n\n"
+
+    def _build_examples_section(self, query: str, budget: int) -> str:
+        if not self.examples:
+            return ""
+        q_tok = _tokenize(query)
+        ranked = sorted(
+            [(_jaccard(q_tok, ex["tokens"]), i, ex) for i, ex in enumerate(self.examples)],
+            key=lambda x: (x[0], x[1]),
+            reverse=True,
+        )
+        parts: list[str] = []
+        total = 0
+        for _, _, ex in ranked:
+            q = ex.get("raw_question", ex["input"])
+            part = f"Q: {q}\nA: {ex['target']}"
+            if total + len(part) + 2 > budget:
+                break
+            parts.append(part)
+            total += len(part) + 2
+        return "\n\n".join(parts) + "\n\n" if parts else ""
+
+    # ------------------------------------------------------------------
+    # Prediction
+    # ------------------------------------------------------------------
+
+    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+        scaffold_sec = self._build_scaffold_section(input)
+        examples_budget = max(0, MAX_CHARS - len(scaffold_sec) - 500)
+        examples_sec = self._build_examples_section(input, examples_budget)
+
+        prompt = PREDICT_TEMPLATE.format(
+            scaffold_section=scaffold_sec,
+            examples_section=examples_sec,
+            input=input,
+        )
+        response = self.call_llm(prompt)
+        answer = extract_json_field(response, "final_answer")
+        primary = self._primary_charge(input)
+        return answer, {
+            "full_response": response,
+            "primary_charge": primary,
+            "companions_offered": [ch for ch, _ in self._companions(primary)],
+            "num_examples": len(self.examples),
+            "scaffold_chars": len(scaffold_sec),
+        }
+
+    # ------------------------------------------------------------------
+    # State serialization
+    # ------------------------------------------------------------------
+
+    def get_state(self) -> str:
+        def _ser(item: dict) -> dict:
+            return {k: (sorted(v) if isinstance(v, frozenset) else v)
+                    for k, v in item.items()}
+        # defaultdict → plain dict for JSON
+        co_occur_plain = {k: dict(v) for k, v in self.co_occur.items()}
+        return json.dumps({
+            "co_occur": co_occur_plain,
+            "examples": [_ser(ex) for ex in self.examples],
+        }, indent=2, ensure_ascii=False)
+
+    def set_state(self, state: str) -> None:
+        data = json.loads(state)
+        self.co_occur = defaultdict(lambda: defaultdict(int))
+        for outer_k, inner in data.get("co_occur", {}).items():
+            for inner_k, cnt in inner.items():
+                self.co_occur[outer_k][inner_k] = cnt
+        self.examples = []
+        for ex in data.get("examples", []):
+            restored = dict(ex)
+            if "tokens" in restored and isinstance(restored["tokens"], list):
+                restored["tokens"] = frozenset(restored["tokens"])
+            else:
+                raw_q = restored.get("raw_question", restored.get("input", ""))
+                restored["tokens"] = _tokenize(raw_q)
+            self.examples.append(restored)

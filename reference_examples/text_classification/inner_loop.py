@@ -24,7 +24,7 @@ class JSONLLogger:
         self._lock = threading.Lock()
         if self.path:
             self.path.parent.mkdir(parents=True, exist_ok=True)
-            self.path.write_text("")
+            self.path.write_text("", encoding="utf-8")
 
     def log(self, type: str, **data):
         """Write a log entry. All logging goes through this method."""
@@ -32,7 +32,7 @@ class JSONLLogger:
             return
         entry = {"type": type, "t": round(time.time() - self.start_time, 2), **data}
         with self._lock:
-            with open(self.path, "a") as f:
+            with open(self.path, "a", encoding="utf-8") as f:
                 f.write(json.dumps(entry) + "\n")
 
     def checkpoint(self, step: int, memory_state: str):
@@ -509,7 +509,7 @@ def load_config() -> dict:
     import yaml
 
     config_path = Path(__file__).parent / "config.yaml"
-    with open(config_path) as f:
+    with open(config_path, encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
@@ -682,7 +682,7 @@ if __name__ == "__main__":
 
     if args.load_memory:
         # Skip training — load saved memory state
-        state = Path(args.load_memory).read_text()
+        state = Path(args.load_memory).read_text(encoding="utf-8")
         memory.set_state(state)
         print(f"Loaded memory state from {args.load_memory}", flush=True)
         train_acc = 0.0
@@ -737,7 +737,7 @@ if __name__ == "__main__":
         # Save memory state after training
         if args.save_memory:
             Path(args.save_memory).parent.mkdir(parents=True, exist_ok=True)
-            Path(args.save_memory).write_text(memory.get_state())
+            Path(args.save_memory).write_text(memory.get_state(), encoding="utf-8")
             print(f"Saved memory state to {args.save_memory}", flush=True)
 
     # Eval: only run what's requested
@@ -780,6 +780,7 @@ if __name__ == "__main__":
         llm_calls=llm.total_calls,
         llm_input_tokens=llm.total_input_tokens,
         llm_output_tokens=llm.total_output_tokens,
+        estimated_cost_usd=llm_usage["estimated_cost_usd"],
     )
 
     # Print summary
@@ -788,7 +789,9 @@ if __name__ == "__main__":
         summary += f" val={val_acc:.0%}"
     if test_acc is not None:
         summary += f" test={test_acc:.0%}"
-    summary += f" time={runtime:.1f}s"
+    summary += (
+        f" time={runtime:.1f}s cost=${llm_usage['estimated_cost_usd']:.4f}"
+    )
     print(summary, flush=True)
 
     # Build common metadata for output JSON
@@ -810,16 +813,17 @@ if __name__ == "__main__":
             "llm_input_tokens": llm_usage["input_tokens"],
             "llm_output_tokens": llm_usage["output_tokens"],
             "llm_total_tokens": llm_usage["total_tokens"],
+            "estimated_cost_usd": llm_usage["estimated_cost_usd"],
         }
 
     if args.val_output and val_result:
         Path(args.val_output).parent.mkdir(parents=True, exist_ok=True)
-        with open(args.val_output, "w") as f:
+        with open(args.val_output, "w", encoding="utf-8") as f:
             json.dump(_build_output(val_result), f, indent=2)
         print(f"Saved val results to {args.val_output}", flush=True)
 
     if args.test_output and test_result:
         Path(args.test_output).parent.mkdir(parents=True, exist_ok=True)
-        with open(args.test_output, "w") as f:
+        with open(args.test_output, "w", encoding="utf-8") as f:
             json.dump(_build_output(test_result), f, indent=2)
         print(f"Saved test results to {args.test_output}", flush=True)

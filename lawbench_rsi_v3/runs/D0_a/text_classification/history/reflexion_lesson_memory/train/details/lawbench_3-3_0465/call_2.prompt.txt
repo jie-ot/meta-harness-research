@@ -1,0 +1,24 @@
+An AI classifier made an error on this case. Generate a compact correction lesson.
+
+**Correct label:** 单位行贿
+**Wrong prediction:** [罪名]行贿<eoa>
+**Case facts (excerpt):**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明：2012年上半年的一天晚上，被告人张3某为了找时任龙感湖管理区副书记、主任陈某(已判刑)在湖北洛源房地产有限公司所购买的龙感湖老高中地块规划修路事宜给予关照和帮忙，张3某来到陈某所居住的龙感湖国税局宿舍楼。在陈某家的客厅内，张3某先是向陈某汇报了其公司所购买龙感湖管理区老高中地块的情况，然后请陈某帮忙在这块地的东边规划、并由政府出资修建出一条接通城区的水泥路。之后，张3某就将随身带来的装有10万元人民币的蓝色文件袋放在陈某家的沙发上，希望陈某给予关照，陈某点头答应。之后，陈某就着手为湖北洛源房地产有限公司所购买的这块地东边规划出一条水泥路而跟有关部门人员进行安排。
+2012年下半年的一天，陈某得知龙感湖管理区有关部门人员被查处，害怕受到牵连，担心张3某送给他的10万元钱的事情被暴露，于是陈某在他的办公室里将这笔10万元钱退还给了张3某。张3某请求陈某帮忙规划并修建的这条道路也因为陈某在不久后被有关机关查处而没有规划修建。
+另查明，陈某所退还的10万元人民币于2013年3月10日由黄冈市人民检察院龙感湖检察处收缴并上交给黄冈市龙感湖管理区预算外资金
+
+Write a lesson that:
+1. States the KEY distinguishing feature that determines the correct label
+2. Explains what makes this different from "[罪名]行贿<eoa>"
+3. Gives a brief rule a classifier can apply to future cases
+
+Respond only in JSON:
+{"lesson": "<one to three sentences, in the same language as the case facts>", "final_answer": "单位行贿"}

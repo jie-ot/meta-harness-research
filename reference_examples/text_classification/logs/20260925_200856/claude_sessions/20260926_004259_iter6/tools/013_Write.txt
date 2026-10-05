@@ -1,0 +1,78 @@
+Write: C:\tmp\test_ngram.py
+
+content:
+"""Prototype: compare word-token Jaccard vs. character-bigram Jaccard on real LawBench text."""
+import re, json, sys
+
+# ---- tokenizers ----
+def tok_word(text):
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+def tok_bigram(text, n=2):
+    t = re.sub(r'\s+', ' ', text.strip())
+    if len(t) < n:
+        return frozenset([t]) if t else frozenset()
+    return frozenset(t[i:i+n] for i in range(len(t) - n + 1))
+
+def tok_trigram(text, n=3):
+    t = re.sub(r'\s+', ' ', text.strip())
+    if len(t) < n:
+        return frozenset([t]) if t else frozenset()
+    return frozenset(t[i:i+n] for i in range(len(t) - n + 1))
+
+def jaccard(a, b):
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+# ---- load real examples from log ----
+LOG = r"D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\LawBench\mmr_memory\gpt-oss-120b\log.jsonl"
+
+steps = []
+with open(LOG, encoding="utf-8") as f:
+    for line in f:
+        rec = json.loads(line)
+        if rec.get("type") == "step":
+            steps.append(rec)
+        if len(steps) >= 20:
+            break
+
+# Extract raw question from input_preview (it's a preview, use full input from checkpoint)
+# We have input_preview; use that as a proxy
+queries = [s["input_preview"] for s in steps[:10]]
+
+print("=== Word-token sizes (should be near 0 for Chinese text) ===")
+for i, q in enumerate(queries[:5]):
+    toks = tok_word(q)
+    print(f"  step {i}: {len(toks)} tokens -> {sorted(toks)[:8]}")
+
+print("\n=== Bigram sizes ===")
+for i, q in enumerate(queries[:5]):
+    toks = tok_bigram(q)
+    print(f"  step {i}: {len(toks)} bigrams (sample: {list(toks)[:4]})")
+
+print("\n=== Pairwise Jaccard: word-token vs bigram ===")
+for i in range(min(4, len(queries)-1)):
+    a, b = queries[i], queries[i+1]
+    jw = jaccard(tok_word(a), tok_word(b))
+    j2 = jaccard(tok_bigram(a), tok_bigram(b))
+    j3 = jaccard(tok_trigram(a), tok_trigram(b))
+    print(f"  step{i} vs step{i+1}: word={jw:.4f}  bigram={j2:.4f}  trigram={j3:.4f}")
+
+print("\n=== Cross-step similarity matrix (bigram): first 5 queries ===")
+import itertools
+for i, j in itertools.combinations(range(5), 2):
+    sim = jaccard(tok_bigram(queries[i]), tok_bigram(queries[j]))
+    print(f"  ({i},{j}): {sim:.4f}")
+
+# Test a same-label pair (steps 2 and 3 have different tgt, steps 1 and 4 seem like fraud)
+# Also verify cold-start (empty frozenset)
+empty = frozenset()
+q_toks = tok_bigram(queries[0])
+print(f"\n=== Cold-start jaccard (empty vs query): {jaccard(empty, q_toks):.4f} (should be 0)")
+print("Done.")
+
+
+
+--- output ---
+File created successfully at: C:\tmp\test_ngram.py (file state is current in your context — no need to Read it back)

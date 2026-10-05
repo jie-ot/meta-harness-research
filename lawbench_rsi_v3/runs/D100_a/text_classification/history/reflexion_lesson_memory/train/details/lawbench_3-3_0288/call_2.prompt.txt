@@ -1,0 +1,25 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:上海市浦东新区人民检察院指控，2015年5月10日，被告人徐某为骗取他人钱财，在将其所有的位于本区云汉路XXX弄XXX号XXX室房屋已出售给他人的情况下，隐瞒上述事实真相，经他人居间介绍以人民币55万某的价格与被害人卫某某签订房屋转让协议出售该房屋，后从被害人卫某某处合计骗得人民币48万某，用于归还其个人债务。
+2016年12月12日，被告人徐某被公安机关抓获，到案后如实供述了上述主要犯罪事实。
+2016年12月18日，被告人徐某已返还被害人卫某某人民币5万某。
+本院审理期间，被害人卫某某对被告人徐某表示谅解，并请求对被告人徐某宣告××。
+
+
+Wrong prediction: [罪名]诈骗<eoa>
+Correct answer: 合同诈骗
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

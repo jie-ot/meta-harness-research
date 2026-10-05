@@ -1,0 +1,97 @@
+Bash
+
+command:
+cat > "$TEMP/test_contrastive.py" << 'EOF'
+"""Prototype: contrastive error-driven memory."""
+import random
+
+random.seed(42)
+examples = [
+    {"input": f"Classify: text_{i}", "target": f"Class{i%5}", 
+     "prediction": f"Class{(i+1)%5}" if i % 3 == 0 else f"Class{i%5}",
+     "was_correct": i % 3 != 0}
+    for i in range(30)
+]
+
+MAX_CHARS = 30000
+
+def format_as_contrastive(errors, successes, max_chars=MAX_CHARS):
+    """Mix contrastive pairs (errors) with plain Q/A (successes)."""
+    parts = []
+    total = 0
+    # Show recent errors first with contrastive framing
+    for ex in reversed(errors[-15:]):
+        part = (f"Q: {ex['input']}\n"
+                f"  ✗ Wrong: {ex['prediction']}\n"
+                f"  ✓ Correct: {ex['target']}")
+        if total + len(part) > max_chars: break
+        parts.append(part)
+        total += len(part) + 2
+    # Then recent successes (plain)
+    for ex in reversed(successes[-8:]):
+        part = f"Q: {ex['input']}\nA: {ex['target']}"
+        if total + len(part) > max_chars: break
+        parts.append(part)
+        total += len(part) + 2
+    return "\n\n".join(parts)
+
+errors = [e for e in examples if not e["was_correct"]]
+successes = [e for e in examples if e["was_correct"]]
+
+section = format_as_contrastive(errors, successes)
+print(f"Errors: {len(errors)}, Successes: {len(successes)}")
+print(f"Section length: {len(section)} chars")
+print("---SAMPLE---")
+print(section[:600])
+print("OK - contrastive format verified")
+EOF
+python "$TEMP/test_contrastive.py"
+
+description: Run contrastive memory prototype
+
+--- output ---
+Errors: 10, Successes: 20
+Section length: 850 chars
+---SAMPLE---
+Q: Classify: text_27
+  ✗ Wrong: Class3
+  ✓ Correct: Class2
+
+Q: Classify: text_24
+  ✗ Wrong: Class0
+  ✓ Correct: Class4
+
+Q: Classify: text_21
+  ✗ Wrong: Class2
+  ✓ Correct: Class1
+
+Q: Classify: text_18
+  ✗ Wrong: Class4
+  ✓ Correct: Class3
+
+Q: Classify: text_15
+  ✗ Wrong: Class1
+  ✓ Correct: Class0
+
+Q: Classify: text_12
+  ✗ Wrong: Class3
+  ✓ Correct: Class2
+
+Q: Classify: text_9
+  ✗ Wrong: Class0
+  ✓ Correct: Class4
+
+Q: Classify: text_6
+  ✗ Wrong: Class2
+  ✓ Correct: Class1
+
+Q: Classify: text_3
+  ✗ Wrong: Class4
+  ✓ Correct: Class3
+
+Q: Classify: text_0
+  ✗ Wrong: Class1
+  ✓ Correct: Class0
+
+Q: C
+OK - contrastive format verified

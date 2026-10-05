@@ -1,0 +1,72 @@
+{
+  "call_id": "bf07fbf206514260b885796b64db5e86",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017833-JgPN6SbWHDUx8kLNeEHI",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the facts describe assault that caused injuries and the victim’s death, but the prosecution’s charge is for intentional injury (e.g., ‘故意伤害致轻伤致死’) rather than intentional homicide, classify the crime as ‘故意伤害’ (and any accompanying offenses) instead of ‘故意杀人’.\",\n  \"keywords\": [\n    \"致人轻伤并致死\",\n    \"故意伤害致轻伤\",\n    \"伤情符合扼颈所致\",\n    \"未直接故意杀人\",\n    \"虐待家庭成员\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with a rule to prevent misclassifying the crime. The error: AI predicted \"故意杀人;虐待家庭成员\" but correct answer is \"故意伤害;虐待\". The issue: misidentifying the homicide as intentional killing when the death was caused by assault leading to death, but the charge is for intentional injury (resulting in death) not murder. So rule: When the factual basis indicates death resulted from assault but the prosecution charges for intentional injury, not murder, the classification should reflect the specific statutory offense (e.g., intentional injury) rather than homicide. Also need keywords: \"致人轻伤并致死\", \"伤情符合扼颈所致\", \"故意伤害致死\", \"未直接故意杀人\", \"虐待家庭成员\". Provide rule: \"If the case description states that the defendant's conduct was assault causing injuries and the victim died, but the prosecution charges for intentional injury (and not for intentional homicide), classify as '故意伤害' rather than '故意杀人'.\" Provide keywords.\n\nReturn JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with a rule to prevent misclassifying the crime. The error: AI predicted \"故意杀人;虐待家庭成员\" but correct answer is \"故意伤害;虐待\". The issue: misidentifying the homicide as intentional killing when the death was caused by assault leading to death, but the charge is for intentional injury (resulting in death) not murder. So rule: When the factual basis indicates death resulted from assault but the prosecution charges for intentional injury, not murder, the classification should reflect the specific statutory offense (e.g., intentional injury) rather than homicide. Also need keywords: \"致人轻伤并致死\", \"伤情符合扼颈所致\", \"故意伤害致死\", \"未直接故意杀人\", \"虐待家庭成员\". Provide rule: \"If the case description states that the defendant's conduct was assault causing injuries and the victim died, but the prosecution charges for intentional injury (and not for intentional homicide), classify as '故意伤害' rather than '故意杀人'.\" Provide keywords.\n\nReturn JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with a rule to prevent misclassifying the crime. The error: AI predicted \"故意杀人;虐待家庭成员\" but correct answer is \"故意伤害;虐待\". The issue: misidentifying the homicide as intentional killing when the death was caused by assault leading to death, but the charge is for intentional injury (resulting in death) not murder. So rule: When the factual basis indicates death resulted from assault but the prosecution charges for intentional injury, not murder, the classification should reflect the specific statutory offense (e.g., intentional injury) rather than homicide. Also need keywords: \"致人轻伤并致死\", \"伤情符合扼颈所致\", \"故意伤害致死\", \"未直接故意杀人\", \"虐待家庭成员\". Provide rule: \"If the case description states that the defendant's conduct was assault causing injuries and the victim died, but the prosecution charges for intentional injury (and not for intentional homicide), classify as '故意伤害' rather than '故意杀人'.\" Provide keywords.\n\nReturn JSON.",
+            "reasoning_content": "We need to produce a JSON with a rule to prevent misclassifying the crime. The error: AI predicted \"故意杀人;虐待家庭成员\" but correct answer is \"故意伤害;虐待\". The issue: misidentifying the homicide as intentional killing when the death was caused by assault leading to death, but the charge is for intentional injury (resulting in death) not murder. So rule: When the factual basis indicates death resulted from assault but the prosecution charges for intentional injury, not murder, the classification should reflect the specific statutory offense (e.g., intentional injury) rather than homicide. Also need keywords: \"致人轻伤并致死\", \"伤情符合扼颈所致\", \"故意伤害致死\", \"未直接故意杀人\", \"虐待家庭成员\". Provide rule: \"If the case description states that the defendant's conduct was assault causing injuries and the victim died, but the prosecution charges for intentional injury (and not for intentional homicide), classify as '故意伤害' rather than '故意杀人'.\" Provide keywords.\n\nReturn JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 372,
+      "prompt_tokens": 700,
+      "total_tokens": 1072,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 280,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0001325,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0001325,
+        "upstream_inference_prompt_cost": 3.119394618834081e-05,
+        "upstream_inference_completions_cost": 0.0001013060538116592
+      }
+    }
+  },
+  "raw_response_missing": false
+}

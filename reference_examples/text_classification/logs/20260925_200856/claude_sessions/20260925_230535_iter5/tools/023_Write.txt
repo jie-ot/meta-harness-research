@@ -1,0 +1,188 @@
+Write: C:\Users\33841\AppData\Local\Temp\proto_iter5.py
+
+content:
+"""Iteration 5 prototype: test two candidate mechanisms in isolation."""
+import re
+from collections import defaultdict
+
+
+def tokenize(text):
+    return frozenset(re.findall(r'[A-Za-z0-9]+', text.lower()))
+
+
+def jaccard(a, b):
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+# ---------- Mock example pool ----------
+labels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+examples = []
+for i, lbl in enumerate(labels * 5):
+    words = f'word{i} topic{i % 3} cat{lbl} item{i * 7}'
+    examples.append({
+        'input': words,
+        'target': lbl,
+        'tokens': tokenize(words),
+        'raw_question': words,
+    })
+
+
+def scored(query_toks, examples):
+    r = [(jaccard(query_toks, ex['tokens']), idx, ex)
+         for idx, ex in enumerate(examples)]
+    r.sort(key=lambda x: (-x[0], x[1]))
+    return r
+
+
+# ============================================================
+# Prototype 1: Disambiguation + MMR fill
+# Replace similarity-rank fill phase with MMR to recover diversity
+# ============================================================
+def mmr_fill(query_toks, ranked, already_used, budget=5000, lam=0.6):
+    selected = []
+    remaining = [(s, i, e) for s, i, e in ranked if i not in already_used]
+    total_chars = 0
+    while remaining and total_chars < budget:
+        best_score, best_item = -999, None
+        for s, i, ex in remaining:
+            part = f'Q: {ex["raw_question"]}\nA: {ex["target"]}'
+            if total_chars + len(part) + 2 > budget:
+                continue
+            redundancy = max(
+                (jaccard(ex['tokens'], se['tokens']) for se in selected),
+                default=0.0,
+            )
+            score = lam * s - (1 - lam) * redundancy
+            if score > best_score:
+                best_score, best_item = score, (s, i, ex)
+        if best_item is None:
+            break
+        _, idx, ex = best_item
+        selected.append(ex)
+        total_chars += len(f'Q: {ex["raw_question"]}\nA: {ex["target"]}') + 2
+        remaining = [(s, i, e) for s, i, e in remaining if i != idx]
+    return selected
+
+
+query = 'word2 topic2 catX item14'
+q_tok = tokenize(query)
+ranked = scored(q_tok, examples)
+
+# Simulate: confusion phase injects 2 disambiguation examples
+disambig_used = {0, 8}
+disambig_selected = [examples[0], examples[8]]
+mmr_result = mmr_fill(q_tok, ranked, disambig_used, budget=2000, lam=0.6)
+combined = disambig_selected + mmr_result
+combined_labels = [ex['target'] for ex in combined]
+print(f'Proto1 combined labels : {combined_labels}')
+print(f'Proto1 unique labels   : {len(set(combined_labels))} / {len(combined)}')
+
+# Compare with sim-fill (old approach)
+sim_fill = []
+used = set(disambig_used)
+total_chars = 0
+for _, idx, ex in ranked:
+    if idx in used:
+        continue
+    part = f'Q: {ex["raw_question"]}\nA: {ex["target"]}'
+    if total_chars + len(part) + 2 > 2000:
+        break
+    sim_fill.append(ex)
+    used.add(idx)
+    total_chars += len(part) + 2
+sim_combined_labels = [ex['target'] for ex in disambig_selected + sim_fill]
+print(f'Proto1 sim-fill labels : {sim_combined_labels}')
+print(f'Proto1 sim unique      : {len(set(sim_combined_labels))} / {len(sim_combined_labels)}')
+assert len(set(combined_labels)) >= len(set(sim_combined_labels)), \
+    'MMR fill should be at least as diverse as sim fill'
+print('Proto1 PASS: MMR fill >= sim fill diversity\n')
+
+
+# ============================================================
+# Prototype 2: Per-label error-rate weighting
+# Score = jaccard * (1 + beta * label_difficulty)
+# difficulty[label] = errors / total seen for that label
+# ============================================================
+label_errors = {'A': 4, 'B': 1, 'C': 0, 'D': 3, 'E': 2, 'F': 0, 'G': 4, 'H': 1}
+label_totals = {'A': 5, 'B': 5, 'C': 5, 'D': 5, 'E': 5, 'F': 5, 'G': 5, 'H': 5}
+label_difficulty = {
+    lbl: label_errors.get(lbl, 0) / max(label_totals.get(lbl, 1), 1)
+    for lbl in labels
+}
+
+
+def difficulty_weighted_scored(query_toks, examples, label_difficulty, beta=2.0):
+    r = []
+    for idx, ex in enumerate(examples):
+        jac = jaccard(query_toks, ex['tokens'])
+        diff = label_difficulty.get(ex['target'], 0.0)
+        score = jac * (1 + beta * diff)
+        r.append((score, idx, ex))
+    r.sort(key=lambda x: (-x[0], x[1]))
+    return r
+
+
+dw = difficulty_weighted_scored(q_tok, examples, label_difficulty, beta=2.0)
+raw_top8 = [ex['target'] for _, _, ex in ranked[:8]]
+dw_top8 = [ex['target'] for _, _, ex in dw[:8]]
+hard_labels = {l for l, d in label_difficulty.items() if d >= 0.6}
+raw_hard = sum(1 for l in raw_top8 if l in hard_labels)
+dw_hard = sum(1 for l in dw_top8 if l in hard_labels)
+print(f'Proto2 hard labels        : {hard_labels}')
+print(f'Proto2 raw top-8          : {raw_top8}  (hard={raw_hard})')
+print(f'Proto2 difficulty-weighted: {dw_top8}  (hard={dw_hard})')
+assert dw_hard >= raw_hard, 'Difficulty weighting should surface more hard examples'
+print('Proto2 PASS: difficulty weighting surfaces more hard-label examples\n')
+
+# Variant 2b: apply difficulty weighting *after* MMR (to preserve diversity)
+# We weight the MMR query-score component: relevance boosted by difficulty
+def mmr_difficulty_fill(query_toks, examples, label_difficulty,
+                        already_used=None, budget=5000, lam=0.6, beta=1.5):
+    if already_used is None:
+        already_used = set()
+    selected = []
+    # Pre-score with difficulty boost
+    candidates = []
+    for idx, ex in enumerate(examples):
+        if idx in already_used:
+            continue
+        jac = jaccard(query_toks, ex['tokens'])
+        diff = label_difficulty.get(ex['target'], 0.0)
+        boosted = jac * (1 + beta * diff)
+        candidates.append((boosted, idx, ex))
+
+    total_chars = 0
+    while candidates and total_chars < budget:
+        best_score, best_item = -999, None
+        for s, i, ex in candidates:
+            part = f'Q: {ex["raw_question"]}\nA: {ex["target"]}'
+            if total_chars + len(part) + 2 > budget:
+                continue
+            redundancy = max(
+                (jaccard(ex['tokens'], se['tokens']) for se in selected),
+                default=0.0,
+            )
+            score = lam * s - (1 - lam) * redundancy
+            if score > best_score:
+                best_score, best_item = score, (s, i, ex)
+        if best_item is None:
+            break
+        _, idx, ex = best_item
+        selected.append(ex)
+        total_chars += len(f'Q: {ex["raw_question"]}\nA: {ex["target"]}') + 2
+        candidates = [(s, i, e) for s, i, e in candidates if i != idx]
+    return selected
+
+md_result = mmr_difficulty_fill(q_tok, examples, label_difficulty, budget=3000, beta=1.5)
+md_labels = [ex['target'] for ex in md_result]
+md_hard = sum(1 for l in md_labels if l in hard_labels)
+print(f'Proto2b MMR+difficulty labels: {md_labels}')
+print(f'Proto2b hard count: {md_hard} / {len(md_labels)}')
+print('Proto2b PASS: MMR+difficulty functional')
+
+
+
+--- output ---
+File created successfully at: C:\Users\33841\AppData\Local\Temp\proto_iter5.py (file state is current in your context — no need to Read it back)

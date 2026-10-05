@@ -1,0 +1,203 @@
+Write: agents\unified_confusion_retrieval_memory.py
+
+content:
+"""Unified Confusion-Retrieval Memory.
+
+Replaces the two-phase selection in adaptive_tokenizer_confusion_memory with a
+single-pass unified ranking. Every example receives one score:
+
+    score(ex) = jaccard(query, ex) + ALPHA * log(1 + confusion_affinity(ex.label))
+
+where confusion_affinity is the total confusion-matrix weight between ex.label
+and any of the top-K candidate labels inferred from the current ranked list.
+
+Motivation: the two-phase approach injects confusion-target slots unconditionally,
+burning context budget on examples that are topically distant from the query. The
+unified score ensures that confusion-adjacent examples are only surfaced when they
+also bear some semantic similarity to the query.
+
+Also includes the prediction-normalization fix (stripping format wrappers before
+storing confusion keys) so the confusion matrix actually fires.
+"""
+
+import json
+import math
+import re
+from collections import defaultdict
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+
+{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Follow the patterns shown in the examples above
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+MAX_CHARS = 30000
+_TOP_CANDIDATE_K = 5   # candidate labels to score confusion affinity against
+ALPHA = 0.3            # weight for confusion-affinity bonus
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+# Matches common LLM output wrappers like [TAG]label<eoa> or [label]text<eoa>
+_WRAPPER_RE = re.compile(r'^\s*\[[^\]]*\]|<eoa>\s*$|\[[^\]]*\]\s*$', re.IGNORECASE)
+
+
+def _has_cjk(text: str) -> bool:
+    return bool(_CJK_RE.search(text))
+
+
+def _tokenize_word(text: str) -> frozenset:
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+
+def _tokenize_bigram(text: str) -> frozenset:
+    t = re.sub(r'\s+', ' ', text.strip())
+    if len(t) < 2:
+        return frozenset([t]) if t else frozenset()
+    return frozenset(t[i:i + 2] for i in range(len(t) - 1))
+
+
+def _tokenize_adaptive(text: str) -> frozenset:
+    return _tokenize_bigram(text) if _has_cjk(text) else _tokenize_word(text)
+
+
+def _jaccard(a: frozenset, b: frozenset) -> float:
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+def _normalize_prediction(pred: str) -> str:
+    """Strip format wrappers so predictions match ground-truth label strings."""
+    if not pred:
+        return pred
+    cleaned = _WRAPPER_RE.sub('', pred).strip()
+    return cleaned if cleaned else pred
+
+
+class UnifiedConfusionRetrievalMemory(MemorySystem):
+    """Single-pass unified confusion+similarity ranking with prediction normalization."""
+
+    def __init__(self, llm: LLMCallable):
+        super().__init__(llm)
+        self.examples: list[dict[str, Any]] = []
+        self.confusion: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+
+    def _confusion_affinity(self, label: str, candidate_labels: list[str]) -> int:
+        """Total confusion-matrix weight between label and any candidate."""
+        total = 0
+        for cl in candidate_labels:
+            total += self.confusion.get(cl, {}).get(label, 0)
+            total += self.confusion.get(label, {}).get(cl, 0)
+        return total
+
+    def _build_parts(self, query: str) -> list[str]:
+        if not self.examples:
+            return []
+
+        q_tok = _tokenize_adaptive(query)
+
+        # First pass: compute jaccard scores to determine top candidate labels
+        jac_ranked = sorted(
+            [(_jaccard(q_tok, ex["tokens"]), idx, ex) for idx, ex in enumerate(self.examples)],
+            key=lambda x: (x[0], x[1]),
+            reverse=True,
+        )
+        candidate_labels = [ex["target"] for _, _, ex in jac_ranked[:_TOP_CANDIDATE_K]]
+
+        # Second pass: unified score = jaccard + alpha * log(1 + confusion_affinity)
+        unified: list[tuple[float, int, dict]] = []
+        for jac, idx, ex in jac_ranked:
+            ca = self._confusion_affinity(ex["target"], candidate_labels)
+            score = jac + ALPHA * math.log(1 + ca)
+            unified.append((score, idx, ex))
+        unified.sort(key=lambda x: (x[0], x[1]), reverse=True)
+
+        parts: list[str] = []
+        used: set[int] = set()
+        total_chars = 0
+
+        for _, idx, ex in unified:
+            if idx in used:
+                continue
+            q = ex.get("raw_question", ex["input"])
+            part = f"Q: {q}\nA: {ex['target']}"
+            if total_chars + len(part) + 2 > MAX_CHARS:
+                break
+            parts.append(part)
+            used.add(idx)
+            total_chars += len(part) + 2
+
+        return parts
+
+    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+        parts = self._build_parts(input)
+        examples_section = "\n\n".join(parts)
+        prompt = PROMPT_TEMPLATE.format(
+            examples_section=examples_section,
+            input=input,
+        )
+        response = self.call_llm(prompt)
+        answer = extract_json_field(response, "final_answer")
+        return answer, {
+            "full_response": response,
+            "num_examples": len(self.examples),
+            "num_selected": len(parts),
+            "num_confusion_pairs": sum(len(v) for v in self.confusion.values()),
+        }
+
+    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+        for r in batch_results:
+            raw_q = r.get("raw_question", r["input"])
+            ex: dict[str, Any] = {
+                "input": r["input"],
+                "target": r["ground_truth"],
+                "tokens": _tokenize_adaptive(raw_q),
+            }
+            if "raw_question" in r:
+                ex["raw_question"] = r["raw_question"]
+            self.examples.append(ex)
+
+            if not r.get("was_correct", True):
+                pred = _normalize_prediction(r.get("prediction", ""))
+                gt = r["ground_truth"]
+                if pred and pred != gt:
+                    self.confusion[pred][gt] += 1
+
+    def get_state(self) -> str:
+        serialisable = [
+            {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+            for ex in self.examples
+        ]
+        confusion_plain = {k: dict(v) for k, v in self.confusion.items()}
+        return json.dumps({"examples": serialisable, "confusion": confusion_plain}, indent=2)
+
+    def set_state(self, state: str) -> None:
+        data = json.loads(state)
+        self.examples = []
+        for ex in data.get("examples", []):
+            restored = dict(ex)
+            if "tokens" in restored and isinstance(restored["tokens"], list):
+                restored["tokens"] = frozenset(restored["tokens"])
+            else:
+                raw_q = restored.get("raw_question", restored.get("input", ""))
+                restored["tokens"] = _tokenize_adaptive(raw_q)
+            self.examples.append(restored)
+        self.confusion = defaultdict(lambda: defaultdict(int))
+        for pred, actuals in data.get("confusion", {}).items():
+            for actual, cnt in actuals.items():
+                self.confusion[pred][actual] = cnt
+
+
+
+--- output ---
+File created successfully at: D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/agents/unified_confusion_retrieval_memory.py (file state is current in your context — no need to Read it back)

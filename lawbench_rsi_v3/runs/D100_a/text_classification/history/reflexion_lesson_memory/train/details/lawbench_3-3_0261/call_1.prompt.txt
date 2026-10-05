@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- When the case facts explicitly describe separate actions of selling, buying, or transporting counterfeit currency, label each distinct offense (e.g., 出售假币, 购买假币, 运输假币) rather than using a generic term
+- If the factual description explicitly states that the perpetrator seized the victim's property by force, threat, or taking advantage of the victim’s unpreparedness (e.g., using the term “抢夺” or descri
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控，2014年1月至7月3日,被告人叶某明知洪某(已判决)租用场地用于经营赌博机店,仍将其在闽侯的自己家中场地以每月人民币1000元的价格租给洪某,供其经营赌博机店。2015年7月3日,该赌博机店被闽侯县公安局竹岐派出所民警查获,当场查扣赌资人民币312元、赌博机11台,其中包括八人座赌博机1台。2016年12月14日,被告人叶某主动到闽侯县公安局竹岐派出所投案。
+公诉机关认为被告人叶某具有自首情节，建议对被告人叶某判处一年以下××，并处罚金。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

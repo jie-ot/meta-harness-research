@@ -1,0 +1,72 @@
+{
+  "call_id": "1501684c16b545c68829cfa2d48c4974",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791042949-jy5ohdvs78DzpUeKB5UB",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"张3某向国家工作人员陈某提供10万元人民币，目的是利用陈某的职务便利为其公司购买的土地规划修路。陈某接受并答应帮助，构成对国家工作人员的行贿。案件中未涉及其他犯罪行为。\",\n  \"final_answer\": \"[罪名]行贿<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate crime(s) based on facts. The scenario: Zhang3 (defendant) gives 100,000 RMB to Chen (public official) to get road planning and construction for his company's land. Chen accepts money, promises to help, later returns money when he is investigated. This is bribery: giving money to a public official for official act. The official is a deputy secretary and director of district tax bureau? Actually \"龙感湖管理区副书记、主任陈某\" - a public official. The crime is \"行贿\" (bribery) but need to specify \"对国家工作人员行贿\" or \"对非国家工作人员行贿\". Since Chen is a public official (state staff), it's \"对国家工作人员行贿\". The examples: For bribery they used \"行贿\" for general? In examples: For case where bribery to non-state staff they used \"对非国家工作人员行贿\". For case where bribery to state staff they used \"行贿\". In example: \"黄某某...向于某甲行贿3万元\" answer: 行贿. That was to a company employee? Actually 于某甲 was a company employee? It says \"于某甲帮忙提高补偿款\" and \"于某甲是公司负责征地拆迁工作\". That is a non-state staff? But answer was 行贿 (not 对非国家工作人员行贿). Hmm maybe they treat \"行贿\" as generic, but they have a rule: Wrong: [罪名]行贿罪 → Correct: 行贿. Wrong: [罪名]行贿 → Correct: 对非国家工作人员行贿. So \"行贿\" alone is wrong; correct is \"对非国家工作人员行贿\". Wait the common mistakes list: ✗ Wrong: [罪名]行贿罪 → ✓ Correct: 行贿. ✗ Wrong: [罪名]行贿 → ✓ Correct: 对非国家工作人员行贿. So they differentiate: If you write \"行贿罪\" it's wrong; correct is \"行贿\". If you write just \"行贿\" (without specifying target) it's wrong; correct is \"对非国家工作人员行贿\". So for bribery to state staff, the correct label is \"行贿\". For bribery to non-state staff, correct is \"对非国家工作人员行贿\". In our case, Chen is a public official (state). So answer should be \"行贿\". Also there is possibly \"受贿\" for Chen, but we only list crimes of defendant(s). The defendant includes both Zhang3 and the company. The company is also a bribe giver. So \"行贿\". Any other crimes? Possibly \"非法占有\"? No, it's bribery. No other crimes like \"贪污\" (that's for official). So answer: [罪名]行贿<eoa>.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to determine appropriate crime(s) based on facts. The scenario: Zhang3 (defendant) gives 100,000 RMB to Chen (public official) to get road planning and construction for his company's land. Chen accepts money, promises to help, later returns money when he is investigated. This is bribery: giving money to a public official for official act. The official is a deputy secretary and director of district tax bureau? Actually \"龙感湖管理区副书记、主任陈某\" - a public official. The crime is \"行贿\" (bribery) but need to specify \"对国家工作人员行贿\" or \"对非国家工作人员行贿\". Since Chen is a public official (state staff), it's \"对国家工作人员行贿\". The examples: For bribery they used \"行贿\" for general? In examples: For case where bribery to non-state staff they used \"对非国家工作人员行贿\". For case where bribery to state staff they used \"行贿\". In example: \"黄某某...向于某甲行贿3万元\" answer: 行贿. That was to a company employee? Actually 于某甲 was a company employee? It says \"于某甲帮忙提高补偿款\" and \"于某甲是公司负责征地拆迁工作\". That is a non-state staff? But answer was 行贿 (not 对非国家工作人员行贿). Hmm maybe they treat \"行贿\" as generic, but they have a rule: Wrong: [罪名]行贿罪 → Correct: 行贿. Wrong: [罪名]行贿 → Correct: 对非国家工作人员行贿. So \"行贿\" alone is wrong; correct is \"对非国家工作人员行贿\". Wait the common mistakes list: ✗ Wrong: [罪名]行贿罪 → ✓ Correct: 行贿. ✗ Wrong: [罪名]行贿 → ✓ Correct: 对非国家工作人员行贿. So they differentiate: If you write \"行贿罪\" it's wrong; correct is \"行贿\". If you write just \"行贿\" (without specifying target) it's wrong; correct is \"对非国家工作人员行贿\". So for bribery to state staff, the correct label is \"行贿\". For bribery to non-state staff, correct is \"对非国家工作人员行贿\". In our case, Chen is a public official (state). So answer should be \"行贿\". Also there is possibly \"受贿\" for Chen, but we only list crimes of defendant(s). The defendant includes both Zhang3 and the company. The company is also a bribe giver. So \"行贿\". Any other crimes? Possibly \"非法占有\"? No, it's bribery. No other crimes like \"贪污\" (that's for official). So answer: [罪名]行贿<eoa>.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate crime(s) based on facts. The scenario: Zhang3 (defendant) gives 100,000 RMB to Chen (public official) to get road planning and construction for his company's land. Chen accepts money, promises to help, later returns money when he is investigated. This is bribery: giving money to a public official for official act. The official is a deputy secretary and director of district tax bureau? Actually \"龙感湖管理区副书记、主任陈某\" - a public official. The crime is \"行贿\" (bribery) but need to specify \"对国家工作人员行贿\" or \"对非国家工作人员行贿\". Since Chen is a public official (state staff), it's \"对国家工作人员行贿\". The examples: For bribery they used \"行贿\" for general? In examples: For case where bribery to non-state staff they used \"对非国家工作人员行贿\". For case where bribery to state staff they used \"行贿\". In example: \"黄某某...向于某甲行贿3万元\" answer: 行贿. That was to a company employee? Actually 于某甲 was a company employee? It says \"于某甲帮忙提高补偿款\" and \"于某甲是公司负责征地拆迁工作\". That is a non-state staff? But answer was 行贿 (not 对非国家工作人员行贿). Hmm maybe they treat \"行贿\" as generic, but they have a rule: Wrong: [罪名]行贿罪 → Correct: 行贿. Wrong: [罪名]行贿 → Correct: 对非国家工作人员行贿. So \"行贿\" alone is wrong; correct is \"对非国家工作人员行贿\". Wait the common mistakes list: ✗ Wrong: [罪名]行贿罪 → ✓ Correct: 行贿. ✗ Wrong: [罪名]行贿 → ✓ Correct: 对非国家工作人员行贿. So they differentiate: If you write \"行贿罪\" it's wrong; correct is \"行贿\". If you write just \"行贿\" (without specifying target) it's wrong; correct is \"对非国家工作人员行贿\". So for bribery to state staff, the correct label is \"行贿\". For bribery to non-state staff, correct is \"对非国家工作人员行贿\". In our case, Chen is a public official (state). So answer should be \"行贿\". Also there is possibly \"受贿\" for Chen, but we only list crimes of defendant(s). The defendant includes both Zhang3 and the company. The company is also a bribe giver. So \"行贿\". Any other crimes? Possibly \"非法占有\"? No, it's bribery. No other crimes like \"贪污\" (that's for official). So answer: [罪名]行贿<eoa>.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to determine appropriate crime(s) based on facts. The scenario: Zhang3 (defendant) gives 100,000 RMB to Chen (public official) to get road planning and construction for his company's land. Chen accepts money, promises to help, later returns money when he is investigated. This is bribery: giving money to a public official for official act. The official is a deputy secretary and director of district tax bureau? Actually \"龙感湖管理区副书记、主任陈某\" - a public official. The crime is \"行贿\" (bribery) but need to specify \"对国家工作人员行贿\" or \"对非国家工作人员行贿\". Since Chen is a public official (state staff), it's \"对国家工作人员行贿\". The examples: For bribery they used \"行贿\" for general? In examples: For case where bribery to non-state staff they used \"对非国家工作人员行贿\". For case where bribery to state staff they used \"行贿\". In example: \"黄某某...向于某甲行贿3万元\" answer: 行贿. That was to a company employee? Actually 于某甲 was a company employee? It says \"于某甲帮忙提高补偿款\" and \"于某甲是公司负责征地拆迁工作\". That is a non-state staff? But answer was 行贿 (not 对非国家工作人员行贿). Hmm maybe they treat \"行贿\" as generic, but they have a rule: Wrong: [罪名]行贿罪 → Correct: 行贿. Wrong: [罪名]行贿 → Correct: 对非国家工作人员行贿. So \"行贿\" alone is wrong; correct is \"对非国家工作人员行贿\". Wait the common mistakes list: ✗ Wrong: [罪名]行贿罪 → ✓ Correct: 行贿. ✗ Wrong: [罪名]行贿 → ✓ Correct: 对非国家工作人员行贿. So they differentiate: If you write \"行贿罪\" it's wrong; correct is \"行贿\". If you write just \"行贿\" (without specifying target) it's wrong; correct is \"对非国家工作人员行贿\". So for bribery to state staff, the correct label is \"行贿\". For bribery to non-state staff, correct is \"对非国家工作人员行贿\". In our case, Chen is a public official (state). So answer should be \"行贿\". Also there is possibly \"受贿\" for Chen, but we only list crimes of defendant(s). The defendant includes both Zhang3 and the company. The company is also a bribe giver. So \"行贿\". Any other crimes? Possibly \"非法占有\"? No, it's bribery. No other crimes like \"贪污\" (that's for official). So answer: [罪名]行贿<eoa>."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 719,
+      "prompt_tokens": 21867,
+      "total_tokens": 22586,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 651,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0012731,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0012731,
+        "upstream_inference_prompt_cost": 0.00109335,
+        "upstream_inference_completions_cost": 0.00017975
+      }
+    }
+  },
+  "raw_response_missing": false
+}

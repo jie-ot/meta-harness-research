@@ -1,0 +1,47 @@
+Edit: agents\contrastive_boundary_memory.py
+
+replace_all: False
+old_string:
+"""Adaptive-Tokenizer Confusion Disambiguation Memory.
+
+Combines the confusion-matrix retrieval of confusion_disambiguation_memory with a
+language-adaptive tokenizer that routes to character bigrams for CJK text and to
+word tokens for ASCII/Latin text.
+
+Problem identified in iter6: a single tokenizer cannot be optimal for all scripts.
+Bigrams fix near-zero similarity on CJK inputs but degrade English retrieval where
+word tokens are better calibrated. This system detects the script of each text at
+tokenization time and applies the right strategy automatically, avoiding the
+accuracy trade-off that forced ngram_confusion_memory to sacrifice English datasets
+in order to fix CJK similarity.
+
+Retrieval algorithm (same as confusion_disambiguation_memory):
+1. Score all stored examples with adaptive Jaccard against the query.
+2. Identify confusion targets from the top-3 candidate labels.
+3. Inject one disambiguation example per confused label (round-robin, 2 rounds).
+4. Fill remaining budget with similarity-ranked examples.
+"""
+
+new_string:
+"""Contrastive Boundary Memory.
+
+Extends adaptive_tokenizer_confusion_memory with a structurally different prompt
+architecture: rather than silently interleaving disambiguation examples into the
+flat list, this system renders them in a dedicated "Common Confusions" section
+that explicitly annotates each boundary example with the label NOT to predict.
+
+Mechanism:
+1. Same adaptive tokenizer + confusion-matrix retrieval as the frontier system.
+2. At prompt construction time, examples selected for disambiguation are placed
+   in a separate header section with a per-example "NOT: <wrong_label>" warning.
+3. Regular similarity-ranked examples follow in a plain "Examples" section.
+
+The hypothesis is that this explicit negative-example signal at the boundary gives
+the model a targeted "avoid this mistake" cue, rather than forcing it to infer the
+boundary from two similar positive examples — which the frontier system currently
+relies on.
+"""
+
+
+--- output ---
+The file D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/agents/contrastive_boundary_memory.py has been updated successfully.

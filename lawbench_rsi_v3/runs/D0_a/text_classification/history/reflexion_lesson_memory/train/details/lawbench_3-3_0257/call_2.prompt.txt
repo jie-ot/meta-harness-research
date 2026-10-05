@@ -1,0 +1,23 @@
+An AI classifier made an error on this case. Generate a compact correction lesson.
+
+**Correct label:** 非法持有、私藏枪支、弹药
+**Wrong prediction:** [罪名]非法持有、私藏枪支、弹药;非法持有毒品<eoa>
+**Case facts (excerpt):**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控，2013年8、9月份的一天晚上，胡某（已判刑）在镇安县金源酒店十楼楼梯道将一把仿六四式手枪交给被告人陈某，二人到金源十一楼陈某房间，陈某拿出大约一克的冰毒与胡某一起吸食。该枪支陈某让张2某（已判刑）修理后，张2某又送给陈某制式手枪套一个、六四式手枪子弹5发。2013年11月份的一天，被告人陈某又将该枪支、枪套、子弹交给陈1某（已判刑）保管，后被公安机关查获。经陕西省商洛市公安司法鉴定中心鉴定：该枪支为仿六四式手枪，子弹为制式军用六四手枪子弹，该枪支可以发射制式子弹，在一定距离内具备杀伤力，均认定为枪支、弹药，符合××枪支规定的条件。
+
+
+Write a lesson that:
+1. States the KEY distinguishing feature that determines the correct label
+2. Explains what makes this different from "[罪名]非法持有、私藏枪支、弹药;非法持有毒品<eoa>"
+3. Gives a brief rule a classifier can apply to future cases
+
+Respond only in JSON:
+{"lesson": "<one to three sentences, in the same language as the case facts>", "final_answer": "非法持有、私藏枪支、弹药"}

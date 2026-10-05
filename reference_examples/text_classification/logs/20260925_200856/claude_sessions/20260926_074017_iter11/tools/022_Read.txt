@@ -1,0 +1,76 @@
+Read: agents\contrastive_boundary_memory.py
+
+limit: 70
+offset: 140
+
+--- output ---
+140	        total_chars = 0
+141	
+142	        def try_add_disambig(idx: int, ex: dict, wrong_label: str) -> bool:
+143	            nonlocal total_chars
+144	            if idx in used_indices:
+145	                return False
+146	            q = ex.get("raw_question", ex["input"])
+147	            # Explicit negative annotation: tells model which wrong answer to avoid
+148	            part = f"Q: {q}\nA: {ex['target']}  [NOT: {wrong_label}]"
+149	            if total_chars + len(part) + 2 > MAX_CHARS:
+150	                return False
+151	            disambig_parts.append(part)
+152	            used_indices.add(idx)
+153	            total_chars += len(part) + 2
+154	            return True
+155	
+156	        def try_add_regular(idx: int, ex: dict) -> bool:
+157	            nonlocal total_chars
+158	            if idx in used_indices:
+159	                return False
+160	            q = ex.get("raw_question", ex["input"])
+161	            part = f"Q: {q}\nA: {ex['target']}"
+162	            if total_chars + len(part) + 2 > MAX_CHARS:
+163	                return False
+164	            regular_parts.append(part)
+165	            used_indices.add(idx)
+166	            total_chars += len(part) + 2
+167	            return True
+168	
+169	        # Phase 1: populate disambiguation section
+170	        if confused_with:
+171	            disambig_labels_needed = set(confused_with[:_TOP_CANDIDATE_LABELS])
+172	            per_label: dict[str, list[tuple[float, int, dict]]] = defaultdict(list)
+173	            for score, idx, ex in ranked:
+174	                if ex["target"] in disambig_labels_needed:
+175	                    per_label[ex["target"]].append((score, idx, ex))
+176	
+177	            for _round in range(_DISAMBIG_PER_CONFUSION):
+178	                for lbl in confused_with[:_TOP_CANDIDATE_LABELS]:
+179	                    pool = per_label.get(lbl, [])
+180	                    wrong = wrong_label_for.get(lbl, top_labels[0] if top_labels else "")
+181	                    for score, idx, ex in pool:
+182	                        if idx not in used_indices:
+183	                            try_add_disambig(idx, ex, wrong)
+184	                            break
+185	
+186	        # Phase 2: fill remaining budget with similarity-ranked regular examples
+187	        for _, idx, ex in ranked:
+188	            if total_chars >= MAX_CHARS:
+189	                break
+190	            try_add_regular(idx, ex)
+191	
+192	        # Build prompt sections
+193	        if disambig_parts:
+194	            disambig_section = _DISAMBIG_HEADER + "\n\n".join(disambig_parts) + "\n\n"
+195	        else:
+196	            disambig_section = ""
+197	
+198	        if regular_parts:
+199	            examples_section = "**Examples:**\n\n" + "\n\n".join(regular_parts)
+200	        else:
+201	            examples_section = ""
+202	
+203	        prompt = _PROMPT_TEMPLATE.format(
+204	            disambig_section=disambig_section,
+205	            examples_section=examples_section,
+206	            input=query,
+207	        )
+208	        return prompt, len(disambig_parts), len(regular_parts)
+209	

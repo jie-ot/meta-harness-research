@@ -1,0 +1,72 @@
+{
+  "call_id": "4a892254e0624b2f80d48d57643144be",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791126296-3VtR0iJivpwx13jl29CP",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant sold pirated CDs for profit, which constitutes infringement of copyright. This offense is not listed in the provided lexicon, so the appropriate statutory charge is 侵犯著作权.\",\n  \"final_answer\": \"[罪名]侵犯著作权<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine which charge(s) from the lexicon apply to the fact.\n\nFact: selling pirated CDs for profit. This is copyright infringement. The lexicon does not have a specific \"侵犯著作权\" charge. The list includes many crimes, but not that. The instruction says: \"If no listed name fits, use the correct statutory name anyway.\" So we need to output the appropriate statutory name for piracy of copyrighted works. In Chinese criminal law, the offense is \"侵犯著作权罪\" (Infringement of copyright). The lexicon does not include that, so we must output \"侵犯著作权\". However the instruction says \"use the correct statutory name anyway.\" So we should output the proper charge: \"侵犯著作权\". But the format expects the charge name exactly as string. Since not in list, we can still output it.\n\nThus final answer: [罪名]侵犯著作权<eoa>\n\nWe also need brief reasoning in JSON? The prompt says output JSON with \"reasoning\" and \"final_answer\". Actually the example format: they gave \"格式示例\". But the final instruction: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"}. So we need to output a JSON object with those fields.\n\nThus produce:\n\n{\n  \"reasoning\": \"The defendant sold pirated CDs, which is infringement of copyright, not covered by listed charges, so we use the statutory offense 侵犯著作权.\",\n  \"final_answer\": \"[罪名]侵犯著作权<eoa>\"\n}\n\nMake sure no extra spaces.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine which charge(s) from the lexicon apply to the fact.\n\nFact: selling pirated CDs for profit. This is copyright infringement. The lexicon does not have a specific \"侵犯著作权\" charge. The list includes many crimes, but not that. The instruction says: \"If no listed name fits, use the correct statutory name anyway.\" So we need to output the appropriate statutory name for piracy of copyrighted works. In Chinese criminal law, the offense is \"侵犯著作权罪\" (Infringement of copyright). The lexicon does not include that, so we must output \"侵犯著作权\". However the instruction says \"use the correct statutory name anyway.\" So we should output the proper charge: \"侵犯著作权\". But the format expects the charge name exactly as string. Since not in list, we can still output it.\n\nThus final answer: [罪名]侵犯著作权<eoa>\n\nWe also need brief reasoning in JSON? The prompt says output JSON with \"reasoning\" and \"final_answer\". Actually the example format: they gave \"格式示例\". But the final instruction: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"}. So we need to output a JSON object with those fields.\n\nThus produce:\n\n{\n  \"reasoning\": \"The defendant sold pirated CDs, which is infringement of copyright, not covered by listed charges, so we use the statutory offense 侵犯著作权.\",\n  \"final_answer\": \"[罪名]侵犯著作权<eoa>\"\n}\n\nMake sure no extra spaces.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine which charge(s) from the lexicon apply to the fact.\n\nFact: selling pirated CDs for profit. This is copyright infringement. The lexicon does not have a specific \"侵犯著作权\" charge. The list includes many crimes, but not that. The instruction says: \"If no listed name fits, use the correct statutory name anyway.\" So we need to output the appropriate statutory name for piracy of copyrighted works. In Chinese criminal law, the offense is \"侵犯著作权罪\" (Infringement of copyright). The lexicon does not include that, so we must output \"侵犯著作权\". However the instruction says \"use the correct statutory name anyway.\" So we should output the proper charge: \"侵犯著作权\". But the format expects the charge name exactly as string. Since not in list, we can still output it.\n\nThus final answer: [罪名]侵犯著作权<eoa>\n\nWe also need brief reasoning in JSON? The prompt says output JSON with \"reasoning\" and \"final_answer\". Actually the example format: they gave \"格式示例\". But the final instruction: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"}. So we need to output a JSON object with those fields.\n\nThus produce:\n\n{\n  \"reasoning\": \"The defendant sold pirated CDs, which is infringement of copyright, not covered by listed charges, so we use the statutory offense 侵犯著作权.\",\n  \"final_answer\": \"[罪名]侵犯著作权<eoa>\"\n}\n\nMake sure no extra spaces.",
+            "refusal": null,
+            "reasoning_content": "We need to determine which charge(s) from the lexicon apply to the fact.\n\nFact: selling pirated CDs for profit. This is copyright infringement. The lexicon does not have a specific \"侵犯著作权\" charge. The list includes many crimes, but not that. The instruction says: \"If no listed name fits, use the correct statutory name anyway.\" So we need to output the appropriate statutory name for piracy of copyrighted works. In Chinese criminal law, the offense is \"侵犯著作权罪\" (Infringement of copyright). The lexicon does not include that, so we must output \"侵犯著作权\". However the instruction says \"use the correct statutory name anyway.\" So we should output the proper charge: \"侵犯著作权\". But the format expects the charge name exactly as string. Since not in list, we can still output it.\n\nThus final answer: [罪名]侵犯著作权<eoa>\n\nWe also need brief reasoning in JSON? The prompt says output JSON with \"reasoning\" and \"final_answer\". Actually the example format: they gave \"格式示例\". But the final instruction: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"}. So we need to output a JSON object with those fields.\n\nThus produce:\n\n{\n  \"reasoning\": \"The defendant sold pirated CDs, which is infringement of copyright, not covered by listed charges, so we use the statutory offense 侵犯著作权.\",\n  \"final_answer\": \"[罪名]侵犯著作权<eoa>\"\n}\n\nMake sure no extra spaces."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 409,
+      "prompt_tokens": 1549,
+      "total_tokens": 1958,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 378,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000126843,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000126843,
+        "upstream_inference_prompt_cost": 5.7313e-05,
+        "upstream_inference_completions_cost": 6.953e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

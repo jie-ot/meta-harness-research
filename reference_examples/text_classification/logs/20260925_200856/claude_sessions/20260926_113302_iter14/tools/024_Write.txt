@@ -1,0 +1,113 @@
+Write: agents\missed_component_memory.py
+
+content:
+"""Missed-Component Boost Memory.
+
+Extends decayed_confusion_memory with a second orthogonal learning signal:
+per-atomic-component miss counts.
+
+Problem with the frontier: the confusion matrix treats compound label strings as
+opaque keys (e.g. "诈骗;组织、领导传销活动" is one key). When the model predicts
+"诈骗" instead, the confusion entry is pred="诈骗" → gt="诈骗;组织、领导传销活动",
+but the matrix cannot express which *components* were missed. As a result, retrieval
+never specifically surfaces examples of "组织、领导传销活动" to help the model learn
+that this label commonly co-occurs and is being under-predicted.
+
+Fix: after every incorrect prediction, split both the predicted label and the
+ground-truth label on compound delimiters (semicolons, Chinese semicolons). Any
+atomic component in the ground truth that was absent from the prediction is a "missed
+component" and its count is incremented. At retrieval time, each stored example
+receives a bonus proportional to log(1 + sum_of_miss_counts_for_its_components).
+This bonus is added on top of the base Jaccard score so that examples whose labels
+are chronically missed rise in rank even when their textual similarity is moderate.
+
+Both confusion counts and missed-component counts decay after each batch (same
+DECAY_FACTOR as the frontier) so stale signal doesn't dominate indefinitely.
+
+Axes changed vs frontier: B (memory content — new missed-component counter) and
+C (selection algorithm — component-overlap bonus in scoring).
+"""
+
+import json
+import math
+import re
+from collections import defaultdict
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+
+{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Follow the patterns shown in the examples above
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+MAX_CHARS = 30000
+_TOP_CANDIDATE_LABELS = 3
+_DISAMBIG_PER_CONFUSION = 2
+
+DECAY_FACTOR = 0.95
+PRUNE_THRESHOLD = 0.05
+COMPONENT_ALPHA = 0.3   # weight of log-scaled missed-component bonus
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+_WRAPPER_RE = re.compile(r'^\[[^\]]*\]|<eoa>\s*$|\[[^\]]*\]\s*$', re.IGNORECASE)
+_COMPOUND_SPLIT_RE = re.compile(r'[;；]')
+
+
+def _has_cjk(text: str) -> bool:
+    return bool(_CJK_RE.search(text))
+
+
+def _tokenize_word(text: str) -> frozenset:
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+
+def _tokenize_bigram(text: str) -> frozenset:
+    t = re.sub(r'\s+', ' ', text.strip())
+    if len(t) < 2:
+        return frozenset([t]) if t else frozenset()
+    return frozenset(t[i:i + 2] for i in range(len(t) - 1))
+
+
+def _tokenize_adaptive(text: str) -> frozenset:
+    return _tokenize_bigram(text) if _has_cjk(text) else _tokenize_word(text)
+
+
+def _jaccard(a: frozenset, b: frozenset) -> float:
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+def _normalize_prediction(pred: str) -> str:
+    if not pred:
+        return pred
+    cleaned = _WRAPPER_RE.sub('', pred).strip()
+    return cleaned if cleaned else pred
+
+
+def _split_compound(label: str) -> list[str]:
+    """Split a (possibly compound) label into its atomic components."""
+    parts = [p.strip() for p in _COMPOUND_SPLIT_RE.split(label) if p.strip()]
+    return parts if parts else [label]
+
+
+def _missed_components(pred: str, gt: str) -> list[str]:
+    """Return atomic components of gt not present in pred."""
+    pred_parts = set(_split_compound(pred))
+    gt_parts = set(_split_compound(gt))
+    return list(gt_parts - pred_parts)
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\missed_component_memory.py (file state is current in your context — no need to Read it back)

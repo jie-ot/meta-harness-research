@@ -1,0 +1,162 @@
+Write: C:\tmp\proto_iter12.py
+
+content:
+"""Prototype for iter 12 candidates: unified scoring and length-normalized retrieval."""
+import json, re, math
+from collections import defaultdict
+from pathlib import Path
+
+BASE = Path(r"D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856")
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+def _has_cjk(t): return bool(_CJK_RE.search(t))
+def _tok_word(t): return frozenset(re.findall(r"[A-Za-z0-9]+", t.lower()))
+def _tok_bigram(t):
+    t = re.sub(r'\s+', ' ', t.strip())
+    return frozenset(t[i:i+2] for i in range(len(t)-1)) if len(t) >= 2 else frozenset()
+def _tok(t): return _tok_bigram(t) if _has_cjk(t) else _tok_word(t)
+def _jaccard(a, b):
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+def load_log(dataset, system):
+    p = BASE / dataset / system / "gpt-oss-120b" / "log.jsonl"
+    steps, confusion = [], defaultdict(lambda: defaultdict(int))
+    for line in p.read_text(encoding="utf-8").splitlines():
+        obj = json.loads(line)
+        if obj["type"] == "step":
+            steps.append(obj)
+    return steps
+
+def normalize_pred(pred):
+    """Strip [罪名]...<eoa> and similar wrappers."""
+    m = re.search(r'\[.*?\](.*?)<eoa>', pred)
+    if m: return m.group(1).strip()
+    # Try JSON final_answer
+    m = re.search(r'"final_answer"\s*:\s*"([^"]+)"', pred)
+    if m: return m.group(1).strip()
+    return pred.strip()
+
+# ---- Load LawBench training trace and build a mini memory ----
+steps = load_log("LawBench", "adaptive_tokenizer_confusion_memory")
+print(f"Loaded {len(steps)} LawBench steps")
+
+# Build examples and confusion matrix from first 150 steps (training portion)
+examples = []
+confusion = defaultdict(lambda: defaultdict(int))
+for s in steps[:150]:
+    raw_q = s["input_preview"][:500]  # preview only, but enough for prototyping
+    tgt = s["tgt"]
+    examples.append({"tokens": _tok(raw_q), "target": tgt, "len": len(_tok(raw_q))})
+    if not s["ok"]:
+        pred_norm = normalize_pred(s["pred"])
+        if pred_norm != tgt:
+            confusion[pred_norm][tgt] += 1
+
+print(f"Built {len(examples)} examples, confusion pairs: {sum(len(v) for v in confusion.values())}")
+avg_len = sum(e["len"] for e in examples) / max(1, len(examples))
+print(f"Avg example token count: {avg_len:.1f}")
+
+# ---- Test on next 20 steps (val-like) ----
+test_steps = steps[150:170]
+
+def confusion_targets(top_labels):
+    label_set = set(top_labels)
+    counts = defaultdict(int)
+    for lbl in top_labels:
+        for actual, cnt in confusion.get(lbl, {}).items():
+            if actual not in label_set:
+                counts[actual] += cnt
+    return [lbl for lbl, _ in sorted(counts.items(), key=lambda x: -x[1])]
+
+def get_top_candidate_labels(query_tok, k=3):
+    ranked = sorted(enumerate(examples), key=lambda x: -_jaccard(query_tok, x[1]["tokens"]))
+    return [examples[i]["target"] for i, _ in ranked[:k]]
+
+# Method A: baseline (pure Jaccard)
+def rank_baseline(query_tok):
+    return sorted(range(len(examples)), key=lambda i: -_jaccard(query_tok, examples[i]["tokens"]))
+
+# Method B: unified score (Jaccard + gamma * confusion_lift)
+def confusion_lift(label, c_targets, confusion_counts):
+    total = sum(confusion_counts.get(ct, {}).get(label, 0) for ct in c_targets)
+    return total
+
+def rank_unified(query_tok, gamma=0.3):
+    top_labels = get_top_candidate_labels(query_tok, k=3)
+    c_targets = confusion_targets(top_labels)[:3]
+    max_conf = max(
+        (sum(confusion.get(ct, {}).get(ex["target"], 0) for ct in c_targets) for ex in examples),
+        default=1
+    ) or 1
+    scores = []
+    for i, ex in enumerate(examples):
+        sim = _jaccard(query_tok, ex["tokens"])
+        lift = confusion_lift(ex["target"], c_targets, {ct: dict(confusion[ct]) for ct in c_targets})
+        score = sim + gamma * (lift / max_conf)
+        scores.append((i, score))
+    scores.sort(key=lambda x: -x[1])
+    return [i for i, _ in scores]
+
+# Method C: length-normalized Jaccard
+def rank_length_norm(query_tok, b=0.5):
+    scores = []
+    for i, ex in enumerate(examples):
+        sim = _jaccard(query_tok, ex["tokens"])
+        norm_len = ex["len"] / avg_len if avg_len > 0 else 1.0
+        length_factor = 1.0 / (1.0 - b + b * math.sqrt(norm_len))
+        score = sim * length_factor
+        scores.append((i, score))
+    scores.sort(key=lambda x: -x[1])
+    return [i for i, _ in scores]
+
+print("\n=== Comparing ranking methods on 20 test queries ===")
+print(f"{'Method':<25} {'Avg rank of correct label':>28}")
+for method_name, rank_fn in [
+    ("Baseline Jaccard", rank_baseline),
+    ("Unified (γ=0.2)", lambda q: rank_unified(q, 0.2)),
+    ("Unified (γ=0.4)", lambda q: rank_unified(q, 0.4)),
+    ("Length-norm (b=0.3)", lambda q: rank_length_norm(q, 0.3)),
+    ("Length-norm (b=0.6)", lambda q: rank_length_norm(q, 0.6)),
+]:
+    ranks_of_correct = []
+    for s in test_steps:
+        query_tok = _tok(s["input_preview"][:500])
+        tgt = s["tgt"]
+        ranking = rank_fn(query_tok)
+        # Find best rank for an example with matching target
+        best_rank = None
+        for rank_pos, idx in enumerate(ranking[:50]):
+            if examples[idx]["target"] == tgt:
+                best_rank = rank_pos + 1
+                break
+        if best_rank is not None:
+            ranks_of_correct.append(best_rank)
+    avg = sum(ranks_of_correct) / len(ranks_of_correct) if ranks_of_correct else float('inf')
+    found = len(ranks_of_correct)
+    print(f"  {method_name:<23} {avg:>6.1f}  (found {found}/{len(test_steps)})")
+
+# Also check how much ranking diverges between methods
+print("\n=== Rank difference for top-10 (unified vs baseline) on first test query ===")
+if test_steps:
+    q = _tok(test_steps[0]["input_preview"][:500])
+    base = rank_baseline(q)[:15]
+    unif = rank_unified(q, 0.3)[:15]
+    base_set = {idx: pos for pos, idx in enumerate(base)}
+    print("  Examples that moved UP in unified (by >3 positions):")
+    for pos, idx in enumerate(unif[:15]):
+        old = base_set.get(idx, 99)
+        if old - pos > 3:
+            print(f"    idx={idx} label='{examples[idx]['target'][:30]}' rank {old+1}→{pos+1}")
+
+print("\n=== Length distribution analysis ===")
+lens = [e["len"] for e in examples]
+lens.sort()
+print(f"  min={lens[0]}, p25={lens[len(lens)//4]}, median={lens[len(lens)//2]}, p75={lens[3*len(lens)//4]}, max={lens[-1]}")
+print(f"  Examples with len < avg/2: {sum(1 for l in lens if l < avg_len/2)}/{len(lens)}")
+print(f"  Examples with len > avg*2: {sum(1 for l in lens if l > avg_len*2)}/{len(lens)}")
+
+
+
+--- output ---
+File created successfully at: C:\tmp\proto_iter12.py (file state is current in your context — no need to Read it back)

@@ -1,0 +1,72 @@
+{
+  "call_id": "56603a63ee3442699315d0e04193e840",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791041909-w2icEDgeP1W4IcfGfo3r",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"lesson\": \"When labeling, verify all distinct offenses present and assign each relevant category, distinguishing general fraud from specific sub‑types and recognizing separate illegal activities such as unlicensed medical practice.\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with a lesson. The error: Predicted \"保险诈骗\" (insurance fraud) but correct answer is \"诈骗;非法行医\" (fraud; illegal medical practice). So the model predicted a specific type of fraud (insurance fraud) but the correct answer includes general fraud and illegal medical practice. The lesson should focus on distinguishing: need to consider multiple labels, not just specific subcategory, and include all relevant categories. Also differentiate between fraud types: insurance fraud vs other fraud, and illegal medical practice is separate. So lesson: ensure to identify all applicable categories, not just the most obvious, and differentiate between specific fraud domains. Keep under 60 words.\n\nLet's craft: \"When labeling, check whether the case involves multiple distinct offenses and assign each relevant category, distinguishing general fraud from specific sub‑types and recognizing separate illegal activities such as unlicensed medical practice.\" That's about 30 words. JSON format.",
+          "provider_specific_fields": {
+            "reasoning": "We need to produce a JSON with a lesson. The error: Predicted \"保险诈骗\" (insurance fraud) but correct answer is \"诈骗;非法行医\" (fraud; illegal medical practice). So the model predicted a specific type of fraud (insurance fraud) but the correct answer includes general fraud and illegal medical practice. The lesson should focus on distinguishing: need to consider multiple labels, not just specific subcategory, and include all relevant categories. Also differentiate between fraud types: insurance fraud vs other fraud, and illegal medical practice is separate. So lesson: ensure to identify all applicable categories, not just the most obvious, and differentiate between specific fraud domains. Keep under 60 words.\n\nLet's craft: \"When labeling, check whether the case involves multiple distinct offenses and assign each relevant category, distinguishing general fraud from specific sub‑types and recognizing separate illegal activities such as unlicensed medical practice.\" That's about 30 words. JSON format.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with a lesson. The error: Predicted \"保险诈骗\" (insurance fraud) but correct answer is \"诈骗;非法行医\" (fraud; illegal medical practice). So the model predicted a specific type of fraud (insurance fraud) but the correct answer includes general fraud and illegal medical practice. The lesson should focus on distinguishing: need to consider multiple labels, not just specific subcategory, and include all relevant categories. Also differentiate between fraud types: insurance fraud vs other fraud, and illegal medical practice is separate. So lesson: ensure to identify all applicable categories, not just the most obvious, and differentiate between specific fraud domains. Keep under 60 words.\n\nLet's craft: \"When labeling, check whether the case involves multiple distinct offenses and assign each relevant category, distinguishing general fraud from specific sub‑types and recognizing separate illegal activities such as unlicensed medical practice.\" That's about 30 words. JSON format.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": "We need to produce a JSON with a lesson. The error: Predicted \"保险诈骗\" (insurance fraud) but correct answer is \"诈骗;非法行医\" (fraud; illegal medical practice). So the model predicted a specific type of fraud (insurance fraud) but the correct answer includes general fraud and illegal medical practice. The lesson should focus on distinguishing: need to consider multiple labels, not just specific subcategory, and include all relevant categories. Also differentiate between fraud types: insurance fraud vs other fraud, and illegal medical practice is separate. So lesson: ensure to identify all applicable categories, not just the most obvious, and differentiate between specific fraud domains. Keep under 60 words.\n\nLet's craft: \"When labeling, check whether the case involves multiple distinct offenses and assign each relevant category, distinguishing general fraud from specific sub‑types and recognizing separate illegal activities such as unlicensed medical practice.\" That's about 30 words. JSON format."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 244,
+      "prompt_tokens": 163,
+      "total_tokens": 407,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 5.1659e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 5.1659e-05,
+        "upstream_inference_prompt_cost": 6.031e-06,
+        "upstream_inference_completions_cost": 4.5628e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

@@ -1,0 +1,72 @@
+{
+  "call_id": "0732f0aff1454a70afced9f8ad71eddb",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791079709-kRAr5Oq5v6Fh3VymPrRD",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant deliberately failed to declare and pay taxes on a large amount of coal sales, constituting tax evasion (逃税罪). Additionally, he fabricated and used false VAT special invoices to claim input tax deductions, which is the crime of falsifying VAT special invoices (虚开增值税专用发票罪). Both offenses are clearly established by the evidence and are typical charges for such conduct.\",\n  \"final_answer\": \"[罪名]虚开增值税专用发票罪;逃税罪<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate crime(s) based on facts. The case: Tax evasion (逃税) and falsifying VAT invoices (虚开增值税专用发票). The examples show for similar facts they label as \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯\". In first example they gave \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯\". But here we have both tax evasion (逃税) and falsifying VAT invoices. The typical charge: 虚开增值税专用发票罪 (falsifying VAT special invoices). Also maybe \"逃税罪\"? In Chinese criminal law, tax evasion is a crime: \"逃税罪\" (tax evasion). However many cases combine both: 虚开增值税专用发票罪 and 逃税罪. The prompt says \"公诉机关认为... 虚开增值税专用发票罪、××追究其刑事责任\". So they want at least 虚开增值税专用发票罪. Also maybe \"逃税罪\". In examples, they sometimes list multiple separated by semicolon. Eg: \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯\". That's a single line but includes multiple descriptors. For our answer, we should output something like: [罪名]虚开增值税专用发票罪;逃税罪<eoa>. Or maybe \"虚开增值税专用发票罪;逃税罪\". The format: [罪名]...<eoa>. Use semicolon between multiple. So final answer: [罪名]虚开增值税专用发票罪;逃税罪<eoa>.\n\nCheck common mistakes: They want correct naming: not \"逃税\" but \"逃税罪\". Also \"虚开增值税专用发票罪\". Good.\n\nThus final JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "reasoning": "We need to determine appropriate crime(s) based on facts. The case: Tax evasion (逃税) and falsifying VAT invoices (虚开增值税专用发票). The examples show for similar facts they label as \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯\". In first example they gave \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯\". But here we have both tax evasion (逃税) and falsifying VAT invoices. The typical charge: 虚开增值税专用发票罪 (falsifying VAT special invoices). Also maybe \"逃税罪\"? In Chinese criminal law, tax evasion is a crime: \"逃税罪\" (tax evasion). However many cases combine both: 虚开增值税专用发票罪 and 逃税罪. The prompt says \"公诉机关认为... 虚开增值税专用发票罪、××追究其刑事责任\". So they want at least 虚开增值税专用发票罪. Also maybe \"逃税罪\". In examples, they sometimes list multiple separated by semicolon. Eg: \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯\". That's a single line but includes multiple descriptors. For our answer, we should output something like: [罪名]虚开增值税专用发票罪;逃税罪<eoa>. Or maybe \"虚开增值税专用发票罪;逃税罪\". The format: [罪名]...<eoa>. Use semicolon between multiple. So final answer: [罪名]虚开增值税专用发票罪;逃税罪<eoa>.\n\nCheck common mistakes: They want correct naming: not \"逃税\" but \"逃税罪\". Also \"虚开增值税专用发票罪\". Good.\n\nThus final JSON with reasoning and final answer.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate crime(s) based on facts. The case: Tax evasion (逃税) and falsifying VAT invoices (虚开增值税专用发票). The examples show for similar facts they label as \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯\". In first example they gave \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯\". But here we have both tax evasion (逃税) and falsifying VAT invoices. The typical charge: 虚开增值税专用发票罪 (falsifying VAT special invoices). Also maybe \"逃税罪\"? In Chinese criminal law, tax evasion is a crime: \"逃税罪\" (tax evasion). However many cases combine both: 虚开增值税专用发票罪 and 逃税罪. The prompt says \"公诉机关认为... 虚开增值税专用发票罪、××追究其刑事责任\". So they want at least 虚开增值税专用发票罪. Also maybe \"逃税罪\". In examples, they sometimes list multiple separated by semicolon. Eg: \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯\". That's a single line but includes multiple descriptors. For our answer, we should output something like: [罪名]虚开增值税专用发票罪;逃税罪<eoa>. Or maybe \"虚开增值税专用发票罪;逃税罪\". The format: [罪名]...<eoa>. Use semicolon between multiple. So final answer: [罪名]虚开增值税专用发票罪;逃税罪<eoa>.\n\nCheck common mistakes: They want correct naming: not \"逃税\" but \"逃税罪\". Also \"虚开增值税专用发票罪\". Good.\n\nThus final JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": "We need to determine appropriate crime(s) based on facts. The case: Tax evasion (逃税) and falsifying VAT invoices (虚开增值税专用发票). The examples show for similar facts they label as \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯\". In first example they gave \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯\". But here we have both tax evasion (逃税) and falsifying VAT invoices. The typical charge: 虚开增值税专用发票罪 (falsifying VAT special invoices). Also maybe \"逃税罪\"? In Chinese criminal law, tax evasion is a crime: \"逃税罪\" (tax evasion). However many cases combine both: 虚开增值税专用发票罪 and 逃税罪. The prompt says \"公诉机关认为... 虚开增值税专用发票罪、××追究其刑事责任\". So they want at least 虚开增值税专用发票罪. Also maybe \"逃税罪\". In examples, they sometimes list multiple separated by semicolon. Eg: \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯\". That's a single line but includes multiple descriptors. For our answer, we should output something like: [罪名]虚开增值税专用发票罪;逃税罪<eoa>. Or maybe \"虚开增值税专用发票罪;逃税罪\". The format: [罪名]...<eoa>. Use semicolon between multiple. So final answer: [罪名]虚开增值税专用发票罪;逃税罪<eoa>.\n\nCheck common mistakes: They want correct naming: not \"逃税\" but \"逃税罪\". Also \"虚开增值税专用发票罪\". Good.\n\nThus final JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 571,
+      "prompt_tokens": 22181,
+      "total_tokens": 22752,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 80,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000927474,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000927474,
+        "upstream_inference_prompt_cost": 0.000820697,
+        "upstream_inference_completions_cost": 0.000106777
+      }
+    }
+  },
+  "raw_response_missing": false
+}

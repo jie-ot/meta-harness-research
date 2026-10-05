@@ -1,0 +1,106 @@
+Bash
+
+command:
+python -c "
+# Prototype 2: exponential decay per-label error priority
+# Core idea: track per-label error rate with exponential decay (recent errors count more)
+# At predict time, boost retrieval weight for high-error-rate labels
+# This is fundamentally different from confusion matrix (which tracks WHICH labels confused with WHICH)
+# vs. this (which tracks HOW HARD each label is regardless of confusion pattern)
+
+import math
+from collections import defaultdict
+
+# Simulate batch learning: some labels are getting consistently wrong lately
+class DecayErrorPriority:
+    def __init__(self, decay=0.85):
+        self.decay = decay
+        self.label_error_score = defaultdict(float)   # decayed error count
+        self.label_total_score = defaultdict(float)   # decayed total count
+    
+    def update(self, label, was_correct):
+        # decay all existing scores first
+        for k in list(self.label_error_score.keys()):
+            self.label_error_score[k] *= self.decay
+            self.label_total_score[k] *= self.decay
+        self.label_total_score[label] += 1.0
+        if not was_correct:
+            self.label_error_score[label] += 1.0
+    
+    def error_rate(self, label):
+        total = self.label_total_score.get(label, 0)
+        if total < 0.5:  # effectively zero
+            return 0.5  # prior: uncertain
+        return self.label_error_score.get(label, 0) / total
+    
+    def retrieval_boost(self, label, alpha=2.0):
+        # boost factor: 1 + alpha * error_rate
+        return 1.0 + alpha * self.error_rate(label)
+
+dep = DecayErrorPriority(decay=0.9)
+
+# Simulate: 'alpha' and 'beta' are hard, 'gamma' is easy
+batches = [
+    ('alpha', False), ('beta', False), ('gamma', True),
+    ('alpha', False), ('gamma', True), ('beta', True),
+    ('alpha', False), ('beta', False), ('gamma', True),
+    ('alpha', True), ('gamma', True), ('delta', False),
+]
+for lbl, correct in batches:
+    dep.update(lbl, correct)
+
+print('Error rates after simulation:')
+for lbl in ['alpha', 'beta', 'gamma', 'delta', 'epsilon']:
+    print(f'  {lbl}: error_rate={dep.error_rate(lbl):.3f}  boost={dep.retrieval_boost(lbl):.3f}')
+
+# Test: retrieval with boost
+import re
+
+def tokenize(text):
+    return frozenset(re.findall(r'[A-Za-z0-9]+', text.lower()))
+
+def jaccard(a, b):
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+examples = [
+    {'input': f'{lbl} feature{i}', 'target': lbl, 'tokens': tokenize(f'{lbl} feature{i}')}
+    for i, lbl in enumerate(['alpha','alpha','beta','gamma','delta','epsilon','alpha','beta','gamma'])
+]
+
+query = 'common feature3 extra'
+q_tok = tokenize(query)
+
+# Without boost
+plain = sorted(enumerate(examples), key=lambda x: jaccard(q_tok, x[1]['tokens']), reverse=True)
+# With boost
+boosted = sorted(enumerate(examples), key=lambda x: jaccard(q_tok, x[1]['tokens']) * dep.retrieval_boost(x[1]['target']), reverse=True)
+
+print()
+print('Top 5 plain retrieval:', [examples[i]['target'] for i, _ in plain[:5]])
+print('Top 5 boosted retrieval:', [examples[i]['target'] for i, _ in boosted[:5]])
+print()
+# Verify: hard labels (alpha, beta) should appear earlier with boost
+plain_labels = [examples[i]['target'] for i, _ in plain[:5]]
+boosted_labels = [examples[i]['target'] for i, _ in boosted[:5]]
+hard = {'alpha', 'beta'}
+print(f'Hard label count in plain top-5: {sum(1 for l in plain_labels if l in hard)}')
+print(f'Hard label count in boosted top-5: {sum(1 for l in boosted_labels if l in hard)}')
+"
+
+
+description: Prototype 2: decay-weighted per-label error priority retrieval
+
+--- output ---
+Error rates after simulation:
+  alpha: error_rate=0.622  boost=2.245
+  beta: error_rate=0.654  boost=2.308
+  gamma: error_rate=0.000  boost=1.000
+  delta: error_rate=1.000  boost=3.000
+  epsilon: error_rate=0.500  boost=2.000
+
+Top 5 plain retrieval: ['gamma', 'alpha', 'alpha', 'beta', 'delta']
+Top 5 boosted retrieval: ['gamma', 'alpha', 'alpha', 'beta', 'delta']
+
+Hard label count in plain top-5: 3
+Hard label count in boosted top-5: 3

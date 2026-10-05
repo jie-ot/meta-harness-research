@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description indicates that the defendant established, operated, or maintained a venue or equipment specifically for gambling (e.g., opening a game hall, installing gambling machines, ru
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- If the facts state that the defendant knowingly acquired or dealt with property known to be stolen and thereby obtained or handled the proceeds of the crime, list both the concealment/cover‑up offense
+- When multiple descriptors (e.g., illegal possession and concealment) refer to the same statutory offense concerning firearms or ammunition, merge them into a single combined charge phrase instead of l
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:普宁市人民检察院指控，2015年4月中旬至同年5月6日间，被告人曾XX在普宁市洪阳镇其经营的“江西南丰饭馆”二楼设置3台麻将桌供他人赌博，从中抽水牟利共人民币600元。2015年5月6日15时许，公安机关现场抓获曾XX及参赌人员黄2某X、尧满X、黄1某X、郤小X、吴长X、温红X、曾某X、翟益X、翟小X、翟爱X、谢某X、李3某X、刘允X、涂龙X、翟志X、李2某X、罗水X、秦振X、李1某X、饶长X等人，并查获非法所得人民币70元、作案工具麻将桌3台、麻将牌3副及扑克牌1副。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

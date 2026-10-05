@@ -1,0 +1,35 @@
+Grep
+
+-n: True
+output_mode: content
+path:
+D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_a\text_classification\inner_loop.py
+
+pattern: was_correct|correct = |def _.*correct|accuracy
+
+--- output ---
+57:    - dict: {"was_correct": bool, "metrics": {...}}
+60:        return raw["was_correct"], raw.get("metrics", {})
+90:    correct = sum(1 for p in preds if p["was_correct"])
+92:        "accuracy": correct / len(preds) if preds else 0.0,
+127:    3. Eval phase: predict on all examples to measure final accuracy (no updates)
+130:    Returns accuracy measured AFTER training (not during).
+153:                    "was_correct": True,
+183:            val_acc = val_result["accuracy"]
+217:            "accuracy": 0.0,
+238:    correct = 0
+262:                    "was_correct": ok,
+269:        "accuracy": correct / len(examples) if examples else 0.0,
+324:    correct = 0
+363:                "was_correct": ok,
+394:                        "was_correct": ok,
+418:        "accuracy": correct / len(examples) if examples else 0.0,
+438:            "accuracy": 0.0,
+468:            "was_correct": ok,
+507:    correct = sum(1 for r in results if r["was_correct"])
+511:        "accuracy": correct / len(examples),
+720:    train_correct = 0
+752:            train_correct = chunk_results["correct"]
+805:    val_acc = val_result["accuracy"] if val_result else None
+806:    test_acc = test_result["accuracy"] if test_result else None
+840:            "accuracy": result_dict["accuracy"],

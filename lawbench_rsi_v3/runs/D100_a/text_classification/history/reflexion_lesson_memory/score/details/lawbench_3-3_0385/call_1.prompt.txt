@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+- If the facts state that the defendant knowingly acquired or dealt with property known to be stolen and thereby obtained or handled the proceeds of the crime, list both the concealment/cover‑up offense
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控，2014年7月下旬，李某甲、干某（已判决）二人前后三次驾驶×××轿车来到舟曲县老城区、峰迭新区盗窃路灯电缆线。第一次，在舟曲县瓦厂加油站以东路段盗窃路灯电缆线，共盗得电缆线约210米；第二次，在舟曲县峰迭新区同舟路盗窃路灯电缆线，共盗得路灯电缆线约75.6米，另将31.5米电缆线剪断未盗走；第三次，在舟曲县峰迭新区感恩路盗窃路灯电缆线，共盗得路灯电缆线约62.4米。二人每次盗得电缆线后均用×××轿车陇南市武都区，后出售给废品收购站，李某甲共分得赃款两千余元。
+针对指控，公诉机关当庭向法庭出示了被告人及同案犯干某等人的供述、证人证言、辨认笔录及照片、指认笔录及照片、价格鉴证报告等相关证据。
+公诉机关认为，被告人李某甲以牟利为目的，盗割正在使用中的公共照明电线，危害公共安全，其行为已触犯了《中华人民共和国刑法》××之规定，构成××，请求判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

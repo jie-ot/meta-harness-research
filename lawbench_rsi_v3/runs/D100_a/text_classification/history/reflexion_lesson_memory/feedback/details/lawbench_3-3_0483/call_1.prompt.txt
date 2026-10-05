@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the facts describe a defendant’s role in a scheme that withdraws money from victims’ bank or credit‑card accounts, classify the conduct under the specific statutory offenses of fraud (诈骗) and, if
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:山东省曹县人民检察院指控：2012年底至2014年初，被告人车某某以到宁夏回族自治区银川市承包建筑工程为名，以发展新人入股返利相诱惑，诱使杨某1、黄某1、高某1以入股的形式加入“阳光工程组织”，直接或间接发展下线人员三十余人。在此过程中，被告人车某某起管理、协调作用。
+公诉机关依据证人证言、相关书证及被告人车某某供述等证据提出上述指控，认为被告人车某某以投资为名，要求参加者投入一定金额的资金获得加入“阳光工程组织”的资格，并按照一定顺序组成层级，直接或间接以发展人员的数量作为计酬或者返利依据，引诱参加者继续发展他人参加，骗取财物，扰乱经济社会秩序，其行为触犯了《中华人民共和国刑法》××××的规定，应当以××追究其刑事责任。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

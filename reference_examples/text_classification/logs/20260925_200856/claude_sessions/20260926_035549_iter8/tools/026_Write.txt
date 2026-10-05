@@ -1,0 +1,114 @@
+Write: C:/tmp/proto_bfs_fix.py
+
+content:
+"""Prototype: confusion key normalization + BFS traversal.
+
+Tests the fix for the dead disambiguation phase in adaptive_tokenizer_confusion_memory.
+"""
+import json, os, re
+from collections import defaultdict, deque
+
+BASE = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+LAW_LOG = os.path.join(BASE, 'LawBench', 'adaptive_tokenizer_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+LAW_MEM = os.path.join(BASE, 'LawBench', 'adaptive_tokenizer_confusion_memory', 'gpt-oss-120b', 'memory.json')
+
+# ---- Key insight: strip format wrappers from raw predictions ----
+def normalize_label(s: str) -> str:
+    """Strip common format wrappers: [TAG]...<eoa>, [TAG]...[/TAG], etc."""
+    s = s.strip()
+    # [罪名]xxx<eoa>  ->  xxx
+    s = re.sub(r'^\[[^\]]+\]', '', s)
+    s = re.sub(r'<eoa>$', '', s)
+    # [DIAGNOSIS]xxx[/DIAGNOSIS]
+    s = re.sub(r'^\[[^\]]+\]', '', s)
+    s = re.sub(r'\[/[^\]]+\]$', '', s)
+    return s.strip()
+
+# Test normalization on real log data
+lines = [json.loads(l) for l in open(LAW_LOG, encoding='utf-8') if l.strip()]
+steps = [e for e in lines if e['type'] == 'step']
+wrong = [e for e in steps if e.get('ok') is False]
+
+# Build normalized confusion matrix from wrong steps
+confusion_norm = defaultdict(lambda: defaultdict(int))
+for w in wrong:
+    pred_norm = normalize_label(w.get('pred', ''))
+    gt = w.get('tgt', '')
+    if pred_norm and gt and pred_norm != gt:
+        confusion_norm[pred_norm][gt] += 1
+
+print(f"=== Normalized confusion matrix: {len(confusion_norm)} keys, "
+      f"{sum(len(v) for v in confusion_norm.values())} edges")
+pairs = [(cnt, p, a) for p, acts in confusion_norm.items() for a, cnt in acts.items()]
+pairs.sort(reverse=True)
+print("Top 10 pairs:")
+for cnt, p, a in pairs[:10]:
+    print(f"  {cnt:3d}x  {p[:40]:40s} -> {a[:40]}")
+
+# ---- BFS traversal on normalized graph ----
+def bfs_neighbors(graph, seeds, max_depth=2, max_nodes=6):
+    visited = set(seeds)
+    result = []
+    q = deque((s, 0) for s in seeds)
+    while q and len(result) < max_nodes:
+        node, depth = q.popleft()
+        if depth > max_depth:
+            continue
+        neighbors = sorted(graph.get(node, {}).items(), key=lambda x: -x[1])
+        for neighbor, cnt in neighbors[:3]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                result.append((neighbor, depth + 1, cnt))
+                if len(result) < max_nodes:
+                    q.append((neighbor, depth + 1))
+    return result
+
+# Load examples from saved state and check seed labels
+state = json.loads(open(LAW_MEM, encoding='utf-8').read())
+examples = state['examples']
+all_targets = set(ex['target'] for ex in examples)
+
+# Test BFS from real label seeds
+test_seeds = ['诈骗', '受贿', '盗窃']
+present_seeds = [s for s in test_seeds if s in all_targets]
+print(f"\n=== BFS depth-1 vs depth-2 from {test_seeds}")
+print(f"  Seeds present in examples: {present_seeds}")
+
+graph = confusion_norm
+d1 = bfs_neighbors(graph, test_seeds, max_depth=1)
+d2 = bfs_neighbors(graph, test_seeds, max_depth=2)
+print(f"  Depth-1 neighbors: {[(n, d, w) for n, d, w in d1]}")
+print(f"  Depth-2 neighbors: {[(n, d, w) for n, d, w in d2]}")
+extra = set(n for n, _, _ in d2) - set(n for n, _, _ in d1)
+print(f"  Extra labels from BFS-2: {extra}")
+
+# ---- Variant: weight by (1/depth) * count in BFS ranking ----
+# This downweights depth-2 nodes relative to depth-1, so prompt stays focused
+def bfs_weighted(graph, seeds, max_depth=2, max_nodes=6):
+    visited = set(seeds)
+    scored = []
+    q = deque((s, 0) for s in seeds)
+    while q:
+        node, depth = q.popleft()
+        if depth > max_depth:
+            continue
+        neighbors = sorted(graph.get(node, {}).items(), key=lambda x: -x[1])
+        for neighbor, cnt in neighbors[:3]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                score = cnt / (depth + 1)
+                scored.append((score, neighbor, depth + 1))
+                if len(scored) < max_nodes * 3:
+                    q.append((neighbor, depth + 1))
+    scored.sort(reverse=True)
+    return [(n, d, s) for s, n, d in scored[:max_nodes]]
+
+print(f"\n=== BFS weighted from {test_seeds}")
+for n, d, s in bfs_weighted(graph, test_seeds):
+    print(f"  score={s:.2f} depth={d} label={n}")
+print("Prototype 1 looks good: normalization unlocks the confusion graph.")
+
+
+
+--- output ---
+File created successfully at: C:/tmp/proto_bfs_fix.py (file state is current in your context — no need to Read it back)

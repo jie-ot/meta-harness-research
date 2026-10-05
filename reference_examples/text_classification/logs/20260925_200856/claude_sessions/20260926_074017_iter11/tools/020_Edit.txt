@@ -1,0 +1,64 @@
+Edit: agents\contrastive_boundary_memory.py
+
+replace_all: False
+old_string:
+import json
+import re
+from collections import defaultdict
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+
+{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Follow the patterns shown in the examples above
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+MAX_CHARS = 30000
+_TOP_CANDIDATE_LABELS = 3
+_DISAMBIG_PER_CONFUSION = 2
+
+new_string:
+import json
+import re
+from collections import defaultdict
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+# Two-section prompt: disambiguation warnings first, then regular examples.
+# The disambiguation section annotates each example with the label to avoid,
+# giving the model an explicit negative-example signal at the boundary.
+_PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+
+{disambig_section}{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- If disambiguation examples are shown above, pay close attention — they highlight inputs that look similar but have different correct answers
+- Follow the patterns shown in the examples
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+_DISAMBIG_HEADER = "**Common Confusions — similar inputs with different answers:**\n\n"
+
+MAX_CHARS = 30000
+_TOP_CANDIDATE_LABELS = 3
+_DISAMBIG_PER_CONFUSION = 2
+
+
+--- output ---
+The file D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/agents/contrastive_boundary_memory.py has been updated successfully.

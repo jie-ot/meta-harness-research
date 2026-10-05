@@ -1,0 +1,25 @@
+Grep
+
+pattern: def (extract_json_field|check_answer)
+path:
+D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/lawbench_rsi_v3/runs/D100_injected_b/text_classification/memory_system.py
+
+output_mode: content
+-A: 14
+
+--- output ---
+13:def extract_json_field(text: str, field: str, default: str = "") -> str:
+14-    """Helper function to extract a field from JSON in LLM response."""
+15-    # Try direct parse
+16-    try:
+17-        data = json.loads(text)
+18-        if isinstance(data, dict):
+19-            return str(data.get(field, default))
+20-    except json.JSONDecodeError:
+21-        pass
+22-
+23-    # Try code blocks: ```json ... ``` or ``` ... ```
+24-    for match in re.finditer(r"```(?:json)?\s*([\s\S]*?)\s*```", text):
+25-        try:
+26-            data = json.loads(match.group(1))
+27-            if isinstance(data, dict):

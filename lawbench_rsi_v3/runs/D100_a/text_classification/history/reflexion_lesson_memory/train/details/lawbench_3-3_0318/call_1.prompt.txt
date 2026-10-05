@@ -1,0 +1,31 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- If the facts describe a person in a managerial or official position receiving money or valuables in exchange for using their职务便利, classify the crime simply as "受贿" unless the source explicitly states 
+- When extracting charges, match the charge name to the specific subject described in the facts (e.g., use “单位受贿” for a unit’s bribery and “受贿” for an individual) and list the charges in the order they 
+- If the facts only describe forging, altering, or selling state‑issued documents or certificates and do not contain any separate act of deceiving another party for financial gain, assign only the forge
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:襄某铁路运输检察院指控：
+1、2011年至2014年，被告人闵某利用担任襄某公寓主任的职务便利，伙同任某（另案处理）等人经预谋，私设各种奖金发放名义从襄某公寓账外资金中共同侵吞公款64000元（人民币，以下所涉币种相同），闵某实得25500元。
+2、2012年12月至2014年6月，被告人闵某利用担任襄某房建生活段襄某公寓主任的职务便利，在为本单位采购物资的过程中，采取虚开发票的手段，分8次骗取公款15350元。
+综上，被告人闵某伙同他人共同贪污64000元，个人实得25500元；个人贪污15350元；共计贪污79350元，实得40850元。
+针对上述指控，公诉机关提供了相关证据，认为被告人闵某的行为构成××，且在共同贪污犯罪过程中起主要作用，系主犯。提请本院依照《中华人民共和国刑法》××××、××××、××××的规定予以惩处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

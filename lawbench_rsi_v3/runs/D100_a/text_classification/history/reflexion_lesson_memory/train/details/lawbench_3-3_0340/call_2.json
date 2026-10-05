@@ -1,0 +1,72 @@
+{
+  "call_id": "7b1c58365dfb44f492b8d359c4ac6628",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017214-SsNzRDSez1csoDpG8vYm",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"Assign only the offense that directly matches the legally defined elements of the conduct; do not add related offenses (e.g., intentional injury) unless the specific intent and act required for that offense are independently satisfied beyond the primary charge (e.g., group fighting).\",\n  \"keywords\": [\n    \"聚众斗殴\",\n    \"故意伤害\",\n    \"打斗\",\n    \"持撬棍\",\n    \"重伤\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": " need to produce a JSON with rule and keywords. The error: AI predicted two crimes (故意伤害;聚众斗殴) but correct answer is only 聚众斗殴. So the classification error is over-prediction of multiple crimes when only one applies. The rule should be: When the factual scenario involves a single criminal act that falls under a specific offense, do not also assign related but distinct offenses unless elements of each are separately satisfied. Specifically, if the injury is caused in the context of a group fight, the appropriate charge is聚众斗殴, not故意伤害, unless intent to cause injury is proven beyond the group fight context.\n\nThus rule: Only assign故意伤害 if the act was intentional to cause injury, not merely incidental during a group fight. Keywords: \"打斗\", \"持撬棍\", \"重伤\", \"聚众斗殴\", \"故意伤害\", \"多人参与\". Need 3-6.\n\nLet's craft JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": " need to produce a JSON with rule and keywords. The error: AI predicted two crimes (故意伤害;聚众斗殴) but correct answer is only 聚众斗殴. So the classification error is over-prediction of multiple crimes when only one applies. The rule should be: When the factual scenario involves a single criminal act that falls under a specific offense, do not also assign related but distinct offenses unless elements of each are separately satisfied. Specifically, if the injury is caused in the context of a group fight, the appropriate charge is聚众斗殴, not故意伤害, unless intent to cause injury is proven beyond the group fight context.\n\nThus rule: Only assign故意伤害 if the act was intentional to cause injury, not merely incidental during a group fight. Keywords: \"打斗\", \"持撬棍\", \"重伤\", \"聚众斗殴\", \"故意伤害\", \"多人参与\". Need 3-6.\n\nLet's craft JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": " need to produce a JSON with rule and keywords. The error: AI predicted two crimes (故意伤害;聚众斗殴) but correct answer is only 聚众斗殴. So the classification error is over-prediction of multiple crimes when only one applies. The rule should be: When the factual scenario involves a single criminal act that falls under a specific offense, do not also assign related but distinct offenses unless elements of each are separately satisfied. Specifically, if the injury is caused in the context of a group fight, the appropriate charge is聚众斗殴, not故意伤害, unless intent to cause injury is proven beyond the group fight context.\n\nThus rule: Only assign故意伤害 if the act was intentional to cause injury, not merely incidental during a group fight. Keywords: \"打斗\", \"持撬棍\", \"重伤\", \"聚众斗殴\", \"故意伤害\", \"多人参与\". Need 3-6.\n\nLet's craft JSON.",
+            "reasoning_content": " need to produce a JSON with rule and keywords. The error: AI predicted two crimes (故意伤害;聚众斗殴) but correct answer is only 聚众斗殴. So the classification error is over-prediction of multiple crimes when only one applies. The rule should be: When the factual scenario involves a single criminal act that falls under a specific offense, do not also assign related but distinct offenses unless elements of each are separately satisfied. Specifically, if the injury is caused in the context of a group fight, the appropriate charge is聚众斗殴, not故意伤害, unless intent to cause injury is proven beyond the group fight context.\n\nThus rule: Only assign故意伤害 if the act was intentional to cause injury, not merely incidental during a group fight. Keywords: \"打斗\", \"持撬棍\", \"重伤\", \"聚众斗殴\", \"故意伤害\", \"多人参与\". Need 3-6.\n\nLet's craft JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 314,
+      "prompt_tokens": 508,
+      "total_tokens": 822,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0002078,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0002078,
+        "upstream_inference_prompt_cost": 5.08e-05,
+        "upstream_inference_completions_cost": 0.000157
+      }
+    }
+  },
+  "raw_response_missing": false
+}

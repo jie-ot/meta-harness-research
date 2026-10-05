@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual scenario describes fraud that is carried out through the creation, signing, or performance of a contract (e.g., false representation of a business role, fictitious project, or fabricate
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:东莞市第一市区人民检察院指控称：2013年8月初的一天，被告人许某得知被害人张3某的丈夫李某被广西公安机关抓获，便对张3某称能将张3某老公办理取保候审。张3某遂与许某和许某的朋友刘某驾驶其名下的一辆号牌为粤SX某XX奇瑞牌小轿车前往广西，并在广西给了5500元许某去办事。同年8月25日回到东莞市南城区，许某提出如果不够钱可以用汽车抵押，并以办事为由，开走了张3某的小车。同年8月29日，许某称要请别人吃饭要求张3某给人民币10000元，张3某听后就将钱转到许某指定的银行账号上。同年9月9日17时许，张3某接到许某的电话要求到许某的家签汽车过户合同，张1某来到许某租住的东莞市南城区胜和社区蚝江禾塘一巷20号的出租屋，期间，张3某与许某因小车及为张3某丈夫办理取保候审的费用问题发生争吵，许某叫了在屋内的被告人张4某和王2某拿刀和棍出来威胁、看守张3某，且打了张3某两耳光。张3某害怕，就打电话给其哥张2某借钱。张2某接到电话后觉得可疑，即报警。公安机关接报后于2013年9月10日1时许，在东莞市南城区胜和蚝江禾塘一巷20号出租屋成功解救张3某，并当场将许某、张4某、王2某三人抓获归案。
+据此，公诉机关向法庭提供了现场勘验材料，被害人张3某的陈述，证人某某朝等人的证言，到案经过等书证，被告人许某、张4某、王2某的供述等证据，认为被告人许某、张4某、王2某的行为已触犯《中华人民共和国刑法》××××之规定，构成××，鉴于被告人张4某被判处徒刑以上刑罚，刑罚执行完毕后五年内再犯应当判处××以上刑罚之罪的，是累犯，应当从重处罚。特提请本院依法惩处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

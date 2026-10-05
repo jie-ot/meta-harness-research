@@ -1,0 +1,51 @@
+Bash
+
+command:
+python -c "
+import os
+r = open(r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\reports\iter_18.md', encoding='utf-8').read()
+print(r)
+"
+
+description: Read iter 18 report for format reference
+
+--- output ---
+# Iteration 18 Report
+
+## What changed
+Two new memory-content / LLM-in-learning systems on top of decayed_confusion_memory.
+
+- **reasoning_trace_memory**: stored the LLM's reasoning chain alongside each correct example
+  and injected a truncated reasoning prefix for the top-K most similar examples at predict time.
+- **error_summary_memory**: after batches with ≥5 errors, called the LLM once to synthesize a
+  2-3 sentence narrative "Current weaknesses" hint and injected it above the few-shot examples.
+
+## Per-dataset results vs frontier (decayed_confusion 52.2%)
+
+| system | USPTO | LawBench | Symptom2Disease | avg |
+|---|---|---|---|---|
+| decayed_confusion_memory (frontier) | 26.7% | 40.0% | 90.0% | 52.2% |
+| reasoning_trace_memory | 23.3% | 36.0% | 86.0% | 48.4% (-3.8) |
+| error_summary_memory | 26.7% | 32.0% | 88.0% | 48.9% (-3.3) |
+
+Both regressed. Symptom2Disease dropped 2-4 pp; LawBench dropped 4-8 pp.
+
+## Why they regressed
+
+**reasoning_trace_memory**: Reasoning chains are highly instance-specific and verbose. Injecting
+reasoning prefixes from retrieved (but different) examples creates misleading procedural noise.
+The model follows the injected reasoning pattern rather than reasoning freshly, which hurts on
+different-but-similar queries. Also consumes significant token budget.
+
+**error_summary_memory**: The synthesized narrative hint was too abstract to provide actionable
+signal. It described broad error patterns but the model already had those patterns implicitly in
+its few-shot examples. Worse, the hint consumed ~300-500 chars of the context budget, displacing
+actual examples, causing LawBench (large label space, limited examples per label) to regress most.
+
+## Takeaway
+
+LLM-generated content injected at predict time (whether reasoning traces or narrative hints) has
+consistently underperformed since iter 7 (llm_rule_synthesis 44.0%). The extra inference content
+displaces concrete examples that are more reliably useful. Axis B (memory content enrichment) and
+axis F (LLM usage in learning) have both been exhausted for now. Future iterations should focus on
+selection algorithm (C) or learning trigger (E) changes, or entirely novel retrieval architectures.

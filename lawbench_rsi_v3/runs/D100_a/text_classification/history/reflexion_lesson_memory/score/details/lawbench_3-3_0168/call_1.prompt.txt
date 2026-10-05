@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the factual description contains multiple distinct criminal acts (e.g., a traffic offense and a separate economic crime), the model must list every applicable charge, separating them with semicol
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the alleged offender is not a public official (i.e., not a state functionary) but the conduct involves accepting or soliciting a bribe, the correct charge is '非国家工作人员受贿' rather than the generic '
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:乌兰察布市集宁区人民检察院指控，2016年4月13日21时50分许，被告人张某某饮酒后驾驶黑色比亚迪牌小型轿车上道路行驶，当行驶至乌兰察布市集宁区泉山北街“变电站”附近路段处，被乌兰察布市集宁区公安局交管大队民警当场抓获。随后由乌兰察布市第三医院医务人员抽取张某某血样并送检。2016年4月15日，乌兰察布市公安司法鉴定中心对其血样做出检验鉴定结论为：被鉴定人张某某血样中酒精含量为97.477mg/100ml,达到醉酒程度。
+检察机关认为，被告人张某某醉酒后驾驶机动车辆上道路行驶，其行为触犯了《中华人民共和国刑法》××××的规定，构成××，应当以××追究其刑事责任，同时被告人张某某于2013年9月22日因××被判处××，××，××考验期内犯新罪，应当适用《中华人民共和国刑法》××、××的规定。根据《中华人民共和国刑事诉讼法》××的规定，现提起公诉，请依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

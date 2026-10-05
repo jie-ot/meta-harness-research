@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- When extracting the crime name, output the exact statutory offense term (e.g., “行贿”) without adding descriptive prefixes or qualifiers such as “对国家工作人员”。
+- If the factual description indicates that the offender used their official position or entrusted authority to appropriate property for personal gain, rather than physically taking or stealthily removi
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控，自2015年7月开始，被告人郭某受雇于同案人（另案处理），在本市白云区均禾街富力城C3栋801/02房内，销售假冒“GIVENCHY”、“LOUISVUITTON”、“HERMES”等注册商标的皮鞋。9月14日10时许，郭某在上址被民警抓获，并当场缴获假冒上述注册商标的皮鞋1批。经鉴定，其中的1009双共价值人民币6525350元。为证实指控的事实，公诉机关在法庭审理时宣读并出示了证人证言，书证，被告人供述等证据。公诉机关据此认为，被告人郭某无视国家法律，销售明知是假冒注册商标的商品，数额巨大，其行为触犯了《中华人民共和国刑法》××之规定，构成××。郭某在共同犯罪过程中起次要作用，根据《中华人民共和国刑法》××的规定，是从犯，应当从轻或减轻处罚。郭某犯罪未遂，根据《中华人民共和国刑法》××之规定，可比照既遂犯从轻或者减轻处罚。提请本院依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

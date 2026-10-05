@@ -1,0 +1,250 @@
+Write: proto_iter12d.py
+
+content:
+"""Prototype v4: budget-proportional disambiguation and anchor-recency dual pool."""
+import json, re
+from collections import defaultdict, deque
+from pathlib import Path
+
+BASE = Path(__file__).parent / "logs" / "20260925_200856"
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+def _has_cjk(t): return bool(_CJK_RE.search(t))
+def _tok_word(t): return frozenset(re.findall(r"[A-Za-z0-9]+", t.lower()))
+def _tok_bigram(t):
+    t = re.sub(r'\s+', ' ', t.strip())
+    return frozenset(t[i:i+2] for i in range(len(t)-1)) if len(t) >= 2 else frozenset()
+def _tok(t): return _tok_bigram(t) if _has_cjk(t) else _tok_word(t)
+def _jaccard(a, b):
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+def _normalize(pred):
+    m = re.search(r'\[.*?\](.*?)<eoa>', pred)
+    if m: return m.group(1).strip()
+    m = re.search(r'"final_answer"\s*:\s*"([^"]+)"', pred)
+    if m: return m.group(1).strip()
+    return pred.strip()
+
+def load_steps(dataset, system):
+    p = BASE / dataset / system / "gpt-oss-120b" / "log.jsonl"
+    return [json.loads(l) for l in p.read_text(encoding="utf-8").splitlines()
+            if json.loads(l)["type"] == "step"]
+
+steps_law = load_steps("LawBench", "adaptive_tokenizer_confusion_memory")
+steps_s2d = load_steps("Symptom2Disease", "adaptive_tokenizer_confusion_memory")
+MAX_CHARS = 30000
+
+def part_for(ex):
+    raw_q = ex.get("raw_question", ex["input"])
+    return f"Q: {raw_q}\nA: {ex['target']}"
+
+# ---- Build memories from training steps ----
+def build_frontier(steps, train_n):
+    """Current frontier: full pool + confusion matrix."""
+    examples, confusion = [], defaultdict(lambda: defaultdict(int))
+    for s in steps[:train_n]:
+        raw_q = s["input_preview"][:600]
+        tgt = s["tgt"]
+        ex = {"tokens": _tok(raw_q), "target": tgt, "raw_question": raw_q, "input": raw_q}
+        examples.append(ex)
+        if not s["ok"]:
+            pred_norm = _normalize(s["pred"])
+            if pred_norm != tgt:
+                confusion[pred_norm][tgt] += 1
+    return examples, confusion
+
+def build_anchor_recency(steps, train_n, window=80):
+    """New: anchors dict + bounded recency deque."""
+    anchors = {}   # label -> most recent ex
+    recency = deque(maxlen=window)
+    for s in steps[:train_n]:
+        raw_q = s["input_preview"][:600]
+        tgt = s["tgt"]
+        ex = {"tokens": _tok(raw_q), "target": tgt, "raw_question": raw_q, "input": raw_q}
+        anchors[tgt] = ex  # always update to most recent
+        recency.append(ex)
+    return anchors, recency
+
+# ---- Retrieval methods ----
+def predict_frontier(query_raw, examples, confusion, confusion_frac=None):
+    """Current frontier retrieval (fixed 2-round disambiguation)."""
+    q_tok = _tok(query_raw)
+    ranked = sorted(range(len(examples)),
+                    key=lambda i: -_jaccard(q_tok, examples[i]["tokens"]))
+    top_labels = [examples[i]["target"] for i in ranked[:3]]
+    # confusion targets
+    label_set = set(top_labels)
+    counts = defaultdict(int)
+    for lbl in top_labels:
+        for actual, cnt in confusion.get(lbl, {}).items():
+            if actual not in label_set:
+                counts[actual] += cnt
+    c_targets = [l for l, _ in sorted(counts.items(), key=lambda x: -x[1])[:3]]
+
+    parts, used, total_chars = [], set(), 0
+    def try_add(idx):
+        nonlocal total_chars
+        if idx in used: return False
+        p = part_for(examples[idx])
+        if total_chars + len(p) + 2 > MAX_CHARS: return False
+        parts.append(p); used.add(idx); total_chars += len(p) + 2
+        return True
+
+    if c_targets:
+        per_label = {lbl: None for lbl in c_targets}
+        for idx in ranked:
+            lbl = examples[idx]["target"]
+            if lbl in per_label and per_label[lbl] is None:
+                per_label[lbl] = idx
+            if all(v is not None for v in per_label.values()): break
+        for _round in range(2):
+            for lbl in c_targets:
+                if per_label.get(lbl) is not None:
+                    try_add(per_label[lbl])
+    for idx in ranked:
+        if total_chars >= MAX_CHARS: break
+        try_add(idx)
+    return parts
+
+def predict_budget_proportional(query_raw, examples, confusion, confusion_frac=0.25):
+    """Budget-proportional: reserve confusion_frac of MAX_CHARS for confusion examples."""
+    q_tok = _tok(query_raw)
+    ranked = sorted(range(len(examples)),
+                    key=lambda i: -_jaccard(q_tok, examples[i]["tokens"]))
+    top_labels = [examples[i]["target"] for i in ranked[:3]]
+    label_set = set(top_labels)
+    counts = defaultdict(int)
+    for lbl in top_labels:
+        for actual, cnt in confusion.get(lbl, {}).items():
+            if actual not in label_set:
+                counts[actual] += cnt
+    c_targets = [l for l, _ in sorted(counts.items(), key=lambda x: -x[1])[:3]]
+
+    confusion_budget = int(MAX_CHARS * confusion_frac)
+    fill_budget = MAX_CHARS - confusion_budget
+
+    parts, used, total_chars = [], set(), 0
+    c_chars = 0
+
+    def try_add(idx, budget_check=None):
+        nonlocal total_chars, c_chars
+        if idx in used: return False
+        p = part_for(examples[idx])
+        plen = len(p) + 2
+        if budget_check is not None and c_chars + plen > budget_check: return False
+        if total_chars + plen > MAX_CHARS: return False
+        parts.append(p); used.add(idx)
+        total_chars += plen
+        if budget_check is not None: c_chars += plen
+        return True
+
+    # Phase 1: fill confusion budget with confusion-target examples (sim-ranked)
+    if c_targets:
+        c_target_set = set(c_targets)
+        for idx in ranked:
+            if examples[idx]["target"] in c_target_set:
+                if not try_add(idx, confusion_budget): break
+
+    # Phase 2: fill remaining budget with sim-ranked examples
+    for idx in ranked:
+        if total_chars >= MAX_CHARS: break
+        try_add(idx)
+    return parts
+
+def predict_anchor_recency(query_raw, anchors, recency):
+    """Anchor-recency pool: union of label anchors + recent window, sim-ranked."""
+    q_tok = _tok(query_raw)
+    # Build pool: anchors + recency, deduped by identity
+    pool = {}
+    for ex in recency:
+        pool[id(ex)] = ex
+    for ex in anchors.values():
+        pool[id(ex)] = ex
+    pool_list = list(pool.values())
+    ranked = sorted(range(len(pool_list)),
+                    key=lambda i: -_jaccard(q_tok, pool_list[i]["tokens"]))
+    parts, total_chars = [], 0
+    for idx in ranked:
+        p = part_for(pool_list[idx])
+        if total_chars + len(p) + 2 > MAX_CHARS: break
+        parts.append(p); total_chars += len(p) + 2
+    return parts
+
+# ---- Evaluate: count correct predictions (approximate — just measure example coverage) ----
+# Since we can't call the LLM, measure proxy: how many of the test targets appear
+# in any position within the context built, and average position of first match.
+def measure_context_quality(test_steps, build_context_fn, description):
+    """Proxy: target label in context, avg position of match, unique labels per context."""
+    hits, positions, unique_labels_per = 0, [], []
+    for s in test_steps:
+        raw_q = s["input_preview"][:600]
+        tgt = s["tgt"]
+        context_parts = build_context_fn(raw_q)
+        labels_in_ctx = [p.split("\nA: ", 1)[-1].strip() for p in context_parts]
+        unique_labels_per.append(len(set(labels_in_ctx)))
+        for pos, lbl in enumerate(labels_in_ctx):
+            if lbl == tgt:
+                hits += 1; positions.append(pos + 1); break
+    avg_pos = sum(positions)/len(positions) if positions else float('inf')
+    avg_unique = sum(unique_labels_per)/len(unique_labels_per) if unique_labels_per else 0
+    n_ex = sum(1 for s in test_steps for _ in [build_context_fn(s["input_preview"][:600])])
+    avg_ctx = sum(len(build_context_fn(s["input_preview"][:600])) for s in test_steps) / len(test_steps)
+    print(f"  {description:<45} found={hits}/{len(test_steps)}  "
+          f"avg_pos={avg_pos:5.1f}  avg_unique_labels={avg_unique:.1f}  avg_ctx_size={avg_ctx:.1f}")
+
+print("Building memories (train_n=150)...")
+ex_law, conf_law = build_frontier(steps_law, 150)
+anchors_law, recency_law = build_anchor_recency(steps_law, 150, window=80)
+ex_s2d, conf_s2d = build_frontier(steps_s2d, 150)
+anchors_s2d, recency_s2d = build_anchor_recency(steps_s2d, 150, window=80)
+
+print(f"\nLawBench frontier pool: {len(ex_law)} examples")
+print(f"LawBench anchor pool: {len(anchors_law)} labels, recency: {len(recency_law)} examples")
+conf_keys = sum(len(v) for v in conf_law.values())
+print(f"LawBench confusion pairs: {conf_keys}")
+print(f"\nS2D anchor pool: {len(anchors_s2d)} labels, recency: {len(recency_s2d)} examples")
+
+print("\n=== LawBench (test 150-200) ===")
+test_law = steps_law[150:200]
+measure_context_quality(test_law, lambda q: predict_frontier(q, ex_law, conf_law), "frontier (fixed 2-round)")
+measure_context_quality(test_law, lambda q: predict_budget_proportional(q, ex_law, conf_law, 0.20), "budget-prop frac=0.20")
+measure_context_quality(test_law, lambda q: predict_budget_proportional(q, ex_law, conf_law, 0.25), "budget-prop frac=0.25")
+measure_context_quality(test_law, lambda q: predict_budget_proportional(q, ex_law, conf_law, 0.35), "budget-prop frac=0.35")
+measure_context_quality(test_law, lambda q: predict_anchor_recency(q, anchors_law, recency_law), "anchor-recency w=80")
+
+print("\n--- Anchor-recency pool composition ---")
+print(f"  anchors: {len(anchors_law)} unique labels")
+print(f"  recency last 10 labels: {[anchors_law[k]['target'][:20] for k in list(anchors_law)[-10:]]}")
+
+# Check if confusion fires differently with budget-proportional
+print("\n--- Confusion phase firing check ---")
+fired = 0
+for s in test_law:
+    q_tok = _tok(s["input_preview"][:600])
+    ranked = sorted(range(len(ex_law)), key=lambda i: -_jaccard(q_tok, ex_law[i]["tokens"]))
+    top_labels = [ex_law[i]["target"] for i in ranked[:3]]
+    label_set = set(top_labels)
+    counts = defaultdict(int)
+    for lbl in top_labels:
+        for actual, cnt in conf_law.get(lbl, {}).items():
+            if actual not in label_set:
+                counts[actual] += cnt
+    if counts:
+        fired += 1
+print(f"  Confusion phase fires for {fired}/{len(test_law)} test queries")
+print(f"  Total confusion keys: {sum(len(v) for v in conf_law.values())}")
+print(f"  Sample confusion keys: {list(conf_law.keys())[:5]}")
+
+print("\n=== S2D (test 150-200) ===")
+test_s2d = steps_s2d[150:200]
+measure_context_quality(test_s2d, lambda q: predict_frontier(q, ex_s2d, conf_s2d), "frontier (fixed 2-round)")
+measure_context_quality(test_s2d, lambda q: predict_budget_proportional(q, ex_s2d, conf_s2d, 0.25), "budget-prop frac=0.25")
+measure_context_quality(test_s2d, lambda q: predict_anchor_recency(q, anchors_s2d, recency_s2d), "anchor-recency w=80")
+
+print("\nDone.")
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\proto_iter12d.py (file state is current in your context — no need to Read it back)

@@ -1,0 +1,40 @@
+Bash [ERROR]
+
+command:
+powershell -Command "
+$base = 'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+@('adaptive_tokenizer_confusion_memory','cluster_confusion_memory','contrastive_boundary_memory','cluster_confusion_memory') | ForEach-Object {
+    $sys = $_
+    foreach ($ds in @('USPTO','Symptom2Disease','LawBench')) {
+        $p = \"$base\$ds\$sys\gpt-oss-120b\val.json\"
+        if (Test-Path $p) {
+            $j = Get-Content $p -Raw | ConvertFrom-Json
+            Write-Output \"$ds / $sys : $($j.accuracy)\"
+        }
+    }
+}
+"
+
+description: Read per-dataset accuracies for top systems
+
+--- output ---
+Exit code 1
+/usr/bin/bash: line 13: .accuracy: command not found
+����λ�� ��:5 �ַ�: 14
++     foreach ( in @('USPTO','Symptom2Disease','LawBench')) {
++              ~
+foreach ����ȱ�ٱ������ơ�
+����λ�� ��:3 �ַ�: 143
++ ... stive_boundary_memory','cluster_confusion_memory') | ForEach-Object {
++                                                                         ~
+��������Ͷ�����ȱ���ҡ�}����
+����λ�� ��:5 �ַ�: 57
++     foreach ( in @('USPTO','Symptom2Disease','LawBench')) {
++                                                         ~
+����ʽ������а�������ı�ǡ�)����
+����λ�� ��:12 �ַ�: 1
++ }
++ ~
+����ʽ������а�������ı�ǡ�}����
+    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : MissingVariableNameAfterForeach

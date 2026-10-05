@@ -1,0 +1,72 @@
+{
+  "call_id": "3ca0964fd37a47fc9b8a80a07c0840c5",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791042188-clR0dYjQOY546MPc6eMX",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant cut down protected trees without any forestry permit, which is an illegal and unauthorized logging activity. This matches the charge for illegal or excessive cutting of forest trees, labeled as 滥伐林木.\",\n  \"final_answer\": \"滥伐林木\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate charge label(s) for the described case.\n\nFacts: Defendant Zheng cut down 4 water ash (water曲柳) trees, which are a national second-level protected plant, without permission, from a forest area, and used as firewood. This is illegal cutting of protected plants. The label list includes:\n\n- 滥伐林木 (illegal logging/overcutting)\n- 盗伐林木 (illegal logging theft?) There's also \"盗伐林木\" in list.\n- 非法采伐、毁坏国家重点保护植物 (illegal harvesting/destroying national key protected plants) appears as \"非法采伐、毁坏国家重点保护植物\" in list? Actually list includes \"非法采伐、毁坏国家重点保护植物\". Yes.\n\nAlso \"盗伐林木\" is a label. The difference: \"盗伐林木\" likely means illegal logging of forest trees (theft). \"滥伐林木\" is overcutting. The case is about cutting protected species without permit, which is \"非法采伐、毁坏国家重点保护植物\". The training examples: first example about cutting forest trees without license gave answer \"滥伐林木\". That case: \"未办理林木采伐许可证\" and cut all trees. They answered \"滥伐林木\". So similar scenario: illegal cutting of forest trees. Here also no permit, protected species. So likely \"滥伐林木\". However there is also \"非法采伐、毁坏国家重点保护植物\" label in list. Which is more specific? The list includes both. The example used \"滥伐林木\" for cutting without license. So we should follow that pattern: use \"滥伐林木\". The fact mentions \"属国家二级重点保护植物\". That might trigger the specific label. But the example didn't mention protected status. So maybe they want \"滥伐林木\". The instruction says \"Common mistakes: Remember that the term refers specifically to the excessive or illegal cutting of forest trees, not general forest damage or other resource extraction.\" So \"滥伐林木\" is correct.\n\nThus answer: [罪名]滥伐林木<eoa>\n\nReturn JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "reasoning": "We need to determine appropriate charge label(s) for the described case.\n\nFacts: Defendant Zheng cut down 4 water ash (water曲柳) trees, which are a national second-level protected plant, without permission, from a forest area, and used as firewood. This is illegal cutting of protected plants. The label list includes:\n\n- 滥伐林木 (illegal logging/overcutting)\n- 盗伐林木 (illegal logging theft?) There's also \"盗伐林木\" in list.\n- 非法采伐、毁坏国家重点保护植物 (illegal harvesting/destroying national key protected plants) appears as \"非法采伐、毁坏国家重点保护植物\" in list? Actually list includes \"非法采伐、毁坏国家重点保护植物\". Yes.\n\nAlso \"盗伐林木\" is a label. The difference: \"盗伐林木\" likely means illegal logging of forest trees (theft). \"滥伐林木\" is overcutting. The case is about cutting protected species without permit, which is \"非法采伐、毁坏国家重点保护植物\". The training examples: first example about cutting forest trees without license gave answer \"滥伐林木\". That case: \"未办理林木采伐许可证\" and cut all trees. They answered \"滥伐林木\". So similar scenario: illegal cutting of forest trees. Here also no permit, protected species. So likely \"滥伐林木\". However there is also \"非法采伐、毁坏国家重点保护植物\" label in list. Which is more specific? The list includes both. The example used \"滥伐林木\" for cutting without license. So we should follow that pattern: use \"滥伐林木\". The fact mentions \"属国家二级重点保护植物\". That might trigger the specific label. But the example didn't mention protected status. So maybe they want \"滥伐林木\". The instruction says \"Common mistakes: Remember that the term refers specifically to the excessive or illegal cutting of forest trees, not general forest damage or other resource extraction.\" So \"滥伐林木\" is correct.\n\nThus answer: [罪名]滥伐林木<eoa>\n\nReturn JSON with reasoning and final answer.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate charge label(s) for the described case.\n\nFacts: Defendant Zheng cut down 4 water ash (water曲柳) trees, which are a national second-level protected plant, without permission, from a forest area, and used as firewood. This is illegal cutting of protected plants. The label list includes:\n\n- 滥伐林木 (illegal logging/overcutting)\n- 盗伐林木 (illegal logging theft?) There's also \"盗伐林木\" in list.\n- 非法采伐、毁坏国家重点保护植物 (illegal harvesting/destroying national key protected plants) appears as \"非法采伐、毁坏国家重点保护植物\" in list? Actually list includes \"非法采伐、毁坏国家重点保护植物\". Yes.\n\nAlso \"盗伐林木\" is a label. The difference: \"盗伐林木\" likely means illegal logging of forest trees (theft). \"滥伐林木\" is overcutting. The case is about cutting protected species without permit, which is \"非法采伐、毁坏国家重点保护植物\". The training examples: first example about cutting forest trees without license gave answer \"滥伐林木\". That case: \"未办理林木采伐许可证\" and cut all trees. They answered \"滥伐林木\". So similar scenario: illegal cutting of forest trees. Here also no permit, protected species. So likely \"滥伐林木\". However there is also \"非法采伐、毁坏国家重点保护植物\" label in list. Which is more specific? The list includes both. The example used \"滥伐林木\" for cutting without license. So we should follow that pattern: use \"滥伐林木\". The fact mentions \"属国家二级重点保护植物\". That might trigger the specific label. But the example didn't mention protected status. So maybe they want \"滥伐林木\". The instruction says \"Common mistakes: Remember that the term refers specifically to the excessive or illegal cutting of forest trees, not general forest damage or other resource extraction.\" So \"滥伐林木\" is correct.\n\nThus answer: [罪名]滥伐林木<eoa>\n\nReturn JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": "We need to determine appropriate charge label(s) for the described case.\n\nFacts: Defendant Zheng cut down 4 water ash (water曲柳) trees, which are a national second-level protected plant, without permission, from a forest area, and used as firewood. This is illegal cutting of protected plants. The label list includes:\n\n- 滥伐林木 (illegal logging/overcutting)\n- 盗伐林木 (illegal logging theft?) There's also \"盗伐林木\" in list.\n- 非法采伐、毁坏国家重点保护植物 (illegal harvesting/destroying national key protected plants) appears as \"非法采伐、毁坏国家重点保护植物\" in list? Actually list includes \"非法采伐、毁坏国家重点保护植物\". Yes.\n\nAlso \"盗伐林木\" is a label. The difference: \"盗伐林木\" likely means illegal logging of forest trees (theft). \"滥伐林木\" is overcutting. The case is about cutting protected species without permit, which is \"非法采伐、毁坏国家重点保护植物\". The training examples: first example about cutting forest trees without license gave answer \"滥伐林木\". That case: \"未办理林木采伐许可证\" and cut all trees. They answered \"滥伐林木\". So similar scenario: illegal cutting of forest trees. Here also no permit, protected species. So likely \"滥伐林木\". However there is also \"非法采伐、毁坏国家重点保护植物\" label in list. Which is more specific? The list includes both. The example used \"滥伐林木\" for cutting without license. So we should follow that pattern: use \"滥伐林木\". The fact mentions \"属国家二级重点保护植物\". That might trigger the specific label. But the example didn't mention protected status. So maybe they want \"滥伐林木\". The instruction says \"Common mistakes: Remember that the term refers specifically to the excessive or illegal cutting of forest trees, not general forest damage or other resource extraction.\" So \"滥伐林木\" is correct.\n\nThus answer: [罪名]滥伐林木<eoa>\n\nReturn JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 559,
+      "prompt_tokens": 18010,
+      "total_tokens": 18569,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 548,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 80,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00104025,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00104025,
+        "upstream_inference_prompt_cost": 0.0009005,
+        "upstream_inference_completions_cost": 0.00013975
+      }
+    }
+  },
+  "raw_response_missing": false
+}

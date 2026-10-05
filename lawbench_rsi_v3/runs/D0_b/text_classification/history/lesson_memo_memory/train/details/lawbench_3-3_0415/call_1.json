@@ -1,0 +1,72 @@
+{
+  "call_id": "e8ba8f0b0aa84cef87ae684d5d93cbc7",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791028186-7mQVLesXhmedsk6bE9xS",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"事实中被告人在未办理占地手续的情况下，非法占用耕地并建造设施，构成非法占用耕地的犯罪行为。根据规则直接使用事实中出现的罪名表述。\",\n  \"final_answer\": \"[罪名]非法占用耕地<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to extract crime(s) from facts. The facts: illegal occupation of cultivated land (耕地) without procedures, building facilities, ignoring notices. This is typical crime of \"非法占用耕地\" or \"非法占用农用地\". In Chinese criminal law, there is crime of \"非法占用农用地罪\". The examples earlier: one case about illegal occupation of farmland gave answer \"非法占用农用地\". Indeed earlier example: \"林某某...将两块林地上生长的杨树幼苗和桦树幼苗耙倒...后播种黄豆\" answer was \"非法占用农用地\". So here similar: illegal occupation of cultivated land. So answer should be \"[罪名]非法占用农用地<eoa>\"\n\nCheck if any other crimes? Possibly \"非法占用耕地\" but they want exact phrase from fact? Fact does not contain phrase \"非法占用耕地\". It says \"非法占用耕地\". Actually text: \"继续非法占用耕地\". So phrase \"非法占用耕地\". But earlier answer used \"非法占用农用地\". Which is more generic. The rule: use exact wording from fact, avoid adding. Fact uses \"非法占用耕地\". So we should output that exact phrase. The format: [罪名]非法占用耕地<eoa>\n\nCheck examples: In earlier example, they used \"非法占用农用地\" though fact said \"非法占用耕地\"? Let's see earlier example: \"公诉机关指控，2014年6月份，被告人林某某在未取得任何审批手续的情况下，驾驶自家的泰山牌354型拖拉机拉着草原耙，在韩家园林业局老卡森林资源管护区136附近山林内，将两块林地上生长的杨树幼苗和桦树幼苗耙倒。...\". The answer: \"非法占用农用地\". Fact didn't explicitly say \"非法占用农用地\". It said they occupied farmland? Actually they occupied forest land? But answer used \"非法占用农用地\". So they used a standard crime term, not necessarily verbatim. However rule says: \"直接抽取事实文本中出现的罪名关键词，不自行添加“罪”或其他修饰词\". But also \"若事实中出现具体的罪名表述（如“伐林木”“非法占有扣押的财物”等），模型应直接复用原文用词\". Here \"非法占用耕地\" is a phrase. The crime name is \"非法占用耕地罪\"? Usually law uses \"非法占用农用地罪\". But the fact says \"非法占用耕地\". Might be considered same. The rule says use original wording. So we should output \"非法占用耕地\". No \"罪\". The format: [罪名]非法占用耕地<eoa>\n\nThus final answer.\n\nNow produce JSON with reasoning and final_answer.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to extract crime(s) from facts. The facts: illegal occupation of cultivated land (耕地) without procedures, building facilities, ignoring notices. This is typical crime of \"非法占用耕地\" or \"非法占用农用地\". In Chinese criminal law, there is crime of \"非法占用农用地罪\". The examples earlier: one case about illegal occupation of farmland gave answer \"非法占用农用地\". Indeed earlier example: \"林某某...将两块林地上生长的杨树幼苗和桦树幼苗耙倒...后播种黄豆\" answer was \"非法占用农用地\". So here similar: illegal occupation of cultivated land. So answer should be \"[罪名]非法占用农用地<eoa>\"\n\nCheck if any other crimes? Possibly \"非法占用耕地\" but they want exact phrase from fact? Fact does not contain phrase \"非法占用耕地\". It says \"非法占用耕地\". Actually text: \"继续非法占用耕地\". So phrase \"非法占用耕地\". But earlier answer used \"非法占用农用地\". Which is more generic. The rule: use exact wording from fact, avoid adding. Fact uses \"非法占用耕地\". So we should output that exact phrase. The format: [罪名]非法占用耕地<eoa>\n\nCheck examples: In earlier example, they used \"非法占用农用地\" though fact said \"非法占用耕地\"? Let's see earlier example: \"公诉机关指控，2014年6月份，被告人林某某在未取得任何审批手续的情况下，驾驶自家的泰山牌354型拖拉机拉着草原耙，在韩家园林业局老卡森林资源管护区136附近山林内，将两块林地上生长的杨树幼苗和桦树幼苗耙倒。...\". The answer: \"非法占用农用地\". Fact didn't explicitly say \"非法占用农用地\". It said they occupied farmland? Actually they occupied forest land? But answer used \"非法占用农用地\". So they used a standard crime term, not necessarily verbatim. However rule says: \"直接抽取事实文本中出现的罪名关键词，不自行添加“罪”或其他修饰词\". But also \"若事实中出现具体的罪名表述（如“伐林木”“非法占有扣押的财物”等），模型应直接复用原文用词\". Here \"非法占用耕地\" is a phrase. The crime name is \"非法占用耕地罪\"? Usually law uses \"非法占用农用地罪\". But the fact says \"非法占用耕地\". Might be considered same. The rule says use original wording. So we should output \"非法占用耕地\". No \"罪\". The format: [罪名]非法占用耕地<eoa>\n\nThus final answer.\n\nNow produce JSON with reasoning and final_answer.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to extract crime(s) from facts. The facts: illegal occupation of cultivated land (耕地) without procedures, building facilities, ignoring notices. This is typical crime of \"非法占用耕地\" or \"非法占用农用地\". In Chinese criminal law, there is crime of \"非法占用农用地罪\". The examples earlier: one case about illegal occupation of farmland gave answer \"非法占用农用地\". Indeed earlier example: \"林某某...将两块林地上生长的杨树幼苗和桦树幼苗耙倒...后播种黄豆\" answer was \"非法占用农用地\". So here similar: illegal occupation of cultivated land. So answer should be \"[罪名]非法占用农用地<eoa>\"\n\nCheck if any other crimes? Possibly \"非法占用耕地\" but they want exact phrase from fact? Fact does not contain phrase \"非法占用耕地\". It says \"非法占用耕地\". Actually text: \"继续非法占用耕地\". So phrase \"非法占用耕地\". But earlier answer used \"非法占用农用地\". Which is more generic. The rule: use exact wording from fact, avoid adding. Fact uses \"非法占用耕地\". So we should output that exact phrase. The format: [罪名]非法占用耕地<eoa>\n\nCheck examples: In earlier example, they used \"非法占用农用地\" though fact said \"非法占用耕地\"? Let's see earlier example: \"公诉机关指控，2014年6月份，被告人林某某在未取得任何审批手续的情况下，驾驶自家的泰山牌354型拖拉机拉着草原耙，在韩家园林业局老卡森林资源管护区136附近山林内，将两块林地上生长的杨树幼苗和桦树幼苗耙倒。...\". The answer: \"非法占用农用地\". Fact didn't explicitly say \"非法占用农用地\". It said they occupied farmland? Actually they occupied forest land? But answer used \"非法占用农用地\". So they used a standard crime term, not necessarily verbatim. However rule says: \"直接抽取事实文本中出现的罪名关键词，不自行添加“罪”或其他修饰词\". But also \"若事实中出现具体的罪名表述（如“伐林木”“非法占有扣押的财物”等），模型应直接复用原文用词\". Here \"非法占用耕地\" is a phrase. The crime name is \"非法占用耕地罪\"? Usually law uses \"非法占用农用地罪\". But the fact says \"非法占用耕地\". Might be considered same. The rule says use original wording. So we should output \"非法占用耕地\". No \"罪\". The format: [罪名]非法占用耕地<eoa>\n\nThus final answer.\n\nNow produce JSON with reasoning and final_answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to extract crime(s) from facts. The facts: illegal occupation of cultivated land (耕地) without procedures, building facilities, ignoring notices. This is typical crime of \"非法占用耕地\" or \"非法占用农用地\". In Chinese criminal law, there is crime of \"非法占用农用地罪\". The examples earlier: one case about illegal occupation of farmland gave answer \"非法占用农用地\". Indeed earlier example: \"林某某...将两块林地上生长的杨树幼苗和桦树幼苗耙倒...后播种黄豆\" answer was \"非法占用农用地\". So here similar: illegal occupation of cultivated land. So answer should be \"[罪名]非法占用农用地<eoa>\"\n\nCheck if any other crimes? Possibly \"非法占用耕地\" but they want exact phrase from fact? Fact does not contain phrase \"非法占用耕地\". It says \"非法占用耕地\". Actually text: \"继续非法占用耕地\". So phrase \"非法占用耕地\". But earlier answer used \"非法占用农用地\". Which is more generic. The rule: use exact wording from fact, avoid adding. Fact uses \"非法占用耕地\". So we should output that exact phrase. The format: [罪名]非法占用耕地<eoa>\n\nCheck examples: In earlier example, they used \"非法占用农用地\" though fact said \"非法占用耕地\"? Let's see earlier example: \"公诉机关指控，2014年6月份，被告人林某某在未取得任何审批手续的情况下，驾驶自家的泰山牌354型拖拉机拉着草原耙，在韩家园林业局老卡森林资源管护区136附近山林内，将两块林地上生长的杨树幼苗和桦树幼苗耙倒。...\". The answer: \"非法占用农用地\". Fact didn't explicitly say \"非法占用农用地\". It said they occupied farmland? Actually they occupied forest land? But answer used \"非法占用农用地\". So they used a standard crime term, not necessarily verbatim. However rule says: \"直接抽取事实文本中出现的罪名关键词，不自行添加“罪”或其他修饰词\". But also \"若事实中出现具体的罪名表述（如“伐林木”“非法占有扣押的财物”等），模型应直接复用原文用词\". Here \"非法占用耕地\" is a phrase. The crime name is \"非法占用耕地罪\"? Usually law uses \"非法占用农用地罪\". But the fact says \"非法占用耕地\". Might be considered same. The rule says use original wording. So we should output \"非法占用耕地\". No \"罪\". The format: [罪名]非法占用耕地<eoa>\n\nThus final answer.\n\nNow produce JSON with reasoning and final_answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "end_turn"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 747,
+      "prompt_tokens": 4928,
+      "total_tokens": 5675,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 726,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0011874,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0011874,
+        "upstream_inference_prompt_cost": 0.0007392,
+        "upstream_inference_completions_cost": 0.0004482
+      }
+    }
+  },
+  "raw_response_missing": false
+}

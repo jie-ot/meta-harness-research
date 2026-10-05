@@ -1,0 +1,30 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the facts state that the defendant knowingly acquired or dealt with property known to be stolen and thereby obtained or handled the proceeds of the crime, list both the concealment/cover‑up offense
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+- When the facts describe the acquisition, processing, and sale of animal-derived products that are unsafe or of unknown origin, classify the offense under food safety statutes (e.g., 生产、销售不符合安全标准的食品) r
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明：2014年7月份，李某乙帮陆某在“百姓网”注册账号，由陆某出面谎称自己名为“燕燕”并以谈恋爱、征婚为名搭识了被告人唐某。后陆某在南通市崇川区钟楼广场与被告人唐某先后两次见面，陆某向被告人唐某谎称其哥哥是做建材生意的，认识出售台湾版假人民币的老板，并让被告人唐某购买便于以后使用。
+2014年7月14日，陆某伙同李某乙、李某甲与被告人唐某在本市易家宾馆见面，李某乙冒充陆某的哥哥，李某甲冒充销售台湾版假币的老板，三人结伙在该宾馆房间内以真实人民币冒充台湾版假人民币展示给被告人唐某看，以此取得被告人唐某的信任，并向被告人唐某兜售台湾版假人民币。同年7月16日，被告人唐某在本市和平桥西北侧广场以12万元人民币向李某乙、李某甲购买62万元的假币，当日被告人唐某将上述假币带回家中。后经查看，被告人唐某发现其购得的62万假币均由冥币冒充。
+2014年9月5日公安机关对被告人唐某购买假币案立案侦查，被告人唐某于当日主动至公安机关投案，并如实供述了自己的罪行。
+上述事实，有公诉人举证的被告人唐某的户籍资料，被告人唐某的供述及辨认笔录，证人陆某、李某甲、李某乙的证言及辨认笔录，赃物照片，公安机关出具的到案经过、调取证据清单等证据佐证。上述证据经法庭调查核实，均具有证明效力，本院予以确认。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

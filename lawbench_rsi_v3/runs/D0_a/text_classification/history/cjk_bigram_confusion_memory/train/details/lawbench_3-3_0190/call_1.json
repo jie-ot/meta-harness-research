@@ -1,0 +1,72 @@
+{
+  "call_id": "bec3c746728c4cfd9341d9cde28b037d",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791011040-cWMhyjwgfPLgNV2YlO4E",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"吴某在未取得合法资格的情况下独立进行爆破作业，违反《爆破安全规程》，构成非法使用爆炸物。同时其违规操作导致飞石砸中村民致死，属于过失致人死亡。根据《刑法》相关条款，应以非法使用爆炸物罪和过失致人死亡罪追究其刑事责任。\",\n  \"final_answer\": \"[罪名]非法使用爆炸物;过失致人死亡<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the criminal charge(s) based on facts. The facts: a blasting worker (爆破员) Wu performed illegal blasting without proper supervision (violated regulations). He caused death of a civilian due to flying stones. This is likely \"过失致人死亡\" (negligent homicide) or \"非法使用爆炸物罪\" or \"危险作业致人死亡\". In Chinese criminal law, causing death by negligence in dangerous work could be \"过失致人死亡罪\". Also there is a specific offense \"非法使用爆炸物罪\" (illegal use of explosives) under Article 133 of Criminal Law. However the facts: He had a blasting certificate but not allowed to independently conduct blasting; he performed unauthorized blasting, causing death. The charge likely is \"非法使用爆炸物罪\" (illegal use of explosives) and \"过失致人死亡罪\". In examples, they used labels like \"非法获取公民个人信息\", \"行贿\", \"破坏计算机信息系统\", \"拐骗儿童\", \"非国家工作人员受贿\", \"故意伤害;故意毁坏财物\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"信用卡诈骗\", \"故意毁坏财物\", \"诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫\", \"拐卖妇女、儿童\". So they include multiple charges separated by semicolon.\n\nWe need to see typical Chinese charge labels used in these tasks. For negligent homicide, they might use \"过失致人死亡\". For illegal use of explosives, they might use \"非法使用爆炸物\". Let's see if any example includes \"非法使用爆炸物\". Not in given examples. But we can guess the label.\n\nThe fact: He violated safety regulations, causing death. The main criminal liability is \"过失致人死亡罪\". Also possibly \"非法使用爆炸物罪\". Which one is more appropriate? The law: Article 133: \"非法制造、买卖、运输、储存、使用爆炸物的，处三年以下有期徒刑或者拘役，并处罚金；情节严重的，处三年以上七年以下有期徒刑，并处罚金。\" So using explosives illegally is a crime. He had a certificate but not allowed to independently do it; still illegal. So that is illegal use. Also causing death may be considered as \"过失致人死亡\" under Article 233: \"过失致人死亡的，处三年以下有期徒刑或者拘役；情节较重的，处三年以上七年有期徒刑\". However if the act is illegal use of explosives causing death, the illegal use charge may subsume the result. Usually prosecutors may charge both: illegal use of explosives and causing death due to negligence. But the problem likely expects a single charge: \"非法使用爆炸物\". Let's examine similar tasks: In earlier examples, they gave \"破坏计算机信息系统\" for hacking and extortion. That is a single charge. For the case with death, they gave \"拐骗儿童\" for kidnapping child. For the case with assault and property damage, they gave two charges: \"故意伤害;故意毁坏财物\". So they separate distinct crimes.\n\nThus we may need to list both \"非法使用爆炸物\" and \"过失致人死亡\". However need to check if \"过失致人死亡\" is a label used in dataset. Not seen in examples. Could be \"过失致人死亡\". Another possible label: \"危险作业致人死亡\". Not sure.\n\nGiven the pattern, they use concise labels without \"罪\". Eg \"非法获取公民个人信息\". So we should output \"非法使用爆炸物;过失致人死亡\". Ensure semicolon separation.\n\nThus final answer JSON with reasoning and final answer.\n\n",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the criminal charge(s) based on facts. The facts: a blasting worker (爆破员) Wu performed illegal blasting without proper supervision (violated regulations). He caused death of a civilian due to flying stones. This is likely \"过失致人死亡\" (negligent homicide) or \"非法使用爆炸物罪\" or \"危险作业致人死亡\". In Chinese criminal law, causing death by negligence in dangerous work could be \"过失致人死亡罪\". Also there is a specific offense \"非法使用爆炸物罪\" (illegal use of explosives) under Article 133 of Criminal Law. However the facts: He had a blasting certificate but not allowed to independently conduct blasting; he performed unauthorized blasting, causing death. The charge likely is \"非法使用爆炸物罪\" (illegal use of explosives) and \"过失致人死亡罪\". In examples, they used labels like \"非法获取公民个人信息\", \"行贿\", \"破坏计算机信息系统\", \"拐骗儿童\", \"非国家工作人员受贿\", \"故意伤害;故意毁坏财物\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"信用卡诈骗\", \"故意毁坏财物\", \"诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫\", \"拐卖妇女、儿童\". So they include multiple charges separated by semicolon.\n\nWe need to see typical Chinese charge labels used in these tasks. For negligent homicide, they might use \"过失致人死亡\". For illegal use of explosives, they might use \"非法使用爆炸物\". Let's see if any example includes \"非法使用爆炸物\". Not in given examples. But we can guess the label.\n\nThe fact: He violated safety regulations, causing death. The main criminal liability is \"过失致人死亡罪\". Also possibly \"非法使用爆炸物罪\". Which one is more appropriate? The law: Article 133: \"非法制造、买卖、运输、储存、使用爆炸物的，处三年以下有期徒刑或者拘役，并处罚金；情节严重的，处三年以上七年以下有期徒刑，并处罚金。\" So using explosives illegally is a crime. He had a certificate but not allowed to independently do it; still illegal. So that is illegal use. Also causing death may be considered as \"过失致人死亡\" under Article 233: \"过失致人死亡的，处三年以下有期徒刑或者拘役；情节较重的，处三年以上七年有期徒刑\". However if the act is illegal use of explosives causing death, the illegal use charge may subsume the result. Usually prosecutors may charge both: illegal use of explosives and causing death due to negligence. But the problem likely expects a single charge: \"非法使用爆炸物\". Let's examine similar tasks: In earlier examples, they gave \"破坏计算机信息系统\" for hacking and extortion. That is a single charge. For the case with death, they gave \"拐骗儿童\" for kidnapping child. For the case with assault and property damage, they gave two charges: \"故意伤害;故意毁坏财物\". So they separate distinct crimes.\n\nThus we may need to list both \"非法使用爆炸物\" and \"过失致人死亡\". However need to check if \"过失致人死亡\" is a label used in dataset. Not seen in examples. Could be \"过失致人死亡\". Another possible label: \"危险作业致人死亡\". Not sure.\n\nGiven the pattern, they use concise labels without \"罪\". Eg \"非法获取公民个人信息\". So we should output \"非法使用爆炸物;过失致人死亡\". Ensure semicolon separation.\n\nThus final answer JSON with reasoning and final answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine the criminal charge(s) based on facts. The facts: a blasting worker (爆破员) Wu performed illegal blasting without proper supervision (violated regulations). He caused death of a civilian due to flying stones. This is likely \"过失致人死亡\" (negligent homicide) or \"非法使用爆炸物罪\" or \"危险作业致人死亡\". In Chinese criminal law, causing death by negligence in dangerous work could be \"过失致人死亡罪\". Also there is a specific offense \"非法使用爆炸物罪\" (illegal use of explosives) under Article 133 of Criminal Law. However the facts: He had a blasting certificate but not allowed to independently conduct blasting; he performed unauthorized blasting, causing death. The charge likely is \"非法使用爆炸物罪\" (illegal use of explosives) and \"过失致人死亡罪\". In examples, they used labels like \"非法获取公民个人信息\", \"行贿\", \"破坏计算机信息系统\", \"拐骗儿童\", \"非国家工作人员受贿\", \"故意伤害;故意毁坏财物\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"信用卡诈骗\", \"故意毁坏财物\", \"诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫\", \"拐卖妇女、儿童\". So they include multiple charges separated by semicolon.\n\nWe need to see typical Chinese charge labels used in these tasks. For negligent homicide, they might use \"过失致人死亡\". For illegal use of explosives, they might use \"非法使用爆炸物\". Let's see if any example includes \"非法使用爆炸物\". Not in given examples. But we can guess the label.\n\nThe fact: He violated safety regulations, causing death. The main criminal liability is \"过失致人死亡罪\". Also possibly \"非法使用爆炸物罪\". Which one is more appropriate? The law: Article 133: \"非法制造、买卖、运输、储存、使用爆炸物的，处三年以下有期徒刑或者拘役，并处罚金；情节严重的，处三年以上七年以下有期徒刑，并处罚金。\" So using explosives illegally is a crime. He had a certificate but not allowed to independently do it; still illegal. So that is illegal use. Also causing death may be considered as \"过失致人死亡\" under Article 233: \"过失致人死亡的，处三年以下有期徒刑或者拘役；情节较重的，处三年以上七年有期徒刑\". However if the act is illegal use of explosives causing death, the illegal use charge may subsume the result. Usually prosecutors may charge both: illegal use of explosives and causing death due to negligence. But the problem likely expects a single charge: \"非法使用爆炸物\". Let's examine similar tasks: In earlier examples, they gave \"破坏计算机信息系统\" for hacking and extortion. That is a single charge. For the case with death, they gave \"拐骗儿童\" for kidnapping child. For the case with assault and property damage, they gave two charges: \"故意伤害;故意毁坏财物\". So they separate distinct crimes.\n\nThus we may need to list both \"非法使用爆炸物\" and \"过失致人死亡\". However need to check if \"过失致人死亡\" is a label used in dataset. Not seen in examples. Could be \"过失致人死亡\". Another possible label: \"危险作业致人死亡\". Not sure.\n\nGiven the pattern, they use concise labels without \"罪\". Eg \"非法获取公民个人信息\". So we should output \"非法使用爆炸物;过失致人死亡\". Ensure semicolon separation.\n\nThus final answer JSON with reasoning and final answer.\n\n",
+            "reasoning_content": "We need to determine the criminal charge(s) based on facts. The facts: a blasting worker (爆破员) Wu performed illegal blasting without proper supervision (violated regulations). He caused death of a civilian due to flying stones. This is likely \"过失致人死亡\" (negligent homicide) or \"非法使用爆炸物罪\" or \"危险作业致人死亡\". In Chinese criminal law, causing death by negligence in dangerous work could be \"过失致人死亡罪\". Also there is a specific offense \"非法使用爆炸物罪\" (illegal use of explosives) under Article 133 of Criminal Law. However the facts: He had a blasting certificate but not allowed to independently conduct blasting; he performed unauthorized blasting, causing death. The charge likely is \"非法使用爆炸物罪\" (illegal use of explosives) and \"过失致人死亡罪\". In examples, they used labels like \"非法获取公民个人信息\", \"行贿\", \"破坏计算机信息系统\", \"拐骗儿童\", \"非国家工作人员受贿\", \"故意伤害;故意毁坏财物\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"信用卡诈骗\", \"故意毁坏财物\", \"诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫\", \"拐卖妇女、儿童\". So they include multiple charges separated by semicolon.\n\nWe need to see typical Chinese charge labels used in these tasks. For negligent homicide, they might use \"过失致人死亡\". For illegal use of explosives, they might use \"非法使用爆炸物\". Let's see if any example includes \"非法使用爆炸物\". Not in given examples. But we can guess the label.\n\nThe fact: He violated safety regulations, causing death. The main criminal liability is \"过失致人死亡罪\". Also possibly \"非法使用爆炸物罪\". Which one is more appropriate? The law: Article 133: \"非法制造、买卖、运输、储存、使用爆炸物的，处三年以下有期徒刑或者拘役，并处罚金；情节严重的，处三年以上七年以下有期徒刑，并处罚金。\" So using explosives illegally is a crime. He had a certificate but not allowed to independently do it; still illegal. So that is illegal use. Also causing death may be considered as \"过失致人死亡\" under Article 233: \"过失致人死亡的，处三年以下有期徒刑或者拘役；情节较重的，处三年以上七年有期徒刑\". However if the act is illegal use of explosives causing death, the illegal use charge may subsume the result. Usually prosecutors may charge both: illegal use of explosives and causing death due to negligence. But the problem likely expects a single charge: \"非法使用爆炸物\". Let's examine similar tasks: In earlier examples, they gave \"破坏计算机信息系统\" for hacking and extortion. That is a single charge. For the case with death, they gave \"拐骗儿童\" for kidnapping child. For the case with assault and property damage, they gave two charges: \"故意伤害;故意毁坏财物\". So they separate distinct crimes.\n\nThus we may need to list both \"非法使用爆炸物\" and \"过失致人死亡\". However need to check if \"过失致人死亡\" is a label used in dataset. Not seen in examples. Could be \"过失致人死亡\". Another possible label: \"危险作业致人死亡\". Not sure.\n\nGiven the pattern, they use concise labels without \"罪\". Eg \"非法获取公民个人信息\". So we should output \"非法使用爆炸物;过失致人死亡\". Ensure semicolon separation.\n\nThus final answer JSON with reasoning and final answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 956,
+      "prompt_tokens": 4433,
+      "total_tokens": 5389,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 1056,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00030507,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00030507,
+        "upstream_inference_prompt_cost": 0.00013299,
+        "upstream_inference_completions_cost": 0.00017208
+      }
+    }
+  },
+  "raw_response_missing": false
+}

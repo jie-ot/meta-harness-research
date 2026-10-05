@@ -1,0 +1,29 @@
+Bash
+
+command:
+python -c "
+import os, json
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+# Read LawBench trace - look at step entries with errors
+log_path = os.path.join(base, 'LawBench', 'symmetric_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+lines = open(log_path, encoding='utf-8').readlines()
+steps = [json.loads(l) for l in lines if json.loads(l).get('type') == 'step']
+errors = [s for s in steps if not s.get('ok')]
+print(f'Steps: {len(steps)}, Errors: {len(errors)}')
+for e in errors[:8]:
+    print(f'  step={e[\"step\"]} pred={repr(e[\"pred\"][:60])} tgt={repr(e[\"tgt\"][:60])}')
+"
+
+
+description: Read LawBench error steps from trace
+
+--- output ---
+Steps: 200, Errors: 149
+  step=0 pred='[罪名]伪造国家机关证件罪<eoa>' tgt='伪造、变造、买卖国家机关公文、证件、印章'
+  step=1 pred='[罪名]敲诈勒索罪<eoa>' tgt='破坏计算机信息系统'
+  step=4 pred='[罪名]拐卖妇女<eoa>' tgt='拐卖妇女、儿童'
+  step=5 pred='[罪名]受贿<eoa>' tgt='非国家工作人员受贿'
+  step=7 pred='[罪名]诈骗<eoa>' tgt='诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫'
+  step=8 pred='[罪名]故意伤害罪;故意毁坏财物罪<eoa>' tgt='故意伤害;故意毁坏财物'
+  step=9 pred='[罪名]非法获取公民个人信息罪<eoa>' tgt='非法获取公民个人信息'
+  step=10 pred='[罪名]诈骗<eoa>' tgt='信用卡诈骗'

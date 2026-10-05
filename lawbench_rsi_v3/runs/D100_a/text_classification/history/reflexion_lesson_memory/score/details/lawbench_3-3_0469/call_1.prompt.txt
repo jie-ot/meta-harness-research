@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- When the factual description contains multiple distinct criminal acts (e.g., a traffic offense and a separate economic crime), the model must list every applicable charge, separating them with semicol
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，2015年4月12日19时30分许，被告人刘某甲在珠海市××××区紫荆路交运通路的路口附近，以人民币30元的价格贩卖了一本伪造的“流动人口婚育证明”给刘某乙。2015年4月15日，民警在紫荆路交运通路的路口附近将被告人刘某甲抓获。
+上述事实，被告人刘某甲在开庭审理过程中亦无异议，且有证人刘某乙的证言、辨认笔录，户籍资料，抓获资料，接受证据材料清单，随案移送清单，证明，刑事判决书及刑满释放证明书，违法犯罪嫌疑人信息查询情况登记表，鉴定聘请书，鉴定意见通知书，现场照片等证据予以证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

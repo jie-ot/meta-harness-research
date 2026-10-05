@@ -1,0 +1,29 @@
+Write: pending_eval.json
+
+content:
+{
+  "iteration": 1,
+  "candidates": [
+    {
+      "name": "cjk_bigram_confusion_memory",
+      "file": "agents/cjk_bigram_confusion_memory.py",
+      "hypothesis": "The base system's ASCII-only tokenizer returns near-zero Jaccard similarity for all Chinese document pairs, making retrieval random; replacing it with CJK character bigrams produces discriminative similarity scores and improves few-shot selection, while adding an explicit canonical-label anchor in the prompt reduces format-mismatch errors (~40% of score failures).",
+      "axis": "exploitation",
+      "base_system": "confusion_disambiguation_memory",
+      "components": ["cjk_bigram_tokenizer", "canonical_label_anchor", "confusion_matrix_disambiguation"]
+    },
+    {
+      "name": "reflexion_lesson_memory",
+      "file": "agents/reflexion_lesson_memory.py",
+      "hypothesis": "LLM-generated error lessons ('when facts show X the correct charge is Y, not Z') stored at learn time and injected into the prediction prompt outperform raw example storage, because the model receives pre-digested legal distinctions rather than having to infer the distinguishing rule from surface-similar examples at predict time.",
+      "axis": "exploration",
+      "base_system": "confusion_disambiguation_memory",
+      "components": ["reflexion_lessons", "llm_in_learning", "similarity_fallback_examples", "cjk_bigram_tokenizer"]
+    }
+  ]
+}
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D0_a\text_classification\pending_eval.json (file state is current in your context — no need to Read it back)

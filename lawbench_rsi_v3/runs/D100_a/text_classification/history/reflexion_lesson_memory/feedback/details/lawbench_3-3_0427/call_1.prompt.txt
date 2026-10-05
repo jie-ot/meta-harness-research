@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the factual scenario involves a defendant biting or otherwise assaulting a police officer while resisting law‑enforcement duties, charge only 妨害公务 (obstruction of official duties) unless there is
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the factual description contains multiple distinct criminal acts (e.g., a traffic offense and a separate economic crime), the model must list every applicable charge, separating them with semicol
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:南安市人民检察院指控：2015年9月14日晚，被告人韦某酒后无证驾驶闽C×××××号二轮摩托车，从南安市官桥镇福官路，行驶至南安市官桥镇泉南工业区路段时，被南安市公安局身穿制服的民警曾某发现，曾某让被告人韦某停车接受调查，被告人韦某不予配合驾车逃离现场，后被告人韦某将车停在南安市官桥镇泉南工业区双人公寓楼对面一楼停车场楼梯口处，被告人韦某躲在南安市官桥镇泉南工业区中国移动特约代理店斜对面草丛里，后被民警发现并被控制住，被告人韦某一直挣扎反抗，辱骂执法民警，踢打执法民警曾某，咬伤执法民警吴1某。经福建华闽司法鉴定中心对被告人韦某的血液进行酒精检测，检出乙醇浓度为197.48mg／100ml，属醉酒驾车。经南安市公安局法医鉴定，吴1某损伤程度为轻微伤。
+本案在审理过程中，被告人韦某的朋友自愿代为缴纳罚金人民币××元。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

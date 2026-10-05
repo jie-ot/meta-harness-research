@@ -1,0 +1,72 @@
+{
+  "call_id": "8da24f13768448ca92ec98a13dc0869a",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791028415-R0G3z8wIZmHEQyk4hDTw",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The fact states that the defendant transferred drug‑manufacturing equipment and raw materials to his mother, who produced drugs without a production license ('未经批准生产药品'). This directly indicates the crime of producing drugs without approval. No other distinct crime terms are mentioned, so the extracted crime name should match the wording in the fact.\",\n  \"final_answer\": \"[罪名]未经批准生产药品<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to extract crime(s) from facts. Fact: Li (defendant) without approval to produce drugs, through logistics company transferred drug manufacturing equipment and raw materials to his mother Zhu, who without license produced drugs at home, and then through logistics gave back to Li, profiting. So crimes: illegal production of drugs? In Chinese criminal law, \"非法生产、买卖、运输、提供毒品原料、制剂\" etc. The specific phrase: \"未经批准生产药品\" is illegal manufacturing of drugs. The mother is producing without license, but Li is facilitating. Likely crime: \"非法生产、买卖、运输、提供毒品原料、制剂\" but here it's about \"非法生产药品\" maybe \"非法生产、买卖、运输、提供假药\" but not counterfeit? It's about drug production (maybe controlled substances). The typical crime is \"非法生产、买卖、运输、提供毒品原料、制剂罪\". The fact mentions \"药品\" not \"毒品\". Could be \"非法生产、买卖、运输、提供假药罪\"? Actually Chinese law: \"非法生产、买卖、运输、提供假药罪\" for counterfeit drugs. But here they are producing drugs without license, not necessarily counterfeit. Could be \"非法生产、买卖、运输、提供药品罪\"? Not sure. In examples, they used \"滥伐林木\" directly from text. So we need to directly reuse phrase from fact: \"未经批准生产药品\" maybe the crime phrase is \"非法生产药品\". The fact says \"未经批准生产药品的情况下\". So crime: \"非法生产药品\". Also maybe \"非法经营药品\"? But the mother produced and sold? The fact says they profited. Could be \"非法生产、买卖药品\". However we must list all crimes that appear in fact. The fact only mentions \"未经批准生产药品\". So likely answer: [罪名]非法生产药品<eoa>. Need to match format: \"[罪名]非法生产药品<eoa>\"\n\nCheck key rules: Use exact wording from fact. Fact uses \"未经批准生产药品\". The phrase \"非法生产药品\" is not exactly same but close. Should we use \"未经批准生产药品\"? The rule: \"直接复用原文用词\". So we should use \"未经批准生产药品\". But need to be a crime name. The phrase \"未经批准生产药品\" is not a standard crime name but could be considered. In examples they used \"滥伐林木\" which is exactly phrase. So we can output \"未经批准生产药品\". So final answer: [罪名]未经批准生产药品<eoa>\n\nReturn JSON with reasoning and final_answer.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to extract crime(s) from facts. Fact: Li (defendant) without approval to produce drugs, through logistics company transferred drug manufacturing equipment and raw materials to his mother Zhu, who without license produced drugs at home, and then through logistics gave back to Li, profiting. So crimes: illegal production of drugs? In Chinese criminal law, \"非法生产、买卖、运输、提供毒品原料、制剂\" etc. The specific phrase: \"未经批准生产药品\" is illegal manufacturing of drugs. The mother is producing without license, but Li is facilitating. Likely crime: \"非法生产、买卖、运输、提供毒品原料、制剂\" but here it's about \"非法生产药品\" maybe \"非法生产、买卖、运输、提供假药\" but not counterfeit? It's about drug production (maybe controlled substances). The typical crime is \"非法生产、买卖、运输、提供毒品原料、制剂罪\". The fact mentions \"药品\" not \"毒品\". Could be \"非法生产、买卖、运输、提供假药罪\"? Actually Chinese law: \"非法生产、买卖、运输、提供假药罪\" for counterfeit drugs. But here they are producing drugs without license, not necessarily counterfeit. Could be \"非法生产、买卖、运输、提供药品罪\"? Not sure. In examples, they used \"滥伐林木\" directly from text. So we need to directly reuse phrase from fact: \"未经批准生产药品\" maybe the crime phrase is \"非法生产药品\". The fact says \"未经批准生产药品的情况下\". So crime: \"非法生产药品\". Also maybe \"非法经营药品\"? But the mother produced and sold? The fact says they profited. Could be \"非法生产、买卖药品\". However we must list all crimes that appear in fact. The fact only mentions \"未经批准生产药品\". So likely answer: [罪名]非法生产药品<eoa>. Need to match format: \"[罪名]非法生产药品<eoa>\"\n\nCheck key rules: Use exact wording from fact. Fact uses \"未经批准生产药品\". The phrase \"非法生产药品\" is not exactly same but close. Should we use \"未经批准生产药品\"? The rule: \"直接复用原文用词\". So we should use \"未经批准生产药品\". But need to be a crime name. The phrase \"未经批准生产药品\" is not a standard crime name but could be considered. In examples they used \"滥伐林木\" which is exactly phrase. So we can output \"未经批准生产药品\". So final answer: [罪名]未经批准生产药品<eoa>\n\nReturn JSON with reasoning and final_answer.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to extract crime(s) from facts. Fact: Li (defendant) without approval to produce drugs, through logistics company transferred drug manufacturing equipment and raw materials to his mother Zhu, who without license produced drugs at home, and then through logistics gave back to Li, profiting. So crimes: illegal production of drugs? In Chinese criminal law, \"非法生产、买卖、运输、提供毒品原料、制剂\" etc. The specific phrase: \"未经批准生产药品\" is illegal manufacturing of drugs. The mother is producing without license, but Li is facilitating. Likely crime: \"非法生产、买卖、运输、提供毒品原料、制剂\" but here it's about \"非法生产药品\" maybe \"非法生产、买卖、运输、提供假药\" but not counterfeit? It's about drug production (maybe controlled substances). The typical crime is \"非法生产、买卖、运输、提供毒品原料、制剂罪\". The fact mentions \"药品\" not \"毒品\". Could be \"非法生产、买卖、运输、提供假药罪\"? Actually Chinese law: \"非法生产、买卖、运输、提供假药罪\" for counterfeit drugs. But here they are producing drugs without license, not necessarily counterfeit. Could be \"非法生产、买卖、运输、提供药品罪\"? Not sure. In examples, they used \"滥伐林木\" directly from text. So we need to directly reuse phrase from fact: \"未经批准生产药品\" maybe the crime phrase is \"非法生产药品\". The fact says \"未经批准生产药品的情况下\". So crime: \"非法生产药品\". Also maybe \"非法经营药品\"? But the mother produced and sold? The fact says they profited. Could be \"非法生产、买卖药品\". However we must list all crimes that appear in fact. The fact only mentions \"未经批准生产药品\". So likely answer: [罪名]非法生产药品<eoa>. Need to match format: \"[罪名]非法生产药品<eoa>\"\n\nCheck key rules: Use exact wording from fact. Fact uses \"未经批准生产药品\". The phrase \"非法生产药品\" is not exactly same but close. Should we use \"未经批准生产药品\"? The rule: \"直接复用原文用词\". So we should use \"未经批准生产药品\". But need to be a crime name. The phrase \"未经批准生产药品\" is not a standard crime name but could be considered. In examples they used \"滥伐林木\" which is exactly phrase. So we can output \"未经批准生产药品\". So final answer: [罪名]未经批准生产药品<eoa>\n\nReturn JSON with reasoning and final_answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to extract crime(s) from facts. Fact: Li (defendant) without approval to produce drugs, through logistics company transferred drug manufacturing equipment and raw materials to his mother Zhu, who without license produced drugs at home, and then through logistics gave back to Li, profiting. So crimes: illegal production of drugs? In Chinese criminal law, \"非法生产、买卖、运输、提供毒品原料、制剂\" etc. The specific phrase: \"未经批准生产药品\" is illegal manufacturing of drugs. The mother is producing without license, but Li is facilitating. Likely crime: \"非法生产、买卖、运输、提供毒品原料、制剂\" but here it's about \"非法生产药品\" maybe \"非法生产、买卖、运输、提供假药\" but not counterfeit? It's about drug production (maybe controlled substances). The typical crime is \"非法生产、买卖、运输、提供毒品原料、制剂罪\". The fact mentions \"药品\" not \"毒品\". Could be \"非法生产、买卖、运输、提供假药罪\"? Actually Chinese law: \"非法生产、买卖、运输、提供假药罪\" for counterfeit drugs. But here they are producing drugs without license, not necessarily counterfeit. Could be \"非法生产、买卖、运输、提供药品罪\"? Not sure. In examples, they used \"滥伐林木\" directly from text. So we need to directly reuse phrase from fact: \"未经批准生产药品\" maybe the crime phrase is \"非法生产药品\". The fact says \"未经批准生产药品的情况下\". So crime: \"非法生产药品\". Also maybe \"非法经营药品\"? But the mother produced and sold? The fact says they profited. Could be \"非法生产、买卖药品\". However we must list all crimes that appear in fact. The fact only mentions \"未经批准生产药品\". So likely answer: [罪名]非法生产药品<eoa>. Need to match format: \"[罪名]非法生产药品<eoa>\"\n\nCheck key rules: Use exact wording from fact. Fact uses \"未经批准生产药品\". The phrase \"非法生产药品\" is not exactly same but close. Should we use \"未经批准生产药品\"? The rule: \"直接复用原文用词\". So we should use \"未经批准生产药品\". But need to be a crime name. The phrase \"未经批准生产药品\" is not a standard crime name but could be considered. In examples they used \"滥伐林木\" which is exactly phrase. So we can output \"未经批准生产药品\". So final answer: [罪名]未经批准生产药品<eoa>\n\nReturn JSON with reasoning and final_answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 688,
+      "prompt_tokens": 5009,
+      "total_tokens": 5697,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 693,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0004125,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0004125,
+        "upstream_inference_prompt_cost": 0.00022426059140627828,
+        "upstream_inference_completions_cost": 0.00018823940859372175
+      }
+    }
+  },
+  "raw_response_missing": false
+}

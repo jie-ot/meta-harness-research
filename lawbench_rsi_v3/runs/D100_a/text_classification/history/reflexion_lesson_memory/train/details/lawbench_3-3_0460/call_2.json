@@ -1,0 +1,72 @@
+{
+  "call_id": "69be2a5d1f6e47b98743201726784788",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017475-TkrJqe1td2rIyb7RGIhb",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the facts describe illegal cutting of a nationally protected or first‑class rare tree species, the charge must be phrased as “非法采伐、毁坏国家重点保护植物” (or the exact statutory term for protected flora) rather than the generic “滥伐林木”.\",\n  \"keywords\": [\n    \"国家一级珍贵树种\",\n    \"黄檗\",\n    \"非法采伐\",\n    \"国家重点保护植物\",\n    \"毁坏国家重点保护植物\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with rule and keywords. The error: AI gave \"滥伐林木;非法占用农用地\" but correct answer is \"非法采伐、毁坏国家重点保护植物;非法占用农用地\". So the error is using generic term \"滥伐林木\" instead of specific \"非法采伐、毁坏国家重点保护植物\". The rule: When the fact mentions illegal cutting of nationally protected species, the charge should be \"非法采伐、毁坏国家重点保护植物\" rather than generic \"滥伐林木\". So rule: Use precise statutory language matching the protected status. Keywords: \"国家一级珍贵树种\", \"黄檗\", \"非法采伐\", \"国家重点保护植物\", \"毁坏\", \"采伐国家一级\". Provide JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with rule and keywords. The error: AI gave \"滥伐林木;非法占用农用地\" but correct answer is \"非法采伐、毁坏国家重点保护植物;非法占用农用地\". So the error is using generic term \"滥伐林木\" instead of specific \"非法采伐、毁坏国家重点保护植物\". The rule: When the fact mentions illegal cutting of nationally protected species, the charge should be \"非法采伐、毁坏国家重点保护植物\" rather than generic \"滥伐林木\". So rule: Use precise statutory language matching the protected status. Keywords: \"国家一级珍贵树种\", \"黄檗\", \"非法采伐\", \"国家重点保护植物\", \"毁坏\", \"采伐国家一级\". Provide JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with rule and keywords. The error: AI gave \"滥伐林木;非法占用农用地\" but correct answer is \"非法采伐、毁坏国家重点保护植物;非法占用农用地\". So the error is using generic term \"滥伐林木\" instead of specific \"非法采伐、毁坏国家重点保护植物\". The rule: When the fact mentions illegal cutting of nationally protected species, the charge should be \"非法采伐、毁坏国家重点保护植物\" rather than generic \"滥伐林木\". So rule: Use precise statutory language matching the protected status. Keywords: \"国家一级珍贵树种\", \"黄檗\", \"非法采伐\", \"国家重点保护植物\", \"毁坏\", \"采伐国家一级\". Provide JSON.",
+            "reasoning_content": "We need to produce a JSON with rule and keywords. The error: AI gave \"滥伐林木;非法占用农用地\" but correct answer is \"非法采伐、毁坏国家重点保护植物;非法占用农用地\". So the error is using generic term \"滥伐林木\" instead of specific \"非法采伐、毁坏国家重点保护植物\". The rule: When the fact mentions illegal cutting of nationally protected species, the charge should be \"非法采伐、毁坏国家重点保护植物\" rather than generic \"滥伐林木\". So rule: Use precise statutory language matching the protected status. Keywords: \"国家一级珍贵树种\", \"黄檗\", \"非法采伐\", \"国家重点保护植物\", \"毁坏\", \"采伐国家一级\". Provide JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 304,
+      "prompt_tokens": 486,
+      "total_tokens": 790,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 187,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 6.626e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 6.626e-05,
+        "upstream_inference_prompt_cost": 1.458e-05,
+        "upstream_inference_completions_cost": 5.168e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

@@ -1,0 +1,72 @@
+{
+  "call_id": "861006d92d354707a132c51f1f70fb7f",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791018424-qUJft2XRA8lOtp1QNDxI",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the factual scenario describes a person (especially a public officer) concealing, sheltering, or destroying illicit drugs or related evidence for a drug trafficker, the appropriate charge is the specific \\\"窝藏、包庇罪\\\" (or \\\"包庇毒品犯罪分子\\\") rather than the generic \\\"帮助犯罪分子隐匿、转移、毁灭犯罪所得、犯罪工具、犯罪证据罪\\\".\",\n  \"keywords\": [\n    \"藏匿\",\n    \"隐匿\",\n    \"湮灭\",\n    \"毒品\",\n    \"协警\",\n    \"包庇\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with a rule to prevent classification error: The AI gave a wrong charge: \"帮助犯罪分子隐匿、转移、毁灭犯罪所得、犯罪工具、犯罪证据罪\". Correct answer: \"窝藏、包庇;包庇毒品犯罪分子\". So the error is using a generic charge \"帮助犯罪分子隐匿、转移、毁灭犯罪所得、犯罪工具、犯罪证据罪\" instead of the specific statutory offense \"窝藏、包庇罪\" (or \"包庇毒品犯罪分子\"). The rule should state: When the facts involve a state employee hiding or sheltering drug evidence for a drug trafficker, the correct charge is \"窝藏、包庇罪\" (or \"包庇毒品犯罪分子\") rather than the broader \"帮助隐匿、转移、毁灭犯罪所得\" which is a different offense. So rule: Use the specific statutory offense of \"窝藏、包庇罪\" when the conduct is concealment or sheltering of a criminal's illicit items, especially drugs, by a person who is not the principal offender, rather than the generic \"帮助隐匿、转移、毁灭犯罪所得\" which applies to aiding in the disposal of proceeds. Keywords: \"藏匿\", \"隐匿\", \"湮灭\", \"毒品\", \"协警\", \"帮助\", \"犯罪所得\". But need to capture when to apply rule: facts mention \"藏匿于制服口袋\", \"埋于墙角\", \"冲走\", \"帮助隐匿毒品\". So keywords: \"藏匿\", \"隐匿\", \"毒品\", \"协警\", \"帮助\", \"包庇\". Provide JSON.\n\n",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with a rule to prevent classification error: The AI gave a wrong charge: \"帮助犯罪分子隐匿、转移、毁灭犯罪所得、犯罪工具、犯罪证据罪\". Correct answer: \"窝藏、包庇;包庇毒品犯罪分子\". So the error is using a generic charge \"帮助犯罪分子隐匿、转移、毁灭犯罪所得、犯罪工具、犯罪证据罪\" instead of the specific statutory offense \"窝藏、包庇罪\" (or \"包庇毒品犯罪分子\"). The rule should state: When the facts involve a state employee hiding or sheltering drug evidence for a drug trafficker, the correct charge is \"窝藏、包庇罪\" (or \"包庇毒品犯罪分子\") rather than the broader \"帮助隐匿、转移、毁灭犯罪所得\" which is a different offense. So rule: Use the specific statutory offense of \"窝藏、包庇罪\" when the conduct is concealment or sheltering of a criminal's illicit items, especially drugs, by a person who is not the principal offender, rather than the generic \"帮助隐匿、转移、毁灭犯罪所得\" which applies to aiding in the disposal of proceeds. Keywords: \"藏匿\", \"隐匿\", \"湮灭\", \"毒品\", \"协警\", \"帮助\", \"犯罪所得\". But need to capture when to apply rule: facts mention \"藏匿于制服口袋\", \"埋于墙角\", \"冲走\", \"帮助隐匿毒品\". So keywords: \"藏匿\", \"隐匿\", \"毒品\", \"协警\", \"帮助\", \"包庇\". Provide JSON.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with a rule to prevent classification error: The AI gave a wrong charge: \"帮助犯罪分子隐匿、转移、毁灭犯罪所得、犯罪工具、犯罪证据罪\". Correct answer: \"窝藏、包庇;包庇毒品犯罪分子\". So the error is using a generic charge \"帮助犯罪分子隐匿、转移、毁灭犯罪所得、犯罪工具、犯罪证据罪\" instead of the specific statutory offense \"窝藏、包庇罪\" (or \"包庇毒品犯罪分子\"). The rule should state: When the facts involve a state employee hiding or sheltering drug evidence for a drug trafficker, the correct charge is \"窝藏、包庇罪\" (or \"包庇毒品犯罪分子\") rather than the broader \"帮助隐匿、转移、毁灭犯罪所得\" which is a different offense. So rule: Use the specific statutory offense of \"窝藏、包庇罪\" when the conduct is concealment or sheltering of a criminal's illicit items, especially drugs, by a person who is not the principal offender, rather than the generic \"帮助隐匿、转移、毁灭犯罪所得\" which applies to aiding in the disposal of proceeds. Keywords: \"藏匿\", \"隐匿\", \"湮灭\", \"毒品\", \"协警\", \"帮助\", \"犯罪所得\". But need to capture when to apply rule: facts mention \"藏匿于制服口袋\", \"埋于墙角\", \"冲走\", \"帮助隐匿毒品\". So keywords: \"藏匿\", \"隐匿\", \"毒品\", \"协警\", \"帮助\", \"包庇\". Provide JSON.\n\n",
+            "reasoning_content": "We need to produce a JSON with a rule to prevent classification error: The AI gave a wrong charge: \"帮助犯罪分子隐匿、转移、毁灭犯罪所得、犯罪工具、犯罪证据罪\". Correct answer: \"窝藏、包庇;包庇毒品犯罪分子\". So the error is using a generic charge \"帮助犯罪分子隐匿、转移、毁灭犯罪所得、犯罪工具、犯罪证据罪\" instead of the specific statutory offense \"窝藏、包庇罪\" (or \"包庇毒品犯罪分子\"). The rule should state: When the facts involve a state employee hiding or sheltering drug evidence for a drug trafficker, the correct charge is \"窝藏、包庇罪\" (or \"包庇毒品犯罪分子\") rather than the broader \"帮助隐匿、转移、毁灭犯罪所得\" which is a different offense. So rule: Use the specific statutory offense of \"窝藏、包庇罪\" when the conduct is concealment or sheltering of a criminal's illicit items, especially drugs, by a person who is not the principal offender, rather than the generic \"帮助隐匿、转移、毁灭犯罪所得\" which applies to aiding in the disposal of proceeds. Keywords: \"藏匿\", \"隐匿\", \"湮灭\", \"毒品\", \"协警\", \"帮助\", \"犯罪所得\". But need to capture when to apply rule: facts mention \"藏匿于制服口袋\", \"埋于墙角\", \"冲走\", \"帮助隐匿毒品\". So keywords: \"藏匿\", \"隐匿\", \"毒品\", \"协警\", \"帮助\", \"包庇\". Provide JSON.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 524,
+      "prompt_tokens": 743,
+      "total_tokens": 1267,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 357,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 176,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00045938,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00045938,
+        "upstream_inference_prompt_cost": 6.638e-05,
+        "upstream_inference_completions_cost": 0.000393
+      }
+    }
+  },
+  "raw_response_missing": false
+}

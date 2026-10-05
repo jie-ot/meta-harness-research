@@ -1,0 +1,91 @@
+Bash
+
+command:
+python -c "
+import json, os, re
+from collections import defaultdict, deque
+
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+_WRAPPER_RE = re.compile(r'^\s*\[[^\]]*\]|<eoa>\s*$|\[[^\]]*\]\s*$', re.IGNORECASE)
+def has_cjk(t): return bool(_CJK_RE.search(t))
+def tok_word(t): return frozenset(re.findall(r'[A-Za-z0-9]+', t.lower()))
+def tok_bigram(t):
+    t = re.sub(r'\s+', ' ', t.strip())
+    return frozenset(t[i:i+2] for i in range(len(t)-1)) if len(t)>=2 else frozenset()
+def tok(t): return tok_bigram(t) if has_cjk(t) else tok_word(t)
+def jaccard(a, b): return len(a&b)/len(a|b) if a or b else 0.0
+
+log = os.path.join(base, 'LawBench', 'decayed_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+steps = []
+with open(log, encoding='utf-8') as f:
+    for line in f:
+        d = json.loads(line)
+        if d.get('type') == 'step':
+            steps.append(d)
+
+# Compare three retrieval pool strategies at step i=100..150
+# A: unbounded global pool (baseline)
+# B: per-label-2 recent
+# C: per-label-3 recent
+
+def run_sim(steps, K):
+    pool_by_label = defaultdict(lambda: deque(maxlen=K))
+    gt_in_top5 = 0
+    tested = 0
+    for i, step in enumerate(steps):
+        gt = step['tgt']
+        preview = step['input_preview']
+        if i >= 40:
+            # flatten pool
+            all_ex = [(e['tok'], e['label']) for lbl, q in pool_by_label.items() for e in q]
+            if all_ex:
+                q_tok = tok(preview)
+                scored = sorted([(jaccard(q_tok, t), lbl) for t, lbl in all_ex], reverse=True)
+                top5_labels = [lbl for _, lbl in scored[:5]]
+                if gt in top5_labels:
+                    gt_in_top5 += 1
+                tested += 1
+            if tested >= 60:
+                break
+        pool_by_label[gt].append({'tok': tok(preview), 'label': gt})
+    return gt_in_top5, tested
+
+# Baseline: unbounded global pool
+pool_global = []
+gt5_global = 0
+tested_g = 0
+for i, step in enumerate(steps):
+    gt = step['tgt']
+    preview = step['input_preview']
+    if i >= 40 and pool_global:
+        q_tok = tok(preview)
+        scored = sorted([(jaccard(q_tok, e['tok']), e['label']) for e in pool_global], reverse=True)
+        top5 = [lbl for _, lbl in scored[:5]]
+        if gt in top5:
+            gt5_global += 1
+        tested_g += 1
+        if tested_g >= 60:
+            break
+    pool_global.append({'tok': tok(preview), 'label': gt})
+
+r2, t2 = run_sim(steps, K=2)
+r3, t3 = run_sim(steps, K=3)
+print(f'Unbounded global  : GT in top-5 = {gt5_global}/{tested_g} = {gt5_global/tested_g*100:.0f}%')
+print(f'Per-label-K=2     : GT in top-5 = {r2}/{t2} = {r2/t2*100:.0f}%')
+print(f'Per-label-K=3     : GT in top-5 = {r3}/{t3} = {r3/t3*100:.0f}%')
+
+# Also check: how many distinct labels covered after 40 steps?
+pool_40 = steps[:40]
+labels_global = set(s['tgt'] for s in pool_40)
+labels_k2 = set(s['tgt'] for s in pool_40)  # same coverage — all seen labels are present with K>=1
+print(f'Distinct labels after 40 steps: {len(labels_global)}')
+" 2>&1
+
+description: Prototype per-label-K-recent pool vs unbounded global
+
+--- output ---
+Unbounded global  : GT in top-5 = 5/60 = 8%
+Per-label-K=2     : GT in top-5 = 5/60 = 8%
+Per-label-K=3     : GT in top-5 = 5/60 = 8%
+Distinct labels after 40 steps: 39

@@ -1,0 +1,21 @@
+{
+  "iteration": 1,
+  "candidates": [
+    {
+      "name": "chinese_bigram_confusion_memory",
+      "file": "agents/chinese_bigram_confusion_memory.py",
+      "hypothesis": "Replacing the ASCII-only tokenizer with Chinese character bigrams will give the confusion-disambiguation selection algorithm meaningful Jaccard scores (vs. near-zero for all pairs), enabling it to retrieve genuinely similar examples and improving val accuracy above 26%.",
+      "axis": "exploitation",
+      "base_system": "confusion_disambiguation_memory",
+      "components": ["bigram_tokenizer", "confusion_matrix", "jaccard_similarity", "disambiguation_retrieval"]
+    },
+    {
+      "name": "reflexion_lesson_memory",
+      "file": "agents/reflexion_lesson_memory.py",
+      "hypothesis": "Storing LLM-distilled correction rules (Reflexion-style) instead of raw examples will achieve higher val accuracy than 26% by capturing generalizable error patterns with explicit guidance, without the noise of irrelevant raw examples.",
+      "axis": "exploration",
+      "base_system": "confusion_disambiguation_memory",
+      "components": ["llm_lesson_distillation", "keyword_fingerprints", "rule_bank", "rules_first_prompt"]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+Read: agents\confusion_disambiguation_memory.py
+
+limit: 50
+offset: 1
+
+--- output ---
+1	"""Confusion Disambiguation Memory — surfaces hard-distinction examples at predict time.
+2	
+3	All prior systems select examples by relevance to the query (similarity, MMR,
+4	champion). None uses the signal in `was_correct` / `prediction` from training.
+5	This system does:
+6	
+7	1. During learn_from_batch, track a confusion matrix: for each wrong prediction,
+8	   increment confusion[predicted_label][true_label].
+9	
+10	2. At predict time:
+11	   a. Run a fast similarity pass to get N candidate examples and their labels.
+12	   b. Look up what labels are most confused with those candidate labels.
+13	   c. Find stored examples of those "confused-with" labels — these are the hard
+14	      boundary cases the model needs to see to avoid the known error modes.
+15	   d. Inject disambiguation examples first (they anchor the boundary), then
+16	      fill remaining budget with similarity-ranked examples.
+17	
+18	This is a fundamentally different learning trigger: the selection algorithm
+19	is driven by the confusion matrix, not just query similarity. When confusion
+20	data is absent (cold start or no errors yet), it degrades gracefully to pure
+21	similarity retrieval.
+22	"""
+23	
+24	import json
+25	import re
+26	from collections import defaultdict
+27	from typing import Any
+28	
+29	from ..llm import LLMCallable
+30	from ..memory_system import MemorySystem, extract_json_field
+31	
+32	PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+33	
+34	{examples_section}
+35	
+36	**Problem:**
+37	{input}
+38	
+39	**Instructions:**
+40	- Follow the patterns shown in the examples above
+41	- Respond in JSON format
+42	
+43	{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+44	
+45	MAX_CHARS = 30000
+46	# How many top candidate labels to look up confusions for
+47	_TOP_CANDIDATE_LABELS = 3
+48	# How many disambiguation examples to inject per confused pair (capped by budget)
+49	_DISAMBIG_PER_CONFUSION = 2
+50	

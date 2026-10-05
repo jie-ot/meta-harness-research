@@ -1,0 +1,23 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，2016年12月份，被告人常爱花在丰县欢口镇司堂村村北其承包地非法种植罂粟，2017年4月19日被丰县公安局依法查获。经清点，被告人常爱花非法种植罂粟共计916株。丰县公安局已将该916株罂粟予以铲除。
+上述事实，被告人常爱花在开庭审理过程中亦无异议，江苏省·中国科学院植物研究所出具的植物材料鉴定报告，丰县公安局关于本案的发破案报告、到案经过、检查笔录、扣押清单、清点视频、罂粟图片及被告人常爱花的户籍证明等证据证实，足以认定。
+
+
+Wrong prediction: [罪名]非法种植罂粟<eoa>
+Correct answer: 非法种植毒品原植物
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

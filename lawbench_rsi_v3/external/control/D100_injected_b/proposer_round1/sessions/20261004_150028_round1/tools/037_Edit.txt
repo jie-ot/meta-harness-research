@@ -1,0 +1,35 @@
+Edit: agents\label_lexicon_snap_memory.py
+
+replace_all: False
+old_string:
+            units = _split_units(truth)
+            for unit in units:
+                self.lexicon.add(unit)
+                self.label_counts[unit] += 1
+            # A near-miss prediction reveals a variant spelling that should be
+            # attributed to the label it was trying to express. This is where
+            # the guard pays off: only variants the guards accept get mapped.
+            if not r.get("was_correct", True):
+                pred_units = _split_units(_strip_markup(r.get("prediction", "")))
+                for pu in pred_units:
+                    snapped = _snap(pu, self.lexicon) if self.lexicon else pu
+                    if snapped in self.lexicon and snapped != pu:
+                        self.label_counts[snapped] += 0
+
+new_string:
+            units = _split_units(truth)
+            for unit in units:
+                self.lexicon.add(unit)
+                self.label_counts[unit] += 1
+            # A near-miss prediction names a variant spelling of an attested
+            # label. Count it against the label the guards say it stands for,
+            # so the ranking signal reflects which labels are actually hard.
+            if not r.get("was_correct", True):
+                for pu in _split_units(_strip_markup(r.get("prediction", ""))):
+                    snapped = _snap(pu, self.lexicon)
+                    if snapped in self.lexicon and snapped != pu:
+                        self.label_counts[snapped] += 1
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\agents\label_lexicon_snap_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

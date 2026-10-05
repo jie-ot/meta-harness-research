@@ -1,0 +1,42 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description indicates that the offender used their official position or entrusted authority to appropriate property for personal gain, rather than physically taking or stealthily removi
+- If the facts describe the misappropriation of money belonging to a private company or other non‑government entity (e.g., company funds, client payments) rather than state or public treasury funds, the
+- When the factual description contains distinct elements that satisfy the legal criteria of more than one separate criminal offense, list every applicable offense, separating them with semicolons.
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控：
+（1）职务侵占
+2012年2月19日至2014年6月11日，被告人瞿某利用担任连云港市赣榆区塔山镇小探马自然村负责人的职务便利，以收取孙某1、瞿某1、杨某1购买小探马某宅基地款方式、截留塔山镇农业技术服务中心向小探马自然村村民发放土地流转补偿水稻、小麦的方式，将人民币70107.5元非法占为己有。分述如下：
+1.2012年1月19日，被告人瞿某利用担任连云港市赣榆区塔山镇小探马自然村负责人的职务便利，收取孙某1购买小探马自然村宅基地款人民币2万元，非法占为己有。
+2.2012年9月10日，被告人瞿某利用担任连云港市赣榆区塔山镇小探马自然村负责人的职务便利，收取瞿某1购买小探马自然村宅基地款3.5万元，2015年11月9日，被告人瞿某将其中的人民币3万元上交到塔山镇农经中心入账，余款人民币5000元非法占为己有。
+3.2014年6月11日，被告人瞿某利用担任连云港市赣榆区塔山镇小探马自然村负责人的职务便利，收取杨某1购买小探马自然村宅基地款人民币8万元，2014年10月16日，被告人瞿某将其中的人民币6万元上交到塔山镇财政所，余款人民币2万元非法占为己有。
+4.2013年秋季的一天，被告人瞿某利用担任连云港市赣榆区塔山镇小探马自然村负责人的职务便利，截留连云港市塔山镇农业技术服务中心向小探马自然村村民发放的土地流转补偿水稻3079.75公斤，扣除支付21人领取水稻款，余款人民币3639.5元非法占为己有。
+5.2014年秋季的一天，被告人瞿某利用担任连云港市赣榆区塔山镇小探马自然村负责人的职务便利，截留连云港市赣榆区塔山镇农业技术服务中心向小探马自然村村民发放的土地流转补偿的水稻18870公斤，扣除支付92人领取水稻款，余款人民币17040元非法占为己有。
+6.2015年夏季的一天，被告人瞿某利用担任连云港市赣榆区塔山镇小探马自然村负责人的职务便利，截留在连云港市赣榆区塔山镇农业技术服务中心向小探马自然村村民发放的土地流转补偿的小麦4954公斤，扣除支付23人小麦款，余款人民币4428元非法占为己有。
+（二）贪污
+2005年至2015年，被告人瞿某利用担任连云港市赣榆区塔山镇土城行政村原党总支副书记、小探马自然村负责人的职务便利，在协助塔山镇人民政府从事管理国家粮食直补款、低保款、农村危房改造补助资金、土地流转项目扶持资金等工作的过程中，采取虚报、冒领等手段侵吞公款人民币175712.56元。分述如下：
+1.2007年至2015年间，被告人瞿某利用担任连云港市赣榆区塔山镇土城行政村党总支副书记、小探马自然村负责人的职务便利，在协助塔山镇人民政府从事管理国家粮食直补款的过程中，采取虚报耕地亩数等手段侵吞公款116428.56元，其中2009年6月28日被告人瞿某将侵吞的公款人民币7114元在村里入账，2015年10月26日，被告人瞿某将侵吞的公款人民币17000元在村里入账，余款人民币92314.56元非法占为己有。
+2.2012年至2014年间，被告人瞿某利用担任连云港市赣榆区塔山镇土城行政村党总支副书记、小探马自然村负责人的职务便利，在协助塔山镇人民政府从事管理农村危房改造补助资金的过程中，采取冒领等手段侵吞公款人民币20856元。
+3.2005年至2012年间，被告人瞿某利用担任连云港市赣榆区塔山镇土城行政村党总支副书记、小探马自然村负责人的职务便利，在协助塔山镇人民政府从事管理低保款的过程中，采取冒领等手段侵吞公款人民币16377元。
+4.2013年，被告人瞿某利用担任连云港市赣榆区塔山镇土城行政村党总支副书记、小探马自然村负责人的职务便利，在协助塔山镇人民政府从事管理土地流转项目扶持资金的过程中，采取套取等手段侵吞公款人民币46165元。
+公诉机关向法庭出示了被告人瞿某的供述与辩解、证人证词笔录、书证等相关证据，以证实指控被告人瞿某犯××、××成立，提请本院依据《中华人民共和国刑法》××××、××××、××××第一项之规定处罚。被告人瞿某归案后如实供述犯罪事实，根据《中华人民共和国刑法》××××的规定，是坦白，可以从轻处罚。被告人瞿某在判决宣告前，一人犯数罪，根据《中华人民共和国刑法》××的规定，应当实行数罪并罚。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

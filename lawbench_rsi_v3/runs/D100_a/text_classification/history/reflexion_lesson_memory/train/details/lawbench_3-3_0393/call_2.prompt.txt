@@ -1,0 +1,22 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:民权县人民检察院指控，2012年11月份，被告人李某某在未经批准生产药品的情况下，通过物流公司将从他人手中接到的制药设备和药原材料物流给其母亲朱某某（已判刑），朱某某在没有生产、制造药品许可证的情况下，私自在家中生产药品，并通过物流给被告人李某某，从中牟利。2013年8月19日10时许，朱某某在送货途中被北关派出所执勤民警巡逻时当场抓获。上述事实，公诉机关提交了相应证据，认为被告人李某某之行为已构成××，建议三年以下量刑，并处罚金。
+
+
+Wrong prediction: [罪名]非法生产药品<eoa>
+Correct answer: 生产、销售假药
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

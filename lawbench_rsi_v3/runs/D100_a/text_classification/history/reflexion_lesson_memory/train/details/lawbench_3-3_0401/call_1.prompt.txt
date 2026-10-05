@@ -1,0 +1,32 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the alleged offender holds a position in a private or non‑governmental entity (e.g., company executive, manager) rather than a public official, classify the offense as “非国家工作人员受贿” instead of the 
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+- When the facts describe a bank or credit‑union employee using their position to issue loans illegally—e.g., by falsifying identities or violating regulations—but do not describe deception of a borrowe
+- When the factual description involves the perpetrator fabricating or falsifying events (e.g., traffic accidents) to obtain money from an insurance company, the crime should be labeled specifically as 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明：
+2014年1月至同年3月间，被告人张某甲承接福鼎碧桂园房地产开发有限公司（以下简称福鼎市碧桂园公司）两处临时设施场地的围墙工程，在工程结束后给予福鼎市碧桂园公司项目综合部副总经理刘某甲、项目工程（监理）部副经理黄某甲二人回扣款共计人民币（币种下同）94192元。具体事实分述如下：
+1、2014年1月间，被告人张某甲为承接福鼎碧桂园公司位于本市山前街道百胜新区三斗尾与白栏头之间的临时设施场地围墙工程，与黄某甲事先商定从每米工程造价中抽取50元作为黄某甲、刘某甲的回扣。后被告人张某甲挂靠福建鼎辉建设工程有限公司，经黄某甲、刘某甲帮助，顺利承接该处围墙工程。工程结束后，被告人张某甲给予黄某甲、刘某甲回扣款22800元。
+2、2014年3月间，被告人张某甲为承接福鼎碧桂园公司位于本市山前街道百胜新区鸡母岩君德码头附近的临时设施场地围墙工程，与黄某甲事先商定从每米工程造价中抽取50元作为黄某甲、刘某甲的回扣。后被告人张某甲挂靠福建鼎跃建设工程有限公司，经黄某甲、刘某甲帮助，顺利承接该处围墙工程。工程结束后，被告人张某甲给予黄某甲、刘某甲回扣款71392元。
+在审理过程中，经福鼎市司法局社区矫正机构审前社会调查评估，被告人张某甲符合社区矫正条件。
+上述事实，被告人张某甲在开庭审理过程中亦无异议，并有经庭审举证、质证的证人黄某甲、刘某甲、刘某乙、张某乙、杨某、江某、陈某甲、黄某乙、瞿某、张某丙、高某、陈某乙证言，场地围墙工程承包协议书，福鼎碧桂园公司营业执照、内资企业登记基本情况表、职工劳动合同及证明，碧桂园集团职务任免通知、员工变动表及粤闽区域工程技术部人员调职批量申请表，银行卡交易明细，支付宝交易记录，破案经过，户籍证明，调查评估意见书及被告人张某甲供述等证据证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

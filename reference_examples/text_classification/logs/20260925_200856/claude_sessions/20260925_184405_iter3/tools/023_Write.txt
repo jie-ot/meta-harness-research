@@ -1,0 +1,168 @@
+Write: agents\label_champion_memory.py
+
+content:
+"""Label Champion Memory — per-label similarity champion with fill.
+
+Combines the coverage guarantee of label-balanced selection with the
+relevance focus of similarity retrieval:
+
+1. Champion pass: for each seen label, pick the single stored example
+   whose raw_question is most Jaccard-similar to the current query.
+   Champions are then ranked by their similarity scores.
+
+2. Fill pass: after one champion per label, add remaining examples in
+   similarity-score order until the context budget is exhausted.
+
+This ensures every seen label appears at least once while still
+prioritising the most topically relevant example for each label.
+Similarity is measured on raw_question only (not the full input) to
+avoid score dilution from shared instruction boilerplate.
+"""
+
+import collections
+import hashlib
+import json
+import re
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+
+{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Follow the patterns shown in the examples above
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+MAX_CHARS = 30000
+
+
+def _tokenize(text: str) -> frozenset[str]:
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+
+def _jaccard(a: frozenset[str], b: frozenset[str]) -> float:
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+class LabelChampionMemory(MemorySystem):
+    """Per-label champion retrieval: best match per label, then fill by score."""
+
+    def __init__(self, llm: LLMCallable):
+        super().__init__(llm)
+        self.examples: list[dict[str, Any]] = []
+
+    def _select(self, query: str) -> list[str]:
+        if not self.examples:
+            return []
+
+        q_tok = _tokenize(query)
+
+        # Group by label; compute similarity for each example
+        by_label: dict[str, list[tuple[float, int, dict]]] = collections.defaultdict(list)
+        for idx, ex in enumerate(self.examples):
+            score = _jaccard(q_tok, ex["tokens"])
+            by_label[ex["target"]].append((score, idx, ex))
+
+        # Champion pass: pick best-scoring (most recent on ties) example per label
+        champion_indices: set[int] = set()
+        champions: list[tuple[float, int, dict]] = []
+        for label, scored_exs in by_label.items():
+            best = max(scored_exs, key=lambda x: (x[0], x[1]))
+            champions.append(best)
+            champion_indices.add(best[1])
+
+        champions.sort(key=lambda x: (x[0], x[1]), reverse=True)
+
+        parts: list[str] = []
+        total_chars = 0
+
+        for _score, _idx, ex in champions:
+            q = ex.get("raw_question", ex["input"])
+            part = f"Q: {q}\nA: {ex['target']}"
+            if total_chars + len(part) + 2 > MAX_CHARS:
+                break
+            parts.append(part)
+            total_chars += len(part) + 2
+
+        # Fill pass: remaining non-champion examples ranked by similarity
+        remaining: list[tuple[float, int, dict]] = []
+        for idx, ex in enumerate(self.examples):
+            if idx in champion_indices:
+                continue
+            score = _jaccard(q_tok, ex["tokens"])
+            remaining.append((score, idx, ex))
+        remaining.sort(key=lambda x: (x[0], x[1]), reverse=True)
+
+        for _score, _idx, ex in remaining:
+            q = ex.get("raw_question", ex["input"])
+            part = f"Q: {q}\nA: {ex['target']}"
+            if total_chars + len(part) + 2 > MAX_CHARS:
+                break
+            parts.append(part)
+            total_chars += len(part) + 2
+
+        return parts
+
+    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+        parts = self._select(input)
+        examples_section = "\n\n".join(parts)
+        prompt = PROMPT_TEMPLATE.format(
+            examples_section=examples_section,
+            input=input,
+        )
+        response = self.call_llm(prompt)
+        answer = extract_json_field(response, "final_answer")
+        return answer, {
+            "full_response": response,
+            "num_examples": len(self.examples),
+            "num_selected": len(parts),
+        }
+
+    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+        for r in batch_results:
+            raw_q = r.get("raw_question", r["input"])
+            ex: dict[str, Any] = {
+                "input": r["input"],
+                "target": r["ground_truth"],
+                "tokens": _tokenize(raw_q),
+            }
+            if "raw_question" in r:
+                ex["raw_question"] = r["raw_question"]
+            self.examples.append(ex)
+
+    def get_context_length(self) -> int:
+        return sum(len(p) + 2 for p in self._select(""))
+
+    def get_state(self) -> str:
+        serialisable = [
+            {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+            for ex in self.examples
+        ]
+        return json.dumps({"examples": serialisable}, indent=2)
+
+    def set_state(self, state: str) -> None:
+        data = json.loads(state)
+        self.examples = []
+        for ex in data.get("examples", []):
+            restored = dict(ex)
+            if "tokens" in restored and isinstance(restored["tokens"], list):
+                restored["tokens"] = frozenset(restored["tokens"])
+            else:
+                raw_q = restored.get("raw_question", restored.get("input", ""))
+                restored["tokens"] = _tokenize(raw_q)
+            self.examples.append(restored)
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\label_champion_memory.py (file state is current in your context — no need to Read it back)

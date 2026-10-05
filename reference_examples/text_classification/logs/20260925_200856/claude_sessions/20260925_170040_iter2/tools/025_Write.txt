@@ -1,0 +1,113 @@
+Write: _proto_similarity.py
+
+content:
+"""Prototype: query-time similarity retrieval vs recency.
+
+Tests whether ranking stored examples by Jaccard token overlap with the
+current query retrieves more on-topic examples than recency-based selection.
+Uses real raw_question format from USPTO logs.
+"""
+import collections
+import random
+import re
+
+# Simulate a pool drawn from USPTO training data patterns
+# (SMILES strings with reaction type context)
+REACTION_TYPES = ["Protections", "Deprotections", "C-C bond formation",
+                  "Reductions", "Oxidations", "Amide bond formation",
+                  "N-alkylation", "O-alkylation", "Cyclizations"]
+
+rng = random.Random(42)
+pool = []
+smiles_fragments = [
+    "COC(=O)", "NC(=O)", "OC(C)(C)C", "c1ccccc1", "C#C",
+    "Clc1ncncc1", "N1CCN", "C(F)(F)F", "[NH3+]", "c1ccc(-c2ccccc2)"
+]
+for i in range(200):
+    rtype = rng.choice(REACTION_TYPES)
+    frags = rng.choices(smiles_fragments, k=rng.randint(2, 4))
+    smiles = "".join(frags)
+    q = f"Context: The reaction type is {rtype}.\nInput: {smiles}\nAnswer: "
+    pool.append({"raw_question": q, "target": rng.choice(smiles_fragments)})
+
+
+def tokenize(text):
+    """Simple word/token split."""
+    return set(re.findall(r"[A-Za-z0-9=#+\(\)\[\]@]+", text.lower()))
+
+
+def jaccard(a_tokens, b_tokens):
+    if not a_tokens and not b_tokens:
+        return 0.0
+    return len(a_tokens & b_tokens) / len(a_tokens | b_tokens)
+
+
+def recency_select(pool, query, max_chars=30000):
+    parts, total = [], 0
+    for ex in reversed(pool):
+        part = f"Q: {ex['raw_question']}\nA: {ex['target']}"
+        if total + len(part) + 2 > max_chars:
+            break
+        parts.append(part)
+        total += len(part) + 2
+    return list(reversed(parts))
+
+
+def similarity_select(pool, query, max_chars=30000):
+    """Rank by Jaccard similarity to query, then fill budget."""
+    q_tokens = tokenize(query)
+    scored = [(jaccard(q_tokens, tokenize(ex["raw_question"])), i, ex)
+              for i, ex in enumerate(pool)]
+    scored.sort(key=lambda x: (-x[0], -x[1]))  # desc similarity, then recency
+
+    parts, total = [], 0
+    for score, _, ex in scored:
+        part = f"Q: {ex['raw_question']}\nA: {ex['target']}"
+        if total + len(part) + 2 > max_chars:
+            break
+        parts.append(part)
+        total += len(part) + 2
+    return parts
+
+
+# Test with 5 different queries, measure avg similarity of retrieved examples
+queries = [
+    "Context: The reaction type is Reductions.\nInput: COC(=O)[N+]c1ccccc1\nAnswer: ",
+    "Context: The reaction type is C-C bond formation.\nInput: Clc1ncncc1C#Cc1ccccc1\nAnswer: ",
+    "Context: The reaction type is Protections.\nInput: NC(=O)OC(C)(C)C\nAnswer: ",
+    "Context: The reaction type is Deprotections.\nInput: c1ccc(-c2ccccc2OC(=O)C)cc1\nAnswer: ",
+    "Context: The reaction type is Oxidations.\nInput: c1ccccc1C#C\nAnswer: ",
+]
+
+print("Budget=10000 chars — avg Jaccard similarity of retrieved examples to query")
+print(f"{'Query type':<25}  {'Recency avg sim':>15}  {'Similarity avg sim':>18}  {'Delta':>8}")
+print("-" * 72)
+for q in queries:
+    q_tokens = tokenize(q)
+    rtype = q.split("reaction type is ")[1].split(".\n")[0]
+
+    r_parts = recency_select(pool, q, max_chars=10000)
+    r_sims = [jaccard(q_tokens, tokenize(p.split("\nA:")[0][3:])) for p in r_parts]
+
+    s_parts = similarity_select(pool, q, max_chars=10000)
+    s_sims = [jaccard(q_tokens, tokenize(p.split("\nA:")[0][3:])) for p in s_parts]
+
+    r_avg = sum(r_sims)/len(r_sims) if r_sims else 0
+    s_avg = sum(s_sims)/len(s_sims) if s_sims else 0
+    print(f"{rtype:<25}  {r_avg:>15.4f}  {s_avg:>18.4f}  {s_avg-r_avg:>+8.4f}")
+
+# Also show label coverage for multi-class tasks (relevant for Symptom2Disease style)
+print("\nLabel coverage at 6294 chars budget:")
+q_generic = "test query"
+r6 = recency_select(pool, q_generic, max_chars=6294)
+s6 = similarity_select(pool, q_generic, max_chars=6294)
+r_labels = {p.split("\nA: ")[-1] for p in r6}
+s_labels = {p.split("\nA: ")[-1] for p in s6}
+print(f"Recency:    {len(r6)} ex, {len(r_labels)} unique labels")
+print(f"Similarity: {len(s6)} ex, {len(s_labels)} unique labels")
+print("(for structured tasks like SMILES, higher similarity score = more on-topic retrieval)")
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\_proto_similarity.py (file state is current in your context — no need to Read it back)

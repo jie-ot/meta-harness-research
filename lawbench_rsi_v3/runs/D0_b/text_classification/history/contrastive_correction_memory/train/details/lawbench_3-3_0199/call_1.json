@@ -1,0 +1,72 @@
+{
+  "call_id": "fd45117ff2b64cc9b8f2ba9319486066",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791015726-feADajHROsVFWgdMjZCb",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"被告人高某是医院的员工，利用职务便利向软件安装人员索取贿赂，收受了83292元。其行为符合《刑法》关于受贿的规定。由于医院属于公共机构，员工属于国家工作人员，构成受贿罪（国家工作人员受贿）。因此应判定的罪名为受贿。\",\n  \"final_answer\": \"[罪名]受贿<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the correct crime(s) based on facts. Fact: employee of hospital, responsible for installing medical software, uses his position to solicit bribes from software installation personnel (马某). Hospital paid software engineering fees 267,200 yuan, and 马某 transferred to 高某 83,292 yuan in multiple bank transfers. So high-level: a non-state employee (hospital employee) receiving bribes. The crime is \"受贿罪\". But need to decide if it's \"国家工作人员受贿罪\" or \"非国家工作人员受贿罪\". The employee is a hospital employee, which is not a state organ? The hospital is likely a public hospital? It says \"晋中德源医院\". Could be a public hospital (state-owned). If it's a public hospital, employees are considered state functionaries? In Chinese law, \"国家工作人员\" includes staff of state organs, public institutions, state-owned enterprises, etc. A public hospital is a public institution, so employees are considered state functionaries. However, the examples show that for a property management company employee (non-state) they used \"非国家工作人员受贿\". For a public hospital employee, likely \"受贿罪\" but need to specify \"受贿罪\" maybe \"受贿罪\" is generic. In examples they output \"非国家工作人员受贿\". For a public hospital employee, they might output \"受贿罪\" (maybe \"受贿罪\" is enough). But the pattern: they output \"非国家工作人员受贿\" for non-state. For state staff they output \"受贿\". Actually example: first example: \"韩某某在担任西宁某物业管理有限公司副总经理期间\" - that's a private company, they output \"非国家工作人员受贿\". So they include \"非国家工作人员受贿\". For state staff, maybe they output \"受贿\". Let's see if any example of state staff. Not given. But typical classification: \"受贿罪\" is the crime; but the specific type is \"国家工作人员受贿罪\" vs \"非国家工作人员受贿罪\". The answer format in examples: they output \"非国家工作人员受贿\". So we need to decide which. The hospital is likely a public institution, thus \"国家工作人员受贿\". But the answer format maybe just \"受贿\". However the examples show they include the qualifier. The instruction: \"请你模拟法官依据下面事实给出罪名。\" So we need to give the crime name. In examples they gave \"非国家工作人员受贿\". So we should output \"受贿\". But to be safe, maybe \"受贿\" is enough. However the pattern: they always include qualifier when needed. For non-state they say \"非国家工作人员受贿\". For state they might say \"受贿\". Let's output \"受贿\". But maybe they want \"受贿罪\". In examples they omitted \"罪\". They wrote \"非国家工作人员受贿\". So we output \"受贿\". Let's produce JSON with reasoning and final answer.\n\n",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the correct crime(s) based on facts. Fact: employee of hospital, responsible for installing medical software, uses his position to solicit bribes from software installation personnel (马某). Hospital paid software engineering fees 267,200 yuan, and 马某 transferred to 高某 83,292 yuan in multiple bank transfers. So high-level: a non-state employee (hospital employee) receiving bribes. The crime is \"受贿罪\". But need to decide if it's \"国家工作人员受贿罪\" or \"非国家工作人员受贿罪\". The employee is a hospital employee, which is not a state organ? The hospital is likely a public hospital? It says \"晋中德源医院\". Could be a public hospital (state-owned). If it's a public hospital, employees are considered state functionaries? In Chinese law, \"国家工作人员\" includes staff of state organs, public institutions, state-owned enterprises, etc. A public hospital is a public institution, so employees are considered state functionaries. However, the examples show that for a property management company employee (non-state) they used \"非国家工作人员受贿\". For a public hospital employee, likely \"受贿罪\" but need to specify \"受贿罪\" maybe \"受贿罪\" is generic. In examples they output \"非国家工作人员受贿\". For a public hospital employee, they might output \"受贿罪\" (maybe \"受贿罪\" is enough). But the pattern: they output \"非国家工作人员受贿\" for non-state. For state staff they output \"受贿\". Actually example: first example: \"韩某某在担任西宁某物业管理有限公司副总经理期间\" - that's a private company, they output \"非国家工作人员受贿\". So they include \"非国家工作人员受贿\". For state staff, maybe they output \"受贿\". Let's see if any example of state staff. Not given. But typical classification: \"受贿罪\" is the crime; but the specific type is \"国家工作人员受贿罪\" vs \"非国家工作人员受贿罪\". The answer format in examples: they output \"非国家工作人员受贿\". So we need to decide which. The hospital is likely a public institution, thus \"国家工作人员受贿\". But the answer format maybe just \"受贿\". However the examples show they include the qualifier. The instruction: \"请你模拟法官依据下面事实给出罪名。\" So we need to give the crime name. In examples they gave \"非国家工作人员受贿\". So we should output \"受贿\". But to be safe, maybe \"受贿\" is enough. However the pattern: they always include qualifier when needed. For non-state they say \"非国家工作人员受贿\". For state they might say \"受贿\". Let's output \"受贿\". But maybe they want \"受贿罪\". In examples they omitted \"罪\". They wrote \"非国家工作人员受贿\". So we output \"受贿\". Let's produce JSON with reasoning and final answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine the correct crime(s) based on facts. Fact: employee of hospital, responsible for installing medical software, uses his position to solicit bribes from software installation personnel (马某). Hospital paid software engineering fees 267,200 yuan, and 马某 transferred to 高某 83,292 yuan in multiple bank transfers. So high-level: a non-state employee (hospital employee) receiving bribes. The crime is \"受贿罪\". But need to decide if it's \"国家工作人员受贿罪\" or \"非国家工作人员受贿罪\". The employee is a hospital employee, which is not a state organ? The hospital is likely a public hospital? It says \"晋中德源医院\". Could be a public hospital (state-owned). If it's a public hospital, employees are considered state functionaries? In Chinese law, \"国家工作人员\" includes staff of state organs, public institutions, state-owned enterprises, etc. A public hospital is a public institution, so employees are considered state functionaries. However, the examples show that for a property management company employee (non-state) they used \"非国家工作人员受贿\". For a public hospital employee, likely \"受贿罪\" but need to specify \"受贿罪\" maybe \"受贿罪\" is generic. In examples they output \"非国家工作人员受贿\". For a public hospital employee, they might output \"受贿罪\" (maybe \"受贿罪\" is enough). But the pattern: they output \"非国家工作人员受贿\" for non-state. For state staff they output \"受贿\". Actually example: first example: \"韩某某在担任西宁某物业管理有限公司副总经理期间\" - that's a private company, they output \"非国家工作人员受贿\". So they include \"非国家工作人员受贿\". For state staff, maybe they output \"受贿\". Let's see if any example of state staff. Not given. But typical classification: \"受贿罪\" is the crime; but the specific type is \"国家工作人员受贿罪\" vs \"非国家工作人员受贿罪\". The answer format in examples: they output \"非国家工作人员受贿\". So we need to decide which. The hospital is likely a public institution, thus \"国家工作人员受贿\". But the answer format maybe just \"受贿\". However the examples show they include the qualifier. The instruction: \"请你模拟法官依据下面事实给出罪名。\" So we need to give the crime name. In examples they gave \"非国家工作人员受贿\". So we should output \"受贿\". But to be safe, maybe \"受贿\" is enough. However the pattern: they always include qualifier when needed. For non-state they say \"非国家工作人员受贿\". For state they might say \"受贿\". Let's output \"受贿\". But maybe they want \"受贿罪\". In examples they omitted \"罪\". They wrote \"非国家工作人员受贿\". So we output \"受贿\". Let's produce JSON with reasoning and final answer.\n\n",
+            "refusal": null,
+            "reasoning_content": "We need to determine the correct crime(s) based on facts. Fact: employee of hospital, responsible for installing medical software, uses his position to solicit bribes from software installation personnel (马某). Hospital paid software engineering fees 267,200 yuan, and 马某 transferred to 高某 83,292 yuan in multiple bank transfers. So high-level: a non-state employee (hospital employee) receiving bribes. The crime is \"受贿罪\". But need to decide if it's \"国家工作人员受贿罪\" or \"非国家工作人员受贿罪\". The employee is a hospital employee, which is not a state organ? The hospital is likely a public hospital? It says \"晋中德源医院\". Could be a public hospital (state-owned). If it's a public hospital, employees are considered state functionaries? In Chinese law, \"国家工作人员\" includes staff of state organs, public institutions, state-owned enterprises, etc. A public hospital is a public institution, so employees are considered state functionaries. However, the examples show that for a property management company employee (non-state) they used \"非国家工作人员受贿\". For a public hospital employee, likely \"受贿罪\" but need to specify \"受贿罪\" maybe \"受贿罪\" is generic. In examples they output \"非国家工作人员受贿\". For a public hospital employee, they might output \"受贿罪\" (maybe \"受贿罪\" is enough). But the pattern: they output \"非国家工作人员受贿\" for non-state. For state staff they output \"受贿\". Actually example: first example: \"韩某某在担任西宁某物业管理有限公司副总经理期间\" - that's a private company, they output \"非国家工作人员受贿\". So they include \"非国家工作人员受贿\". For state staff, maybe they output \"受贿\". Let's see if any example of state staff. Not given. But typical classification: \"受贿罪\" is the crime; but the specific type is \"国家工作人员受贿罪\" vs \"非国家工作人员受贿罪\". The answer format in examples: they output \"非国家工作人员受贿\". So we need to decide which. The hospital is likely a public institution, thus \"国家工作人员受贿\". But the answer format maybe just \"受贿\". However the examples show they include the qualifier. The instruction: \"请你模拟法官依据下面事实给出罪名。\" So we need to give the crime name. In examples they gave \"非国家工作人员受贿\". So we should output \"受贿\". But to be safe, maybe \"受贿\" is enough. However the pattern: they always include qualifier when needed. For non-state they say \"非国家工作人员受贿\". For state they might say \"受贿\". Let's output \"受贿\". But maybe they want \"受贿罪\". In examples they omitted \"罪\". They wrote \"非国家工作人员受贿\". So we output \"受贿\". Let's produce JSON with reasoning and final answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 767,
+      "prompt_tokens": 5627,
+      "total_tokens": 6394,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 657,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0002992,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0002992,
+        "upstream_inference_prompt_cost": 0.00016881,
+        "upstream_inference_completions_cost": 0.00013039
+      }
+    }
+  },
+  "raw_response_missing": false
+}

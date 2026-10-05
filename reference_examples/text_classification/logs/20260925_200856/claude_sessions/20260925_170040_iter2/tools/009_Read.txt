@@ -1,0 +1,180 @@
+Read: agents\reflexion_memory.py
+
+
+--- output ---
+1	"""Reflexion Memory - LLM-distilled lessons from error batches.
+2	
+3	Inspired by Reflexion (Shinn et al., 2023). After each training batch,
+4	calls the LLM to distill recurring error patterns into compact, actionable
+5	lessons. These lessons are injected at the top of the prompt, giving the
+6	model explicit meta-guidance rather than raw examples alone.
+7	
+8	Mechanism (different from all fewshot baselines):
+9	  learn_from_batch: on every batch that has errors, call the LLM once to
+10	    synthesize the errors into <=5 lessons. Deduplicate against existing
+11	    lessons by semantic overlap detection (LLM judge). Cap at 15 total lessons.
+12	  predict: inject lessons section + a small set of recent examples.
+13	"""
+14	
+15	import json
+16	from typing import Any
+17	
+18	from ..llm import LLMCallable
+19	from ..memory_system import MemorySystem, extract_json_field
+20	
+21	LESSON_SYNTHESIS_PROMPT = """You are analyzing classification mistakes to extract reusable patterns.
+22	
+23	Here are recent errors (wrong prediction → correct answer):
+24	{error_pairs}
+25	
+26	Write up to 5 concise, general lessons that would help avoid these mistakes in the future.
+27	Each lesson should be a single sentence describing a pattern, signal, or rule.
+28	Do NOT mention specific texts from above — generalize the pattern.
+29	Respond as a JSON array of strings:
+30	{{"lessons": ["lesson 1", "lesson 2", ...]}}"""
+31	
+32	PREDICT_PROMPT = """Solve the classification problem below.
+33	
+34	{lessons_section}{examples_section}
+35	**Problem:**
+36	{input}
+37	
+38	Respond in JSON format:
+39	{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+40	
+41	MAX_LESSONS = 15
+42	MAX_EXAMPLES = 8
+43	MAX_EXAMPLE_CHARS = 8000
+44	
+45	
+46	class ReflexionMemory(MemorySystem):
+47	    """LLM-distilled lesson memory inspired by Reflexion."""
+48	
+49	    def __init__(self, llm: LLMCallable):
+50	        super().__init__(llm)
+51	        self.lessons: list[str] = []
+52	        self.examples: list[dict[str, str]] = []
+53	
+54	    def _format_lessons_section(self) -> str:
+55	        if not self.lessons:
+56	            return ""
+57	        lines = ["## Lessons from past mistakes:"]
+58	        for i, lesson in enumerate(self.lessons, 1):
+59	            lines.append(f"{i}. {lesson}")
+60	        return "\n".join(lines) + "\n\n"
+61	
+62	    def _format_examples_section(self) -> str:
+63	        if not self.examples:
+64	            return ""
+65	        parts = []
+66	        total = 0
+67	        for ex in self.examples[-MAX_EXAMPLES:]:
+68	            question = ex.get("raw_question", ex["input"])
+69	            part = f"Q: {question}\nA: {ex['target']}"
+70	            if total + len(part) > MAX_EXAMPLE_CHARS:
+71	                break
+72	            parts.append(part)
+73	            total += len(part) + 2
+74	        if not parts:
+75	            return ""
+76	        return "## Examples:\n" + "\n\n".join(parts) + "\n\n"
+77	
+78	    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+79	        lessons_section = self._format_lessons_section()
+80	        examples_section = self._format_examples_section()
+81	        prompt = PREDICT_PROMPT.format(
+82	            lessons_section=lessons_section,
+83	            examples_section=examples_section,
+84	            input=input,
+85	        )
+86	        response = self.call_llm(prompt)
+87	        answer = extract_json_field(response, "final_answer")
+88	        return answer, {
+89	            "full_response": response,
+90	            "num_lessons": len(self.lessons),
+91	            "num_examples": len(self.examples),
+92	        }
+93	
+94	    def _synthesize_lessons(self, errors: list[dict[str, Any]]) -> list[str]:
+95	        """Call LLM to distill error patterns into lessons."""
+96	        if not errors:
+97	            return []
+98	
+99	        # Format error pairs for the synthesis prompt
+100	        pairs = []
+101	        for e in errors[-10:]:  # use at most 10 recent errors
+102	            question = e.get("raw_question", e["input"])
+103	            # Truncate long inputs to keep synthesis prompt manageable
+104	            if len(question) > 300:
+105	                question = question[:300] + "..."
+106	            pairs.append(
+107	                f"  Input: {question}\n"
+108	                f"  Predicted: {e['prediction']}\n"
+109	                f"  Correct: {e['ground_truth']}"
+110	            )
+111	
+112	        error_pairs_str = "\n\n".join(pairs)
+113	        prompt = LESSON_SYNTHESIS_PROMPT.format(error_pairs=error_pairs_str)
+114	
+115	        try:
+116	            response = self.call_llm(prompt)
+117	            # Extract as JSON array field
+118	            raw = extract_json_field(response, "lessons")
+119	            # The field itself may be a JSON array string or already a list
+120	            if raw.startswith("["):
+121	                new_lessons = json.loads(raw)
+122	            else:
+123	                # Fallback: treat as single lesson
+124	                new_lessons = [raw] if raw else []
+125	            return [str(l).strip() for l in new_lessons if str(l).strip()]
+126	        except Exception:
+127	            return []
+128	
+129	    def _deduplicate_lessons(self, new_lessons: list[str]) -> list[str]:
+130	        """Simple dedup: skip new lessons that share >4 words with existing ones."""
+131	        unique = []
+132	        existing_words = set()
+133	        for lesson in self.lessons:
+134	            existing_words.update(lesson.lower().split())
+135	
+136	        for new in new_lessons:
+137	            new_words = set(new.lower().split())
+138	            overlap = len(new_words & existing_words)
+139	            # Skip if more than half the words already appear in existing lessons
+140	            if len(new_words) > 0 and overlap / len(new_words) < 0.6:
+141	                unique.append(new)
+142	                existing_words.update(new_words)
+143	
+144	        return unique
+145	
+146	    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+147	        """Accumulate examples and synthesize lessons from errors."""
+148	        errors = [r for r in batch_results if not r["was_correct"]]
+149	
+150	        # Always store raw examples
+151	        for r in batch_results:
+152	            ex = {"input": r["input"], "target": r["ground_truth"]}
+153	            if "raw_question" in r:
+154	                ex["raw_question"] = r["raw_question"]
+155	            self.examples.append(ex)
+156	
+157	        # Only synthesize lessons if there are errors in this batch
+158	        if errors:
+159	            new_lessons = self._synthesize_lessons(errors)
+160	            deduped = self._deduplicate_lessons(new_lessons)
+161	            self.lessons.extend(deduped)
+162	            # Cap total lesson count
+163	            if len(self.lessons) > MAX_LESSONS:
+164	                self.lessons = self.lessons[-MAX_LESSONS:]
+165	
+166	    def get_context_length(self) -> int:
+167	        return len(self._format_lessons_section()) + len(self._format_examples_section())
+168	
+169	    def get_state(self) -> str:
+170	        return json.dumps({"lessons": self.lessons, "examples": self.examples}, indent=2)
+171	
+172	    def set_state(self, state: str) -> None:
+173	        data = json.loads(state)
+174	        self.lessons = data.get("lessons", [])
+175	        self.examples = data.get("examples", [])
+176	

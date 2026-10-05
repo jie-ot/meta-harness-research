@@ -1,0 +1,32 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the defendant unintentionally introduces a hazardous or toxic substance into food or drink, resulting in poisoning or death, the appropriate charge is ‘过失投放危险物质’, not charges related to manufactu
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- If the factual scenario describes fraud that is carried out through the creation, signing, or performance of a contract (e.g., false representation of a business role, fictitious project, or fabricate
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，被告人赵某某有如下的犯罪事实：
+一、××1、2012年6月份的一天，被告人赵某某采取撬门入室的方式进入江华瑶族自治花江乡齐共村赵10某家，将赵10某停放在堂屋的一台无牌照“新宝”太子二轮摩托车盗走，后以300元的价格买给甘1某。经物价鉴定，该摩托车价值3744元。2、2012年6、7月的一天的一天晚上10时许，被告人赵某某从江华瑶族自治县沱江镇返回花江乡途经漕滩村时，将盘1某停放在家门口的一辆“飞肯”太子款摩托车盗走，后以低价卖给甘2某。经物价鉴定，该摩托车价值3185元。案发后，公安机关依法将二台摩托车予以扣押，并发还给被害人赵10某、盘发军。
+二、××
+被害人赵10某知道他的摩托车是被本村的被告人赵某某偷了并打了他，被告人赵某某对此事怀恨在心，又想到平时本村的村民对其不好。于是2012年10月24日下午，被告人赵某某从家里拿了敌敌畏、甲安磷、三环唑等农药到江华瑶族自治县花江乡齐共村一、二组自来水引水源头，将农药分别倒入齐共村一、二组的水源处，后因被村民及时发现才未造成严重后果。
+案发后，被告人赵某某在逃，后被公安机关抓获归案，被告人赵某某不但如实供述了盗窃摩托车的犯罪事实，且如实供述司法机关还未掌握其投放危险物质的犯罪事实。
+上述事实，被告人赵某某在开庭审理过程中亦无异议，且有失主赵10某、盘1某的陈述，证人赵5某、甘1某、赵10某、赵1某、赵6某、赵4某、赵2某、冯某、赵8某、赵3某、赵9某的证言，摩托车销售发票，江华瑶族自治县公安局水口派出所的证明，江华瑶族自治县公安局扣押、发还物品清单，现场勘验检查笔录，现场指认照片，鉴定意见，（2010）华法刑初字第142号判决书予以证实。足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

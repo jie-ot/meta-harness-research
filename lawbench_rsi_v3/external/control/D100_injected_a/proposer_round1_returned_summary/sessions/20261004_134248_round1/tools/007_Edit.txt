@@ -1,0 +1,13 @@
+Edit: .prototypes\canonical_charge_lexicon_memory.py
+
+replace_all: False
+old_string:
+    assert mem2.predict("事实：某甲销售假冒某注册商标的手袋。")[0] == "假冒注册商标", "state round-trip lost rules"
+
+new_string:
+    rt = _extract_payload(mem2.predict("事实：某甲销售假冒某注册商标的手袋。")[0])
+    assert rt == "假冒注册商标", f"state round-trip lost rules: {rt!r}"
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_a\text_classification\.prototypes\canonical_charge_lexicon_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

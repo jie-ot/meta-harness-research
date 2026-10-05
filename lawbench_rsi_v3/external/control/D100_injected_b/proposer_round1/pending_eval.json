@@ -1,0 +1,37 @@
+{
+  "iteration": 1,
+  "candidates": [
+    {
+      "name": "label_lexicon_snap_memory",
+      "file": "agents/label_lexicon_snap_memory.py",
+      "hypothesis": "Replacing the ASCII-only tokenizer with character-bigram Dice similarity restores a discriminative retrieval signal on Chinese case facts, and a guarded longest-common-substring snap of each predicted charge unit against the accumulated statute lexicon repairs near-miss statutory names (run >= 4 chars, coverage >= 0.6, unique maximal match) without damaging already-correct short labels, raising exact charge-set accuracy above the 27/100 frontier.",
+      "axis": "exploitation",
+      "base_system": "confusion_disambiguation_memory",
+      "components": [
+        "bigram_dice_retrieval",
+        "guarded_lcs_label_snap",
+        "statute_lexicon_from_targets",
+        "trailing_suffix_repair",
+        "margin_gated_context_selection"
+      ],
+      "code_hash": "3d253ae3e723b9055e2fb0142106cbf3a7de7f7932624bc64df0b09f981372a4",
+      "slot": "A"
+    },
+    {
+      "name": "charge_cooccurrence_count_memory",
+      "file": "agents/charge_cooccurrence_count_memory.py",
+      "hypothesis": "Treating memory as a weighted charge co-occurrence graph and planning the output cardinality from the structural placeholder-group size in the fact text repairs the dominant under-generation error: labels retrieved from matched cases and support-gated graph companions fill the planned slots, while closed or weakly-attested neighbourhoods stay unchanged, raising exact charge-set accuracy above the 27/100 frontier.",
+      "axis": "exploration",
+      "base_system": "confusion_disambiguation_memory",
+      "components": [
+        "charge_cooccurrence_graph",
+        "structural_cardinality_planning",
+        "support_gated_one_hop_expansion",
+        "seed_first_slot_filling",
+        "trigram_dice_retrieval"
+      ],
+      "code_hash": "6dcb5e02e93d673564ffb36edfc095733ceb459a16e30f3fca8f0b685d2aa52b",
+      "slot": "B"
+    }
+  ]
+}

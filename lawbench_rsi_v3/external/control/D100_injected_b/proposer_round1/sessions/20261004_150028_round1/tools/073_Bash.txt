@@ -1,0 +1,23 @@
+Bash [ERROR]
+
+command: python .prototypes/charge_cooccurrence_count_memory.py
+description: Validate agent B mechanisms end to end
+
+--- output ---
+Exit code 1
+PASS  slots expected 1 got 1 :: 指控被告单位某公司、被告人沙某某的行为触犯了《中华人民共和国刑法...
+PASS  slots expected 1 got 1 :: 被告人郭某的行为触犯了《中华人民共和国刑法》××之规定，构成××...
+PASS  slots expected 1 got 1 :: 公诉机关认为，被告人李某的行为已构成××，并提出判处××至一年六...
+PASS  slots expected 2 got 2 :: 事实:被告人以××手段实施××、××行为，触犯了《中华人民共和国...
+PASS  slots expected 2 got 2 :: 对被告人应以××;××追究刑事责任。...
+PASS  slots expected 0 got 0 :: 被告人盗窃路灯电缆线，共盗得电缆线约210米。...
+
+cold-start predict -> '盗窃;诈骗' | examples: 0 | slots: 0 | units: 2
+graph for 受贿: {'滥用职权': 2}
+label counts: {'受贿': 2, '滥用职权': 2, '开设赌场': 1, '赌博': 1}
+under-generation repair -> '受贿' | slots: 2 | units: 1 | seeds: ['受贿', '滥用职权']
+Traceback (most recent call last):
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\.prototypes\charge_cooccurrence_count_memory.py", line 69, in <module>
+    assert ans2 == "受贿;滥用职权", ans2
+           ^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 受贿

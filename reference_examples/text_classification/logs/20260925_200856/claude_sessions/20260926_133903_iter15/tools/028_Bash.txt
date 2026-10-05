@@ -1,0 +1,203 @@
+Bash
+
+command:
+cat > /tmp/proto_label_graph.py << 'PROTO'
+"""
+Prototype: label-name-similarity graph retrieval.
+Build a graph where labels share edges if one name contains the other (substring)
+or they share significant token overlap (>0.5 Jaccard on CJK bigrams or words).
+At predict time: get top similar examples, expand their labels via the graph,
+inject examples of graph-neighbor labels before filling with similarity.
+Works from step 1 (no error history needed). Targets over-generalization errors.
+"""
+import json, re
+from collections import defaultdict
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+_WRAPPER_RE = re.compile(r'^\s*\[[^\]]*\]|<eoa>\s*$|\[[^\]]*\]\s*$', re.IGNORECASE)
+
+def _has_cjk(text):
+    return bool(_CJK_RE.search(text))
+
+def _tokenize_adaptive(text):
+    if _has_cjk(text):
+        t = re.sub(r'\s+', ' ', text.strip())
+        return frozenset(t[i:i+2] for i in range(len(t)-1)) if len(t) >= 2 else frozenset()
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+def _jaccard(a, b):
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+def _normalize(pred):
+    if not pred: return pred
+    cleaned = _WRAPPER_RE.sub('', pred).strip()
+    return cleaned if cleaned else pred
+
+def _label_name_neighbors(label, all_labels, threshold=0.4):
+    """Find labels whose name overlaps significantly with label.
+    Two types of edges:
+    1. Substring: one contains the other
+    2. Token Jaccard >= threshold
+    """
+    neighbors = []
+    l_tok = _tokenize_adaptive(label)
+    for other in all_labels:
+        if other == label:
+            continue
+        o_tok = _tokenize_adaptive(other)
+        # Substring check
+        if label in other or other in label:
+            neighbors.append(other)
+        elif l_tok and o_tok and _jaccard(l_tok, o_tok) >= threshold:
+            neighbors.append(other)
+    return neighbors
+
+# Load LawBench memory
+mem_path = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/LawBench/decayed_confusion_memory/gpt-oss-120b/memory.json'
+mem = json.load(open(mem_path, encoding='utf-8'))
+log_path = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/LawBench/decayed_confusion_memory/gpt-oss-120b/log.jsonl'
+steps = [json.loads(l) for l in open(log_path, encoding='utf-8') if json.loads(l).get('type')=='step']
+
+examples_raw = []
+for ex in mem['examples']:
+    restored = dict(ex)
+    if isinstance(restored.get('tokens'), list):
+        restored['tokens'] = frozenset(restored['tokens'])
+    else:
+        raw_q = restored.get('raw_question', restored.get('input', ''))
+        restored['tokens'] = _tokenize_adaptive(raw_q)
+    examples_raw.append(restored)
+
+# Build label graph
+all_labels = list(set(ex['target'] for ex in examples_raw))
+print(f"Total unique labels: {len(all_labels)}")
+
+# Show the graph neighbors for some known confusors
+for lbl in ['诈骗', '受贿', '故意伤害', '盗窃', '行贿']:
+    neighbors = _label_name_neighbors(lbl, all_labels)
+    print(f"  {repr(lbl)} neighbors ({len(neighbors)}): {[repr(n) for n in neighbors[:8]]}")
+
+# Build graph
+label_graph = {}
+for lbl in all_labels:
+    label_graph[lbl] = _label_name_neighbors(lbl, all_labels)
+
+print(f"\nLabels with at least 1 neighbor: {sum(1 for n in label_graph.values() if n)}/{len(all_labels)}")
+print(f"Labels with 0 neighbors: {sum(1 for n in label_graph.values() if not n)}")
+
+# Simulate: for error cases where pred is substring of gt,
+# does the graph help surface the gt label?
+errors = [s for s in steps if s.get('type')=='step' and not s.get('ok')]
+_WRAPPER_RE2 = re.compile(r'^\s*\[[^\]]*\]|<eoa>\s*$|\[[^\]]*\]\s*$', re.IGNORECASE)
+
+substring_errors = [(s, _normalize(s.get('pred','')), s.get('tgt','')) for s in errors
+                    if _normalize(s.get('pred','')) in s.get('tgt','') and _normalize(s.get('pred',''))]
+
+print(f"\nSubstring-relationship errors: {len(substring_errors)}")
+
+# For these errors: does the graph of pred's neighbors contain gt?
+graph_helped = 0
+for s, pred, gt in substring_errors:
+    # Look up graph neighbors of pred
+    neighbors = label_graph.get(pred, [])
+    if gt in neighbors:
+        graph_helped += 1
+
+print(f"Graph catches gt from pred's neighbors: {graph_helped}/{len(substring_errors)}")
+
+# More importantly: at predict time, do we know pred? No.
+# But we know top-K retrieved example labels. Expand those via graph.
+# Test: does graph expansion of top-3 retrieved labels surface gt more than plain top-8?
+def get_top_k_with_graph(query, pool, label_graph_local, k=8, graph_slots=3):
+    q_tok = _tokenize_adaptive(query)
+    scored = sorted([(_jaccard(q_tok, ex['tokens']), i, ex) for i, ex in enumerate(pool)],
+                    key=lambda x: (-x[0], x[1]))
+    
+    top3_labels = list(dict.fromkeys(ex['target'] for _, _, ex in scored[:5]))[:3]
+    
+    # Expand via graph
+    neighbor_labels = set()
+    for lbl in top3_labels:
+        for nbr in label_graph_local.get(lbl, []):
+            neighbor_labels.add(nbr)
+    neighbor_labels -= set(top3_labels)
+    
+    selected = []
+    used_labels = set()
+    
+    # First: graph neighbors
+    for lbl in list(neighbor_labels)[:graph_slots]:
+        for _, _, ex in scored:
+            if ex['target'] == lbl and lbl not in used_labels:
+                selected.append(ex)
+                used_labels.add(lbl)
+                break
+    
+    # Then fill with similarity
+    for _, _, ex in scored:
+        if len(selected) >= k:
+            break
+        if ex['target'] not in used_labels:
+            selected.append(ex)
+            used_labels.add(ex['target'])
+    
+    return selected
+
+# Evaluate
+flat_hits = 0
+graph_hits = 0
+for s in steps:
+    query = s.get('input_preview', '')
+    target = s.get('tgt', '')
+    top_flat = [ex for _, _, ex in sorted([(_jaccard(_tokenize_adaptive(query), ex['tokens']), i, ex) 
+                                            for i, ex in enumerate(examples_raw)], key=lambda x: (-x[0],x[1]))[:8]]
+    top_graph = get_top_k_with_graph(query, examples_raw, label_graph, k=8, graph_slots=3)
+    if target in [ex['target'] for ex in top_flat]: flat_hits += 1
+    if target in [ex['target'] for ex in top_graph]: graph_hits += 1
+
+total = len(steps)
+print(f"\nTop-8 hit rate (val+train steps):")
+print(f"  Flat: {flat_hits}/{total} = {flat_hits/total*100:.1f}%")
+print(f"  Graph-expanded: {graph_hits}/{total} = {graph_hits/total*100:.1f}%")
+
+# Test the error-only cases
+err_flat = err_graph = 0
+for s in errors:
+    query = s.get('input_preview', '')
+    target = s.get('tgt', '')
+    top_flat = [ex for _, _, ex in sorted([(_jaccard(_tokenize_adaptive(query), ex['tokens']), i, ex) 
+                                            for i, ex in enumerate(examples_raw)], key=lambda x: (-x[0],x[1]))[:8]]
+    top_graph = get_top_k_with_graph(query, examples_raw, label_graph, k=8, graph_slots=3)
+    if target in [ex['target'] for ex in top_flat]: err_flat += 1
+    if target in [ex['target'] for ex in top_graph]: err_graph += 1
+
+print(f"\nError top-8 hit rate:")
+print(f"  Flat: {err_flat}/{len(errors)} = {err_flat/len(errors)*100:.1f}%")
+print(f"  Graph-expanded: {err_graph}/{len(errors)} = {err_graph/len(errors)*100:.1f}%")
+PROTO
+python /tmp/proto_label_graph.py
+
+description: Prototype label-name-similarity graph retrieval on LawBench
+
+--- output ---
+Total unique labels: 143
+  '诈骗' neighbors (13): ["'重大责任事故;诈骗'", "'票据诈骗;信用卡诈骗;合同诈骗'", "'诈骗;聚众扰乱公共场所秩序、交通秩序'", "'信用卡诈骗'", "'诬告陷害;诈骗'", "'贷款诈骗'", "'妨害信用卡管理;诈骗'", "'金融凭证诈骗'"]
+  '受贿' neighbors (4): ["'非国家工作人员受贿'", "'受贿;滥用职权'", "'单位行贿;利用影响力受贿'", "'危险驾驶;单位受贿'"]
+  '故意伤害' neighbors (10): ["'故意伤害;妨害作证'", "'非法转让、倒卖土地使用权;故意伤害'", "'故意伤害;组织、强迫、引诱、容留、介绍卖淫;强迫卖淫'", "'故意伤害;编造、故意传播虚假恐怖信息'", "'故意伤害;非法买卖制毒物品'", "'故意伤害;虐待'", "'故意伤害;窝藏、包庇'", "'故意伤害;绑架;寻衅滋事'"]
+  '盗窃' neighbors (19): ["'走私普通货物、物品;盗窃'", "'破坏易燃易爆设备;盗窃'", "'盗窃;传授犯罪方法'", "'持有、使用假币;盗窃'", "'拐卖妇女、儿童;盗窃'", "'劫持船只、汽车;抢劫;盗窃'", "'盗窃;非法狩猎'", "'盗窃;掩饰、隐瞒犯罪所得、犯罪所得收益'"]
+  '行贿' neighbors (4): ["'对非国家工作人员行贿;对单位行贿'", "'单位行贿;利用影响力受贿'", "'单位行贿'", "'对非国家工作人员行贿'"]
+
+Labels with at least 1 neighbor: 70/143
+Labels with 0 neighbors: 73
+
+Substring-relationship errors: 38
+Graph catches gt from pred's neighbors: 9/38
+
+Top-8 hit rate (val+train steps):
+  Flat: 199/200 = 99.5%
+  Graph-expanded: 199/200 = 99.5%
+
+Error top-8 hit rate:
+  Flat: 145/146 = 99.3%
+  Graph-expanded: 145/146 = 99.3%

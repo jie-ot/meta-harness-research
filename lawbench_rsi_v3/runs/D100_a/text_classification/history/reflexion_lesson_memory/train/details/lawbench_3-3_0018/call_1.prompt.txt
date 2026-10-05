@@ -1,0 +1,36 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the factual description contains multiple distinct illegal actions (e.g., theft of property and illegal harvesting of protected flora or fauna), list every applicable crime separated by semicolon
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+- When the factual narrative describes more than one distinct illegal act that maps to separate statutory offenses, list every applicable charge (separated by semicolons) rather than selecting only the 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:山东省曹县人民检察院指控：
+1、2010年5月23日凌晨，被告人张4某伙同张3某、张1某、杜某、张某甲（均已判刑）驾驶张1某的三轮摩托车在曹县桃源集镇申寨村盗窃该村村民申某价值3000元的蓝色把式“飞彩”牌机动三轮车1辆。
+2、2010年8月10日夜，被告人张4某伙同张2某（已判刑）、张3某、张1某、杜某、张某甲驾驶三轮摩托车在曹县庄寨镇丁寨行政村丁某乙的仓库里盗窃6台“海尔”牌冰箱，拉到张1某家后，6人又返回该仓库盗走5台“海尔”牌冰箱，共计价值27289元。
+3、2010年9月14日凌晨，被告人张4某伙同张3某、张1某、杜某、张某甲、张2某驾驶三轮摩托车在曹县庄寨镇冯寨村冯某乙刨花板厂内盗窃冯某乙价值12500元的机动三轮车、电动三轮车各3辆，之后又盗窃该村村民张某乙家价值2000余元的红色“美的”牌冰箱1台和价值300元的“爱多”牌电动车电瓶1组，共计价值14800元。
+4、2010年10月14日夜，被告人张4某伙同张3某、张1某、杜某、张某甲、张2某驾驶三轮摩托车在曹县庄寨镇某机械厂内盗窃6台型号BX-500-2电焊机，价值9000余元；3辆电动三轮车（其中2辆“大安”牌、1辆“万家福”牌），价值6000余元；2辆电动自行车（1辆蓝色“艾博”牌和1辆红色“王牌”牌），价值4000余元；价值400元的叉车电瓶1块；价值850元的“华丰”牌复合肥5袋和“鲁西”牌尿素2袋；价值400元的电机1台；价值300元的千斤顶2台；共计价值20950元。
+5、2010年10月31日夜，被告人张4某伙同张3某、张1某、杜某、张某甲、张2某在曹县桃源集镇刘某的厂里盗窃刘某、马某、王某的机动三轮车各1辆，共计价值2万余元。
+6、2010年11月17日凌晨，被告人张4某伙同张3某、张1某、杜某、张某甲、张2某驾驶三轮摩托车在曹县韩集镇韩集行政村赵某家盗窃1辆价值2000余元拖拉机头，放在张1某家，6人又到曹县韩集镇曹楼村村民李某家盗窃1辆价值2000余元的“金蛙”牌把式机动三轮车，共计价值4000元。
+7、2013年5月11日凌晨2时许，被告人张4某伙同马谢2某（已判刑）驾驶黑色“雅马哈”牌125型摩托车，到曹县桃源集镇倪寨行政村某木业厂，把院内的狗药死后，用绞钳将大门上的锁绞断，将倪某的1辆红色“建设”牌两轮电动车偷走，价值2000元。
+综上，被告人张4某参与盗窃7次，涉案财物价值92039元。
+公诉机关依据被害人陈述、证人证言、相关书证、鉴定意见、被告人张4某及同案犯供述等证据提出上述指控，认为被告人张4某以非法占有为目的，秘密窃取公民财物，数额巨大，其行为触犯了《中华人民共和国刑法》××之规定，应当以××追究其刑事责任，被告人张4某在××考验期间又犯新罪，应当撤销××，对其所犯二罪予以并罚。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

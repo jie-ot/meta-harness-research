@@ -1,0 +1,72 @@
+{
+  "call_id": "47c2ee9ef18f484ea26bdea1a239b159",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791036778-BaARsw7YsIVudOS10URJ",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The facts describe illegal harvesting of a protected plant species (闽楠) in a nature reserve, which corresponds to the charge of illegal hunting (非法狩猎) as used for protected wildlife and plants in the training data. No other listed companion charge (e.g., 盗窃) is clearly supported by the facts, as the act is primarily illegal harvesting rather than theft of personal property.\",\n  \"final_answer\": \"[罪名]非法狩猎<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine charges. Primary charge likely 非法狩猎? Actually the case is about illegal logging of protected plant. That is illegal hunting? No, it's illegal logging/illegal harvesting of protected plant. The label list includes many possible charges. We need to see which charges apply.\n\nThe facts: illegal harvesting of protected plant (闽楠, a protected species). This is likely \"非法采伐\" or \"非法狩猎\"? The list of possible charges includes many but we need to pick from the set used in examples. The primary charge is likely \"非法狩猎\" per instruction: \"Companion charge check — the primary charge is likely [非法狩猎]. These charges frequently co-occur with it in training; include each ONLY if the case facts support it: - 盗窃 (co-occurred 1x)\". So they suggest primary charge is 非法狩猎, and we may add companion charge 盗窃 if facts support theft. In this case, they are illegally cutting protected trees, not theft of property. It's illegal harvesting of protected wildlife (plants). The charge likely is \"非法狩猎\" (illegal hunting) but that is for wildlife animals. However the plant is protected, maybe the charge is \"非法采伐\" or \"非法狩猎\" used for both? In Chinese law, illegal hunting (非法狩猎) covers wildlife, not plants. For protected plants, there is \"非法采伐、毁坏国家重点保护植物\" maybe \"非法采伐\" or \"非法采伐、毁坏国家重点保护植物\". But the list of possible charges we have from examples includes many but not \"非法采伐\". However we have \"非法狩猎\" used for wildlife. The example of illegal hunting of black water chicken used 非法狩猎. For plants, maybe also considered illegal hunting? Not sure.\n\nThe instruction: \"Companion charge check — the primary charge is likely [非法狩猎]. These charges frequently co-occur with it in training; include each ONLY if the case facts support it: - 盗窃 (co-occurred 1x)\". So we must output primary charge 非法狩猎, and optionally 盗窃 if theft. Here they are taking tree blocks, which is theft of wood? Could be considered theft of property (盗窃) because they are taking tree blocks that belong to forest. But the primary is illegal hunting of protected species. The companion 盗窃 may apply: they illegally took wood, which is theft. However the facts: they illegally harvested protected plant, not necessarily theft of someone else's property, but forest resources are state-owned. Could be considered \"盗伐\" (illegal logging) but not listed. The instruction says only include companion charge if facts support it. Does the case involve theft? They took tree blocks, which is taking state property. That could be considered theft. But the example of illegal hunting of black water chicken didn't include theft. So maybe only primary charge.\n\nThus answer: [罪名]非法狩猎<eoa>\n\nReturn JSON with reasoning and final answer.\n\n",
+          "provider_specific_fields": {
+            "reasoning": "We need to determine charges. Primary charge likely 非法狩猎? Actually the case is about illegal logging of protected plant. That is illegal hunting? No, it's illegal logging/illegal harvesting of protected plant. The label list includes many possible charges. We need to see which charges apply.\n\nThe facts: illegal harvesting of protected plant (闽楠, a protected species). This is likely \"非法采伐\" or \"非法狩猎\"? The list of possible charges includes many but we need to pick from the set used in examples. The primary charge is likely \"非法狩猎\" per instruction: \"Companion charge check — the primary charge is likely [非法狩猎]. These charges frequently co-occur with it in training; include each ONLY if the case facts support it: - 盗窃 (co-occurred 1x)\". So they suggest primary charge is 非法狩猎, and we may add companion charge 盗窃 if facts support theft. In this case, they are illegally cutting protected trees, not theft of property. It's illegal harvesting of protected wildlife (plants). The charge likely is \"非法狩猎\" (illegal hunting) but that is for wildlife animals. However the plant is protected, maybe the charge is \"非法采伐\" or \"非法狩猎\" used for both? In Chinese law, illegal hunting (非法狩猎) covers wildlife, not plants. For protected plants, there is \"非法采伐、毁坏国家重点保护植物\" maybe \"非法采伐\" or \"非法采伐、毁坏国家重点保护植物\". But the list of possible charges we have from examples includes many but not \"非法采伐\". However we have \"非法狩猎\" used for wildlife. The example of illegal hunting of black water chicken used 非法狩猎. For plants, maybe also considered illegal hunting? Not sure.\n\nThe instruction: \"Companion charge check — the primary charge is likely [非法狩猎]. These charges frequently co-occur with it in training; include each ONLY if the case facts support it: - 盗窃 (co-occurred 1x)\". So we must output primary charge 非法狩猎, and optionally 盗窃 if theft. Here they are taking tree blocks, which is theft of wood? Could be considered theft of property (盗窃) because they are taking tree blocks that belong to forest. But the primary is illegal hunting of protected species. The companion 盗窃 may apply: they illegally took wood, which is theft. However the facts: they illegally harvested protected plant, not necessarily theft of someone else's property, but forest resources are state-owned. Could be considered \"盗伐\" (illegal logging) but not listed. The instruction says only include companion charge if facts support it. Does the case involve theft? They took tree blocks, which is taking state property. That could be considered theft. But the example of illegal hunting of black water chicken didn't include theft. So maybe only primary charge.\n\nThus answer: [罪名]非法狩猎<eoa>\n\nReturn JSON with reasoning and final answer.\n\n",
+            "refusal": null,
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine charges. Primary charge likely 非法狩猎? Actually the case is about illegal logging of protected plant. That is illegal hunting? No, it's illegal logging/illegal harvesting of protected plant. The label list includes many possible charges. We need to see which charges apply.\n\nThe facts: illegal harvesting of protected plant (闽楠, a protected species). This is likely \"非法采伐\" or \"非法狩猎\"? The list of possible charges includes many but we need to pick from the set used in examples. The primary charge is likely \"非法狩猎\" per instruction: \"Companion charge check — the primary charge is likely [非法狩猎]. These charges frequently co-occur with it in training; include each ONLY if the case facts support it: - 盗窃 (co-occurred 1x)\". So they suggest primary charge is 非法狩猎, and we may add companion charge 盗窃 if facts support theft. In this case, they are illegally cutting protected trees, not theft of property. It's illegal harvesting of protected wildlife (plants). The charge likely is \"非法狩猎\" (illegal hunting) but that is for wildlife animals. However the plant is protected, maybe the charge is \"非法采伐\" or \"非法狩猎\" used for both? In Chinese law, illegal hunting (非法狩猎) covers wildlife, not plants. For protected plants, there is \"非法采伐、毁坏国家重点保护植物\" maybe \"非法采伐\" or \"非法采伐、毁坏国家重点保护植物\". But the list of possible charges we have from examples includes many but not \"非法采伐\". However we have \"非法狩猎\" used for wildlife. The example of illegal hunting of black water chicken used 非法狩猎. For plants, maybe also considered illegal hunting? Not sure.\n\nThe instruction: \"Companion charge check — the primary charge is likely [非法狩猎]. These charges frequently co-occur with it in training; include each ONLY if the case facts support it: - 盗窃 (co-occurred 1x)\". So we must output primary charge 非法狩猎, and optionally 盗窃 if theft. Here they are taking tree blocks, which is theft of wood? Could be considered theft of property (盗窃) because they are taking tree blocks that belong to forest. But the primary is illegal hunting of protected species. The companion 盗窃 may apply: they illegally took wood, which is theft. However the facts: they illegally harvested protected plant, not necessarily theft of someone else's property, but forest resources are state-owned. Could be considered \"盗伐\" (illegal logging) but not listed. The instruction says only include companion charge if facts support it. Does the case involve theft? They took tree blocks, which is taking state property. That could be considered theft. But the example of illegal hunting of black water chicken didn't include theft. So maybe only primary charge.\n\nThus answer: [罪名]非法狩猎<eoa>\n\nReturn JSON with reasoning and final answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to determine charges. Primary charge likely 非法狩猎? Actually the case is about illegal logging of protected plant. That is illegal hunting? No, it's illegal logging/illegal harvesting of protected plant. The label list includes many possible charges. We need to see which charges apply.\n\nThe facts: illegal harvesting of protected plant (闽楠, a protected species). This is likely \"非法采伐\" or \"非法狩猎\"? The list of possible charges includes many but we need to pick from the set used in examples. The primary charge is likely \"非法狩猎\" per instruction: \"Companion charge check — the primary charge is likely [非法狩猎]. These charges frequently co-occur with it in training; include each ONLY if the case facts support it: - 盗窃 (co-occurred 1x)\". So they suggest primary charge is 非法狩猎, and we may add companion charge 盗窃 if facts support theft. In this case, they are illegally cutting protected trees, not theft of property. It's illegal harvesting of protected wildlife (plants). The charge likely is \"非法狩猎\" (illegal hunting) but that is for wildlife animals. However the plant is protected, maybe the charge is \"非法采伐\" or \"非法狩猎\" used for both? In Chinese law, illegal hunting (非法狩猎) covers wildlife, not plants. For protected plants, there is \"非法采伐、毁坏国家重点保护植物\" maybe \"非法采伐\" or \"非法采伐、毁坏国家重点保护植物\". But the list of possible charges we have from examples includes many but not \"非法采伐\". However we have \"非法狩猎\" used for wildlife. The example of illegal hunting of black water chicken used 非法狩猎. For plants, maybe also considered illegal hunting? Not sure.\n\nThe instruction: \"Companion charge check — the primary charge is likely [非法狩猎]. These charges frequently co-occur with it in training; include each ONLY if the case facts support it: - 盗窃 (co-occurred 1x)\". So we must output primary charge 非法狩猎, and optionally 盗窃 if theft. Here they are taking tree blocks, which is theft of wood? Could be considered theft of property (盗窃) because they are taking tree blocks that belong to forest. But the primary is illegal hunting of protected species. The companion 盗窃 may apply: they illegally took wood, which is theft. However the facts: they illegally harvested protected plant, not necessarily theft of someone else's property, but forest resources are state-owned. Could be considered \"盗伐\" (illegal logging) but not listed. The instruction says only include companion charge if facts support it. Does the case involve theft? They took tree blocks, which is taking state property. That could be considered theft. But the example of illegal hunting of black water chicken didn't include theft. So maybe only primary charge.\n\nThus answer: [罪名]非法狩猎<eoa>\n\nReturn JSON with reasoning and final answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 774,
+      "prompt_tokens": 24766,
+      "total_tokens": 25540,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00106108,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00106108,
+        "upstream_inference_prompt_cost": 0.000916342,
+        "upstream_inference_completions_cost": 0.000144738
+      }
+    }
+  },
+  "raw_response_missing": false
+}

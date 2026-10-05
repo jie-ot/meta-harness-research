@@ -1,0 +1,56 @@
+Bash
+
+command:
+cd "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples" && uv run python text_classification/proto_error_correction.py
+
+description: Run confusion-guided disambiguation prototype
+
+--- output ---
+Top similarity scores:
+  0.125  Oxidation: Context: reaction Oxidation.
+Input: MnO2_substrate
+  0.125  Protections: Context: reaction Protections.
+Input: BOC_amino
+  0.111  Protections: Context: reaction Protections.
+Input: COC(=O)NC
+  0.000  Reductions: Context: reaction Reductions.
+Input: CC=O
+
+Candidate labels from similarity: ['Oxidation', 'Protections', 'Protections']
+  Confusion: Oxidation confused with Protections (1x)
+  Confusion: Protections confused with Oxidation (3x)
+  Confusion: Protections confused with Oxidation (3x)
+
+Disambiguation targets needed: {'Protections', 'Oxidation'}
+Disambiguation examples found:
+  Protections: Context: reaction Protections.
+Input: COC(=O)NC
+  Oxidation: Context: reaction Oxidation.
+Input: CC(=O)O
+  Protections: Context: reaction Protections.
+Input: BOC_amino
+  Oxidation: Context: reaction Oxidation.
+Input: MnO2_substrate
+
+=== Variant A prompt structure ===
+Section 1 - Disambiguation (avoid these confusions):
+  Q: Context: reaction Protections.
+Input: COC(=O)NC
+  A: Protections
+  Q: Context: reaction Oxidation.
+Input: CC(=O)O
+  A: Oxidation
+Section 2 - Similar examples:
+  Q: Context: reaction Oxidation.
+Input: MnO2_substrate
+  A: Oxidation
+  Q: Context: reaction Protections.
+Input: BOC_amino
+  A: Protections
+  Q: Context: reaction Protections.
+Input: COC(=O)NC
+  A: Protections
+
+PROTOTYPE PASSED: confusion-driven disambiguation mechanism is sound.
+Novel mechanism: confusion matrix drives which examples surface, not just similarity.
+Shell cwd was reset to D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification

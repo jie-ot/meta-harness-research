@@ -1,0 +1,265 @@
+Read: agents\cluster_confusion_memory.py
+
+
+--- output ---
+1	"""Cluster Confusion Memory.
+2	
+3	Extends adaptive_tokenizer_confusion_memory with a transitive confusion-cluster
+4	graph. The frontier system only looks at direct confusions (predicted→actual
+5	one hop). This system computes connected components of the confusion graph at
+6	retrieval time and guarantees one representative per *cluster member*, not just
+7	per directly-confused label.
+8	
+9	Mechanism:
+10	1. Same adaptive tokenizer as the frontier.
+11	2. During learning, confusion edges are stored as usual: predicted→actual.
+12	3. At predict time, build a graph from all confusion edges (both directions),
+13	   compute the connected component containing any top-3 candidate label, and
+14	   use ALL members of that cluster as the disambiguation target set.
+15	4. Select the most query-similar example for each cluster member (one pass,
+16	   similarity-ranked), then fill remaining budget with regular examples.
+17	
+18	The hypothesis: on tasks with chained label confusions (A→B→C where the model
+19	also confuses B with C), the frontier misses C entirely. Surfacing the whole
+20	cluster gives the model examples of all transitively-confused boundaries.
+21	"""
+22	
+23	import json
+24	import re
+25	from collections import defaultdict, deque
+26	from typing import Any
+27	
+28	from ..llm import LLMCallable
+29	from ..memory_system import MemorySystem, extract_json_field
+30	
+31	PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+32	
+33	{examples_section}
+34	
+35	**Problem:**
+36	{input}
+37	
+38	**Instructions:**
+39	- Follow the patterns shown in the examples above
+40	- Respond in JSON format
+41	
+42	{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+43	
+44	MAX_CHARS = 30000
+45	_TOP_CANDIDATE_LABELS = 3
+46	# Max cluster size to surface — avoids flooding context with one giant cluster
+47	_MAX_CLUSTER_MEMBERS = 8
+48	
+49	# CJK Unicode ranges: CJK Unified, Hiragana, Katakana, Fullwidth/Halfwidth
+50	_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+51	
+52	
+53	def _has_cjk(text: str) -> bool:
+54	    return bool(_CJK_RE.search(text))
+55	
+56	
+57	def _tokenize_word(text: str) -> frozenset:
+58	    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+59	
+60	
+61	def _tokenize_bigram(text: str) -> frozenset:
+62	    t = re.sub(r'\s+', ' ', text.strip())
+63	    if len(t) < 2:
+64	        return frozenset([t]) if t else frozenset()
+65	    return frozenset(t[i:i + 2] for i in range(len(t) - 1))
+66	
+67	
+68	def _tokenize_adaptive(text: str) -> frozenset:
+69	    """Route to bigrams for CJK text, word tokens for ASCII/Latin."""
+70	    return _tokenize_bigram(text) if _has_cjk(text) else _tokenize_word(text)
+71	
+72	
+73	def _jaccard(a: frozenset, b: frozenset) -> float:
+74	    if not a and not b:
+75	        return 0.0
+76	    return len(a & b) / len(a | b)
+77	
+78	
+79	def _bfs_cluster(seed_labels: set[str],
+80	                 adj: dict[str, set[str]],
+81	                 max_size: int) -> set[str]:
+82	    """BFS from any seed label over the undirected confusion graph.
+83	
+84	    Returns the union of connected-component members reachable from any seed,
+85	    capped at max_size by priority-queue ordering (seeds first, then by
+86	    discovery order).
+87	    """
+88	    visited: set[str] = set()
+89	    queue: deque[str] = deque()
+90	    for lbl in seed_labels:
+91	        if lbl in adj:
+92	            visited.add(lbl)
+93	            queue.append(lbl)
+94	    while queue and len(visited) < max_size:
+95	        node = queue.popleft()
+96	        for neighbour in adj.get(node, []):
+97	            if neighbour not in visited and len(visited) < max_size:
+98	                visited.add(neighbour)
+99	                queue.append(neighbour)
+100	    return visited
+101	
+102	
+103	class ClusterConfusionMemory(MemorySystem):
+104	    """Confusion-cluster retrieval via transitive graph expansion.
+105	
+106	    The frontier system only disambiguates direct one-hop confusions (A was
+107	    predicted when B was correct). This system builds an undirected confusion
+108	    graph (edges A-B whenever A↔B appear in either direction of the confusion
+109	    matrix) and at retrieval time expands the top candidate labels to their
+110	    full connected component. One representative example per cluster member is
+111	    injected before similarity-ranked fill, surfacing the entire boundary
+112	    neighbourhood rather than just the direct confusors.
+113	    """
+114	
+115	    def __init__(self, llm: LLMCallable):
+116	        super().__init__(llm)
+117	        self.examples: list[dict[str, Any]] = []
+118	        # confusion[predicted][actual] = count
+119	        self.confusion: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+120	
+121	    def _scored(self, query: str) -> list[tuple[float, int, dict]]:
+122	        q_tok = _tokenize_adaptive(query)
+123	        result = [
+124	            (_jaccard(q_tok, ex["tokens"]), idx, ex)
+125	            for idx, ex in enumerate(self.examples)
+126	        ]
+127	        result.sort(key=lambda x: (x[0], x[1]), reverse=True)
+128	        return result
+129	
+130	    def _build_adj(self) -> dict[str, set[str]]:
+131	        """Build undirected adjacency from confusion matrix (both directions)."""
+132	        adj: dict[str, set[str]] = defaultdict(set)
+133	        for pred, actuals in self.confusion.items():
+134	            for actual in actuals:
+135	                if pred != actual:
+136	                    adj[pred].add(actual)
+137	                    adj[actual].add(pred)
+138	        return adj
+139	
+140	    def _cluster_for(self, labels: list[str]) -> set[str]:
+141	        """Return the confusion-graph cluster containing any of the given labels."""
+142	        adj = self._build_adj()
+143	        seeds = set(labels) & set(adj.keys())
+144	        if not seeds:
+145	            return set()
+146	        return _bfs_cluster(seeds, adj, _MAX_CLUSTER_MEMBERS)
+147	
+148	    def _build_parts(self, query: str) -> list[str]:
+149	        if not self.examples:
+150	            return []
+151	
+152	        ranked = self._scored(query)
+153	        top_labels = [ex["target"] for _, _, ex in ranked[:_TOP_CANDIDATE_LABELS]]
+154	
+155	        # Expand top candidate labels to their full confusion cluster
+156	        cluster = self._cluster_for(top_labels)
+157	        # Exclude the top candidate labels themselves — they are already well
+158	        # represented by the similarity-ranked fill; we want the *other* cluster
+159	        # members that the frontier system would miss
+160	        extra_labels = cluster - set(top_labels)
+161	
+162	        parts: list[str] = []
+163	        used_indices: set[int] = set()
+164	        total_chars = 0
+165	
+166	        def try_add(idx: int, ex: dict) -> bool:
+167	            nonlocal total_chars
+168	            if idx in used_indices:
+169	                return False
+170	            q = ex.get("raw_question", ex["input"])
+171	            part = f"Q: {q}\nA: {ex['target']}"
+172	            if total_chars + len(part) + 2 > MAX_CHARS:
+173	                return False
+174	            parts.append(part)
+175	            used_indices.add(idx)
+176	            total_chars += len(part) + 2
+177	            return True
+178	
+179	        # Phase 1: one best-matching example per extra cluster member
+180	        if extra_labels:
+181	            per_label: dict[str, tuple[float, int, dict] | None] = {lbl: None for lbl in extra_labels}
+182	            for score, idx, ex in ranked:
+183	                lbl = ex["target"]
+184	                if lbl in per_label and per_label[lbl] is None:
+185	                    per_label[lbl] = (score, idx, ex)
+186	                if all(v is not None for v in per_label.values()):
+187	                    break
+188	            # Inject cluster representatives ordered by similarity
+189	            cluster_reps = sorted(
+190	                (v for v in per_label.values() if v is not None),
+191	                key=lambda t: (-t[0], t[1])
+192	            )
+193	            for score, idx, ex in cluster_reps:
+194	                try_add(idx, ex)
+195	
+196	        # Phase 2: similarity-ranked fill for remaining budget
+197	        for _, idx, ex in ranked:
+198	            if total_chars >= MAX_CHARS:
+199	                break
+200	            try_add(idx, ex)
+201	
+202	        return parts
+203	
+204	    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+205	        parts = self._build_parts(input)
+206	        examples_section = "\n\n".join(parts)
+207	        prompt = PROMPT_TEMPLATE.format(
+208	            examples_section=examples_section,
+209	            input=input,
+210	        )
+211	        response = self.call_llm(prompt)
+212	        answer = extract_json_field(response, "final_answer")
+213	        return answer, {
+214	            "full_response": response,
+215	            "num_examples": len(self.examples),
+216	            "num_selected": len(parts),
+217	            "num_confusion_pairs": sum(len(v) for v in self.confusion.values()),
+218	        }
+219	
+220	    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+221	        for r in batch_results:
+222	            raw_q = r.get("raw_question", r["input"])
+223	            ex: dict[str, Any] = {
+224	                "input": r["input"],
+225	                "target": r["ground_truth"],
+226	                "tokens": _tokenize_adaptive(raw_q),
+227	            }
+228	            if "raw_question" in r:
+229	                ex["raw_question"] = r["raw_question"]
+230	            self.examples.append(ex)
+231	
+232	            if not r.get("was_correct", True):
+233	                pred = r.get("prediction", "")
+234	                gt = r["ground_truth"]
+235	                if pred and pred != gt:
+236	                    self.confusion[pred][gt] += 1
+237	
+238	    def get_state(self) -> str:
+239	        serialisable = [
+240	            {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+241	            for ex in self.examples
+242	        ]
+243	        confusion_plain = {k: dict(v) for k, v in self.confusion.items()}
+244	        return json.dumps({"examples": serialisable, "confusion": confusion_plain}, indent=2)
+245	
+246	    def set_state(self, state: str) -> None:
+247	        data = json.loads(state)
+248	        self.examples = []
+249	        for ex in data.get("examples", []):
+250	            restored = dict(ex)
+251	            if "tokens" in restored and isinstance(restored["tokens"], list):
+252	                restored["tokens"] = frozenset(restored["tokens"])
+253	            else:
+254	                raw_q = restored.get("raw_question", restored.get("input", ""))
+255	                restored["tokens"] = _tokenize_adaptive(raw_q)
+256	            self.examples.append(restored)
+257	        self.confusion = defaultdict(lambda: defaultdict(int))
+258	        for pred, actuals in data.get("confusion", {}).items():
+259	            for actual, cnt in actuals.items():
+260	                self.confusion[pred][actual] = cnt
+261	

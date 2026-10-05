@@ -1,0 +1,72 @@
+{
+  "call_id": "952c06b8aa8e42eeac300aeb5771ef07",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017838-XjCmDHw9CLJPA1D3ngSw",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the factual narrative describes more than one distinct illegal act that maps to separate statutory offenses, list every applicable charge (separated by semicolons) rather than selecting only the most obvious one.\",\n  \"keywords\": [\n    \"拐卖妇女、儿童\",\n    \"盗窃\",\n    \"不备之机\",\n    \"被害人\",\n    \"搭乘\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": " need to produce a JSON with a rule that prevents misclassifying when there are multiple crimes like \"拐卖妇女、儿童;盗窃\". The AI incorrectly gave only theft. The rule should be: when facts mention multiple distinct criminal conduct (e.g., kidnapping, trafficking, etc.) include all applicable charges. Keywords: \"拐卖\", \"妇女\", \"儿童\", \"盗窃\", \"摄像机\", \"被害人\", \"搭乘\", \"不备之机\". But need 3-6 keyword phrases that identify when rule applies. Probably phrases indicating multiple distinct crimes: \"拐卖妇女、儿童\", \"强迫\", \"贩卖\", \"盗窃\". Provide rule: If the factual description contains separate illegal acts that correspond to different statutory offenses, list each offense separated by semicolon. Provide keywords: \"拐卖妇女、儿童\", \"盗窃\", \"被害人\", \"不备之机\", \"搭乘\". Let's craft JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": " need to produce a JSON with a rule that prevents misclassifying when there are multiple crimes like \"拐卖妇女、儿童;盗窃\". The AI incorrectly gave only theft. The rule should be: when facts mention multiple distinct criminal conduct (e.g., kidnapping, trafficking, etc.) include all applicable charges. Keywords: \"拐卖\", \"妇女\", \"儿童\", \"盗窃\", \"摄像机\", \"被害人\", \"搭乘\", \"不备之机\". But need 3-6 keyword phrases that identify when rule applies. Probably phrases indicating multiple distinct crimes: \"拐卖妇女、儿童\", \"强迫\", \"贩卖\", \"盗窃\". Provide rule: If the factual description contains separate illegal acts that correspond to different statutory offenses, list each offense separated by semicolon. Provide keywords: \"拐卖妇女、儿童\", \"盗窃\", \"被害人\", \"不备之机\", \"搭乘\". Let's craft JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": " need to produce a JSON with a rule that prevents misclassifying when there are multiple crimes like \"拐卖妇女、儿童;盗窃\". The AI incorrectly gave only theft. The rule should be: when facts mention multiple distinct criminal conduct (e.g., kidnapping, trafficking, etc.) include all applicable charges. Keywords: \"拐卖\", \"妇女\", \"儿童\", \"盗窃\", \"摄像机\", \"被害人\", \"搭乘\", \"不备之机\". But need 3-6 keyword phrases that identify when rule applies. Probably phrases indicating multiple distinct crimes: \"拐卖妇女、儿童\", \"强迫\", \"贩卖\", \"盗窃\". Provide rule: If the factual description contains separate illegal acts that correspond to different statutory offenses, list each offense separated by semicolon. Provide keywords: \"拐卖妇女、儿童\", \"盗窃\", \"被害人\", \"不备之机\", \"搭乘\". Let's craft JSON.",
+            "reasoning_content": " need to produce a JSON with a rule that prevents misclassifying when there are multiple crimes like \"拐卖妇女、儿童;盗窃\". The AI incorrectly gave only theft. The rule should be: when facts mention multiple distinct criminal conduct (e.g., kidnapping, trafficking, etc.) include all applicable charges. Keywords: \"拐卖\", \"妇女\", \"儿童\", \"盗窃\", \"摄像机\", \"被害人\", \"搭乘\", \"不备之机\". But need 3-6 keyword phrases that identify when rule applies. Probably phrases indicating multiple distinct crimes: \"拐卖妇女、儿童\", \"强迫\", \"贩卖\", \"盗窃\". Provide rule: If the factual description contains separate illegal acts that correspond to different statutory offenses, list each offense separated by semicolon. Provide keywords: \"拐卖妇女、儿童\", \"盗窃\", \"被害人\", \"不备之机\", \"搭乘\". Let's craft JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 305,
+      "prompt_tokens": 423,
+      "total_tokens": 728,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0001948,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0001948,
+        "upstream_inference_prompt_cost": 4.23e-05,
+        "upstream_inference_completions_cost": 0.0001525
+      }
+    }
+  },
+  "raw_response_missing": false
+}

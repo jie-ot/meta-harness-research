@@ -1,0 +1,22 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:洋县人民检察院指控，2016年4月2日15时许，被告人潘某某在为村民锄地时，将路过的幼儿张某某抱走藏匿，欲偷走自己收养。当晚潘某某抱着张某某沿公路逃跑时被抓获。经鉴定，潘某某患精神分裂症，犯罪时系部分刑事责任能力。认定事实的证据有书证，现场勘验、辨认笔录及照片，鉴定意见、证人证言、被告人供述与辩解等，被告人行为已构成××，提请依法判处。
+
+
+Wrong prediction: [罪名]拐骗儿童罪<eoa>
+Correct answer: 拐骗儿童
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

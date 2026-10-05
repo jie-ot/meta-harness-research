@@ -1,0 +1,72 @@
+{
+  "call_id": "ffd594bd98e5428ab6fb0fa102b6c844",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791014078-DWccJpddsqE83qKGVwFJ",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant committed two distinct crimes. First, he intentionally set fire to a warehouse, causing significant property damage, which constitutes the crime of arson (放火). Second, he used a knife to threaten a taxi driver and forcibly took cash, which meets the elements of robbery (抢劫) rather than simple snatching (抢夺) because a weapon was used and there was a threat of violence.\",\n  \"final_answer\": \"[罪名]放火;抢劫<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate charges.\n\nTwo separate incidents:\n\n1) Fire set in warehouse causing 50万元 loss. The act: intentionally set fire (using lighter) to cause damage. This is arson? The correction lessons: \"失火\" vs \"放火\". The facts: He intentionally set fire, with intent to burn the warehouse. That's arson (放火). The correction says: \"失火\" is for accidental fire without intent. Here he had intent to set fire, so it's \"放火\". However the label list includes \"放火\"? In earlier examples, they used \"放火\" as label for arson. Yes, example: \"吴某...点燃...构成××\" answer was \"放火\". So first charge: 放火.\n\n2) Robbery/robbery? He used a knife to threaten driver, took cash 137元. That's抢劫? The difference between 抢夺 and 抢劫: 抢夺 is taking property by force against a person who is not resisting? Actually Chinese law: 抢夺 is taking property by force against a person who is not resisting, or by sudden assault. 抢劫 is taking property by force with threat of violence, often with weapon, and may cause serious injury. Here he used a knife, threatened, took cash. That's 抢劫 (robbery). In earlier examples, they used 抢夺 for taking bag with force. For knife threat, likely 抢劫. The example: \"胡某驾驶摩托车...抢走钱包\" answer was 抢夺. That was taking wallet with force but not weapon. Here weapon and threat, so 抢劫. The label list includes \"抢劫\"? Not in examples but likely. However we need to see if label list includes \"抢劫\". The correction lessons didn't mention but we can assume it's a valid label. The answer format: multiple labels separated by semicolon.\n\nThus final answer: [罪名]放火;抢劫<eoa>\n\nCheck if any other charges: maybe also \"非法占有\" but that's part of robbery. So final.\n\nReturn JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate charges.\n\nTwo separate incidents:\n\n1) Fire set in warehouse causing 50万元 loss. The act: intentionally set fire (using lighter) to cause damage. This is arson? The correction lessons: \"失火\" vs \"放火\". The facts: He intentionally set fire, with intent to burn the warehouse. That's arson (放火). The correction says: \"失火\" is for accidental fire without intent. Here he had intent to set fire, so it's \"放火\". However the label list includes \"放火\"? In earlier examples, they used \"放火\" as label for arson. Yes, example: \"吴某...点燃...构成××\" answer was \"放火\". So first charge: 放火.\n\n2) Robbery/robbery? He used a knife to threaten driver, took cash 137元. That's抢劫? The difference between 抢夺 and 抢劫: 抢夺 is taking property by force against a person who is not resisting? Actually Chinese law: 抢夺 is taking property by force against a person who is not resisting, or by sudden assault. 抢劫 is taking property by force with threat of violence, often with weapon, and may cause serious injury. Here he used a knife, threatened, took cash. That's 抢劫 (robbery). In earlier examples, they used 抢夺 for taking bag with force. For knife threat, likely 抢劫. The example: \"胡某驾驶摩托车...抢走钱包\" answer was 抢夺. That was taking wallet with force but not weapon. Here weapon and threat, so 抢劫. The label list includes \"抢劫\"? Not in examples but likely. However we need to see if label list includes \"抢劫\". The correction lessons didn't mention but we can assume it's a valid label. The answer format: multiple labels separated by semicolon.\n\nThus final answer: [罪名]放火;抢劫<eoa>\n\nCheck if any other charges: maybe also \"非法占有\" but that's part of robbery. So final.\n\nReturn JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to determine appropriate charges.\n\nTwo separate incidents:\n\n1) Fire set in warehouse causing 50万元 loss. The act: intentionally set fire (using lighter) to cause damage. This is arson? The correction lessons: \"失火\" vs \"放火\". The facts: He intentionally set fire, with intent to burn the warehouse. That's arson (放火). The correction says: \"失火\" is for accidental fire without intent. Here he had intent to set fire, so it's \"放火\". However the label list includes \"放火\"? In earlier examples, they used \"放火\" as label for arson. Yes, example: \"吴某...点燃...构成××\" answer was \"放火\". So first charge: 放火.\n\n2) Robbery/robbery? He used a knife to threaten driver, took cash 137元. That's抢劫? The difference between 抢夺 and 抢劫: 抢夺 is taking property by force against a person who is not resisting? Actually Chinese law: 抢夺 is taking property by force against a person who is not resisting, or by sudden assault. 抢劫 is taking property by force with threat of violence, often with weapon, and may cause serious injury. Here he used a knife, threatened, took cash. That's 抢劫 (robbery). In earlier examples, they used 抢夺 for taking bag with force. For knife threat, likely 抢劫. The example: \"胡某驾驶摩托车...抢走钱包\" answer was 抢夺. That was taking wallet with force but not weapon. Here weapon and threat, so 抢劫. The label list includes \"抢劫\"? Not in examples but likely. However we need to see if label list includes \"抢劫\". The correction lessons didn't mention but we can assume it's a valid label. The answer format: multiple labels separated by semicolon.\n\nThus final answer: [罪名]放火;抢劫<eoa>\n\nCheck if any other charges: maybe also \"非法占有\" but that's part of robbery. So final.\n\nReturn JSON with reasoning and final answer.",
+            "reasoning_content": "We need to determine appropriate charges.\n\nTwo separate incidents:\n\n1) Fire set in warehouse causing 50万元 loss. The act: intentionally set fire (using lighter) to cause damage. This is arson? The correction lessons: \"失火\" vs \"放火\". The facts: He intentionally set fire, with intent to burn the warehouse. That's arson (放火). The correction says: \"失火\" is for accidental fire without intent. Here he had intent to set fire, so it's \"放火\". However the label list includes \"放火\"? In earlier examples, they used \"放火\" as label for arson. Yes, example: \"吴某...点燃...构成××\" answer was \"放火\". So first charge: 放火.\n\n2) Robbery/robbery? He used a knife to threaten driver, took cash 137元. That's抢劫? The difference between 抢夺 and 抢劫: 抢夺 is taking property by force against a person who is not resisting? Actually Chinese law: 抢夺 is taking property by force against a person who is not resisting, or by sudden assault. 抢劫 is taking property by force with threat of violence, often with weapon, and may cause serious injury. Here he used a knife, threatened, took cash. That's 抢劫 (robbery). In earlier examples, they used 抢夺 for taking bag with force. For knife threat, likely 抢劫. The example: \"胡某驾驶摩托车...抢走钱包\" answer was 抢夺. That was taking wallet with force but not weapon. Here weapon and threat, so 抢劫. The label list includes \"抢劫\"? Not in examples but likely. However we need to see if label list includes \"抢劫\". The correction lessons didn't mention but we can assume it's a valid label. The answer format: multiple labels separated by semicolon.\n\nThus final answer: [罪名]放火;抢劫<eoa>\n\nCheck if any other charges: maybe also \"非法占有\" but that's part of robbery. So final.\n\nReturn JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 572,
+      "prompt_tokens": 27733,
+      "total_tokens": 28305,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 483,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 96,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00152965,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00152965,
+        "upstream_inference_prompt_cost": 0.00138665,
+        "upstream_inference_completions_cost": 0.000143
+      }
+    }
+  },
+  "raw_response_missing": false
+}

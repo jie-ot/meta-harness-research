@@ -1,0 +1,29 @@
+Write: logs\20260925_200856\pending_eval.json
+
+content:
+{
+  "iteration": 19,
+  "candidates": [
+    {
+      "name": "symmetric_confusion_memory",
+      "file": "agents/symmetric_confusion_memory.py",
+      "hypothesis": "Adding a reverse confusion edge (gt→pred at 0.5 weight) alongside the forward edge (pred→gt at 1.0) will outperform decayed_confusion_memory because the disambiguation phase looks up confusion partners by top candidate labels drawn from the example pool — which are ground-truth labels, not raw predictions. Without reverse edges the phase fires on only 21/200 steps; with reverse edges it fires on 170/200 steps, an 8x coverage increase that allows the phase to surface boundary examples on the vast majority of queries rather than almost never.",
+      "axis": "exploitation",
+      "base_system": "decayed_confusion_memory",
+      "components": ["symmetric_confusion_edges", "reverse_edge_half_weight", "decay", "prediction_normalization", "adaptive_tokenizer", "learning_strategy_axis"]
+    },
+    {
+      "name": "per_label_recent_memory",
+      "file": "agents/multi_window_retrieval_memory.py",
+      "hypothesis": "Replacing the unbounded global example pool with a per-label FIFO of fixed size K=2 will outperform decayed_confusion_memory on tasks with large label spaces, because the global pool after many training steps is dominated by frequent or early-seen labels — rare or late-seen labels may have only 1 example each buried deep in a 200+ item list. A per-label deque of K=2 caps pool size at (distinct_labels × 2), guarantees every seen label is always represented with its freshest examples, and eliminates the frequency and recency bias that the global pool accumulates over training.",
+      "axis": "exploration",
+      "base_system": "decayed_confusion_memory",
+      "components": ["per_label_fifo_pool", "bounded_pool_size", "freshness_guarantee", "coverage_guarantee", "decay", "prediction_normalization", "adaptive_tokenizer", "memory_sizing_axis", "selection_structure_axis"]
+    }
+  ]
+}
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\pending_eval.json (file state is current in your context — no need to Read it back)

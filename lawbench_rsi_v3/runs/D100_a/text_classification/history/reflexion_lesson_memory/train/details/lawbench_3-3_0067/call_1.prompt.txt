@@ -1,0 +1,43 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the case facts explicitly describe separate actions of selling, buying, or transporting counterfeit currency, label each distinct offense (e.g., 出售假币, 购买假币, 运输假币) rather than using a generic term
+- If the facts describe the defendant soliciting money from multiple individuals by promising high returns or interest, using false or fabricated business activities, and the scheme involves collective 
+- When the factual description contains multiple distinct illegal actions (e.g., theft of property and illegal harvesting of protected flora or fauna), list every applicable crime separated by semicolon
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:台州市椒江区人民检察院指控：2006年至2012年间，被告人徐某甲明知没有偿还能力，仍以“兄弟徐某乙承包工地投标需要资金周转”、“徐某乙工地需要资金购买材料”、“自己经商需要资金周转”等名义，并承诺支付月利息1%-7.5%不等为诱饵，骗得丁某等13名共计人民币436.5万元。具体如下：
+1．2006至2007年间，被告人徐某甲以“徐某乙承包工地投标需要资金周转”、“徐某乙工地需要资金购买材料”为由，以月息1%从徐某戊处骗得人民币20万元。
+2．2011年，被告人徐某甲以“徐某乙要投标工地”为由，以月息2.5%从陶某处骗得人民币57万元。
+3．2011年1月至2012年12月间，被告人徐某甲以“徐某乙生意上需要资金周转”为由，以月息2%至2.5%从陈某处骗得人民币85.5万元。
+4．2011年11月至2012年11月间，被告人徐某甲以“徐某乙要投标工程需要资金周转”为由，以月息1.5%从谷某处骗得人民币19万元。
+5．2011年年底至2012年12月间，被告人徐某甲以“其支付店里工人工资”、“其生意需要资金购买涂料”、“徐某乙工地需要资金周转”为由，以月息6%从王某处骗得人民币109.4万元。
+6．2011年12月1日及2012年5月12日，被告人徐某甲以“徐某乙承包的工地需要资金”为由，以月息1.5%从毛某处共计骗得人民币7万元。
+7．2012年1月20日至12月间，被告人徐某甲以“徐某乙承办工地需要资金”为由，以月息1%从周某乙处骗得人民币20万元。
+8．2012年7月11日至12月间，被告人徐某甲以“徐某乙承办工地需要资金”、“其生意需要资金周转”为由，以月息1.5%从徐某己处骗得人民币27.6万元。
+9．2012年7月21日至12月间，被告人徐某甲以“徐某乙工地需要资金周转”、“徐某乙工地投标需要资金”、“其生意需要资金周转”等为由，以月息1.5%从徐某丁处骗得共计人民币56万元。
+10．2012年11月12日及11月26日，被告人徐某甲以“徐某乙承办工地需要资金”为由，以月息1.5%从邬某处骗得人民币共计8万元。
+11．2012年11月、12月左右，被告人徐某甲以“生意需要资金周转”为由，从罗某处骗得人民币4万元。
+12．2012年12月，被告人徐某甲以“生意需要资金周转”为由，以月息7.5%从周某甲处骗得人民币15万元。
+13．2012年12月15日，被告人徐某甲以“徐某乙承办工地需要资金”为由，以月息1.5%从丁某处骗得人民币8万元。
+2012年12月下旬，被告人徐某甲因无力偿还债务，遂将手机关机并逃至沈阳等地以躲避债务。2014年7月18日，被告人徐某甲至公安机关投案，到案后，退出人民币10万元。
+对指控的事实，公诉人当庭宣读和出示了下列证据：1.扣押物品清单、借条、银行账户交易明细单、户籍证明等；2.证人黄某、徐某乙的证言及自动投案的证明；3.被害人丁某、周某甲、王某、徐某丁、邬某、陶某、徐某戊、谷某、罗某、陈某、徐某己、毛某、周某乙等人的陈述；4.被告人徐某甲的供述；5.辨认笔录。
+公诉机关认为，被告人徐某甲以非法占有为目的，隐瞒、虚构事实，多次骗取他人钱财，共计人民币436.5万元，属数额特别巨大，其行为已触犯《中华人民共和国刑法》××，应当以诈骗罪追究其刑事责任。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

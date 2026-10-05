@@ -1,0 +1,72 @@
+{
+  "call_id": "781a2ef2dcce4b6c8f277234eef1e942",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791014050-ElHCqBnUDuy62jBsOn2t",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"被告人潘某某在为村民锄地时，将路过的幼儿张某某抱走并藏匿，意图将其非法收养，构成对未成年人的拐骗行为。根据《中华人民共和国刑法》第240条，拐骗儿童属于拐骗、绑架罪的情形，罪名应为拐骗儿童。\",\n  \"final_answer\": \"[罪名]拐骗儿童<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the crime based on facts. The facts: \"洋县人民检察院指控，2016年4月2日15时许，被告人潘某某在为村民锄地时，将路过的幼儿张某某抱走藏匿，欲偷走自己收养。当晚潘某某抱着张某某沿公路逃跑时被抓获。经鉴定，潘某某患精神分裂症，犯罪时系部分刑事责任能力。认定事实的证据有书证，现场勘验、辨认笔录及照片，鉴定意见、证人证言、被告人供述与辩解等，被告人行为已构成××，提请依法判处。\"\n\nWe need to fill the crime. The act: abducting a child, intending to adopt (kidnap). In Chinese criminal law, kidnapping of a minor is \"拐卖儿童罪\" (kidnapping and selling children) or \"绑架罪\" (kidnapping). The facts: \"抱走藏匿，欲偷走自己收养\" - basically kidnapping a child. The crime likely \"拐骗儿童罪\"? Actually Chinese law: \"拐骗儿童罪\" is for kidnapping children for illegal adoption? Let's recall: Under Criminal Law of PRC, Article 240: \"拐骗、绑架、收买、出卖、利用妇女、儿童进行买卖的，处三年以上七年以下有期徒刑；情节严重的，处七年以上有期徒刑或者无期徒刑。\" That's \"拐骗、绑架、收买、出卖、利用妇女、儿童进行买卖\". So kidnapping a child is \"拐骗、绑架罪\". Usually \"拐骗儿童罪\" is used. In Chinese legal terms, \"拐骗儿童罪\" is a specific crime: \"拐骗儿童罪\" (Article 240). Also \"绑架罪\" is for kidnapping adults? Actually \"绑架罪\" is for kidnapping persons for ransom etc. For children, \"拐骗儿童罪\" is used. So answer likely \"拐骗儿童罪\". However the examples show they want the short name without \"罪\". Eg \"故意毁坏财物\". So we should output \"拐骗儿童\". Let's verify: In examples, they output \"故意毁坏财物\" (no \"罪\"). For \"伪造、变造、买卖国家机关公文、证件、印章\". For \"破坏计算机信息系统\". So we need to output the crime name without \"罪\". So \"拐骗儿童\". Could also be \"绑架\". But kidnapping a child is \"拐骗儿童\". The fact says \"欲偷走自己收养\" maybe \"拐骗儿童\". So final answer: [罪名]拐骗儿童<eoa>\n\nReturn JSON with reasoning and final_answer.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the crime based on facts. The facts: \"洋县人民检察院指控，2016年4月2日15时许，被告人潘某某在为村民锄地时，将路过的幼儿张某某抱走藏匿，欲偷走自己收养。当晚潘某某抱着张某某沿公路逃跑时被抓获。经鉴定，潘某某患精神分裂症，犯罪时系部分刑事责任能力。认定事实的证据有书证，现场勘验、辨认笔录及照片，鉴定意见、证人证言、被告人供述与辩解等，被告人行为已构成××，提请依法判处。\"\n\nWe need to fill the crime. The act: abducting a child, intending to adopt (kidnap). In Chinese criminal law, kidnapping of a minor is \"拐卖儿童罪\" (kidnapping and selling children) or \"绑架罪\" (kidnapping). The facts: \"抱走藏匿，欲偷走自己收养\" - basically kidnapping a child. The crime likely \"拐骗儿童罪\"? Actually Chinese law: \"拐骗儿童罪\" is for kidnapping children for illegal adoption? Let's recall: Under Criminal Law of PRC, Article 240: \"拐骗、绑架、收买、出卖、利用妇女、儿童进行买卖的，处三年以上七年以下有期徒刑；情节严重的，处七年以上有期徒刑或者无期徒刑。\" That's \"拐骗、绑架、收买、出卖、利用妇女、儿童进行买卖\". So kidnapping a child is \"拐骗、绑架罪\". Usually \"拐骗儿童罪\" is used. In Chinese legal terms, \"拐骗儿童罪\" is a specific crime: \"拐骗儿童罪\" (Article 240). Also \"绑架罪\" is for kidnapping adults? Actually \"绑架罪\" is for kidnapping persons for ransom etc. For children, \"拐骗儿童罪\" is used. So answer likely \"拐骗儿童罪\". However the examples show they want the short name without \"罪\". Eg \"故意毁坏财物\". So we should output \"拐骗儿童\". Let's verify: In examples, they output \"故意毁坏财物\" (no \"罪\"). For \"伪造、变造、买卖国家机关公文、证件、印章\". For \"破坏计算机信息系统\". So we need to output the crime name without \"罪\". So \"拐骗儿童\". Could also be \"绑架\". But kidnapping a child is \"拐骗儿童\". The fact says \"欲偷走自己收养\" maybe \"拐骗儿童\". So final answer: [罪名]拐骗儿童<eoa>\n\nReturn JSON with reasoning and final_answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine the crime based on facts. The facts: \"洋县人民检察院指控，2016年4月2日15时许，被告人潘某某在为村民锄地时，将路过的幼儿张某某抱走藏匿，欲偷走自己收养。当晚潘某某抱着张某某沿公路逃跑时被抓获。经鉴定，潘某某患精神分裂症，犯罪时系部分刑事责任能力。认定事实的证据有书证，现场勘验、辨认笔录及照片，鉴定意见、证人证言、被告人供述与辩解等，被告人行为已构成××，提请依法判处。\"\n\nWe need to fill the crime. The act: abducting a child, intending to adopt (kidnap). In Chinese criminal law, kidnapping of a minor is \"拐卖儿童罪\" (kidnapping and selling children) or \"绑架罪\" (kidnapping). The facts: \"抱走藏匿，欲偷走自己收养\" - basically kidnapping a child. The crime likely \"拐骗儿童罪\"? Actually Chinese law: \"拐骗儿童罪\" is for kidnapping children for illegal adoption? Let's recall: Under Criminal Law of PRC, Article 240: \"拐骗、绑架、收买、出卖、利用妇女、儿童进行买卖的，处三年以上七年以下有期徒刑；情节严重的，处七年以上有期徒刑或者无期徒刑。\" That's \"拐骗、绑架、收买、出卖、利用妇女、儿童进行买卖\". So kidnapping a child is \"拐骗、绑架罪\". Usually \"拐骗儿童罪\" is used. In Chinese legal terms, \"拐骗儿童罪\" is a specific crime: \"拐骗儿童罪\" (Article 240). Also \"绑架罪\" is for kidnapping adults? Actually \"绑架罪\" is for kidnapping persons for ransom etc. For children, \"拐骗儿童罪\" is used. So answer likely \"拐骗儿童罪\". However the examples show they want the short name without \"罪\". Eg \"故意毁坏财物\". So we should output \"拐骗儿童\". Let's verify: In examples, they output \"故意毁坏财物\" (no \"罪\"). For \"伪造、变造、买卖国家机关公文、证件、印章\". For \"破坏计算机信息系统\". So we need to output the crime name without \"罪\". So \"拐骗儿童\". Could also be \"绑架\". But kidnapping a child is \"拐骗儿童\". The fact says \"欲偷走自己收养\" maybe \"拐骗儿童\". So final answer: [罪名]拐骗儿童<eoa>\n\nReturn JSON with reasoning and final_answer.",
+            "refusal": null,
+            "reasoning_content": "We need to determine the crime based on facts. The facts: \"洋县人民检察院指控，2016年4月2日15时许，被告人潘某某在为村民锄地时，将路过的幼儿张某某抱走藏匿，欲偷走自己收养。当晚潘某某抱着张某某沿公路逃跑时被抓获。经鉴定，潘某某患精神分裂症，犯罪时系部分刑事责任能力。认定事实的证据有书证，现场勘验、辨认笔录及照片，鉴定意见、证人证言、被告人供述与辩解等，被告人行为已构成××，提请依法判处。\"\n\nWe need to fill the crime. The act: abducting a child, intending to adopt (kidnap). In Chinese criminal law, kidnapping of a minor is \"拐卖儿童罪\" (kidnapping and selling children) or \"绑架罪\" (kidnapping). The facts: \"抱走藏匿，欲偷走自己收养\" - basically kidnapping a child. The crime likely \"拐骗儿童罪\"? Actually Chinese law: \"拐骗儿童罪\" is for kidnapping children for illegal adoption? Let's recall: Under Criminal Law of PRC, Article 240: \"拐骗、绑架、收买、出卖、利用妇女、儿童进行买卖的，处三年以上七年以下有期徒刑；情节严重的，处七年以上有期徒刑或者无期徒刑。\" That's \"拐骗、绑架、收买、出卖、利用妇女、儿童进行买卖\". So kidnapping a child is \"拐骗、绑架罪\". Usually \"拐骗儿童罪\" is used. In Chinese legal terms, \"拐骗儿童罪\" is a specific crime: \"拐骗儿童罪\" (Article 240). Also \"绑架罪\" is for kidnapping adults? Actually \"绑架罪\" is for kidnapping persons for ransom etc. For children, \"拐骗儿童罪\" is used. So answer likely \"拐骗儿童罪\". However the examples show they want the short name without \"罪\". Eg \"故意毁坏财物\". So we should output \"拐骗儿童\". Let's verify: In examples, they output \"故意毁坏财物\" (no \"罪\"). For \"伪造、变造、买卖国家机关公文、证件、印章\". For \"破坏计算机信息系统\". So we need to output the crime name without \"罪\". So \"拐骗儿童\". Could also be \"绑架\". But kidnapping a child is \"拐骗儿童\". The fact says \"欲偷走自己收养\" maybe \"拐骗儿童\". So final answer: [罪名]拐骗儿童<eoa>\n\nReturn JSON with reasoning and final_answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 752,
+      "prompt_tokens": 2156,
+      "total_tokens": 2908,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 640,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00019252,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00019252,
+        "upstream_inference_prompt_cost": 6.468e-05,
+        "upstream_inference_completions_cost": 0.00012784
+      }
+    }
+  },
+  "raw_response_missing": false
+}

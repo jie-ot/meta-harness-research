@@ -1,0 +1,36 @@
+Bash
+
+command:
+python -c "
+import json, os
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+# Check USPTO confusion state
+mem = os.path.join(base, 'USPTO', 'decayed_confusion_memory', 'gpt-oss-120b', 'memory.json')
+with open(mem) as f:
+    data = json.load(f)
+conf = data.get('confusion', {})
+pairs = [(cnt, p[:30], a[:30]) for p, actuals in conf.items() for a, cnt in actuals.items()]
+pairs.sort(reverse=True)
+print('Top confusion pairs (USPTO):')
+for cnt, p, a in pairs[:10]:
+    print(f'  {cnt:.2f}  [{p}] -> [{a}]')
+n_ex = len(data.get('examples', []))
+labels = set(e['target'] for e in data.get('examples', []))
+print(f'Total examples: {n_ex}, distinct labels: {len(labels)}')
+" 2>&1
+
+description: Inspect confusion matrix state on USPTO
+
+--- output ---
+Top confusion pairs (USPTO):
+  0.95  [CC(C)(C)OC(=O)OC(=O)OC(C)(C)C.] -> [CC(C)(C)OC(=O)OC(=O)OC(C)(C)C.]
+  0.90  [CCNc1nccc2c1c(C(=O)O)nn2-c1ccc] -> [CCNc1nccc2c1c(C(=O)OC)nn2-c1cc]
+  0.86  [COc1cccc(Nc2c(C(N)=O)cnc3c(C)c] -> [COc1cccc(Nc2c(C(N)=O)cnc3c(C)c]
+  0.81  [CC(C)(C)OC(=O)OC(=O)OC(C)(C)C.] -> [CC(C)(C)OC(=O)OC(=O)OC(C)(C)C.]
+  0.77  [Cc1nc(N)sc1CCO[N+](=O)[O-].ClC] -> [Cc1nc(N)sc1CCO[N+](=O)[O-].O=C]
+  0.74  [CC(C)(C)c1cc(C=O)c(O)c(-c2ccc(] -> [CC(C)(C)c1cc(C=O)c(O)c(-c2ccc(]
+  0.70  [CC(C)(C)OC(=O)OC(=O)OC(C)(C)C.] -> [CC(C)(C)OC(=O)OC(=O)OC(C)(C)C.]
+  0.63  [N#Cc1cccc(I)c1.C#CC2(O)CCN(C(=] -> [C#CC1(O)CCN(C(=O)Cc2ccc(-n3cnn]
+  0.60  [Oc1ccc(COc2cnn(C(C)(C)C)c(=O)c] -> [CC(C)(C)n1ncc(O)c(Cl)c1=O.CCOC]
+  0.57  [CCOC(=O)c1sc(C)nc1.c1ccc(C)cc1] -> [CC(N)=S.CCOC(=O)C(Br)C(=O)c1cc]
+Total examples: 50, distinct labels: 50

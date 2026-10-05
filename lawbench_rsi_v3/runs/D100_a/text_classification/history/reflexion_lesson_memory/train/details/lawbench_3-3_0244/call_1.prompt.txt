@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- When the case facts explicitly describe separate actions of selling, buying, or transporting counterfeit currency, label each distinct offense (e.g., 出售假币, 购买假币, 运输假币) rather than using a generic term
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the defendant’s conduct consists of teaching, instructing, or transmitting criminal techniques or methods to others, the appropriate charge is “传授犯罪方法” rather than the generic “帮助信息网络犯罪活动”.
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明：
+2014年12月下旬至2015年1月7日被告人项某多次召集顾某、周某、童xx、汪x、杨某等人，在安吉县递铺镇xx花园东门xx快递三楼其租房内以“炸鸡”的方式进行赌博活动，并从中非法获利人民币1万余元。
+上述事实，被告人项某在开庭审理过程中无异议，并有证人顾某、周某、童xx、杨某等人的证言，辨认笔录及照片，到案经过，情况说明，人口信息等证据证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

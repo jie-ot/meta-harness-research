@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+- If the facts describe more than one distinct illegal act or more than one category of the same offense (e.g., multiple types of tickets being sold), list every applicable charge separated by semicolon
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:大庆市红岗区人民检察院指控：
+被告人赵1某系肇东市福泰兴酒业有限公司法定代表人。赵2某（另案处理）在担任肇东市市长期间，于2012年年初指示肇东市政府接待办从福泰兴酒业采购了价值120余万元的白酒，用于政府招待。2012年11月份某日，赵1某在赵2某办公室送给赵2某人民币30万元，用于感谢赵2某采购其生产的白酒，同时表达了希望能继续成为肇东市政府指定采购招待用酒的企业，赵2某表示同意，收下了赵1某行贿款人民币30万元。
+公诉机关认为，被告单位肇东市福泰兴酒业有限公司、被告人赵1某的行为已构成××，提请本院依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

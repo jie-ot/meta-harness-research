@@ -1,0 +1,118 @@
+Bash
+
+command:
+python -c "
+import os, json, re
+from collections import defaultdict
+
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+log_path = os.path.join(base, 'LawBench', 'symmetric_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+lines = open(log_path, encoding='utf-8').readlines()
+steps = [json.loads(l) for l in lines if json.loads(l).get('type') == 'step']
+
+_CJK_RE = re.compile(r'[\u4e00-\u9fff\u3040-\u30ff\uff00-\uffef]')
+_WRAPPER_RE = re.compile(r'^\s*\[[^\]]*\]|<eoa>\s*$|\[[^\]]*\]\s*$', re.IGNORECASE)
+def _normalize(p):
+    c = _WRAPPER_RE.sub('', p).strip()
+    return c if c else p
+def _has_cjk(t): return bool(_CJK_RE.search(t))
+def _tok_bigram(t):
+    t2 = re.sub(r'\s+', ' ', t.strip())
+    return frozenset(t2[i:i+2] for i in range(len(t2)-1)) if len(t2)>=2 else frozenset()
+def _tok_word(t): return frozenset(re.findall(r'[A-Za-z0-9]+', t.lower()))
+def _tok(t): return _tok_bigram(t) if _has_cjk(t) else _tok_word(t)
+def _jaccard(a,b):
+    if not a and not b: return 0.0
+    return len(a&b)/len(a|b)
+
+# Prototype: confusion_hint_memory
+# Hypothesis: injecting a natural-language confusion hint into the prompt instruction
+# (not changing which examples are shown) adds signal on top of standard retrieval.
+# Measure: when the GT label is in the confusion targets of the top candidate,
+# the hint would have been correct. Count how often that fires AND it helps.
+
+confusion = defaultdict(lambda: defaultdict(float))
+pool = []
+hint_fired = 0
+hint_correct = 0  # GT was named in the hint when fired
+total_errors = 0
+DECAY = 0.95
+PRUNE = 0.05
+
+def _decay(c):
+    for k in list(c):
+        for j in list(c[k]):
+            c[k][j] *= DECAY
+            if c[k][j] < PRUNE: del c[k][j]
+        if not c[k]: del c[k]
+
+for s in steps:
+    q = s.get('input_preview','')
+    gt = s['tgt']
+    ok = s.get('ok', False)
+    q_tok = _tok(q)
+    
+    if pool and not ok:
+        total_errors += 1
+        # Get top candidate labels from pool (like symmetric_confusion_memory)
+        scored = sorted(pool, key=lambda ex: -_jaccard(q_tok, ex['tok']))
+        top_labels = list(dict.fromkeys(ex['target'] for ex in scored[:5]))[:3]  # unique top-3
+        
+        # Build confusion hint: for each top label, find confusion partners
+        hint_labels = []
+        for lbl in top_labels:
+            for partner, cnt in sorted(confusion.get(lbl, {}).items(), key=lambda x: -x[1])[:2]:
+                if partner not in hint_labels and partner not in top_labels:
+                    hint_labels.append(partner)
+        
+        if hint_labels:
+            hint_fired += 1
+            # Did the hint mention gt?
+            if gt in hint_labels or any(gt == h for h in hint_labels):
+                hint_correct += 1
+    
+    pool.append({'input': q, 'target': gt, 'tok': q_tok})
+    if not ok:
+        pred = _normalize(s['pred'])
+        if pred and pred != gt:
+            confusion[pred][gt] += 1.0
+            confusion[gt][pred] += 0.5
+    _decay(confusion)
+
+print(f'Total errors: {total_errors}')
+print(f'Hint fires: {hint_fired}/{total_errors} ({hint_fired/max(total_errors,1):.1%})')
+print(f'Hint names GT: {hint_correct}/{hint_fired} ({hint_correct/max(hint_fired,1):.1%} of fires)')
+
+# Now prototype variant: show a derived instruction in the prompt
+# 'Take care: examples show that X is sometimes confused with Y'
+# Count: when hint names GT and there are >=2 examples of both in pool
+top_labels_in_pool_counts = defaultdict(int)
+for ex in pool:
+    top_labels_in_pool_counts[ex['target']] += 1
+
+hint_actionable = 0
+for s in steps:
+    if not s.get('ok'):
+        q_tok = _tok(s.get('input_preview',''))
+        scored = sorted(pool, key=lambda ex: -_jaccard(q_tok, ex['tok']))
+        top_labels = list(dict.fromkeys(ex['target'] for ex in scored[:5]))[:3]
+        hint_labels = []
+        for lbl in top_labels:
+            for partner, cnt in sorted(confusion.get(lbl, {}).items(), key=lambda x: -x[1])[:2]:
+                if partner not in hint_labels and partner not in top_labels:
+                    hint_labels.append(partner)
+        if s['tgt'] in hint_labels and top_labels_in_pool_counts.get(s['tgt'], 0) >= 2:
+            hint_actionable += 1
+print(f'Actionable (hint names GT AND >=2 examples of GT in pool): {hint_actionable}/{total_errors}')
+"
+
+
+description:
+Prototype confusion_hint_memory: measure how often a confusion-derived instruction hint names the correct GT label
+
+
+--- output ---
+Total errors: 148
+Hint fires: 117/148 (79.1%)
+Hint names GT: 1/117 (0.9% of fires)
+Actionable (hint names GT AND >=2 examples of GT in pool): 0/148

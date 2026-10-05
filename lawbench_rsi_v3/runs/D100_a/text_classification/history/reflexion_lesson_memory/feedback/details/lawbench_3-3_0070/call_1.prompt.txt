@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- If the facts describe the use of a false or deceptive contract (e.g., a sale, lease, transfer agreement) to obtain money or property, classify the offense as “合同诈骗” rather than the generic “诈骗”.
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:河南省泌阳县人民检察院指控，2015年4月，被告人张某某伙同刘某（已判刑）、杨某（另案处理）、杨某某（在逃）等人经密谋后，商定以1美元换5.8元人民币的比率与许某某等人兑换100万元人民币，2015年4月22日16时许，刘某、杨某某提着装有美元的箱子窜至泌阳县伊顺苑宾馆，并通过在宾馆接应的张某某，利用11221美元骗取许某某等人100万元人民币，在交易过程中，许某某提出要全部清点，张某某和刘某互相掩护骗取许某某相信，将许某某等人的100万元骗到手后，刘某、杨某某等人乘车逃逸。后张某某被扭送至泌阳县公安局。
+针对上述指控的事实，公诉机关提供有被告人的供述，被害人的陈述，证人证言，视频截图等证据，认为被告人张某某的行为触犯了《中华人民共和国刑法》××之规定，应当以诈骗罪追究其刑事责任，提请本院依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

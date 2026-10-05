@@ -1,0 +1,25 @@
+Read: agents\verbatim_label_memory.py
+
+limit: 20
+
+--- output ---
+1	"""Symmetric Confusion Memory.
+2	
+3	Extends decayed_confusion_memory with one structural change to the confusion
+4	matrix learning strategy (axis E): confusion entries are stored symmetrically.
+5	
+6	Problem with the baseline: the confusion matrix only records pred→gt edges.
+7	The disambiguation phase looks up what labels were *predicted* as the top
+8	candidate labels and then finds what they were confused with. This fires rarely
+9	because the top candidate labels at query time are ground-truth labels (pulled
+10	from stored examples), not predicted labels — so lookup keys almost never match
+11	stored confusion keys. Prototype traces showed only 21/200 disambiguation fires.
+12	
+13	Fix: when an error pred→gt is recorded, also record the reverse edge gt→pred at
+14	half weight. This doubles the number of confusion keys, so when the disambiguation
+15	phase looks up a top candidate label (a ground-truth label), it now finds confusion
+16	partners from the gt→pred direction. Prototype traces showed this raises coverage
+17	from 21/200 to 170/200 fires — an 8× improvement in disambiguation activation.
+18	
+19	Both directions decay at the same DECAY_FACTOR. All other mechanics (adaptive
+20	tokenizer, two-phase retrieval, prediction normalization) are unchanged.

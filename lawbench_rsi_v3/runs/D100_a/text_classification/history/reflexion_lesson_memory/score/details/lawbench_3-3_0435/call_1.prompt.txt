@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- If the factual description indicates that the offender used their official position or entrusted authority to appropriate property for personal gain, rather than physically taking or stealthily removi
+- When the facts show that the defendant only provided shelter, assistance, or concealment for drug offenders and did not personally produce, possess, or traffic the narcotics, classify the offense as 窝
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:长葛市人民检察院指控：2008年8、9月份，被告人邵某伙同河南省交通运输厅厅长董××、洛阳华伦拖拉机制造有限公司董事长倪××，利用职务之便，帮助中铁十五局一公司董事长杨××违规中标河南省交通厅在湖南投资的岳长高速24、25两个标段的承建权，并与中铁十五局一公司董事长杨××协商按照中标价的3%收取好处费共计930万元三人均分。2009年9月份，中铁十五局一公司支付好处费100万元后，倪××分得50万元，并将其中50万元送给董××，剩余830万元后因董××案发尚未支付。
+针对上述指控事实，公诉机关提供的证据有被告人供述、证人证言、视听资料、书证等，并认为被告人邵某已构成受贿罪，其系自首、从犯、犯罪未遂，应依法惩处。
+被告人邵某认罪，称自己的确参与了该起犯罪，但后期基本没参与，自己是想以倪××的公司名义承建工程挣钱，没想到受贿。自己是自首、未遂、从犯，要求从轻处罚。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

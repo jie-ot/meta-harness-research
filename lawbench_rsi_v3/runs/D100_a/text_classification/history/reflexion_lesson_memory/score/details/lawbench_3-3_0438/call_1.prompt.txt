@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the factual description mentions distinct illegal tax‑related actions (e.g., falsifying VAT invoices, fraudulently obtaining export rebates, and using fake invoices for tax deduction), enumerate 
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，2013年1月，被告人王某甲承包某建设集团有限公司位于某市某区某公租房外墙保温工程，为结算工程款，被告人王某甲以开票费人民币3.7万元的价格，让他人帮助自己虚开出票单位为某建筑五金有限公司的大连市增值税普通发票1组，票面金额总计人民币1257814.95元。经某有限公司鉴定，该发票工艺特征与其公司印制的发票有差异。
+2015年3月16日，被告人王某甲经公安机关电话传唤后，主动到公安机关如实供述犯罪事实。
+上述事实，被告人王某甲在开庭审理中亦无异议，且有案件来源、到案经过、户籍证明、情况说明、大连增值税普通发票2张等书证，证人崔某、王某乙的证言，被告人王某甲的供述及某有限公司鉴定意见等证据在卷佐证，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

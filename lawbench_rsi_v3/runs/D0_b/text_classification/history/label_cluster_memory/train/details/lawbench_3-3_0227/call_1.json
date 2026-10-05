@@ -1,0 +1,72 @@
+{
+  "call_id": "4ac4c1ccb5d547579c47e21c09360220",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791035660-jQtHrTnBZtfD34yRe3Bk",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The facts describe that the defendant organized a private mutual aid association, collected money from the public without proper financial licensing, and the amount exceeds the legal limit, constituting illegal collection of public deposits. This corresponds to the criminal charge of illegal absorption of public deposits, whose canonical label is '非法吸收公众存款'.\",\n  \"final_answer\": \"[罪名]非法吸收公众存款<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the correct charge label from the given list. The case: illegal collection of public deposits via a private mutual aid association. This is typical \"非法吸收公众存款罪\" which in Chinese is \"非法吸收公众存款\". The label in the examples? We have not seen a direct example label for that. Let's look at the provided charge labels: 失火, 非国家工作人员受贿, 违法发放贷款, 伪造、变造、买卖国家机关公文、证件、印章. Additional examples: 受贿;滥用职权, 信用卡诈骗, 拐卖妇女、儿童, 容留他人吸毒, 诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫, 贪污, 放火, 虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯, 抢夺.\n\nBut we need the exact charge string for illegal public deposit collection. Not listed among the headers. However maybe the label is \"非法吸收公众存款\". The instruction: \"Use the exact charge label strings shown in the section headers as your answer\". The section headers only include those listed. But the problem may be that the charge label is not among them, but we must output the appropriate label that matches the case. The earlier examples show that they sometimes output multiple charges separated by ';' and they use Chinese terms like \"受贿;滥用职权\". So we can output \"非法吸收公众存款\". Is that a label? Not in the given list, but likely the correct charge.\n\nCheck if any example includes \"非法吸收公众存款\". No. But the instruction says use exact charge label strings shown in the section headers. The only section headers are the four given. However the problem statement is separate: \"Each section below shows examples for a specific charge label. The section header gives the EXACT canonical charge string to use in your answer.\" So for each example, the charge label is given. For the new problem, we need to infer which charge label applies, from the set of possible labels (the ones given). The new problem likely corresponds to one of those labels. Which one matches illegal public deposit? None of the four. Could be \"非法吸收公众存款\" but not listed. Maybe they omitted that label but expect us to output it anyway. The instruction \"Use the exact charge label strings shown in the section headers as your answer\" might refer to the overall set of possible labels, not just the four. But we only have those four shown. However the additional examples include many other labels, like \"受贿;滥用职权\", \"信用卡诈骗\", \"拐卖妇女、儿童\", etc. So the set of possible labels is larger, not limited to the four. The instruction is generic: use the exact charge label strings shown in the section headers (i.e., each example's header). So we must output the correct charge label string as used in those examples. For illegal public deposit, the label likely is \"非法吸收公众存款\". That matches typical Chinese criminal law.\n\nThus final answer: [罪名]非法吸收公众存款<eoa>\n\nReturn JSON with reasoning and final answer.\n\n",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the correct charge label from the given list. The case: illegal collection of public deposits via a private mutual aid association. This is typical \"非法吸收公众存款罪\" which in Chinese is \"非法吸收公众存款\". The label in the examples? We have not seen a direct example label for that. Let's look at the provided charge labels: 失火, 非国家工作人员受贿, 违法发放贷款, 伪造、变造、买卖国家机关公文、证件、印章. Additional examples: 受贿;滥用职权, 信用卡诈骗, 拐卖妇女、儿童, 容留他人吸毒, 诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫, 贪污, 放火, 虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯, 抢夺.\n\nBut we need the exact charge string for illegal public deposit collection. Not listed among the headers. However maybe the label is \"非法吸收公众存款\". The instruction: \"Use the exact charge label strings shown in the section headers as your answer\". The section headers only include those listed. But the problem may be that the charge label is not among them, but we must output the appropriate label that matches the case. The earlier examples show that they sometimes output multiple charges separated by ';' and they use Chinese terms like \"受贿;滥用职权\". So we can output \"非法吸收公众存款\". Is that a label? Not in the given list, but likely the correct charge.\n\nCheck if any example includes \"非法吸收公众存款\". No. But the instruction says use exact charge label strings shown in the section headers. The only section headers are the four given. However the problem statement is separate: \"Each section below shows examples for a specific charge label. The section header gives the EXACT canonical charge string to use in your answer.\" So for each example, the charge label is given. For the new problem, we need to infer which charge label applies, from the set of possible labels (the ones given). The new problem likely corresponds to one of those labels. Which one matches illegal public deposit? None of the four. Could be \"非法吸收公众存款\" but not listed. Maybe they omitted that label but expect us to output it anyway. The instruction \"Use the exact charge label strings shown in the section headers as your answer\" might refer to the overall set of possible labels, not just the four. But we only have those four shown. However the additional examples include many other labels, like \"受贿;滥用职权\", \"信用卡诈骗\", \"拐卖妇女、儿童\", etc. So the set of possible labels is larger, not limited to the four. The instruction is generic: use the exact charge label strings shown in the section headers (i.e., each example's header). So we must output the correct charge label string as used in those examples. For illegal public deposit, the label likely is \"非法吸收公众存款\". That matches typical Chinese criminal law.\n\nThus final answer: [罪名]非法吸收公众存款<eoa>\n\nReturn JSON with reasoning and final answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine the correct charge label from the given list. The case: illegal collection of public deposits via a private mutual aid association. This is typical \"非法吸收公众存款罪\" which in Chinese is \"非法吸收公众存款\". The label in the examples? We have not seen a direct example label for that. Let's look at the provided charge labels: 失火, 非国家工作人员受贿, 违法发放贷款, 伪造、变造、买卖国家机关公文、证件、印章. Additional examples: 受贿;滥用职权, 信用卡诈骗, 拐卖妇女、儿童, 容留他人吸毒, 诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫, 贪污, 放火, 虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯, 抢夺.\n\nBut we need the exact charge string for illegal public deposit collection. Not listed among the headers. However maybe the label is \"非法吸收公众存款\". The instruction: \"Use the exact charge label strings shown in the section headers as your answer\". The section headers only include those listed. But the problem may be that the charge label is not among them, but we must output the appropriate label that matches the case. The earlier examples show that they sometimes output multiple charges separated by ';' and they use Chinese terms like \"受贿;滥用职权\". So we can output \"非法吸收公众存款\". Is that a label? Not in the given list, but likely the correct charge.\n\nCheck if any example includes \"非法吸收公众存款\". No. But the instruction says use exact charge label strings shown in the section headers. The only section headers are the four given. However the problem statement is separate: \"Each section below shows examples for a specific charge label. The section header gives the EXACT canonical charge string to use in your answer.\" So for each example, the charge label is given. For the new problem, we need to infer which charge label applies, from the set of possible labels (the ones given). The new problem likely corresponds to one of those labels. Which one matches illegal public deposit? None of the four. Could be \"非法吸收公众存款\" but not listed. Maybe they omitted that label but expect us to output it anyway. The instruction \"Use the exact charge label strings shown in the section headers as your answer\" might refer to the overall set of possible labels, not just the four. But we only have those four shown. However the additional examples include many other labels, like \"受贿;滥用职权\", \"信用卡诈骗\", \"拐卖妇女、儿童\", etc. So the set of possible labels is larger, not limited to the four. The instruction is generic: use the exact charge label strings shown in the section headers (i.e., each example's header). So we must output the correct charge label string as used in those examples. For illegal public deposit, the label likely is \"非法吸收公众存款\". That matches typical Chinese criminal law.\n\nThus final answer: [罪名]非法吸收公众存款<eoa>\n\nReturn JSON with reasoning and final answer.\n\n",
+            "refusal": null,
+            "reasoning_content": "We need to determine the correct charge label from the given list. The case: illegal collection of public deposits via a private mutual aid association. This is typical \"非法吸收公众存款罪\" which in Chinese is \"非法吸收公众存款\". The label in the examples? We have not seen a direct example label for that. Let's look at the provided charge labels: 失火, 非国家工作人员受贿, 违法发放贷款, 伪造、变造、买卖国家机关公文、证件、印章. Additional examples: 受贿;滥用职权, 信用卡诈骗, 拐卖妇女、儿童, 容留他人吸毒, 诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫, 贪污, 放火, 虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯, 抢夺.\n\nBut we need the exact charge string for illegal public deposit collection. Not listed among the headers. However maybe the label is \"非法吸收公众存款\". The instruction: \"Use the exact charge label strings shown in the section headers as your answer\". The section headers only include those listed. But the problem may be that the charge label is not among them, but we must output the appropriate label that matches the case. The earlier examples show that they sometimes output multiple charges separated by ';' and they use Chinese terms like \"受贿;滥用职权\". So we can output \"非法吸收公众存款\". Is that a label? Not in the given list, but likely the correct charge.\n\nCheck if any example includes \"非法吸收公众存款\". No. But the instruction says use exact charge label strings shown in the section headers. The only section headers are the four given. However the problem statement is separate: \"Each section below shows examples for a specific charge label. The section header gives the EXACT canonical charge string to use in your answer.\" So for each example, the charge label is given. For the new problem, we need to infer which charge label applies, from the set of possible labels (the ones given). The new problem likely corresponds to one of those labels. Which one matches illegal public deposit? None of the four. Could be \"非法吸收公众存款\" but not listed. Maybe they omitted that label but expect us to output it anyway. The instruction \"Use the exact charge label strings shown in the section headers as your answer\" might refer to the overall set of possible labels, not just the four. But we only have those four shown. However the additional examples include many other labels, like \"受贿;滥用职权\", \"信用卡诈骗\", \"拐卖妇女、儿童\", etc. So the set of possible labels is larger, not limited to the four. The instruction is generic: use the exact charge label strings shown in the section headers (i.e., each example's header). So we must output the correct charge label string as used in those examples. For illegal public deposit, the label likely is \"非法吸收公众存款\". That matches typical Chinese criminal law.\n\nThus final answer: [罪名]非法吸收公众存款<eoa>\n\nReturn JSON with reasoning and final answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 806,
+      "prompt_tokens": 4146,
+      "total_tokens": 4952,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 829,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0004088,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0004088,
+        "upstream_inference_prompt_cost": 0.0002073,
+        "upstream_inference_completions_cost": 0.0002015
+      }
+    }
+  },
+  "raw_response_missing": false
+}

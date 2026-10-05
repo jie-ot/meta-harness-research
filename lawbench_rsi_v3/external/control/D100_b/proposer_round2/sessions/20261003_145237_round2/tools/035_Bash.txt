@@ -1,0 +1,27 @@
+Bash
+
+command: python .prototypes/validate_mmr_diversity_memory.py
+description: Run self-contained validation for mmr_diversity_memory
+
+--- output ---
+=== Validating mmr_diversity_memory (inlined) ===
+
+Cold start: answer='故意伤害;故意毁坏财物'  selected=0
+  ✓ cold start OK
+
+After learn: examples=8, glossary=6
+  ✓ learn_from_batch OK
+
+Jaccard top-6: ['故意伤害', '故意伤害', '故意伤害', '侵犯著作权', '破坏计算机信息系统', '行贿']
+MMR top-6:     ['故意伤害', '侵犯著作权', '破坏计算机信息系统', '故意伤害', '行贿', '故意伤害;故意毁坏财物']
+Charge coverage — Jaccard: 4, MMR: 5
+Multi-label examples — Jaccard: 0, MMR: 1
+  ✓ MMR charge coverage >= Jaccard coverage
+
+Warm predict: answer='故意伤害;故意毁坏财物'  selected=8
+  ✓ warm predict OK
+
+State round-trip: ✓
+  ✓ budget enforcement OK
+
+✓ All assertions passed — mmr_diversity_memory mechanism validated

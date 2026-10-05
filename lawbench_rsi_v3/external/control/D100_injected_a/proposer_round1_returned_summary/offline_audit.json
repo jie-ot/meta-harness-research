@@ -1,0 +1,30 @@
+{
+  "at_utc": "2026-10-04T14:02:23.622629+00:00",
+  "real_api_calls": 0,
+  "candidate_hashes": {
+    "canonical_charge_lexicon_memory": "2c1d21a5d90f81f7fa271c66aac9ceb901c5d631cf32fe667f2296873b306f58",
+    "act_decomposition_union_memory": "adde935180c9375c26aac09da88a3d8c2046c4fec04978c8a1b1530827334fbf"
+  },
+  "checks": {
+    "canonical_charge_lexicon_memory": {
+      "fixed_interface_acceptance": "passed"
+    },
+    "act_decomposition_union_memory": {
+      "fixed_interface_acceptance": "passed"
+    }
+  },
+  "reason": "Native session ended on a conversation summary without pending_eval; controller preserves candidates and separately checks functional correctness without tuning synthetic performance.",
+  "part1": {
+    "passed": false,
+    "error_type": "AssertionError",
+    "reason": "calibration must not regress the union",
+    "output": "variant V1 whole-fact single call: 2/5 exact\nvariant V2 +per-act union: 4/5 exact\nvariant V3 +calibration (adopted): 3/5 exact\n"
+  },
+  "part2": {
+    "passed": false,
+    "error_type": "AssertionError",
+    "reason": "markers must produce more than one act",
+    "output": "cold-start answer: '[罪名]盗窃<eoa>' | acts: 1\nper-act answer: '[罪名]伪造货币<eoa>' | acts: 1 | calls: 1\n"
+  },
+  "candidate_code_unchanged": true
+}

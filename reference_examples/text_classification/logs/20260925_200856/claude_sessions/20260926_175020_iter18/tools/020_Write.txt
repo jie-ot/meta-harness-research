@@ -1,0 +1,95 @@
+Write: C:/tmp/proto_hint.py
+
+content:
+"""Prototype: task-hint synthesis memory.
+
+After accumulating enough errors in a batch, uses LLM to synthesize
+a single concise paragraph describing observed error patterns.
+The hint is injected above the few-shot examples in the predict prompt.
+
+This is different from:
+- reflexion_memory: replaced examples with lessons (no examples used)
+- recent_error_hint_memory: showed raw ✗→✓ pairs (not narrative synthesis)
+- llm_rule_synthesis_memory: generated O(N^2) per-pair rules
+
+This generates O(1) synthesis: one paragraph, updated periodically.
+
+Prototype tests the SYNTHESIS QUALITY by simulating what the LLM would write
+given error patterns, and checks the context budget impact.
+"""
+import json, pathlib
+
+log_path = pathlib.Path(
+    r"D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples"
+    r"\text_classification\logs\20260925_200856\LawBench\decayed_confusion_memory"
+    r"\gpt-oss-120b\log.jsonl"
+)
+
+# Collect error patterns from training log
+errors = []
+with log_path.open(encoding='utf-8') as f:
+    for line in f:
+        obj = json.loads(line)
+        if obj.get('type') == 'step' and not obj.get('ok', True):
+            errors.append({'pred': obj.get('pred', ''), 'tgt': obj.get('tgt', '')})
+        if len(errors) >= 30:
+            break
+
+print(f"Collected {len(errors)} errors")
+print("Sample errors:")
+for e in errors[:5]:
+    print(f"  pred={e['pred'][:60]!r}  tgt={e['tgt'][:60]!r}")
+
+# Simulate the synthesis prompt we would send to LLM
+def build_synthesis_prompt(errors, max_errors=12):
+    if len(errors) > max_errors:
+        errors = errors[-max_errors:]  # most recent
+    error_lines = "\n".join(
+        f"- Predicted: {e['pred'][:80]} | Correct: {e['tgt'][:80]}"
+        for e in errors
+    )
+    return f"""You are helping a classification model improve its accuracy.
+Here are its recent errors (predicted vs. correct answer):
+
+{error_lines}
+
+Write a 2-3 sentence hint that describes the main mistake patterns and how to avoid them.
+Be concise and actionable. Do NOT mention any specific labels from the list above.
+Focus on general reasoning strategies.
+
+{{"hint": "[your hint here]"}}"""
+
+prompt = build_synthesis_prompt(errors)
+print(f"\nSynthesis prompt length: {len(prompt)} chars")
+print(f"First 500 chars:\n{prompt[:500]}")
+
+# Simulate what a reasonable hint might look like (we can't call LLM in prototype)
+fake_hints = [
+    "Pay close attention to subtle distinctions in the case facts — similar-looking inputs often differ in a single critical element that determines the correct category. When multiple categories seem plausible, look for the most specific one that matches all details. If the input involves multiple distinct acts, consider whether all of them must be named.",
+    "Recent errors suggest over-predicting single-component answers when the correct answer requires multiple components joined together. Read the full input before deciding — partially correct answers score zero. Also check whether the predicted category is too broad or too specific relative to what the facts support.",
+]
+
+for i, hint in enumerate(fake_hints):
+    print(f"\nFake hint {i+1}: {hint[:150]}...")
+    print(f"  Length: {len(hint)} chars")
+
+# Check context budget impact
+MAX_CHARS = 30000
+HINT_BUDGET = 400  # max chars reserved for hint
+examples_budget = MAX_CHARS - HINT_BUDGET
+print(f"\nWith {HINT_BUDGET} char hint budget, examples get {examples_budget} of {MAX_CHARS} chars")
+print(f"  Reduction: {HINT_BUDGET/MAX_CHARS:.1%} of total budget")
+print(f"  This is modest — far less than adding an extra example (~600-2000 chars)")
+
+# Decide synthesis trigger
+print("\nSynthesis trigger options:")
+print("  A - synthesize after every batch with >= 5 errors (frequent, up-to-date)")
+print("  B - synthesize only when hint is empty OR error rate jumped > 20% from last batch")
+print("  C - synthesize after every N batches regardless")
+print("Recommendation: A — synthesize when there are enough errors for meaningful pattern detection")
+print("  One LLM call per batch (not per predict), so cost is low relative to benchmark")
+
+
+
+--- output ---
+File created successfully at: C:/tmp/proto_hint.py (file state is current in your context — no need to Read it back)

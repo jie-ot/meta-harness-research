@@ -1,0 +1,72 @@
+{
+  "call_id": "943869c14ee04302a0bcb33576643e37",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791020180-MDAQkfmAoDHkkWJ4sPbr",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The facts show that the public unit (教研中心) received illegal kickbacks, which constitutes unit bribery (单位受贿). The director, 岳某, as the responsible person of the unit, personally participated in the illicit handling of the funds, which makes him liable for individual bribery (受贿). Additionally, 岳某 drove while intoxicated and caused a traffic collision, which is a criminal offense of dangerous driving (危险驾驶). Therefore, the appropriate charges are unit bribery, individual bribery, and dangerous driving.\",\n  \"final_answer\": \"[罪名]受贿;单位受贿;危险驾驶<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate crime labels based on Chinese criminal law. The facts: a unit (public institution) received kickbacks (bribes) via a small cash fund, and the director instructed accounting to keep it off books. That's unit bribery and possibly abuse of power. The director is responsible for accepting bribes (受贿) as a public official. Also possibly \"单位受贿\" (unit bribery) and \"受贿罪\" for the individual. Additionally, dangerous driving: drunk driving causing traffic accident. That is \"危险驾驶罪\" (dangerous driving). In examples, they used \"危险驾驶\" as a label? Let's see earlier examples: For drunk driving they used \"危险驾驶\". In the example: \"事实:杭州市余杭区人民检察院指控...被告人吴某...使用打火机点燃...构成××，提请本院依照《中华人民共和国刑法》一百一十四条之规定处罚。\" The answer was \"放火\". Not helpful. Another example: \"事实:公诉机关指控：...危险驾驶事实\" Not present. But typical label: \"危险驾驶\". So final answer should list both crimes: \"受贿;单位受贿;危险驾驶\". However in examples they sometimes combine \"受贿;滥用职权\". For unit bribery they used \"受贿;滥用职权\". In the first example: \"单位受贿事实\" and \"被告人岳某作为该单位负责人，也构成××\". Likely \"受贿罪\" for individual and \"单位受贿罪\" for unit. So answer: \"受贿;单位受贿;危险驾驶\". Or maybe \"受贿;危险驾驶\". The pattern: they often separate unit and individual. Eg earlier: \"受贿;滥用职权\". That was for a case where official accepted bribes and abused power. Here it's unit bribery and dangerous driving. So include both: \"受贿;单位受贿;危险驾驶\". Use semicolons.\n\nReturn JSON with reasoning and final answer.\n\n",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate crime labels based on Chinese criminal law. The facts: a unit (public institution) received kickbacks (bribes) via a small cash fund, and the director instructed accounting to keep it off books. That's unit bribery and possibly abuse of power. The director is responsible for accepting bribes (受贿) as a public official. Also possibly \"单位受贿\" (unit bribery) and \"受贿罪\" for the individual. Additionally, dangerous driving: drunk driving causing traffic accident. That is \"危险驾驶罪\" (dangerous driving). In examples, they used \"危险驾驶\" as a label? Let's see earlier examples: For drunk driving they used \"危险驾驶\". In the example: \"事实:杭州市余杭区人民检察院指控...被告人吴某...使用打火机点燃...构成××，提请本院依照《中华人民共和国刑法》一百一十四条之规定处罚。\" The answer was \"放火\". Not helpful. Another example: \"事实:公诉机关指控：...危险驾驶事实\" Not present. But typical label: \"危险驾驶\". So final answer should list both crimes: \"受贿;单位受贿;危险驾驶\". However in examples they sometimes combine \"受贿;滥用职权\". For unit bribery they used \"受贿;滥用职权\". In the first example: \"单位受贿事实\" and \"被告人岳某作为该单位负责人，也构成××\". Likely \"受贿罪\" for individual and \"单位受贿罪\" for unit. So answer: \"受贿;单位受贿;危险驾驶\". Or maybe \"受贿;危险驾驶\". The pattern: they often separate unit and individual. Eg earlier: \"受贿;滥用职权\". That was for a case where official accepted bribes and abused power. Here it's unit bribery and dangerous driving. So include both: \"受贿;单位受贿;危险驾驶\". Use semicolons.\n\nReturn JSON with reasoning and final answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine appropriate crime labels based on Chinese criminal law. The facts: a unit (public institution) received kickbacks (bribes) via a small cash fund, and the director instructed accounting to keep it off books. That's unit bribery and possibly abuse of power. The director is responsible for accepting bribes (受贿) as a public official. Also possibly \"单位受贿\" (unit bribery) and \"受贿罪\" for the individual. Additionally, dangerous driving: drunk driving causing traffic accident. That is \"危险驾驶罪\" (dangerous driving). In examples, they used \"危险驾驶\" as a label? Let's see earlier examples: For drunk driving they used \"危险驾驶\". In the example: \"事实:杭州市余杭区人民检察院指控...被告人吴某...使用打火机点燃...构成××，提请本院依照《中华人民共和国刑法》一百一十四条之规定处罚。\" The answer was \"放火\". Not helpful. Another example: \"事实:公诉机关指控：...危险驾驶事实\" Not present. But typical label: \"危险驾驶\". So final answer should list both crimes: \"受贿;单位受贿;危险驾驶\". However in examples they sometimes combine \"受贿;滥用职权\". For unit bribery they used \"受贿;滥用职权\". In the first example: \"单位受贿事实\" and \"被告人岳某作为该单位负责人，也构成××\". Likely \"受贿罪\" for individual and \"单位受贿罪\" for unit. So answer: \"受贿;单位受贿;危险驾驶\". Or maybe \"受贿;危险驾驶\". The pattern: they often separate unit and individual. Eg earlier: \"受贿;滥用职权\". That was for a case where official accepted bribes and abused power. Here it's unit bribery and dangerous driving. So include both: \"受贿;单位受贿;危险驾驶\". Use semicolons.\n\nReturn JSON with reasoning and final answer.\n\n",
+            "reasoning_content": "We need to determine appropriate crime labels based on Chinese criminal law. The facts: a unit (public institution) received kickbacks (bribes) via a small cash fund, and the director instructed accounting to keep it off books. That's unit bribery and possibly abuse of power. The director is responsible for accepting bribes (受贿) as a public official. Also possibly \"单位受贿\" (unit bribery) and \"受贿罪\" for the individual. Additionally, dangerous driving: drunk driving causing traffic accident. That is \"危险驾驶罪\" (dangerous driving). In examples, they used \"危险驾驶\" as a label? Let's see earlier examples: For drunk driving they used \"危险驾驶\". In the example: \"事实:杭州市余杭区人民检察院指控...被告人吴某...使用打火机点燃...构成××，提请本院依照《中华人民共和国刑法》一百一十四条之规定处罚。\" The answer was \"放火\". Not helpful. Another example: \"事实:公诉机关指控：...危险驾驶事实\" Not present. But typical label: \"危险驾驶\". So final answer should list both crimes: \"受贿;单位受贿;危险驾驶\". However in examples they sometimes combine \"受贿;滥用职权\". For unit bribery they used \"受贿;滥用职权\". In the first example: \"单位受贿事实\" and \"被告人岳某作为该单位负责人，也构成××\". Likely \"受贿罪\" for individual and \"单位受贿罪\" for unit. So answer: \"受贿;单位受贿;危险驾驶\". Or maybe \"受贿;危险驾驶\". The pattern: they often separate unit and individual. Eg earlier: \"受贿;滥用职权\". That was for a case where official accepted bribes and abused power. Here it's unit bribery and dangerous driving. So include both: \"受贿;单位受贿;危险驾驶\". Use semicolons.\n\nReturn JSON with reasoning and final answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 602,
+      "prompt_tokens": 17369,
+      "total_tokens": 17971,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 568,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00062943,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00062943,
+        "upstream_inference_prompt_cost": 0.00052107,
+        "upstream_inference_completions_cost": 0.00010836
+      }
+    }
+  },
+  "raw_response_missing": false
+}

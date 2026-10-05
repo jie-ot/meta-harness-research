@@ -1,0 +1,165 @@
+Write: C:\tmp\proto_mmr.py
+
+content:
+"""Prototype: mmr_memory — Maximum Marginal Relevance retrieval.
+
+At each selection step:
+    score(e) = λ * sim(e, query) - (1-λ) * max_{s in selected} sim(e, s)
+
+This greedily builds a set that is both relevant to the query AND diverse
+relative to already-chosen examples. Unlike pure similarity (sim only) or
+round-robin (label equality), MMR navigates the relevance-redundancy tradeoff
+with a single continuous score.
+
+MMR reference: Carbonell & Goldstein 1998.
+"""
+
+import re
+
+MAX_CHARS = 30_000
+LAMBDA = 0.6  # weight for relevance vs diversity
+
+# --- helpers ---
+
+def _tokenize(text):
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+def _jaccard(a, b):
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+# --- Variant A: standard MMR with λ=0.6 ---
+
+def mmr_select(examples, query, max_chars, lam=0.6):
+    if not examples:
+        return []
+
+    q_tok = _tokenize(query)
+    # Pre-compute relevance scores and token sets
+    scored = []
+    for i, ex in enumerate(examples):
+        tok = _tokenize(ex.get("raw_question", ex["input"]))
+        rel = _jaccard(q_tok, tok)
+        scored.append({"idx": i, "ex": ex, "tok": tok, "rel": rel})
+
+    selected = []
+    selected_toks = []
+    total_chars = 0
+
+    remaining = list(range(len(scored)))
+
+    while remaining:
+        best_mmr = None
+        best_i = None
+
+        for ri in remaining:
+            item = scored[ri]
+            rel = item["rel"]
+            if selected_toks:
+                max_sim_to_selected = max(_jaccard(item["tok"], st) for st in selected_toks)
+            else:
+                max_sim_to_selected = 0.0
+
+            mmr_score = lam * rel - (1 - lam) * max_sim_to_selected
+            if best_mmr is None or mmr_score > best_mmr:
+                best_mmr = mmr_score
+                best_i = ri
+
+        item = scored[best_i]
+        ex = item["ex"]
+        q = ex.get("raw_question", ex["input"])
+        part = f"Q: {q}\nA: {ex['target']}"
+        if total_chars + len(part) + 2 > max_chars:
+            break
+
+        selected.append(part)
+        selected_toks.append(item["tok"])
+        total_chars += len(part) + 2
+        remaining.remove(best_i)
+
+    return selected
+
+
+# --- Variant B: λ=0.7 (more relevance-focused) ---
+def mmr_select_v2(examples, query, max_chars):
+    return mmr_select(examples, query, max_chars, lam=0.7)
+
+
+# --- Variant C: λ=0.5 (pure balance) ---
+def mmr_select_v3(examples, query, max_chars):
+    return mmr_select(examples, query, max_chars, lam=0.5)
+
+
+# --- Test with synthetic multi-label examples ---
+
+examples = [
+    {"raw_question": "fever headache vomiting nausea", "target": "typhoid", "input": "..."},
+    {"raw_question": "fever headache body ache malaise", "target": "typhoid", "input": "..."},
+    {"raw_question": "fever joint pain rash skin", "target": "dengue", "input": "..."},
+    {"raw_question": "high temperature mosquito bite joint pain", "target": "dengue", "input": "..."},
+    {"raw_question": "itchy red rash spreading skin", "target": "chicken pox", "input": "..."},
+    {"raw_question": "skin rash blisters fluid filled", "target": "chicken pox", "input": "..."},
+    {"raw_question": "frequent urination thirst fatigue", "target": "diabetes", "input": "..."},
+    {"raw_question": "high blood sugar thirst weight loss", "target": "diabetes", "input": "..."},
+    {"raw_question": "runny nose sneezing throat pain", "target": "common cold", "input": "..."},
+    {"raw_question": "cough sore throat congestion fever", "target": "common cold", "input": "..."},
+    {"raw_question": "chest pain breathing difficulty fever", "target": "pneumonia", "input": "..."},
+    {"raw_question": "chest congestion cough shortness breath", "target": "pneumonia", "input": "..."},
+]
+
+query = "fever headache stomach pain vomiting"
+MAX_TEST = 500  # small budget to test diversity
+
+print("=== Variant A λ=0.6 ===")
+parts_a = mmr_select(examples, query, MAX_TEST, lam=0.6)
+for p in parts_a:
+    label = p.split("A: ")[-1].strip()
+    q = p.split("\n")[0].replace("Q: ", "")
+    print(f"  [{label:12s}] {q}")
+print(f"  Total: {len(parts_a)}")
+
+print("\n=== Variant B λ=0.7 (more relevance) ===")
+parts_b = mmr_select(examples, query, MAX_TEST, lam=0.7)
+for p in parts_b:
+    label = p.split("A: ")[-1].strip()
+    q = p.split("\n")[0].replace("Q: ", "")
+    print(f"  [{label:12s}] {q}")
+print(f"  Total: {len(parts_b)}")
+
+print("\n=== Variant C λ=0.5 (pure balance) ===")
+parts_c = mmr_select(examples, query, MAX_TEST, lam=0.5)
+for p in parts_c:
+    label = p.split("A: ")[-1].strip()
+    q = p.split("\n")[0].replace("Q: ", "")
+    print(f"  [{label:12s}] {q}")
+print(f"  Total: {len(parts_c)}")
+
+print("\n=== Diversity check ===")
+# MMR should produce different labels; pure sim would pick two typhoids first
+labels_a = [p.split("A: ")[-1].strip() for p in parts_a]
+labels_b = [p.split("A: ")[-1].strip() for p in parts_b]
+print(f"V A labels: {labels_a}")
+print(f"V B labels: {labels_b}")
+
+# With λ=0.6 and small budget, MMR should not pick two examples of the same label
+dupes_a = len(labels_a) - len(set(labels_a))
+dupes_b = len(labels_b) - len(set(labels_b))
+print(f"Duplicate labels: A={dupes_a}, B={dupes_b} (lower is more diverse)")
+
+# Full budget test
+print("\n=== Full budget (30k) label distribution ===")
+parts_full = mmr_select(examples, query, MAX_CHARS, lam=0.6)
+from collections import Counter
+label_counts = Counter(p.split("A: ")[-1].strip() for p in parts_full)
+for label, count in sorted(label_counts.items()):
+    print(f"  {label}: {count}")
+print(f"Total: {len(parts_full)}")
+
+print("\nPROTO MMR OK")
+
+
+
+--- output ---
+File created successfully at: C:\tmp\proto_mmr.py (file state is current in your context — no need to Read it back)

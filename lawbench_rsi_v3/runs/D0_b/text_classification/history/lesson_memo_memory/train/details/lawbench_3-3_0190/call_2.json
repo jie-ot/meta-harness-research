@@ -1,0 +1,72 @@
+{
+  "call_id": "9e495ab5d85449b9812f746e343d7c1c",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791026190-aaFjIRT7DJy79cNL4gc1",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"lesson\": \"- 当事实片段仅包含程序性文字（如“经审理查明”“公诉机关指控称”“某市人民检察院”）而未出现具体行为描述时，模型应避免直接推断罪名，而是标记为信息不足或等待补充事实。\\n- 若事实中只出现地点、身份或机构名称等背景信息，而没有明确的违法行为细节，切勿依据这些背景信息自行猜测罪名。\\n- 在出现“...罪名;...罪名”格式的答案时，必须确保每个罪名都对应事实中明确提到的不同违法行为；若事实只描述单一行为，则只输出单一罪名。\\n- 当事实中出现“...经审理查明，20...”等截断或不完整的句子时，模型应识别信息缺失并不做臆断，而是提示需要完整的事实描述。\\n- 对于多罪名的判定，必须依据事实中出现的具体行为要素（如“行贿”“组织卖淫”“非法获取个人信息”等），而不是仅凭关键词或常见罪名模板进行匹配。\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model often misidentifies crime due to insufficient context, picks generic crime, misinterprets partial text, fails to handle multiple crimes, misreads \"经审理查明\" etc. Need to base on observable signals: e.g., when fact snippet is truncated, when includes \"经审理查明\" but no substantive description, when includes location only, when includes \"公诉机关指控称\" but no details, when includes \"什邡市人民检察院\" etc. So rules: 1) If factual description lacks substantive conduct details, avoid guessing; output \"无法确定\" or request more info. 2) When multiple crimes are possible, rely on explicit mention of acts in fact, not just generic terms. 3) Recognize that headings like \"经审理查明\" are procedural and not substantive; need to parse subsequent content. 4) Avoid using only location or institution names to infer crime. 5) For multiple charges, separate with semicolon and ensure each matches distinct factual element.\n\nWe need to output JSON with \"lesson\": \"- 规律1\\n- 规律2\\n- ...\" Provide up to 5.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model often misidentifies crime due to insufficient context, picks generic crime, misinterprets partial text, fails to handle multiple crimes, misreads \"经审理查明\" etc. Need to base on observable signals: e.g., when fact snippet is truncated, when includes \"经审理查明\" but no substantive description, when includes location only, when includes \"公诉机关指控称\" but no details, when includes \"什邡市人民检察院\" etc. So rules: 1) If factual description lacks substantive conduct details, avoid guessing; output \"无法确定\" or request more info. 2) When multiple crimes are possible, rely on explicit mention of acts in fact, not just generic terms. 3) Recognize that headings like \"经审理查明\" are procedural and not substantive; need to parse subsequent content. 4) Avoid using only location or institution names to infer crime. 5) For multiple charges, separate with semicolon and ensure each matches distinct factual element.\n\nWe need to output JSON with \"lesson\": \"- 规律1\\n- 规律2\\n- ...\" Provide up to 5.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model often misidentifies crime due to insufficient context, picks generic crime, misinterprets partial text, fails to handle multiple crimes, misreads \"经审理查明\" etc. Need to base on observable signals: e.g., when fact snippet is truncated, when includes \"经审理查明\" but no substantive description, when includes location only, when includes \"公诉机关指控称\" but no details, when includes \"什邡市人民检察院\" etc. So rules: 1) If factual description lacks substantive conduct details, avoid guessing; output \"无法确定\" or request more info. 2) When multiple crimes are possible, rely on explicit mention of acts in fact, not just generic terms. 3) Recognize that headings like \"经审理查明\" are procedural and not substantive; need to parse subsequent content. 4) Avoid using only location or institution names to infer crime. 5) For multiple charges, separate with semicolon and ensure each matches distinct factual element.\n\nWe need to output JSON with \"lesson\": \"- 规律1\\n- 规律2\\n- ...\" Provide up to 5.",
+            "reasoning_content": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model often misidentifies crime due to insufficient context, picks generic crime, misinterprets partial text, fails to handle multiple crimes, misreads \"经审理查明\" etc. Need to base on observable signals: e.g., when fact snippet is truncated, when includes \"经审理查明\" but no substantive description, when includes location only, when includes \"公诉机关指控称\" but no details, when includes \"什邡市人民检察院\" etc. So rules: 1) If factual description lacks substantive conduct details, avoid guessing; output \"无法确定\" or request more info. 2) When multiple crimes are possible, rely on explicit mention of acts in fact, not just generic terms. 3) Recognize that headings like \"经审理查明\" are procedural and not substantive; need to parse subsequent content. 4) Avoid using only location or institution names to infer crime. 5) For multiple charges, separate with semicolon and ensure each matches distinct factual element.\n\nWe need to output JSON with \"lesson\": \"- 规律1\\n- 规律2\\n- ...\" Provide up to 5."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 528,
+      "prompt_tokens": 933,
+      "total_tokens": 1461,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000133257,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000133257,
+        "upstream_inference_prompt_cost": 3.4521e-05,
+        "upstream_inference_completions_cost": 9.8736e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

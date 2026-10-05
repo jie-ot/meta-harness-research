@@ -1,0 +1,41 @@
+Bash
+
+command:
+python -c "
+import json
+log = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/LawBench/decayed_confusion_memory/gpt-oss-120b/log.jsonl'
+lines = open(log, encoding='utf-8').readlines()
+print(f'Total entries: {len(lines)}')
+# Look at last 10 entries
+for line in lines[-10:]:
+    d = json.loads(line)
+    print(f'correct={d.get(\"was_correct\")}, pred={repr(d.get(\"prediction\",\"\")[:60])}, gt={repr(d.get(\"ground_truth\",\"\")[:60])}')
+    meta = d.get('metadata', {})
+    print(f'  num_selected={meta.get(\"num_selected\")}, num_confusion_pairs={meta.get(\"num_confusion_pairs\")}')
+"
+
+
+description: Read LawBench decayed_confusion trace tail
+
+--- output ---
+Total entries: 404
+correct=None, pred='', gt=''
+  num_selected=None, num_confusion_pairs=None
+correct=None, pred='', gt=''
+  num_selected=None, num_confusion_pairs=None
+correct=None, pred='', gt=''
+  num_selected=None, num_confusion_pairs=None
+correct=None, pred='', gt=''
+  num_selected=None, num_confusion_pairs=None
+correct=None, pred='', gt=''
+  num_selected=None, num_confusion_pairs=None
+correct=None, pred='', gt=''
+  num_selected=None, num_confusion_pairs=None
+correct=None, pred='', gt=''
+  num_selected=None, num_confusion_pairs=None
+correct=None, pred='', gt=''
+  num_selected=None, num_confusion_pairs=None
+correct=None, pred='', gt=''
+  num_selected=None, num_confusion_pairs=None
+correct=None, pred='', gt=''
+  num_selected=None, num_confusion_pairs=None

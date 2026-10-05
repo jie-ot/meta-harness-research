@@ -1,0 +1,31 @@
+Bash
+
+command:
+cd "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification" && uv run python proto_iter12c.py 2>&1
+
+description: Run third prototype comparison
+
+--- output ---
+LawBench: 150 total, 41 correct (27%), 109 errors
+Symptom2Disease: 150 total, 117 correct (78%), 33 errors
+
+=== LawBench (test 150-200) ===
+  baseline (all examples)                rank@hit= 25.6  MRR=0.065  found=17/50
+  baseline (correct-only)                rank@hit= 14.6  MRR=0.065  found=15/50
+  correct-primary 70/30                  rank@hit=  8.5  MRR=0.063  found=11/50
+  correct-primary 80/20                  rank@hit=  7.6  MRR=0.062  found=10/50
+  correct-only (no errors)               rank@hit=  7.6  MRR=0.062  found=10/50
+  recency interleave                     rank@hit= 25.6  MRR=0.062  found=17/50
+
+=== Symptom2Disease (test 150-200) ===
+  baseline (all examples)                rank@hit= 21.0  MRR=0.119  found=50/50
+  baseline (correct-only)                rank@hit= 21.4  MRR=0.117  found=47/50
+  correct-primary 80/20                  rank@hit=  8.4  MRR=0.102  found=24/50
+  correct-only (no errors)               rank@hit=  8.0  MRR=0.101  found=23/50
+  recency interleave                     rank@hit= 22.9  MRR=0.115  found=50/50
+
+=== Label coverage: how many unique targets in correct vs full pool? ===
+  LawBench: correct_pool=34 labels, full=116, lost_by_correct_filter=82
+  S2D: correct_pool=22 labels, full=22, lost_by_correct_filter=0
+
+Done.

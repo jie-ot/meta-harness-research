@@ -1,0 +1,72 @@
+{
+  "call_id": "fa01227617c346859d209fddfcf6e521",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791041418-BFUHlFg1mQcTrP1EMc5h",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant intentionally set fire to a warehouse, causing significant property damage, which corresponds to the crime of arson (放火). He also used a knife to threaten a taxi driver and forcibly took cash, which matches the crime of robbery/snatching (抢夺) as per the provided label list.\",\n  \"final_answer\": \"放火;抢夺\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine charges based on facts.\n\nFact (一): Li set fire to warehouse, causing damage ~50万元. That's arson. The label list includes \"放火\" and \"失火\". In examples, fire caused by intentional act is labeled \"放火\". \"失火\" used for accidental fire? Example: Wu case: set fire to house, labeled \"放火\". So use \"放火\". Also could be \"危害公共安全\"? But label list includes \"放火\". So first charge: 放火.\n\nFact (二): Li robbed a taxi driver with a knife, took 137 yuan. That's robbery? The label list includes \"抢夺\" (snatching) and \"抢劫\". The difference: 抢夺 is taking property by force or threat without using weapon? Actually Chinese law: 抢夺 is taking property by force or threat without using weapon? Robbery (抢劫) is using violence or threat to obtain property. Here he used a knife to threaten, took cash. That's robbery (抢劫). However label list includes \"抢夺\" but not \"抢劫\". In earlier examples, they used \"抢夺\" for similar scenario: e.g., Zhao case: snatching bags, labeled \"抢夺\". For robbery with weapon, maybe also \"抢夺\"? The list does not have \"抢劫\". So we must use \"抢夺\". But check other examples: In earlier example with Hu case (抢夺) they described using motorcycle to snatch bag, labeled \"抢夺\". So \"抢夺\" covers snatching. For robbery with threat, maybe also \"抢夺\". There's no \"抢劫\" label. So we assign \"抢夺\". Also could be \"强行抢劫\"? Not in list.\n\nThus final answer: 放火;抢夺\n\nCheck if any other charges: maybe \"非法占有\" but not a label. So final.\n\nReturn JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "reasoning": "We need to determine charges based on facts.\n\nFact (一): Li set fire to warehouse, causing damage ~50万元. That's arson. The label list includes \"放火\" and \"失火\". In examples, fire caused by intentional act is labeled \"放火\". \"失火\" used for accidental fire? Example: Wu case: set fire to house, labeled \"放火\". So use \"放火\". Also could be \"危害公共安全\"? But label list includes \"放火\". So first charge: 放火.\n\nFact (二): Li robbed a taxi driver with a knife, took 137 yuan. That's robbery? The label list includes \"抢夺\" (snatching) and \"抢劫\". The difference: 抢夺 is taking property by force or threat without using weapon? Actually Chinese law: 抢夺 is taking property by force or threat without using weapon? Robbery (抢劫) is using violence or threat to obtain property. Here he used a knife to threaten, took cash. That's robbery (抢劫). However label list includes \"抢夺\" but not \"抢劫\". In earlier examples, they used \"抢夺\" for similar scenario: e.g., Zhao case: snatching bags, labeled \"抢夺\". For robbery with weapon, maybe also \"抢夺\"? The list does not have \"抢劫\". So we must use \"抢夺\". But check other examples: In earlier example with Hu case (抢夺) they described using motorcycle to snatch bag, labeled \"抢夺\". So \"抢夺\" covers snatching. For robbery with threat, maybe also \"抢夺\". There's no \"抢劫\" label. So we assign \"抢夺\". Also could be \"强行抢劫\"? Not in list.\n\nThus final answer: 放火;抢夺\n\nCheck if any other charges: maybe \"非法占有\" but not a label. So final.\n\nReturn JSON with reasoning and final answer.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine charges based on facts.\n\nFact (一): Li set fire to warehouse, causing damage ~50万元. That's arson. The label list includes \"放火\" and \"失火\". In examples, fire caused by intentional act is labeled \"放火\". \"失火\" used for accidental fire? Example: Wu case: set fire to house, labeled \"放火\". So use \"放火\". Also could be \"危害公共安全\"? But label list includes \"放火\". So first charge: 放火.\n\nFact (二): Li robbed a taxi driver with a knife, took 137 yuan. That's robbery? The label list includes \"抢夺\" (snatching) and \"抢劫\". The difference: 抢夺 is taking property by force or threat without using weapon? Actually Chinese law: 抢夺 is taking property by force or threat without using weapon? Robbery (抢劫) is using violence or threat to obtain property. Here he used a knife to threaten, took cash. That's robbery (抢劫). However label list includes \"抢夺\" but not \"抢劫\". In earlier examples, they used \"抢夺\" for similar scenario: e.g., Zhao case: snatching bags, labeled \"抢夺\". For robbery with weapon, maybe also \"抢夺\"? The list does not have \"抢劫\". So we must use \"抢夺\". But check other examples: In earlier example with Hu case (抢夺) they described using motorcycle to snatch bag, labeled \"抢夺\". So \"抢夺\" covers snatching. For robbery with threat, maybe also \"抢夺\". There's no \"抢劫\" label. So we assign \"抢夺\". Also could be \"强行抢劫\"? Not in list.\n\nThus final answer: 放火;抢夺\n\nCheck if any other charges: maybe \"非法占有\" but not a label. So final.\n\nReturn JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": "We need to determine charges based on facts.\n\nFact (一): Li set fire to warehouse, causing damage ~50万元. That's arson. The label list includes \"放火\" and \"失火\". In examples, fire caused by intentional act is labeled \"放火\". \"失火\" used for accidental fire? Example: Wu case: set fire to house, labeled \"放火\". So use \"放火\". Also could be \"危害公共安全\"? But label list includes \"放火\". So first charge: 放火.\n\nFact (二): Li robbed a taxi driver with a knife, took 137 yuan. That's robbery? The label list includes \"抢夺\" (snatching) and \"抢劫\". The difference: 抢夺 is taking property by force or threat without using weapon? Actually Chinese law: 抢夺 is taking property by force or threat without using weapon? Robbery (抢劫) is using violence or threat to obtain property. Here he used a knife to threaten, took cash. That's robbery (抢劫). However label list includes \"抢夺\" but not \"抢劫\". In earlier examples, they used \"抢夺\" for similar scenario: e.g., Zhao case: snatching bags, labeled \"抢夺\". For robbery with weapon, maybe also \"抢夺\"? The list does not have \"抢劫\". So we must use \"抢夺\". But check other examples: In earlier example with Hu case (抢夺) they described using motorcycle to snatch bag, labeled \"抢夺\". So \"抢夺\" covers snatching. For robbery with threat, maybe also \"抢夺\". There's no \"抢劫\" label. So we assign \"抢夺\". Also could be \"强行抢劫\"? Not in list.\n\nThus final answer: 放火;抢夺\n\nCheck if any other charges: maybe \"非法占有\" but not a label. So final.\n\nReturn JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 498,
+      "prompt_tokens": 18171,
+      "total_tokens": 18669,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 452,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00063477,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00063477,
+        "upstream_inference_prompt_cost": 0.00054513,
+        "upstream_inference_completions_cost": 8.964e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the facts describe the misappropriation of money belonging to a private company or other non‑government entity (e.g., company funds, client payments) rather than state or public treasury funds, the
+- If the factual description indicates that the offender used their official position or entrusted authority to appropriate property for personal gain, rather than physically taking or stealthily removi
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- If the factual scenario describes fraud that is carried out through the creation, signing, or performance of a contract (e.g., false representation of a business role, fictitious project, or fabricate
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:中山市第一市区人民检察院指控：2010年4月27日，被告人陈某与他人成立中山市依雅电子商务有限公司（以下简称依雅公司）。2012年1月至2013年7月份，被告人陈某利用其任中山市太力家庭用品制造有限公司（以下简称太力公司）电子商务部副经理的职务便利，在未经该公司总经理或董事长审批的情形下，以低于公司规定售价向中山市依雅电子商务有限公司出售货品，侵吞太力公司财产人民币632616.17元。2013年9月23日，被告人陈某接公安机关电话通知后主动投案。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

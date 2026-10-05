@@ -1,0 +1,41 @@
+Bash
+
+command: python .prototypes/charge_cooccurrence_count_memory.py
+description: Run prototype B mechanism check
+
+--- output ---
+=== Graph construction ===
+nodes: 23
+  受贿: {'滥用职权': 1, '贪污': 1}
+  盗窃: {'掩饰、隐瞒犯罪所得、犯罪所得收益': 1, '诈骗': 1, '掩饰、隐瞒犯罪所得': 1, '破坏电力设备': 1}
+  故意伤害: {'聚众斗殴': 1, '非法持有、私藏枪支、弹药': 1, '故意毁坏财物': 1, '寻衅滋事': 1}
+  破坏电力设备: {'盗窃': 1}
+  非法种植毒品原植物: {}
+
+=== S1 variant comparison: expansion thresholds ===
+min_support=1 ratio=0.3: 6/6 scenarios differ
+min_support=2 ratio=0.5: 6/6 scenarios differ
+min_support=3 ratio=0.6: 6/6 scenarios differ
+
+=== Chosen variant: min_support=2, ratio=0.5 ===
+FAIL  ['受贿', '滥用职权'] -> []   (both seeds already present)
+FAIL  ['故意伤害'] -> []   (singleton seed, strong companion)
+FAIL  ['盗窃'] -> []   (closed neighbourhood -> must NOT inflate)
+FAIL  ['破坏电力设备'] -> []   (singleton, no support>=2 -> must NOT inflate)
+FAIL  ['贪污', '挪用公款'] -> []   (mutual pair, stable)
+FAIL  ['开设赌场', '赌博'] -> []   (mutual pair, stable)
+
+=== S2 mask-run cardinality ===
+FAIL  expected 1 got 2  :: 指控被告单位通辽市某商业广场有限公司、被告人沙某某的行为触犯了《中华...
+FAIL  expected 1 got 2  :: 被告人郭某的行为触犯了《中华人民共和国刑法》××之规定，构成××。郭...
+FAIL  expected 1 got 2  :: 公诉机关认为，被告人李某的行为已构成××，并提出判处××至一年六个月...
+FAIL  expected 2 got 5  :: 事实:被告人以××手段实施××、××行为，触犯了《中华人民共和国刑法...
+FAIL  expected 2 got 1  :: 对被告人应以××;××追究刑事责任。...
+PASS  expected 0 got 0  :: 被告人盗窃路灯电缆线，共盗得电缆线约210米。...
+
+=== End-to-end: retrieve -> plan count -> LLM arbitrate -> expand ===
+  slots=0 seeds=['受贿', '滥用职权', '故意伤害', '故意毁坏财物'] -> ['受贿', '滥用职权', '故意伤害', '故意毁坏财物']
+  slots=1 seeds=['故意伤害', '故意毁坏财物', '受贿', '滥用职权'] -> ['故意伤害']
+  slots=0 seeds=['受贿', '滥用职权', '故意伤害', '故意毁坏财物'] -> ['受贿', '滥用职权', '故意伤害', '故意毁坏财物']
+
+PROTOTYPE B REVIEW: 6 expansion scenario(s) differ

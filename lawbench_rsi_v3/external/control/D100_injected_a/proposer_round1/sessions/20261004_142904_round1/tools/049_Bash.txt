@@ -1,0 +1,27 @@
+Bash
+
+command: python .prototypes/act_decomposition_union_memory.py
+description: Run candidate B prototype validation
+
+--- output ---
+variant V1 whole-fact single call: 2/5 exact
+variant V2 +per-act union: 4/5 exact
+variant V3 +calibration (adopted): 4/5 exact
+act segmentation on 0136: 3 acts
+spurious table: {'诈骗': 1, '敲诈勒索': 1, '行贿': 1, '虚开增值税专用发票': 1, '挪用公款': 1}
+size_by_acts: {3: {2: 1}, 1: {2: 2, 1: 2}}
+  lawbench_3-3_0136: whole-fact [罪名]盗窃<eoa> -> union '破坏交通设施;盗窃' target='破坏交通设施;盗窃' OK
+  lawbench_3-3_0112: whole-fact [罪名]伪造货币<eoa> -> union '伪造货币;故意伤害' target='伪造货币;故意伤害' OK
+  lawbench_3-3_0346: whole-fact [罪名]诈骗;敲诈勒索;非法拘禁<eoa> -> union '非法拘禁' target='非法拘禁' OK
+  lawbench_3-3_0046: whole-fact [罪名]单位行贿;行贿;虚开增值税专用发票<eoa> -> union '虚开增值税专用发票;单位行贿' target='虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;单位行贿' MISS
+  lawbench_3-3_0022: whole-fact [罪名]挪用公款<eoa> -> union '挪用资金' target='挪用资金' OK
+PART 1: SOME MISSES
+cold-start answer: '[罪名]盗窃<eoa>' | acts: 1
+per-act answer: '[罪名]盗窃<eoa>' | acts: 3 | calls: 3
+spurious after learning: {'诈骗': 2, '敲诈勒索': 2, '行贿': 2, '虚开增值税专用发票': 2}
+expected size for a 3 act fact: None
+calls with an empty act: 2 for 1 acts
+state round-trip OK | state bytes: 1166
+PART 2: OK
+REAL IMPORT: ok
+RESULT: PASS (only the documented 0046 name miss)

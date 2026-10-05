@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- If the factual scenario describes fraud that is carried out through the creation, signing, or performance of a contract (e.g., false representation of a business role, fictitious project, or fabricate
+- If the facts describe the use of a false or deceptive contract (e.g., a sale, lease, transfer agreement) to obtain money or property, classify the offense as “合同诈骗” rather than the generic “诈骗”.
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，2013年10月28日石家庄市公安局新华分局决定对河北长丰筑业土地整理有限公司涉嫌合同诈骗罪一案立案侦查，后将公司负责人林某刑事拘留，被告人董某某在明知司法机关及有关主管部门侦办该案情况下，仍将其所保管的涉案公司的会计凭证、会计账簿等文件转移并藏匿。
+上述认定事实，被告人董某某在开庭审理过程中无异议，表示自愿认罪。并有公安机关《受理案件登记表》、《新华分局系统外办理案件审批表》，中共河北省纪律检查委员会致河北省公安厅将河北长丰筑业土地开发整理有限公司涉嫌合同诈骗犯罪一案移送河北省公安厅的书函，河北省公安厅冀公（经侦）指管字（2013）12号指定管辖决定书及石家庄市公安局新华分局经侦大队《受案登记表》，证人张某某、张某某、刘某某、刘某某证言，石家庄市公安局新华分局《扣押决定书》，饶阳县人民检察院《调取证据通知书》及出具《董某某涉嫌犯罪情况说明》，中共河北省纪律检查委员会第三纪检监察室案件移送书函及涉案人林某在河北省纪检监察机关谈话笔录，公安机关出具书面情况说明与被告人董某某供述相互印证，证实被告人董某某在明知司法机关及有关主管部门在侦办该案情况下，仍将其保管的涉案公司的会计凭证、会计账簿等文件转移并藏匿的主要事实；有公安机关《在逃人员登记／撤销表》、公安机关出具抓获证明证实案发后被告人董某某被网上追逃及抓获归案情况。有公安机关调取被告人常住人口基本信息、被告人户籍所在地廊坊市公安局广阳分局小廊坊派出所出具书面证明证实被告人董某某基本身份情况；另，廊坊市公安局广阳分局小廊坊派出所出具书面证明，写明，未发现被告人在该辖区居住期间违法犯罪行为；公安机关查询《违法犯罪人员DNA样本信息登记表》并出具《违法犯罪嫌疑人信息查询登记表》显示，未发现被告人违法犯罪前科。
+以上证据经当庭示证，并经控辩双方质证，充分确实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

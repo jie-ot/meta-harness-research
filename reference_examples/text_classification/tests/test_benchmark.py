@@ -121,11 +121,12 @@ class BenchmarkTests(unittest.IsolatedAsyncioTestCase):
                 [model],
             )
 
+            prefix = benchmark._inner_loop_command()
+            self.assertNotEqual(prefix[0], "env")
             for _, command in [val_runs[0], test_runs[0]]:
-                self.assertEqual(command[:9], benchmark._inner_loop_command())
+                self.assertEqual(command[: len(prefix)], prefix)
 
-            env = os.environ.copy()
-            env["PYTHONPATH"] = val_runs[0][1][1].removeprefix("PYTHONPATH=")
+            env = benchmark._worker_env()
             probe = [
                 sys.executable,
                 "-c",

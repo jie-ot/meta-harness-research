@@ -1,0 +1,32 @@
+Bash
+
+command:
+python -c "
+import json, os
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+datasets = ['USPTO', 'Symptom2Disease', 'LawBench']
+systems = ['fixed_confusion_memory', 'idf_confusion_memory', 'adaptive_tokenizer_confusion_memory']
+for d in datasets:
+    for s in systems:
+        p = os.path.join(base, d, s)
+        if not os.path.isdir(p): continue
+        for sub in os.listdir(p):
+            vf = os.path.join(p, sub, 'val.json')
+            if os.path.exists(vf):
+                with open(vf) as f:
+                    v = json.load(f)
+                print(f'{d}/{s}: acc={v.get(\"accuracy\",\"?\")}')"
+
+
+description: Read val.json for iter9 systems and frontier
+
+--- output ---
+USPTO/fixed_confusion_memory: acc=0.26666666666666666
+USPTO/idf_confusion_memory: acc=0.23333333333333334
+USPTO/adaptive_tokenizer_confusion_memory: acc=0.26666666666666666
+Symptom2Disease/fixed_confusion_memory: acc=0.9
+Symptom2Disease/idf_confusion_memory: acc=0.88
+Symptom2Disease/adaptive_tokenizer_confusion_memory: acc=0.9
+LawBench/fixed_confusion_memory: acc=0.36
+LawBench/idf_confusion_memory: acc=0.34
+LawBench/adaptive_tokenizer_confusion_memory: acc=0.38

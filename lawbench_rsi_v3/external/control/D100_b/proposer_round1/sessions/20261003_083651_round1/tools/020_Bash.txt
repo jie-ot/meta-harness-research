@@ -1,0 +1,22 @@
+Bash
+
+command: python .prototypes/label_glossary_memory.py
+description: Run candidate B prototype
+
+--- output ---
+=== V1 (glossary after examples) ===
+Prompt length: 959 chars
+✓ Canonical labels present in prompt
+Response: {"reasoning": "test", "final_answer": "故意毁坏财物"}
+
+=== V2 (glossary as header) ===
+Prompt length: 862 chars
+✓ Glossary precedes examples in V2
+Response: {"reasoning": "test", "final_answer": "故意毁坏财物"}
+
+=== Label accumulation test ===
+Accumulated labels: ['合同诈骗', '故意伤害', '故意毁坏财物', '盗窃']
+✓ Labels correctly extracted including multi-label ground truths
+
+=== DECISION: V1 (glossary appended after examples) selected ===
+PROTOTYPE PASSED

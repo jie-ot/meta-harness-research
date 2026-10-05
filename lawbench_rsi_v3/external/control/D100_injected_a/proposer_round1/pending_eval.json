@@ -1,0 +1,42 @@
+{
+  "iteration": 1,
+  "candidates": [
+    {
+      "name": "canonical_charge_lexicon_memory",
+      "file": "agents/canonical_charge_lexicon_memory.py",
+      "hypothesis": "The largest miss bucket (~26/100) is a naming failure, not a reasoning failure: the model names the right conduct with a non-statutory string and exact-match scoring gives it zero. If the system harvests an exact-string lexicon from every observed ground truth and deterministically rewrites its own answer into a lexicon member before returning it, those items convert without changing how the model reasons. Verbatim whole-payload rules must be tried before per-part resolution, because some needed rewrites (e.g. a two-character colloquial name to a statutory one) share no characters with the target and are unrecoverable by any similarity metric.",
+      "axis": "exploitation",
+      "base_system": "confusion_disambiguation_memory",
+      "components": [
+        "statutory-string lexicon harvested from ground truth",
+        "verbatim whole-payload rewrite rules (zero-overlap safe)",
+        "part-wise alignment rules on equal-cardinality pairs",
+        "deterministic output normalization, no extra LLM call",
+        "lexicon injected into the prompt as allowed vocabulary",
+        "character-bigram similarity instead of [A-Za-z0-9]+ tokenization",
+        "terse single retry on empty output"
+      ],
+      "code_hash": "2c1d21a5d90f81f7fa271c66aac9ceb901c5d631cf32fe667f2296873b306f58",
+      "slot": "A"
+    },
+    {
+      "name": "act_decomposition_union_memory",
+      "file": "agents/act_decomposition_union_memory.py",
+      "hypothesis": "A single call over a long multi-act narrative collapses to the most salient charge, so facts whose target holds 2-3 charges score zero (~8/100), and the same whole-narrative call invites extra charges (~4/100). If the fact is segmented into acts on structural markers and each act is charged in its own short call with the union assembled system-side, the undercount is recovered; a learned answer-cardinality prior conditioned on the detected act count then trims surplus, on the condition that the prior is only a prior — it may not cut below the number of acts that each independently produced a charge, and a size bucket is trusted only after a minimum number of observations.",
+      "axis": "exploration",
+      "base_system": "confusion_disambiguation_memory",
+      "components": [
+        "act segmentation on structural markers with paragraph fallback",
+        "one LLM call per act, union assembled system-side",
+        "spurious-invention memory strips recurring unconfirmed charges",
+        "answer-cardinality prior conditioned on detected act count",
+        "grounded floor: prior never cuts below per-act evidenced charges",
+        "MIN_BUCKET_OBS guard before a size bucket is consulted",
+        "terse per-act retry when an act yields nothing",
+        "no string rewriting and no statutory-name inventory (deliberately disjoint from candidate A)"
+      ],
+      "code_hash": "342f810e312a188717a30af6b395e34f4f84e78272e454615734e31260272565",
+      "slot": "B"
+    }
+  ]
+}

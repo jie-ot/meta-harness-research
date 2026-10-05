@@ -1,0 +1,189 @@
+Bash
+
+command:
+cat > /tmp/proto_centroid.py << 'PYEOF'
+"""Prototype: label centroid routing."""
+import re
+from collections import defaultdict
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+
+def _has_cjk(text):
+    return bool(_CJK_RE.search(text))
+
+def _tok_word(text):
+    return list(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+def _tok_bigram(text):
+    t = re.sub(r'\s+', ' ', text.strip())
+    if len(t) < 2: return [t] if t else []
+    return [t[i:i+2] for i in range(len(t)-1)]
+
+def _tokenize(text):
+    return _tok_bigram(text) if _has_cjk(text) else _tok_word(text)
+
+def _jaccard(a_set, b_set):
+    if not a_set and not b_set: return 0.0
+    return len(a_set & b_set) / len(a_set | b_set)
+
+# --- Centroid: token -> count across all label examples ---
+class LabelCentroid:
+    def __init__(self):
+        self.token_counts = defaultdict(int)  # token -> freq
+        self.n = 0  # number of examples
+
+    def update(self, tokens):
+        self.n += 1
+        for t in tokens:
+            self.token_counts[t] += 1
+
+    def as_frozenset(self, threshold=0.3):
+        """Tokens appearing in at least threshold fraction of examples."""
+        if self.n == 0:
+            return frozenset()
+        return frozenset(t for t, c in self.token_counts.items() if c / self.n >= threshold)
+
+    def full_set(self):
+        return frozenset(self.token_counts.keys())
+
+# --- Simulate a small dataset ---
+# Each example: (input, label)
+examples = [
+    ("the patient presents with chest pain and shortness of breath", "CardiacEvent"),
+    ("sharp stabbing chest pain radiating to left arm", "CardiacEvent"),
+    ("chest tightness on exertion relieved by rest", "CardiacEvent"),
+    ("severe headache with stiff neck and fever", "Meningitis"),
+    ("photophobia and neck rigidity with confusion", "Meningitis"),
+    ("sudden severe headache worst of life", "Meningitis"),
+    ("rash butterfly shaped across face and nose", "Lupus"),
+    ("joint pain fatigue and facial rash", "Lupus"),
+    ("inflammation of kidneys with positive ANA", "Lupus"),
+    ("fever cough and difficulty breathing", "Pneumonia"),
+    ("productive cough with green sputum and fever", "Pneumonia"),
+    ("consolidation on chest xray with fever", "Pneumonia"),
+]
+
+# Build pool and centroids
+pool = []
+centroids = defaultdict(LabelCentroid)
+
+for inp, label in examples:
+    toks = frozenset(_tokenize(inp))
+    pool.append({"input": inp, "label": label, "tokens": toks})
+    centroids[label].update(list(toks))
+
+# Test query 1 - should route to CardiacEvent
+query1 = "patient complains of left sided chest pressure"
+q1_toks = frozenset(_tokenize(query1))
+
+print("=== Variant A: threshold=0.3 centroid ===")
+centroid_scores_a = {
+    lbl: _jaccard(q1_toks, c.as_frozenset(0.3))
+    for lbl, c in centroids.items()
+}
+print(f"Query: {query1}")
+for lbl, sc in sorted(centroid_scores_a.items(), key=lambda x: -x[1]):
+    print(f"  {lbl}: {sc:.3f}")
+
+print()
+print("=== Variant B: full centroid (union) ===")
+centroid_scores_b = {
+    lbl: _jaccard(q1_toks, c.full_set())
+    for lbl, c in centroids.items()
+}
+for lbl, sc in sorted(centroid_scores_b.items(), key=lambda x: -x[1]):
+    print(f"  {lbl}: {sc:.3f}")
+
+print()
+# Test query 2 - ambiguous
+query2 = "high fever and cough with chest pain"  # could be Pneumonia or Cardiac
+q2_toks = frozenset(_tokenize(query2))
+print(f"Query2: {query2}")
+centroid_scores2 = {
+    lbl: _jaccard(q2_toks, c.as_frozenset(0.3))
+    for lbl, c in centroids.items()
+}
+for lbl, sc in sorted(centroid_scores2.items(), key=lambda x: -x[1]):
+    print(f"  {lbl}: {sc:.3f}")
+print()
+
+# Now compare: flat similarity retrieval vs centroid-routed retrieval
+def flat_retrieve(query, pool, k=4):
+    q_toks = frozenset(_tokenize(query))
+    scored = sorted(pool, key=lambda ex: _jaccard(q_toks, ex["tokens"]), reverse=True)
+    return scored[:k]
+
+def centroid_retrieve(query, pool, centroids, top_labels=2, k=4, threshold=0.3):
+    q_toks = frozenset(_tokenize(query))
+    label_scores = {
+        lbl: _jaccard(q_toks, c.as_frozenset(threshold))
+        for lbl, c in centroids.items()
+    }
+    top_lbls = sorted(label_scores, key=lambda l: -label_scores[l])[:top_labels]
+    # Within-cluster retrieval
+    candidates = [ex for ex in pool if ex["label"] in top_lbls]
+    within = sorted(candidates, key=lambda ex: _jaccard(q_toks, ex["tokens"]), reverse=True)
+    used = set(id(ex) for ex in within[:k])
+    # Fill with global similarity
+    fill = sorted(
+        [ex for ex in pool if id(ex) not in used],
+        key=lambda ex: _jaccard(q_toks, ex["tokens"]), reverse=True
+    )
+    return within[:k] + fill[:max(0, k - len(within[:k]))]
+
+print("=== Retrieval comparison for Query1 ===")
+print("Flat top-4:", [(e["label"], e["input"][:40]) for e in flat_retrieve(query1, pool)])
+print("Centroid top-4:", [(e["label"], e["input"][:40]) for e in centroid_retrieve(query1, pool, centroids)])
+
+print()
+print("=== Retrieval comparison for Query2 (ambiguous) ===")
+print("Flat top-4:", [(e["label"], e["input"][:40]) for e in flat_retrieve(query2, pool)])
+print("Centroid top-4:", [(e["label"], e["input"][:40]) for e in centroid_retrieve(query2, pool, centroids)])
+
+# Test variant: threshold=0.5 (more restrictive centroid)
+print()
+print("=== Variant C: threshold=0.5 centroid ===")
+centroid_scores_c = {
+    lbl: _jaccard(q1_toks, c.as_frozenset(0.5))
+    for lbl, c in centroids.items()
+}
+for lbl, sc in sorted(centroid_scores_c.items(), key=lambda x: -x[1]):
+    print(f"  {lbl}: {sc:.3f}")
+PYEOF
+python /tmp/proto_centroid.py
+
+description: Prototype centroid routing logic
+
+--- output ---
+=== Variant A: threshold=0.3 centroid ===
+Query: patient complains of left sided chest pressure
+  CardiacEvent: 0.160
+  Pneumonia: 0.053
+  Meningitis: 0.050
+  Lupus: 0.043
+
+=== Variant B: full centroid (union) ===
+  CardiacEvent: 0.160
+  Pneumonia: 0.053
+  Meningitis: 0.050
+  Lupus: 0.043
+
+Query2: high fever and cough with chest pain
+  Pneumonia: 0.333
+  Meningitis: 0.167
+  CardiacEvent: 0.160
+  Lupus: 0.143
+
+=== Retrieval comparison for Query1 ===
+Flat top-4: [('CardiacEvent', 'the patient presents with chest pain and'), ('CardiacEvent', 'sharp stabbing chest pain radiating to l'), ('Meningitis', 'sudden severe headache worst of life'), ('Lupus', 'inflammation of kidneys with positive AN')]
+Centroid top-4: [('CardiacEvent', 'the patient presents with chest pain and'), ('CardiacEvent', 'sharp stabbing chest pain radiating to l'), ('Pneumonia', 'consolidation on chest xray with fever'), ('CardiacEvent', 'chest tightness on exertion relieved by ')]
+
+=== Retrieval comparison for Query2 (ambiguous) ===
+Flat top-4: [('Pneumonia', 'productive cough with green sputum and f'), ('Pneumonia', 'fever cough and difficulty breathing'), ('CardiacEvent', 'the patient presents with chest pain and'), ('Pneumonia', 'consolidation on chest xray with fever')]
+Centroid top-4: [('Pneumonia', 'productive cough with green sputum and f'), ('Pneumonia', 'fever cough and difficulty breathing'), ('Pneumonia', 'consolidation on chest xray with fever'), ('Meningitis', 'severe headache with stiff neck and feve')]
+
+=== Variant C: threshold=0.5 centroid ===
+  CardiacEvent: 0.125
+  Meningitis: 0.000
+  Lupus: 0.000
+  Pneumonia: 0.000

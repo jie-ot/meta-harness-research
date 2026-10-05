@@ -1,0 +1,29 @@
+Bash
+
+command: python .prototypes/canonical_charge_lexicon_memory.py
+description: Run candidate A validation prototype
+
+--- output ---
+variant V1 similarity-only: 6/7 exact
+variant V2 +verbatim payload: 7/7 exact
+variant V3 verbatim-first (adopted): 7/7 exact
+inventory size: 7
+payload rules: {'故意毁坏财物罪': {'故意毁坏财物': 1}, '侵犯注册商标专用权罪': {'假冒注册商标': 1}, '侵犯注册商标专用权': {'销售假冒注册商标的商品': 1}, '非法种植罂粟': {'非法种植毒品原植物': 1}, '非法制造枪支': {'非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物': 1}, '滥伐林木': {'盗伐林木': 1}, '开设赌场': {'赌博': 1}}
+learned aliases: {'故意毁坏财物罪': {'故意毁坏财物': 1}, '侵犯注册商标专用权罪': {'假冒注册商标': 1}, '侵犯注册商标专用权': {'销售假冒注册商标的商品': 1}, '非法种植罂粟': {'非法种植毒品原植物': 1}, '非法制造枪支': {'非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物': 1}, '滥伐林木': {'盗伐林木': 1}}
+  lawbench_3-3_0003: [罪名]故意毁坏财物罪<eoa> -> '故意毁坏财物' target='故意毁坏财物' OK
+  lawbench_3-3_0234: [罪名]侵犯注册商标专用权罪<eoa> -> '假冒注册商标' target='假冒注册商标' OK
+  lawbench_3-3_0482: [罪名]侵犯注册商标专用权<eoa> -> '销售假冒注册商标的商品' target='销售假冒注册商标的商品' OK
+  lawbench_3-3_0309: [罪名]非法种植罂粟<eoa> -> '非法种植毒品原植物' target='非法种植毒品原植物' OK
+  lawbench_3-3_0349: [罪名]非法制造枪支<eoa> -> '非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物' target='非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物' OK
+  lawbench_3-3_0329: [罪名]滥伐林木<eoa> -> '盗伐林木' target='盗伐林木' OK
+  lawbench_3-3_0287: [罪名]开设赌场<eoa> -> '赌博' target='赌博' OK
+  multi-charge passthrough: '虚开发票;盗窃'
+  enumeration truncation: '非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物'
+PART 1: ALL OK
+cold-start answer: '[罪名]侵犯注册商标专用权罪<eoa>' | meta keys: ['full_response', 'num_examples', 'num_lexicon', 'num_part_rules']
+post-learning answer: '[罪名]假冒注册商标<eoa>'
+empty-output path: '' | calls: 2
+state round-trip OK | state bytes: 278
+PART 2: OK
+REAL IMPORT: ok
+RESULT: PASS

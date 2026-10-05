@@ -1,0 +1,35 @@
+Bash [ERROR]
+
+command: python .prototypes/confusion_lesson_memory.py
+description: Run confusion_lesson_memory prototype
+
+--- output ---
+Exit code 1
+=== ConfusionLessonMemory Prototype ===
+
+[cold start] prompt prefix: 
+
+**Problem:**
+被告人李某某带领十余人阻止施工，持顶托将刘B打伤，刘A刘B均轻伤。
+
+{"reasonin…
+
+After learning:
+  examples stored: 3
+  lessons stored:  2
+  glossary size:   4
+
+  top lessons for assault+property query:
+    • When facts describe both physical assault causing injury AND property damage or 
+    • When the defendant gives money to a state official to obtain benefits, prefer 行贿
+  lesson Jaccard scores: [0.047, 0.233]
+
+[warm] prompt prefix: Q: 宋某持钢管殴打陈某甲，后打砸店铺内冰箱电脑等财物价值2609元。经鉴定陈某甲重伤六级。
+A: 故意伤害;故意毁坏财…
+Traceback (most recent call last):
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_b\text_classification\.prototypes\confusion_lesson_memory.py", line 219, in <module>
+    test_lesson_memory()
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_b\text_classification\.prototypes\confusion_lesson_memory.py", line 208, in test_lesson_memory
+    assert "Common mistakes" in out2, "Lesson section missing from warm prompt"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lesson section missing from warm prompt

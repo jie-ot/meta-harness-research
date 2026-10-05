@@ -1,0 +1,31 @@
+Bash
+
+command:
+python -c "
+import json
+
+# Quick self-critique: does two_pass_confusion_memory have a genuinely novel mechanism?
+# Check: predict() makes TWO LLM calls, second one uses confusion targets from tentative pred
+# learn_from_batch() stores examples + updates confusion with decay
+# This is NEW vs frontier: frontier looks up confusion from retrieved-example labels, 
+# this looks up from actual LLM tentative prediction
+# 
+# Does category_cluster_memory have a genuinely novel mechanism?
+# predict(): partitions pool into same-category and other, fills same-category first
+# learn_from_batch(): stores category_tag per example
+# This is NEW vs frontier: frontier ignores structural input category entirely
+
+print('Self-critique check:')
+print('two_pass_confusion_memory: Two LLM calls per predict, confusion lookup keyed on tentative prediction. Novel axis: C (selection algorithm). Different from all prior systems.')
+print('category_cluster_memory: Two-level retrieval hierarchy (category bucket then similarity). Novel axis: C (selection algorithm). Different from all prior systems.')
+print('Neither is a parameter variant of the frontier.')
+"
+
+
+description: Self-critique check on both implementations
+
+--- output ---
+Self-critique check:
+two_pass_confusion_memory: Two LLM calls per predict, confusion lookup keyed on tentative prediction. Novel axis: C (selection algorithm). Different from all prior systems.
+category_cluster_memory: Two-level retrieval hierarchy (category bucket then similarity). Novel axis: C (selection algorithm). Different from all prior systems.
+Neither is a parameter variant of the frontier.

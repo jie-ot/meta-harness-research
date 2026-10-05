@@ -1,0 +1,20 @@
+Bash [ERROR]
+
+command:
+python3 -c "
+import json, pathlib
+base = pathlib.Path('D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856')
+systems = ['adaptive_tokenizer_confusion_memory','anchor_recency_confusion_memory','discriminative_similarity_memory']
+datasets = ['USPTO','Symptom2Disease','LawBench']
+for ds in datasets:
+    for sys in systems:
+        p = base / ds / sys / 'gpt-oss-120b' / 'val.json'
+        if p.exists():
+            d = json.loads(p.read_text(encoding='utf-8'))
+            print(f'{ds}/{sys}: {d.get(\"accuracy\",\"?\")}')
+"
+
+description: Read val accuracy for iter12 systems per dataset
+
+--- output ---
+Exit code 49

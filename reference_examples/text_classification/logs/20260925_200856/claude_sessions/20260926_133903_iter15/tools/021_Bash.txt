@@ -1,0 +1,151 @@
+Bash
+
+command:
+cat > /tmp/proto_tentative.py << 'PROTO'
+"""
+Prototype: tentative-prediction-guided retrieval.
+- First pass: top-3 examples, call LLM, get tentative label
+- Look up confusion neighbors for that label
+- Second pass: rebuild context with confusion-targeted examples
+"""
+import json, re
+from collections import defaultdict
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+_WRAPPER_RE = re.compile(r'^\s*\[[^\]]*\]|<eoa>\s*$|\[[^\]]*\]\s*$', re.IGNORECASE)
+
+def _has_cjk(text):
+    return bool(_CJK_RE.search(text))
+
+def _tokenize_word(text):
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+def _tokenize_bigram(text):
+    t = re.sub(r'\s+', ' ', text.strip())
+    if len(t) < 2:
+        return frozenset([t]) if t else frozenset()
+    return frozenset(t[i:i+2] for i in range(len(t)-1))
+
+def _tokenize_adaptive(text):
+    return _tokenize_bigram(text) if _has_cjk(text) else _tokenize_word(text)
+
+def _jaccard(a, b):
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+def _normalize(pred):
+    if not pred: return pred
+    cleaned = _WRAPPER_RE.sub('', pred).strip()
+    return cleaned if cleaned else pred
+
+# Load LawBench trace
+log = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/LawBench/decayed_confusion_memory/gpt-oss-120b/log.jsonl'
+lines = open(log, encoding='utf-8').readlines()
+steps = [json.loads(l) for l in lines if json.loads(l).get('type')=='step']
+
+# Load memory state
+mem_path = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/LawBench/decayed_confusion_memory/gpt-oss-120b/memory.json'
+mem = json.load(open(mem_path, encoding='utf-8'))
+
+# Reconstruct examples and confusion from memory state
+examples = []
+for ex in mem['examples']:
+    restored = dict(ex)
+    if isinstance(restored.get('tokens'), list):
+        restored['tokens'] = frozenset(restored['tokens'])
+    else:
+        raw_q = restored.get('raw_question', restored.get('input', ''))
+        restored['tokens'] = _tokenize_adaptive(raw_q)
+    examples.append(restored)
+
+confusion = defaultdict(lambda: defaultdict(float))
+for pred, actuals in mem['confusion'].items():
+    for actual, cnt in actuals.items():
+        confusion[pred][actual] = float(cnt)
+
+print(f"Loaded {len(examples)} examples, {sum(len(v) for v in confusion.values())} confusion pairs")
+
+# Simulate tentative prediction logic (without actual LLM - just show what retrieval would select)
+# The key question: does looking at the TENTATIVE LABEL's confusion neighbors 
+# improve over looking at top-K examples' labels?
+
+def get_ranked(query_tokens, exs):
+    result = [(_jaccard(query_tokens, ex['tokens']), i, ex) for i, ex in enumerate(exs)]
+    result.sort(key=lambda x: (x[0], x[1]), reverse=True)
+    return result
+
+def confusion_targets_for(labels, confusion_matrix):
+    label_set = set(labels)
+    counts = defaultdict(float)
+    for lbl in labels:
+        row = confusion_matrix.get(lbl, {})
+        for actual, cnt in row.items():
+            if actual not in label_set:
+                counts[actual] += cnt
+    return [lbl for lbl, _ in sorted(counts.items(), key=lambda x: (-x[1], x[0]))]
+
+# Test: for error cases, compare:
+# A) current approach: confusion targets from top-3 retrieved example labels
+# B) tentative approach: confusion targets from the actual wrong prediction
+correct_help_a = 0
+correct_help_b = 0
+total_errors = 0
+
+for s in steps:
+    if s.get('ok'):
+        continue
+    # This is an error case
+    total_errors += 1
+    query = s.get('input_preview', '')
+    actual_pred = _normalize(s.get('pred', ''))
+    target = s.get('tgt', '')
+    
+    q_tok = _tokenize_adaptive(query)
+    ranked = get_ranked(q_tok, examples)
+    
+    # Approach A: top-3 labels from retrieval
+    top3_labels = [ex['target'] for _, _, ex in ranked[:3]]
+    targets_a = confusion_targets_for(top3_labels, confusion)
+    
+    # Approach B: use actual prediction as if it were tentative
+    targets_b = confusion_targets_for([actual_pred], confusion)
+    
+    # Check if target label would be in the confusion targets
+    in_a = target in targets_a
+    in_b = target in targets_b
+    
+    if in_b and not in_a:
+        correct_help_b += 1
+    elif in_a and not in_b:
+        correct_help_a += 1
+
+print(f"\nError cases: {total_errors}")
+print(f"Cases where tentative-pred (B) identifies the correct label, current (A) doesn't: {correct_help_b}")
+print(f"Cases where current (A) identifies the correct label, tentative-pred (B) doesn't: {correct_help_a}")
+print(f"Net improvement potential: {correct_help_b - correct_help_a}")
+
+# Also: how often does the correct label appear in B's confusion targets at all?
+hits_b = 0
+for s in steps:
+    if s.get('ok'): continue
+    actual_pred = _normalize(s.get('pred', ''))
+    target = s.get('tgt', '')
+    targets_b = confusion_targets_for([actual_pred], confusion)
+    if target in targets_b:
+        hits_b += 1
+
+print(f"\nCorrect label found in confusion targets (tentative pred approach): {hits_b}/{total_errors} = {hits_b/total_errors*100:.1f}%")
+PROTO
+python /tmp/proto_tentative.py
+
+description: Prototype tentative-prediction-guided retrieval on LawBench data
+
+--- output ---
+Loaded 200 examples, 41 confusion pairs
+
+Error cases: 146
+Cases where tentative-pred (B) identifies the correct label, current (A) doesn't: 48
+Cases where current (A) identifies the correct label, tentative-pred (B) doesn't: 0
+Net improvement potential: 48
+
+Correct label found in confusion targets (tentative pred approach): 48/146 = 32.9%

@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the victim is a person under custodial supervision (e.g., a prisoner) and the perpetrator is prison staff or other supervisory personnel, the appropriate charge is “虐待被监管人” rather than the generi
+- Only assign the charge of 故意伤害 when the defendant’s intentional act results in actual bodily injury (e.g., bruises, cuts, fractures) that meets the statutory injury threshold; if no injury or only a s
+- When the facts describe assault that caused injuries and the victim’s death, but the prosecution’s charge is for intentional injury (e.g., ‘故意伤害致轻伤致死’) rather than intentional homicide, classify the c
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:大名县人民检察院起诉书指控，2014年3月25日9时许，被告人张某在自家庄某处因故与本村席某甲发生争执，并引起打架，在打架过程中，被告人张某用撬杠将席某甲及其儿子席某丙、席某丁打伤。经大名县公安局物证鉴定室鉴定，席某甲的伤情为轻伤二级，席某丙、席某丁的伤情为轻微伤。为证实上述指控，公诉机关当庭宣读和出示的证据有被害人陈述、被告人供述、证人证言、法医学人体损伤程度鉴定书、现场勘查笔录及照片等。公诉机关认为，被告人张某故意伤害他人身体致人轻伤，其行为已触犯《中华人民共和国刑法》××××之规定，犯罪事实清楚，证据确实、充分，应当以××追究其刑事责任。
+附带民事诉讼原告人及其诉讼代理人对本案的定性不持异议，要求被告人赔偿因其行为给附带民事诉讼原告人造成的各项经济损失共计120960.6元，提交了医疗费、鉴定费票据、诊断证明书、住院病历等相关证据。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

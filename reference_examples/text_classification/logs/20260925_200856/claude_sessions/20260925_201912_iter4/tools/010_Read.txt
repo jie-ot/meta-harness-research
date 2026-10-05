@@ -1,0 +1,150 @@
+Read: agents\similarity_retrieval_memory.py
+
+
+--- output ---
+1	"""Similarity Retrieval Memory - retrieve examples most similar to the current query.
+2	
+3	At predict time, ranks all stored examples by token-level Jaccard similarity
+4	to the current query, then fills the context budget with the highest-scoring
+5	examples. This targets tasks with structured inputs (e.g. domain-specific
+6	syntax or vocabulary) where the most similar training examples are more
+7	informative than the most recent ones.
+8	
+9	Selection algorithm:
+10	  - Tokenise query and every stored example's raw_question by alphanumeric
+11	    sequences (case-folded).
+12	  - Score each example by Jaccard(query_tokens, example_tokens).
+13	  - Sort descending by score (break ties by recency).
+14	  - Fill context greedily until char budget is exhausted.
+15	
+16	This is a fundamentally different retrieval mechanism from fewshot_all (recency),
+17	contrastive_error_memory (recency + error priority), and reflexion_memory (LLM
+18	synthesis). No LLM is called in learn_from_batch, keeping learning cost zero.
+19	"""
+20	
+21	import hashlib
+22	import json
+23	import re
+24	from typing import Any
+25	
+26	from ..llm import LLMCallable
+27	from ..memory_system import MemorySystem, extract_json_field
+28	
+29	PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+30	
+31	{examples_section}
+32	
+33	**Problem:**
+34	{input}
+35	
+36	**Instructions:**
+37	- Follow the patterns shown in the examples above
+38	- Respond in JSON format
+39	
+40	{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+41	
+42	MAX_CHARS = 30000
+43	
+44	
+45	def _tokenize(text: str) -> frozenset[str]:
+46	    """Return lowercase alphanumeric tokens from text."""
+47	    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+48	
+49	
+50	def _jaccard(a: frozenset[str], b: frozenset[str]) -> float:
+51	    if not a and not b:
+52	        return 0.0
+53	    return len(a & b) / len(a | b)
+54	
+55	
+56	def _stable_hash(text: str) -> int:
+57	    return int.from_bytes(hashlib.sha256(text.encode()).digest()[:8], "big")
+58	
+59	
+60	class SimilarityRetrievalMemory(MemorySystem):
+61	    """Retrieve examples by Jaccard token similarity to the current query."""
+62	
+63	    def __init__(self, llm: LLMCallable):
+64	        super().__init__(llm)
+65	        # Each entry: {"input": ..., "target": ..., "raw_question": ..., "tokens": frozenset}
+66	        self.examples: list[dict[str, Any]] = []
+67	
+68	    def _select_by_similarity(self, query: str) -> list[str]:
+69	        """Rank examples by similarity to query, fill context budget greedily."""
+70	        if not self.examples:
+71	            return []
+72	
+73	        q_tokens = _tokenize(query)
+74	
+75	        # Score and rank: (score, arrival_index, example)
+76	        # Use arrival_index as secondary sort key so ties go to most recent
+77	        scored = [
+78	            (_jaccard(q_tokens, ex["tokens"]), idx, ex)
+79	            for idx, ex in enumerate(self.examples)
+80	        ]
+81	        scored.sort(key=lambda x: (x[0], x[1]), reverse=True)
+82	
+83	        parts: list[str] = []
+84	        total_chars = 0
+85	        for _score, _idx, ex in scored:
+86	            question = ex.get("raw_question", ex["input"])
+87	            part = f"Q: {question}\nA: {ex['target']}"
+88	            if total_chars + len(part) + 2 > MAX_CHARS:
+89	                break
+90	            parts.append(part)
+91	            total_chars += len(part) + 2
+92	
+93	        return parts
+94	
+95	    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+96	        parts = self._select_by_similarity(input)
+97	        examples_section = "\n\n".join(parts)
+98	        prompt = PROMPT_TEMPLATE.format(
+99	            examples_section=examples_section,
+100	            input=input,
+101	        )
+102	        response = self.call_llm(prompt)
+103	        answer = extract_json_field(response, "final_answer")
+104	        return answer, {
+105	            "full_response": response,
+106	            "num_examples": len(self.examples),
+107	            "num_selected": len(parts),
+108	        }
+109	
+110	    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+111	        for r in batch_results:
+112	            raw_q = r.get("raw_question", r["input"])
+113	            ex: dict[str, Any] = {
+114	                "input": r["input"],
+115	                "target": r["ground_truth"],
+116	                "tokens": _tokenize(raw_q),
+117	            }
+118	            if "raw_question" in r:
+119	                ex["raw_question"] = r["raw_question"]
+120	            self.examples.append(ex)
+121	
+122	    def get_context_length(self) -> int:
+123	        # Use a short generic query for the length estimate
+124	        return sum(len(p) + 2 for p in self._select_by_similarity(""))
+125	
+126	    def get_state(self) -> str:
+127	        # frozenset is not JSON-serialisable — convert to sorted list for storage
+128	        serialisable = [
+129	            {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+130	            for ex in self.examples
+131	        ]
+132	        return json.dumps({"examples": serialisable}, indent=2)
+133	
+134	    def set_state(self, state: str) -> None:
+135	        data = json.loads(state)
+136	        self.examples = []
+137	        for ex in data.get("examples", []):
+138	            restored = dict(ex)
+139	            # Restore tokens as frozenset from stored list
+140	            if "tokens" in restored and isinstance(restored["tokens"], list):
+141	                restored["tokens"] = frozenset(restored["tokens"])
+142	            else:
+143	                raw_q = restored.get("raw_question", restored.get("input", ""))
+144	                restored["tokens"] = _tokenize(raw_q)
+145	            self.examples.append(restored)
+146	

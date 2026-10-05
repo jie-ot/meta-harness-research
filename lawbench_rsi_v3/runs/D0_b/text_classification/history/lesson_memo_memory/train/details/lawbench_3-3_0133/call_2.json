@@ -1,0 +1,72 @@
+{
+  "call_id": "6f9fe2372bbc45c7b730c09cce40f3e8",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791026517-rOYIZEegTXWpsSP3rJQQ",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"lesson\": \"- 直接抽取事实文本中出现的罪名关键词，不自行添加“罪”或其他修饰词；\\n- 当事实列出多个罪名时，保持原文的并列符号（如“、”或“;”），不要合并或省略；\\n- 若事实仅提供地点、机构名称或编号等非罪名信息，模型应返回“未指明罪名”或保持空白，而不是随意猜测罪名；\\n- 除非事实中明确出现，否则不要加入身份限定词（如“非国家工作人员”）或其他修饰性描述；\\n- 输出必须严格遵守格式 “[罪名]...<eoa>”，并在多个罪名之间使用分号或逗号分隔，确保与正确答案的标点和顺序一致。\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to infer patterns of errors. The task: given a fact snippet, model must output crime name(s). Errors include:\n\n1. Using wrong crime name (e.g., \"非法采伐林木罪\" vs correct \"滥伐林木\").\n2. Adding extra qualifiers like \"非国家工作人员受贿\" vs \"受贿\".\n3. Adding \"罪\" suffix incorrectly? Actually correct answer sometimes includes multiple crimes separated by commas, but model outputs single with \"罪\". Also sometimes missing multiple crimes.\n\nObservations: The fact snippets are extremely short, often just location or \"公诉机关指控：2\". Model seems to guess generic crimes based on location or number, not using actual content. So need rules: ensure to extract actual crime terms from the fact text, not infer from generic placeholders. Also need to handle multiple crimes and proper naming.\n\nPotential lessons:\n\n- When fact contains only location or generic text, model should not guess; should output \"未指明罪名\" or request more info. But training expects specific crimes; maybe need to rely on explicit mention of crime in fact.\n\n- Avoid adding \"罪\" suffix if correct answer doesn't include it? Actually correct answer includes \"滥伐林木\" (no \"罪\"?). So rule: output exactly the crime name as in legal terminology, without extra \"罪\" unless part of official name.\n\n- For multiple crimes, separate with \"、\" or \";\" as required, matching correct answer format.\n\n- Do not prepend qualifiers like \"非国家工作人员\" unless explicitly in fact.\n\n- Use the exact phrasing from the fact (e.g., \"走私珍贵动物、珍贵动物制品\").\n\nThus produce up to 5 rules.\n\nLet's craft:\n\n1. 依据事实文本中出现的罪名关键词直接抽取，不自行添加“罪”或其他修饰词。\n2. 当事实中列出多个罪名时，保持原有的并列符号（“、”或“;”），不要合并为单一罪名。\n3. 若事实仅提供地点或编号等非罪名信息，模型应返回“未指明罪名”或保持空，而不是随意猜测。\n4. 避免使用身份限定词（如“非国家工作人员”）除非事实中明确出现。\n5. 确保输出格式严格为 “[罪名]...<eoa>”，并且罪名之间用分号或逗号分隔，符合示例。\n\nLet's output JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to infer patterns of errors. The task: given a fact snippet, model must output crime name(s). Errors include:\n\n1. Using wrong crime name (e.g., \"非法采伐林木罪\" vs correct \"滥伐林木\").\n2. Adding extra qualifiers like \"非国家工作人员受贿\" vs \"受贿\".\n3. Adding \"罪\" suffix incorrectly? Actually correct answer sometimes includes multiple crimes separated by commas, but model outputs single with \"罪\". Also sometimes missing multiple crimes.\n\nObservations: The fact snippets are extremely short, often just location or \"公诉机关指控：2\". Model seems to guess generic crimes based on location or number, not using actual content. So need rules: ensure to extract actual crime terms from the fact text, not infer from generic placeholders. Also need to handle multiple crimes and proper naming.\n\nPotential lessons:\n\n- When fact contains only location or generic text, model should not guess; should output \"未指明罪名\" or request more info. But training expects specific crimes; maybe need to rely on explicit mention of crime in fact.\n\n- Avoid adding \"罪\" suffix if correct answer doesn't include it? Actually correct answer includes \"滥伐林木\" (no \"罪\"?). So rule: output exactly the crime name as in legal terminology, without extra \"罪\" unless part of official name.\n\n- For multiple crimes, separate with \"、\" or \";\" as required, matching correct answer format.\n\n- Do not prepend qualifiers like \"非国家工作人员\" unless explicitly in fact.\n\n- Use the exact phrasing from the fact (e.g., \"走私珍贵动物、珍贵动物制品\").\n\nThus produce up to 5 rules.\n\nLet's craft:\n\n1. 依据事实文本中出现的罪名关键词直接抽取，不自行添加“罪”或其他修饰词。\n2. 当事实中列出多个罪名时，保持原有的并列符号（“、”或“;”），不要合并为单一罪名。\n3. 若事实仅提供地点或编号等非罪名信息，模型应返回“未指明罪名”或保持空，而不是随意猜测。\n4. 避免使用身份限定词（如“非国家工作人员”）除非事实中明确出现。\n5. 确保输出格式严格为 “[罪名]...<eoa>”，并且罪名之间用分号或逗号分隔，符合示例。\n\nLet's output JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to infer patterns of errors. The task: given a fact snippet, model must output crime name(s). Errors include:\n\n1. Using wrong crime name (e.g., \"非法采伐林木罪\" vs correct \"滥伐林木\").\n2. Adding extra qualifiers like \"非国家工作人员受贿\" vs \"受贿\".\n3. Adding \"罪\" suffix incorrectly? Actually correct answer sometimes includes multiple crimes separated by commas, but model outputs single with \"罪\". Also sometimes missing multiple crimes.\n\nObservations: The fact snippets are extremely short, often just location or \"公诉机关指控：2\". Model seems to guess generic crimes based on location or number, not using actual content. So need rules: ensure to extract actual crime terms from the fact text, not infer from generic placeholders. Also need to handle multiple crimes and proper naming.\n\nPotential lessons:\n\n- When fact contains only location or generic text, model should not guess; should output \"未指明罪名\" or request more info. But training expects specific crimes; maybe need to rely on explicit mention of crime in fact.\n\n- Avoid adding \"罪\" suffix if correct answer doesn't include it? Actually correct answer includes \"滥伐林木\" (no \"罪\"?). So rule: output exactly the crime name as in legal terminology, without extra \"罪\" unless part of official name.\n\n- For multiple crimes, separate with \"、\" or \";\" as required, matching correct answer format.\n\n- Do not prepend qualifiers like \"非国家工作人员\" unless explicitly in fact.\n\n- Use the exact phrasing from the fact (e.g., \"走私珍贵动物、珍贵动物制品\").\n\nThus produce up to 5 rules.\n\nLet's craft:\n\n1. 依据事实文本中出现的罪名关键词直接抽取，不自行添加“罪”或其他修饰词。\n2. 当事实中列出多个罪名时，保持原有的并列符号（“、”或“;”），不要合并为单一罪名。\n3. 若事实仅提供地点或编号等非罪名信息，模型应返回“未指明罪名”或保持空，而不是随意猜测。\n4. 避免使用身份限定词（如“非国家工作人员”）除非事实中明确出现。\n5. 确保输出格式严格为 “[罪名]...<eoa>”，并且罪名之间用分号或逗号分隔，符合示例。\n\nLet's output JSON.",
+            "reasoning_content": "We need to infer patterns of errors. The task: given a fact snippet, model must output crime name(s). Errors include:\n\n1. Using wrong crime name (e.g., \"非法采伐林木罪\" vs correct \"滥伐林木\").\n2. Adding extra qualifiers like \"非国家工作人员受贿\" vs \"受贿\".\n3. Adding \"罪\" suffix incorrectly? Actually correct answer sometimes includes multiple crimes separated by commas, but model outputs single with \"罪\". Also sometimes missing multiple crimes.\n\nObservations: The fact snippets are extremely short, often just location or \"公诉机关指控：2\". Model seems to guess generic crimes based on location or number, not using actual content. So need rules: ensure to extract actual crime terms from the fact text, not infer from generic placeholders. Also need to handle multiple crimes and proper naming.\n\nPotential lessons:\n\n- When fact contains only location or generic text, model should not guess; should output \"未指明罪名\" or request more info. But training expects specific crimes; maybe need to rely on explicit mention of crime in fact.\n\n- Avoid adding \"罪\" suffix if correct answer doesn't include it? Actually correct answer includes \"滥伐林木\" (no \"罪\"?). So rule: output exactly the crime name as in legal terminology, without extra \"罪\" unless part of official name.\n\n- For multiple crimes, separate with \"、\" or \";\" as required, matching correct answer format.\n\n- Do not prepend qualifiers like \"非国家工作人员\" unless explicitly in fact.\n\n- Use the exact phrasing from the fact (e.g., \"走私珍贵动物、珍贵动物制品\").\n\nThus produce up to 5 rules.\n\nLet's craft:\n\n1. 依据事实文本中出现的罪名关键词直接抽取，不自行添加“罪”或其他修饰词。\n2. 当事实中列出多个罪名时，保持原有的并列符号（“、”或“;”），不要合并为单一罪名。\n3. 若事实仅提供地点或编号等非罪名信息，模型应返回“未指明罪名”或保持空，而不是随意猜测。\n4. 避免使用身份限定词（如“非国家工作人员”）除非事实中明确出现。\n5. 确保输出格式严格为 “[罪名]...<eoa>”，并且罪名之间用分号或逗号分隔，符合示例。\n\nLet's output JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 725,
+      "prompt_tokens": 945,
+      "total_tokens": 1670,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 532,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0001516,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0001516,
+        "upstream_inference_prompt_cost": 2.835e-05,
+        "upstream_inference_completions_cost": 0.00012325
+      }
+    }
+  },
+  "raw_response_missing": false
+}

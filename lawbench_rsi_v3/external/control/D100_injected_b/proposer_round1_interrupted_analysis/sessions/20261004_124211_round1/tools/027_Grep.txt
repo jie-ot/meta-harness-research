@@ -1,0 +1,27 @@
+Grep
+
+glob: *.py
+head_limit: 20
+output_mode: content
+path:
+D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\benchmark.py
+
+pattern: agents|import_module|memory_systems
+
+--- output ---
+39:def discover_all_memory_systems() -> list[tuple[str, str]]:
+43:    for f in sorted((base / "agents").glob("*.py")):
+47:        systems.append((name, f"agents/{name}.py"))
+495:    memory_systems: list[tuple[str, str]],
+511:            for mem_name, mem_path in memory_systems:
+566:    memory_systems: list[tuple[str, str]],
+581:            for mem_name, mem_path in memory_systems:
+780:    memory_systems: list,
+790:    all_memories = [n for n, _ in memory_systems]
+899:    memory_systems = discover_all_memory_systems()
+903:        memory_systems = [(n, p) for n, p in memory_systems if n == name]
+904:        if not memory_systems:
+924:            memory_systems,
+933:            memory_systems,
+948:    print(f"  Datasets: {len(datasets)}, Memory: {len(memory_systems)}, Seeds: {SEEDS}")
+978:        memory_systems,

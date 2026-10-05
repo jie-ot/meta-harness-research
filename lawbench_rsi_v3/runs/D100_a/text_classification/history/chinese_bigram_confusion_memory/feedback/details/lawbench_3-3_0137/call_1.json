@@ -1,0 +1,72 @@
+{
+  "call_id": "6d0c66ddf6a14cae80a94fc402403314",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791038111-5cj8heInp1IlFW5v3Pl0",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendants fabricated production data and equipment information to fraudulently obtain central fiscal subsidy funds, which constitutes fraud (骗取国家专项资金). After receiving the funds, they transferred part of the money to personal accounts, misappropriating public funds, which fits the crime of misappropriation of public funds (挪用公款). No other crimes such as bribery, tax fraud, or illegal occupation are evident.\",\n  \"final_answer\": \"[罪名]诈骗;挪用公款<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine crimes based on facts. The case: company founded, got compensation, then transferred assets, then falsified applications for central fiscal subsidies (closing small enterprise subsidy, and淘汰落后产能 reward). They fabricated production data, equipment, etc. They obtained funds illegally. Also there is transfer of funds to personal accounts, possibly embezzlement, fraud, illegal acquisition of state funds, etc.\n\nWe need to output crime labels as used in previous examples. The label set includes: 受贿, 行贿, 贪污, 诈骗, 合同诈骗, 盗窃, 虚开增值税专用发票, 用于骗取出口退税, 抵扣税款发票, 逃税, 受贿;滥用职权;单位行贿;利用影响力受贿;虚开增值税专用发票;用于骗取出口退税;抵扣税款发票;贷款诈骗;生产、销售假药;伪造、变造居民身份证;职务侵占;挪用特定款物;非法占用农用地;组织、强迫、引诱、容留、介绍卖淫;协助组织卖淫;对非国家工作人员行贿;非法占用林地;挪用资金;非法吸收公众存款;妨害作证;故意毁坏财物;假冒注册商标;挪用公款;金融凭证诈骗;虚开增值税专用发票;经济犯; etc.\n\nIn this case, crimes likely: 虚假申报获取国家专项资金 => 诈骗? Actually it's \"非法获取国家专项资金\" which is \"骗取国家资金罪\" maybe \"诈骗罪\" but specific: \"骗取国家资金罪\" is under \"诈骗罪\" but there is also \"非法占有国家财政资金罪\" maybe \"挪用公款\"? Not exactly. In Chinese criminal law, there is \"骗取国家补助资金罪\" (Article 176?). The label used in dataset maybe \"骗取国家专项资金\" but not in examples. However similar case: earlier example about虚开增值税专用发票 also had \"用于骗取出口退税、抵扣税款发票\". For fraudulent application for subsidies, they might label as \"诈骗\" or \"骗取国家补助资金\". Look at previous examples: The case with \"华清水泥公司\" is similar to \"虚假申报获取中央财政奖励资金\". In dataset, they might have label \"骗取国家补助资金罪\" but not shown. Let's infer from pattern: In earlier examples, they used \"受贿;滥用职权\" etc. For fraudulent procurement of funds, they used \"诈骗\" for contract fraud, \"贷款诈骗\" for loan fraud, \"非法吸收公众存款\" for illegal fundraising, \"虚开增值税专用发票\" for tax invoice fraud. For false application for government subsidies, maybe \"骗取国家专项资金\" but not in list. Could be \"诈骗\" generic.\n\nAlso there is \"挪用公款\" maybe because they transferred funds to personal accounts. They used company to get funds, then transferred to personal accounts. That's misappropriation of public funds (state funds). Could be \"挪用公款\" (misappropriation of public funds). In examples, \"挪用公款\" used for a party official using public funds for personal use. Here the funds are central fiscal subsidies, which are public funds. So \"挪用公款\" fits.\n\nAlso there is \"职务侵占\" for using position to appropriate funds. But the defendants are private individuals (owner) not state employees. So \"职务侵占\" not appropriate.\n\nThus likely crimes: 诈骗 (骗取国家专项资金), 挪用公款 (misappropriation of the funds after receipt). Also maybe \"虚假申报\" but not a crime label.\n\nThus answer: [罪名]诈骗;挪用公款<eoa>\n\nCheck if \"诈骗\" used for other similar cases: In contract fraud they used \"合同诈骗\". Here it's not contract but subsidy fraud, so \"诈骗\" generic.\n\nThus final.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine crimes based on facts. The case: company founded, got compensation, then transferred assets, then falsified applications for central fiscal subsidies (closing small enterprise subsidy, and淘汰落后产能 reward). They fabricated production data, equipment, etc. They obtained funds illegally. Also there is transfer of funds to personal accounts, possibly embezzlement, fraud, illegal acquisition of state funds, etc.\n\nWe need to output crime labels as used in previous examples. The label set includes: 受贿, 行贿, 贪污, 诈骗, 合同诈骗, 盗窃, 虚开增值税专用发票, 用于骗取出口退税, 抵扣税款发票, 逃税, 受贿;滥用职权;单位行贿;利用影响力受贿;虚开增值税专用发票;用于骗取出口退税;抵扣税款发票;贷款诈骗;生产、销售假药;伪造、变造居民身份证;职务侵占;挪用特定款物;非法占用农用地;组织、强迫、引诱、容留、介绍卖淫;协助组织卖淫;对非国家工作人员行贿;非法占用林地;挪用资金;非法吸收公众存款;妨害作证;故意毁坏财物;假冒注册商标;挪用公款;金融凭证诈骗;虚开增值税专用发票;经济犯; etc.\n\nIn this case, crimes likely: 虚假申报获取国家专项资金 => 诈骗? Actually it's \"非法获取国家专项资金\" which is \"骗取国家资金罪\" maybe \"诈骗罪\" but specific: \"骗取国家资金罪\" is under \"诈骗罪\" but there is also \"非法占有国家财政资金罪\" maybe \"挪用公款\"? Not exactly. In Chinese criminal law, there is \"骗取国家补助资金罪\" (Article 176?). The label used in dataset maybe \"骗取国家专项资金\" but not in examples. However similar case: earlier example about虚开增值税专用发票 also had \"用于骗取出口退税、抵扣税款发票\". For fraudulent application for subsidies, they might label as \"诈骗\" or \"骗取国家补助资金\". Look at previous examples: The case with \"华清水泥公司\" is similar to \"虚假申报获取中央财政奖励资金\". In dataset, they might have label \"骗取国家补助资金罪\" but not shown. Let's infer from pattern: In earlier examples, they used \"受贿;滥用职权\" etc. For fraudulent procurement of funds, they used \"诈骗\" for contract fraud, \"贷款诈骗\" for loan fraud, \"非法吸收公众存款\" for illegal fundraising, \"虚开增值税专用发票\" for tax invoice fraud. For false application for government subsidies, maybe \"骗取国家专项资金\" but not in list. Could be \"诈骗\" generic.\n\nAlso there is \"挪用公款\" maybe because they transferred funds to personal accounts. They used company to get funds, then transferred to personal accounts. That's misappropriation of public funds (state funds). Could be \"挪用公款\" (misappropriation of public funds). In examples, \"挪用公款\" used for a party official using public funds for personal use. Here the funds are central fiscal subsidies, which are public funds. So \"挪用公款\" fits.\n\nAlso there is \"职务侵占\" for using position to appropriate funds. But the defendants are private individuals (owner) not state employees. So \"职务侵占\" not appropriate.\n\nThus likely crimes: 诈骗 (骗取国家专项资金), 挪用公款 (misappropriation of the funds after receipt). Also maybe \"虚假申报\" but not a crime label.\n\nThus answer: [罪名]诈骗;挪用公款<eoa>\n\nCheck if \"诈骗\" used for other similar cases: In contract fraud they used \"合同诈骗\". Here it's not contract but subsidy fraud, so \"诈骗\" generic.\n\nThus final.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to determine crimes based on facts. The case: company founded, got compensation, then transferred assets, then falsified applications for central fiscal subsidies (closing small enterprise subsidy, and淘汰落后产能 reward). They fabricated production data, equipment, etc. They obtained funds illegally. Also there is transfer of funds to personal accounts, possibly embezzlement, fraud, illegal acquisition of state funds, etc.\n\nWe need to output crime labels as used in previous examples. The label set includes: 受贿, 行贿, 贪污, 诈骗, 合同诈骗, 盗窃, 虚开增值税专用发票, 用于骗取出口退税, 抵扣税款发票, 逃税, 受贿;滥用职权;单位行贿;利用影响力受贿;虚开增值税专用发票;用于骗取出口退税;抵扣税款发票;贷款诈骗;生产、销售假药;伪造、变造居民身份证;职务侵占;挪用特定款物;非法占用农用地;组织、强迫、引诱、容留、介绍卖淫;协助组织卖淫;对非国家工作人员行贿;非法占用林地;挪用资金;非法吸收公众存款;妨害作证;故意毁坏财物;假冒注册商标;挪用公款;金融凭证诈骗;虚开增值税专用发票;经济犯; etc.\n\nIn this case, crimes likely: 虚假申报获取国家专项资金 => 诈骗? Actually it's \"非法获取国家专项资金\" which is \"骗取国家资金罪\" maybe \"诈骗罪\" but specific: \"骗取国家资金罪\" is under \"诈骗罪\" but there is also \"非法占有国家财政资金罪\" maybe \"挪用公款\"? Not exactly. In Chinese criminal law, there is \"骗取国家补助资金罪\" (Article 176?). The label used in dataset maybe \"骗取国家专项资金\" but not in examples. However similar case: earlier example about虚开增值税专用发票 also had \"用于骗取出口退税、抵扣税款发票\". For fraudulent application for subsidies, they might label as \"诈骗\" or \"骗取国家补助资金\". Look at previous examples: The case with \"华清水泥公司\" is similar to \"虚假申报获取中央财政奖励资金\". In dataset, they might have label \"骗取国家补助资金罪\" but not shown. Let's infer from pattern: In earlier examples, they used \"受贿;滥用职权\" etc. For fraudulent procurement of funds, they used \"诈骗\" for contract fraud, \"贷款诈骗\" for loan fraud, \"非法吸收公众存款\" for illegal fundraising, \"虚开增值税专用发票\" for tax invoice fraud. For false application for government subsidies, maybe \"骗取国家专项资金\" but not in list. Could be \"诈骗\" generic.\n\nAlso there is \"挪用公款\" maybe because they transferred funds to personal accounts. They used company to get funds, then transferred to personal accounts. That's misappropriation of public funds (state funds). Could be \"挪用公款\" (misappropriation of public funds). In examples, \"挪用公款\" used for a party official using public funds for personal use. Here the funds are central fiscal subsidies, which are public funds. So \"挪用公款\" fits.\n\nAlso there is \"职务侵占\" for using position to appropriate funds. But the defendants are private individuals (owner) not state employees. So \"职务侵占\" not appropriate.\n\nThus likely crimes: 诈骗 (骗取国家专项资金), 挪用公款 (misappropriation of the funds after receipt). Also maybe \"虚假申报\" but not a crime label.\n\nThus answer: [罪名]诈骗;挪用公款<eoa>\n\nCheck if \"诈骗\" used for other similar cases: In contract fraud they used \"合同诈骗\". Here it's not contract but subsidy fraud, so \"诈骗\" generic.\n\nThus final.",
+            "reasoning_content": "We need to determine crimes based on facts. The case: company founded, got compensation, then transferred assets, then falsified applications for central fiscal subsidies (closing small enterprise subsidy, and淘汰落后产能 reward). They fabricated production data, equipment, etc. They obtained funds illegally. Also there is transfer of funds to personal accounts, possibly embezzlement, fraud, illegal acquisition of state funds, etc.\n\nWe need to output crime labels as used in previous examples. The label set includes: 受贿, 行贿, 贪污, 诈骗, 合同诈骗, 盗窃, 虚开增值税专用发票, 用于骗取出口退税, 抵扣税款发票, 逃税, 受贿;滥用职权;单位行贿;利用影响力受贿;虚开增值税专用发票;用于骗取出口退税;抵扣税款发票;贷款诈骗;生产、销售假药;伪造、变造居民身份证;职务侵占;挪用特定款物;非法占用农用地;组织、强迫、引诱、容留、介绍卖淫;协助组织卖淫;对非国家工作人员行贿;非法占用林地;挪用资金;非法吸收公众存款;妨害作证;故意毁坏财物;假冒注册商标;挪用公款;金融凭证诈骗;虚开增值税专用发票;经济犯; etc.\n\nIn this case, crimes likely: 虚假申报获取国家专项资金 => 诈骗? Actually it's \"非法获取国家专项资金\" which is \"骗取国家资金罪\" maybe \"诈骗罪\" but specific: \"骗取国家资金罪\" is under \"诈骗罪\" but there is also \"非法占有国家财政资金罪\" maybe \"挪用公款\"? Not exactly. In Chinese criminal law, there is \"骗取国家补助资金罪\" (Article 176?). The label used in dataset maybe \"骗取国家专项资金\" but not in examples. However similar case: earlier example about虚开增值税专用发票 also had \"用于骗取出口退税、抵扣税款发票\". For fraudulent application for subsidies, they might label as \"诈骗\" or \"骗取国家补助资金\". Look at previous examples: The case with \"华清水泥公司\" is similar to \"虚假申报获取中央财政奖励资金\". In dataset, they might have label \"骗取国家补助资金罪\" but not shown. Let's infer from pattern: In earlier examples, they used \"受贿;滥用职权\" etc. For fraudulent procurement of funds, they used \"诈骗\" for contract fraud, \"贷款诈骗\" for loan fraud, \"非法吸收公众存款\" for illegal fundraising, \"虚开增值税专用发票\" for tax invoice fraud. For false application for government subsidies, maybe \"骗取国家专项资金\" but not in list. Could be \"诈骗\" generic.\n\nAlso there is \"挪用公款\" maybe because they transferred funds to personal accounts. They used company to get funds, then transferred to personal accounts. That's misappropriation of public funds (state funds). Could be \"挪用公款\" (misappropriation of public funds). In examples, \"挪用公款\" used for a party official using public funds for personal use. Here the funds are central fiscal subsidies, which are public funds. So \"挪用公款\" fits.\n\nAlso there is \"职务侵占\" for using position to appropriate funds. But the defendants are private individuals (owner) not state employees. So \"职务侵占\" not appropriate.\n\nThus likely crimes: 诈骗 (骗取国家专项资金), 挪用公款 (misappropriation of the funds after receipt). Also maybe \"虚假申报\" but not a crime label.\n\nThus answer: [罪名]诈骗;挪用公款<eoa>\n\nCheck if \"诈骗\" used for other similar cases: In contract fraud they used \"合同诈骗\". Here it's not contract but subsidy fraud, so \"诈骗\" generic.\n\nThus final."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1027,
+      "prompt_tokens": 25012,
+      "total_tokens": 26039,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 80,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.001117493,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.001117493,
+        "upstream_inference_prompt_cost": 0.000925444,
+        "upstream_inference_completions_cost": 0.000192049
+      }
+    }
+  },
+  "raw_response_missing": false
+}

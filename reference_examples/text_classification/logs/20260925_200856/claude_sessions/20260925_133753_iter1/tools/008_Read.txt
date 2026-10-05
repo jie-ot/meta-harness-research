@@ -1,0 +1,45 @@
+Read: agents\no_memory.py
+
+
+--- output ---
+1	"""NoMemory baseline - no learning, direct prompting."""
+2	
+3	from typing import Any
+4	
+5	from ..llm import LLMCallable
+6	from ..memory_system import MemorySystem, extract_json_field
+7	
+8	PROMPT = """Answer the following question.
+9	
+10	{input}
+11	
+12	**Answer in this exact JSON format:**
+13	{{
+14	  "reasoning": "[Your chain of thought / reasoning process]",
+15	  "final_answer": "[Your concise final answer here]"
+16	}}
+17	"""
+18	
+19	
+20	class NoMemory(MemorySystem):
+21	    """Baseline that does not learn - just prompts the LLM directly."""
+22	
+23	    def __init__(self, llm: LLMCallable):
+24	        super().__init__(llm)
+25	        self._state = "{}"
+26	
+27	    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+28	        response = self.call_llm(PROMPT.format(input=input))
+29	        answer = extract_json_field(response, "final_answer")
+30	        return answer, {"full_response": response}
+31	
+32	    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+33	        """No learning - this baseline ignores all feedback."""
+34	        pass
+35	
+36	    def get_state(self) -> str:
+37	        return self._state
+38	
+39	    def set_state(self, state: str) -> None:
+40	        self._state = state
+41	

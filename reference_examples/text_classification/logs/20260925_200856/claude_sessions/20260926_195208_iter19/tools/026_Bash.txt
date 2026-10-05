@@ -1,0 +1,79 @@
+Bash
+
+command:
+python -c "
+import json, os, re
+from collections import defaultdict
+
+base = r'D:\我的文件\华中科技大学\李老师课技组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+
+_WRAPPER_RE = re.compile(r'^\s*\[[^\]]*\]|<eoa>\s*$|\[[^\]]*\]\s*$', re.IGNORECASE)
+def normalize(p):
+    if not p: return p
+    c = _WRAPPER_RE.sub('', p).strip()
+    return c if c else p
+
+log = os.path.join(base, 'LawBench', 'decayed_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+steps = []
+with open(log, encoding='utf-8') as f:
+    for line in f:
+        d = json.loads(line)
+        if d.get('type') == 'step':
+            steps.append(d)
+
+# Simulate 3 variants on first 150 steps and measure disambiguation coverage
+# (how often the query's top sim label appears in confusion lookup result)
+
+DECAY = 0.95
+PRUNE = 0.05
+
+def simulate(steps, symmetric=False):
+    conf = defaultdict(lambda: defaultdict(float))
+    errors = 0
+    disambig_fires = 0  # times confusion lookup returns any result
+    
+    for i, step in enumerate(steps):
+        pred = normalize(step['pred'])
+        gt = step['tgt']
+        ok = step.get('ok', True)
+        
+        if not ok and pred and pred != gt:
+            errors += 1
+            conf[pred][gt] += 1.0
+            if symmetric:
+                conf[gt][pred] += 0.5  # reverse direction at half weight
+        
+        # Decay after each step (simulating per-batch decay)
+        if i % 5 == 4:  # every 5 steps, decay
+            for p in list(conf):
+                for a in list(conf[p]):
+                    conf[p][a] *= DECAY
+                    if conf[p][a] < PRUNE:
+                        del conf[p][a]
+                if not conf[p]:
+                    del conf[p]
+        
+        # Would disambiguation fire for this step?
+        # Pretend top candidate label = gt (best case)
+        top_label = gt
+        if top_label in conf and conf[top_label]:
+            disambig_fires += 1
+    
+    return errors, disambig_fires, len(conf)
+
+e1, d1, n1 = simulate(steps, symmetric=False)
+e2, d2, n2 = simulate(steps, symmetric=True)
+print(f'Uniform: errors={e1}, disambig_fires={d1}/{len(steps)}, conf_keys={n1}')
+print(f'Symmetric: errors={e2}, disambig_fires={d2}/{len(steps)}, conf_keys={n2}')
+print(f'Disambiguation coverage improvement: {d2-d1} more fires out of {len(steps)} steps')
+print(f'Confusion matrix keys: {n1} -> {n2} ({n2-n1:+d})')
+" 2>&1
+
+description: Prototype symmetric confusion — measure disambiguation coverage gain
+
+--- output ---
+Uniform: errors=142, disambig_fires=21/200, conf_keys=105
+Symmetric: errors=142, disambig_fires=170/200, conf_keys=210
+Disambiguation coverage improvement: 149 more fires out of 200 steps
+Confusion matrix keys: 105 -> 210 (+105)

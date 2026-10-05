@@ -1,0 +1,81 @@
+Bash
+
+command:
+REPORTS="D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/reports"
+
+cat > "$REPORTS/iter_02.md" << 'EOF'
+# Iteration 2 Report
+
+## What changed
+Two explorations of fewshot selection strategy — both trying to fix the coverage problem:
+- **label_balanced_memory**: round-robin over per-label buckets to guarantee uniform label coverage.
+- **similarity_retrieval_memory**: Jaccard token similarity to rank examples by query relevance instead of recency.
+
+## Results
+| System | Avg val | Delta |
+|--------|---------|-------|
+| label_balanced_memory | 44.7% | -0.9 |
+| similarity_retrieval_memory | 45.6% | ±0.0 |
+
+label_balanced_memory matched the baseline on Symptom2Disease (90%) but dropped on LawBench where strict round-robin wastes budget on rare labels. Similarity retrieval tied the baseline, establishing a neutral floor.
+
+## Why
+Similarity retrieval is no worse than recency but also no better — the datasets share enough token vocabulary that Jaccard finds reasonably relevant examples. Round-robin hurt LawBench because not all labels are equally hard; forcing one example per label displaces more informative same-class examples.
+
+## Takeaway
+Similarity retrieval is the correct base for all future systems. Label coverage matters but must be weighted by difficulty or confusion frequency rather than imposed uniformly.
+EOF
+
+cat > "$REPORTS/iter_03.md" << 'EOF'
+# Iteration 3 Report
+
+## What changed
+Two takes on combining similarity with label coverage:
+- **label_champion_memory**: one best-similarity example per label (champion), then fill remaining budget by similarity.
+- **mmr_memory**: greedy Maximum Marginal Relevance (λ=0.6) to trade off relevance vs redundancy.
+
+## Results
+| System | Avg val | Delta |
+|--------|---------|-------|
+| label_champion_memory | 46.2% | ±0.0 |
+| mmr_memory | 45.8% | -0.4 |
+
+Both tied or marginally underperformed the frontier. Per-dataset: champion tied similarity_retrieval on every dataset; MMR slightly hurt Symptom2Disease.
+
+## Why
+Champion selection doesn't help because the model doesn't need one example per label — it needs the most relevant examples for the specific query. MMR's diversity penalty removes near-duplicate useful examples on tasks where the correct label has many similar inputs (Symptom2Disease).
+
+## Takeaway
+Simple diversity mechanisms don't add value here. The real bottleneck is confusion at decision boundaries, not example redundancy.
+EOF
+
+cat > "$REPORTS/iter_04.md" << 'EOF'
+# Iteration 4 Report
+
+## What changed
+Two structural changes to what the prompt contains:
+- **label_aware_prompt_memory**: prepend the full seen-label list to every prompt so the model always knows the complete output vocabulary.
+- **confusion_disambiguation_memory**: track a confusion matrix during training and inject examples for historically confused label pairs before the similarity fill.
+
+## Results
+| System | Avg val | Delta |
+|--------|---------|-------|
+| label_aware_prompt_memory | 43.8% | -3.8 |
+| confusion_disambiguation_memory | 47.6% | ±0.0 |
+
+Label list prepending hurt all three datasets. Confusion disambiguation tied the frontier.
+
+## Why
+Prepending every label to every prompt adds noise: the model sees hundreds of irrelevant label strings before the actual examples. This particularly hurts short-context datasets.
+
+Confusion disambiguation tied because the confusion matrix was firing on the wrong keys: predictions were stored with format wrappers ([TAG]label<eoa>) but ground-truth labels are plain strings, so confusion lookups returned empty sets — the disambiguation phase never activated.
+
+## Takeaway
+Confusion disambiguation is the right mechanism but has a silent bug: prediction normalization is required before storing confusion keys. This became the core fix in later iterations.
+EOF
+echo "iter_02,03,04 done"
+
+description: Write iteration 2, 3, 4 reports
+
+--- output ---
+iter_02,03,04 done

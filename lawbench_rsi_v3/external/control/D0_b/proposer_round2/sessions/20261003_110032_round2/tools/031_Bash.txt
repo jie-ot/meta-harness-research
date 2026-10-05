@@ -1,0 +1,19 @@
+Bash [ERROR]
+
+command: python .prototypes/label_cluster_memory_final.py
+description: Run final validation for label_cluster_memory
+
+--- output ---
+Exit code 1
+[cold start] ok — answer=诈骗, clusters=0
+[after batch] clusters=11, examples=9
+[top-4 labels for unit-bribery query]: ['单位行贿', '销售假冒注册商标的商品', '盗窃', '掩饰、隐瞒犯罪所得、犯罪所得收益']
+[with memory] answer=单位行贿, clusters=11
+[state round-trip] ok — examples=9, clusters=11
+Traceback (most recent call last):
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D0_b\text_classification\.prototypes\label_cluster_memory_final.py", line 273, in <module>
+    run()
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D0_b\text_classification\.prototypes\label_cluster_memory_final.py", line 259, in run
+    assert "### Charge:" in PREDICT_PROMPT
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

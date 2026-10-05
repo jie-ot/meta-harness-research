@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- When the facts describe a person performing any medical diagnosis, treatment, or related procedure without a valid medical license, classify the conduct under the statutory offense of “非法行医” rather th
+- When multiple descriptors (e.g., illegal possession and concealment) refer to the same statutory offense concerning firearms or ammunition, merge them into a single combined charge phrase instead of l
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:湖南省新宁县人民检察院指控：被告人蒋某某在自己家屋前屋后非法种植罂粟818棵，2014年5月6日被新宁县公安局民警当场铲除。经鉴定，蒋某某种植的罂粟中检出鸦片主要成分吗啡、可待因、罂粟碱、蒂某及那可丁。
+为证明指控的事实，公诉机关当庭宣读并提交了如下证据：1、扣押物品、文件清单及罂粟照片；2、户籍信息资料；3、证人证言；4、被告人蒋某某的供述和辩解；5、鉴定报告；6、现场勘验笔录、现场图及现场照片；7、讯问同步录音录像资料等证据。据此，公诉机关认为被告人蒋某某的行为已构成××，提请本院依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,36 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the facts describe a person performing any medical diagnosis, treatment, or related procedure without a valid medical license, classify the conduct under the statutory offense of “非法行医” rather th
+- When the facts describe manufacturing or distributing drugs that are counterfeit, adulterated, or otherwise not meeting legal standards (i.e., ‘假药’), the appropriate charge is “生产、销售假药” rather than th
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控：
+2014年6月至2015年，被告人秦某未经注册商标所有人许可，为牟取非法利益，先后委托张1某、张2某（以上二人均另案处理）等人加工生产假冒“ISSEYMIYAKE”注册商标的皮包，先后销售给肖某、林某、罗2某、许某等人，销售金额共计人民币50余万元。期间，被告人秦某还提供皮包裁片给肖某用于生产假冒“ISSEYMIYAKE”注册商标的皮包。具体事实分述如下：
+1、2014年6月至2015年，被告人秦某先后销售给肖某假冒“ISSEYMIYAKE”注册商标的皮包共计人民币20万元。
+2、2016年6月至2015年12月，被告人秦某先后销售给林某假冒“ISSEYMIYAKE”注册商标的皮包共计人民币19万余元。
+3、2015年下半年，被告人秦某先后销售给罗1某假冒“ISSEYMIYAKE”注册商标的皮包共计人民币6万余元。
+4、2015年下半年，被告人秦某先后销售给许某假冒“ISSEYMIYAKE”注册商标的皮包共计人民币5万余元。
+被告人秦某于2015年12月23日被公安机关抓获。
+公诉机关当庭提交了认定上述事实的全部证据。
+公诉机关认为，被告人秦某未经商标所有人许可，在同一种商品上使用与注册商标相同的商标，情节特别严重，其行为触犯了《中华人民共和国刑法》××，犯罪事实清楚，证据确实充分，应当以××追究其刑事责任。
+被告人当庭表示认罪，请求对其从轻处罚。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

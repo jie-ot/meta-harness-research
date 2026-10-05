@@ -1,0 +1,106 @@
+"""Final validation for agent B: charge_cooccurrence_count_memory.
+
+Uses plain imports. Example text is a literal copied from the visible traces.
+"""
+
+from text_classification.agents.charge_cooccurrence_count_memory import (
+    ChargeCooccurrenceCountMemory,
+    _planned_slots,
+    _split_units,
+    _snap,
+)
+
+
+class FakeLLM:
+    def __init__(self, answer):
+        self.answer = answer
+        self.calls = 0
+
+    def __call__(self, prompt):
+        self.calls += 1
+        return '{"reasoning": "because", "final_answer": "' + self.answer + '"}'
+
+# --- structural cardinality signal -----------------------------------------
+MASK_CASES = [
+    ("指控被告单位某公司、被告人沙某某的行为触犯了《中华人民共和国刑法》××之规定，应当以××追究其刑事责任。", 1),
+    ("被告人郭某的行为触犯了《中华人民共和国刑法》××之规定，构成××。郭某是从犯，根据《中华人民共和国刑法》××的规定，应减轻处罚。", 1),
+    ("公诉机关认为，被告人李某的行为已构成××，并提出判处××至一年六个月的量刑建议。", 1),
+    ("事实:被告人以××手段实施××、××行为，触犯了《中华人民共和国刑法》××、××之规定。", 2),
+    ("对被告人应以××;××追究刑事责任。", 2),
+    ("被告人盗窃路灯电缆线，共盗得电缆线约210米。", 0),
+]
+mask_bad = 0
+for text, exp in MASK_CASES:
+    got = _planned_slots(text)
+    ok = got == exp
+    mask_bad += 0 if ok else 1
+    print(f"{'PASS' if ok else 'FAIL'}  slots expected {exp} got {got} :: {text[:32]}...")
+
+print()
+# --- cold start --------------------------------------------------------------
+cold = ChargeCooccurrenceCountMemory(FakeLLM("[罪名]盗窃;诈骗<eoa>"))
+ans, meta = cold.predict("事实:被告人窃取他人财物，并以虚构事实骗取财物。")
+print("cold-start predict ->", repr(ans), "| examples:", meta["num_examples"],
+      "| slots:", meta["planned_slots"], "| units:", meta["num_units"])
+assert meta["num_examples"] == 0
+
+# --- learning builds the graph and repairs under-generation -------------------
+m = ChargeCooccurrenceCountMemory(FakeLLM("[罪名]受贿<eoa>"))
+batch = [
+    {"input": "Q1", "ground_truth": "受贿;滥用职权",
+     "raw_question": "被告人利用职务便利收受贿赂并滥用职权", "was_correct": False,
+     "prediction": "[罪名]受贿<eoa>"},
+    {"input": "Q2", "ground_truth": "受贿;滥用职权",
+     "raw_question": "被告人收受贿赂并为他人谋取利益", "was_correct": False,
+     "prediction": "[罪名]滥用职权<eoa>"},
+    {"input": "Q3", "ground_truth": "开设赌场;赌博",
+     "raw_question": "被告人开设赌场聚众赌博", "was_correct": False,
+     "prediction": "[罪名]开设赌场;赌博<eoa>"},
+]
+m.learn_from_batch(batch)
+print("graph for 受贿:", dict(m.graph.get("受贿", {})))
+print("label counts:", dict(m.label_counts))
+
+# The model under-generates ONE charge, but the input's own structure says two.
+q_under = "事实:被告人利用职务便利收受贿赂，并为他人谋取利益，其行为触犯了《中华人民共和国刑法》××、××之规定。"
+ans2, meta2 = m.predict(q_under)
+print("under-generation repair ->", repr(ans2), "| slots:", meta2["planned_slots"],
+      "| units:", meta2["num_units"], "| seeds:", meta2["seed_labels"])
+assert ans2 == "受贿;滥用职权", ans2
+
+# --- expansion must NOT inflate a closed neighbourhood ------------------------
+m2 = ChargeCooccurrenceCountMemory(FakeLLM("[罪名]开设赌场<eoa>"))
+for _ in range(4):
+    m2.learn_from_batch([
+        {"input": "Qa", "ground_truth": "开设赌场;赌博",
+         "raw_question": "被告人开设赌场聚众赌博", "was_correct": True,
+         "prediction": "开设赌场;赌博"},
+    ])
+print()
+print("开设赌场 row:", dict(m2.graph.get("开设赌场", {})),
+      "counts:", dict(m2.label_counts))
+ans3, meta3 = m2.predict("事实:被告人开设赌场，情节严重。")
+print("no-structure case ->", repr(ans3), "| slots:", meta3["planned_slots"],
+      "| units:", meta3["num_units"])
+assert meta3["planned_slots"] == 0
+# With no structural evidence, the planned size comes from the model alone.
+assert ans3 == "开设赌场", ans3
+
+# --- state round-trip ---------------------------------------------------------
+state = m.get_state()
+m4 = ChargeCooccurrenceCountMemory(FakeLLM("[罪名]受贿<eoa>"))
+m4.set_state(state)
+assert len(m4.examples) == len(m.examples)
+assert m4.label_counts == m.label_counts
+assert dict(m4.graph["受贿"]) == dict(m.graph["受贿"]), (dict(m4.graph["受贿"]), dict(m.graph["受贿"]))
+ans4, meta4 = m4.predict(q_under)
+print()
+print("round-trip predict ->", repr(ans4), "| graph edges restored:",
+      sum(len(v) for v in m4.graph.values()))
+assert ans4 == ans2, (ans4, ans2)
+
+print()
+if mask_bad == 0 and ans2 == "受贿;滥用职权" and ans3 == "开设赌场" and ans4 == ans2:
+    print("AGENT B OK: import, cardinality planning, graph expansion, state round-trip")
+else:
+    print(f"AGENT B REVIEW: mask_bad={mask_bad} ans2={ans2!r} ans3={ans3!r} ans4={ans4!r}")

@@ -1,0 +1,72 @@
+{
+  "call_id": "7f0065c00e784924a9cb56bef0f4fe96",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791028116-UwpfOcaPuwkbpBkfZwnv",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"lesson\": \"- 当事实段落中出现多个动词或行为描述（如“买卖、伪造、变造、私分、帮助、窝藏”等），应将每一种行为对应的罪名全部列出，使用分号分隔；\\n- 依据事实中出现的关键法律名词（如“国家机关证件、印章、国有资产、交通工具、毒品”等）直接匹配相应的法定罪名，避免使用笼统或相近但不准确的罪名；\\n- 若事实中出现明确的法定罪名要素（如“买卖伪造的国家机关证件、印章”），应完整保留所有要素，不省略或合并为更宽泛的表述；\\n- 当事实段落以“经审理查明”“公诉机关指控”等正式审判语言开头时，通常意味着已经确定的具体罪名，模型应优先依据这些正式表述而非自行推断；\\n- 在输出时严格遵守指定的格式：罪名之间用分号分隔，整体包裹在 [罪名] 与 <eoa> 之间，防止因格式错误导致答案被判为不符。\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model often outputs incomplete or wrong charge list, missing multiple charges, misinterpreting partial facts, overgeneralizing, ignoring context like \"经审理查明\" etc. Need to base on observable signals in facts: presence of multiple distinct illegal acts, presence of keywords like \"买卖\", \"伪造\", \"变造\", \"国家机关证件\", etc. Also need to note that sometimes the fact snippet is truncated, but still contains multiple charges. Also the format: need to output multiple charges separated by semicolon. Also need to ensure correct mapping of legal terms: e.g., \"破坏交通工具\" vs \"故意毁坏财物\". So rules: 1) Identify all distinct illegal conduct described; 2) Use legal terminology matching the description; 3) When facts mention multiple offenses, output multiple charges separated by semicolon; 4) Pay attention to key legal nouns (如“国家机关证件”“国有资产”“交通工具”“毒品”等) to select correct charge; 5) Avoid defaulting to generic charge when specifics are present.\n\nMake sure each rule is based on observable signals: presence of multiple verbs, presence of specific nouns, presence of \"经审理查明\" indicates formal judgment, presence of \"公诉机关指控\" etc.\n\nNow produce JSON with \"lesson\".",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model often outputs incomplete or wrong charge list, missing multiple charges, misinterpreting partial facts, overgeneralizing, ignoring context like \"经审理查明\" etc. Need to base on observable signals in facts: presence of multiple distinct illegal acts, presence of keywords like \"买卖\", \"伪造\", \"变造\", \"国家机关证件\", etc. Also need to note that sometimes the fact snippet is truncated, but still contains multiple charges. Also the format: need to output multiple charges separated by semicolon. Also need to ensure correct mapping of legal terms: e.g., \"破坏交通工具\" vs \"故意毁坏财物\". So rules: 1) Identify all distinct illegal conduct described; 2) Use legal terminology matching the description; 3) When facts mention multiple offenses, output multiple charges separated by semicolon; 4) Pay attention to key legal nouns (如“国家机关证件”“国有资产”“交通工具”“毒品”等) to select correct charge; 5) Avoid defaulting to generic charge when specifics are present.\n\nMake sure each rule is based on observable signals: presence of multiple verbs, presence of specific nouns, presence of \"经审理查明\" indicates formal judgment, presence of \"公诉机关指控\" etc.\n\nNow produce JSON with \"lesson\".",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model often outputs incomplete or wrong charge list, missing multiple charges, misinterpreting partial facts, overgeneralizing, ignoring context like \"经审理查明\" etc. Need to base on observable signals in facts: presence of multiple distinct illegal acts, presence of keywords like \"买卖\", \"伪造\", \"变造\", \"国家机关证件\", etc. Also need to note that sometimes the fact snippet is truncated, but still contains multiple charges. Also the format: need to output multiple charges separated by semicolon. Also need to ensure correct mapping of legal terms: e.g., \"破坏交通工具\" vs \"故意毁坏财物\". So rules: 1) Identify all distinct illegal conduct described; 2) Use legal terminology matching the description; 3) When facts mention multiple offenses, output multiple charges separated by semicolon; 4) Pay attention to key legal nouns (如“国家机关证件”“国有资产”“交通工具”“毒品”等) to select correct charge; 5) Avoid defaulting to generic charge when specifics are present.\n\nMake sure each rule is based on observable signals: presence of multiple verbs, presence of specific nouns, presence of \"经审理查明\" indicates formal judgment, presence of \"公诉机关指控\" etc.\n\nNow produce JSON with \"lesson\".",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model often outputs incomplete or wrong charge list, missing multiple charges, misinterpreting partial facts, overgeneralizing, ignoring context like \"经审理查明\" etc. Need to base on observable signals in facts: presence of multiple distinct illegal acts, presence of keywords like \"买卖\", \"伪造\", \"变造\", \"国家机关证件\", etc. Also need to note that sometimes the fact snippet is truncated, but still contains multiple charges. Also the format: need to output multiple charges separated by semicolon. Also need to ensure correct mapping of legal terms: e.g., \"破坏交通工具\" vs \"故意毁坏财物\". So rules: 1) Identify all distinct illegal conduct described; 2) Use legal terminology matching the description; 3) When facts mention multiple offenses, output multiple charges separated by semicolon; 4) Pay attention to key legal nouns (如“国家机关证件”“国有资产”“交通工具”“毒品”等) to select correct charge; 5) Avoid defaulting to generic charge when specifics are present.\n\nMake sure each rule is based on observable signals: presence of multiple verbs, presence of specific nouns, presence of \"经审理查明\" indicates formal judgment, presence of \"公诉机关指控\" etc.\n\nNow produce JSON with \"lesson\"."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 585,
+      "prompt_tokens": 962,
+      "total_tokens": 1547,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 300,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00012831,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00012831,
+        "upstream_inference_prompt_cost": 2.886e-05,
+        "upstream_inference_completions_cost": 9.945e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- If the facts describe the use of a false or deceptive contract (e.g., a sale, lease, transfer agreement) to obtain money or property, classify the offense as “合同诈骗” rather than the generic “诈骗”.
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+- When the facts describe a defendant’s role in a scheme that withdraws money from victims’ bank or credit‑card accounts, classify the conduct under the specific statutory offenses of fraud (诈骗) and, if
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，2014年5月份的一天，李某某（已判刑）在自己的车辆损坏的情况下，与被告人黄某预谋，由被告人黄某制造车祸，骗取保险公司钱财修车。2014年6月1日夜，被告人黄某伙同他人驾驶李某某的豫Ｂ×××××吉利帝豪轿车在兰考县红庙镇葛寨村至西刘陈铺村的南北公路上，故意将车撞到树上造成车祸。因被告人黄某没有机动车驾驶证，被告人黄某伙同他人让有驾驶证的李2某（已判刑）冒充驾驶员，称车祸是由李2某开车造成的。事后中国人寿财产保险股份有限公司开封市中心支公司兰考县营销服务部赔付李某某保险费24800元。案发后被告人黄某与李2某已将24800元现金退还保险公司。2014年10月27日被告人黄某到兰考县公安局投案自首。
+上述事实，被告人黄某在开庭审理过程中亦无异议，并有书证被告人黄某户籍证明、案件来源及侦破报告、受案登记表、调取证据清单、机动车辆保险报案记录、机动车辆保险车辆损失情况确认书、银行转账复印件、收到条、谅解书、机动车行驶证、李2某机动车驾驶证、机动车损毁照片3幅、兰考县人民法院刑事判决书、安徽省阜阳市颍东区人民法院刑事判决书、阜阳市中级人民法院刑事裁定书、证人李某、梁某的证言、同案犯李2某、犯李某某供述等证据证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

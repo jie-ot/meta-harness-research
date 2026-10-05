@@ -1,0 +1,72 @@
+{
+  "call_id": "14e9b65a112f4c2887bf6fb099ef350c",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791027751-x3vPoT2QWbPWtSykDMu3",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"lesson\": \"- 当事实中出现具体的罪名表述（如“滥伐林木”“非法占有扣押的财物”等），模型应直接复用原文用词，避免自行添加或替换为类似但不完全等同的词汇（如“非法采伐林木”“非法占有扣押的财物”）。\\n- 若事实段落列出多个罪名，模型必须逐一列出，使用分号“;”分隔，且不加入任何额外的定性描述（如“致人死亡”“虐待家庭成员”），只保留法律条文中的罪名本身。\\n- 在出现“二审审理查明”“经审理查明”等审理标记时，模型应从后续的事实描述中提取所有出现的罪名，切勿仅依据标题或前置词汇作出猜测，防止遗漏或误判。\\n- 对于涉及特定对象或情形的罪名（如“拐卖妇女、儿童”“非法转让、倒卖土地使用权”），模型必须完整保留对象或范围的表述，不能省略或简化为更宽泛的词汇（如仅写“拐卖”或“非法转让”）。\\n- 输出格式必须严格遵守示例：单个罪名写作 \\\"[罪名]罪名<eoa>\\\"，多个罪名写作 \\\"[罪名]罪名1;罪名2<eoa>\\\"，且中间不出现多余空格或标点，以免导致答案不匹配。\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model misinterprets Chinese legal terms, adds extra qualifiers, mismatches specific crime names, includes extra words like \"非法\", \"致人死亡\", \"虐待家庭成员\". Also sometimes omits crimes or adds wrong ones. Need to base on observable signals in facts: e.g., presence of \"二审审理查明\" indicates need to extract crimes from later text, not just generic. Also need to map synonyms correctly: \"非法采伐林木\" vs \"滥伐林木\". So rule: use exact terminology from fact, avoid adding modifiers. Also when multiple crimes, separate with semicolon, no extra descriptors. Also ensure to include all crimes mentioned, not drop. Also avoid adding cause-of-death or relationship descriptors. Also ensure to not infer crimes not explicitly stated. Let's craft.\n\n",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model misinterprets Chinese legal terms, adds extra qualifiers, mismatches specific crime names, includes extra words like \"非法\", \"致人死亡\", \"虐待家庭成员\". Also sometimes omits crimes or adds wrong ones. Need to base on observable signals in facts: e.g., presence of \"二审审理查明\" indicates need to extract crimes from later text, not just generic. Also need to map synonyms correctly: \"非法采伐林木\" vs \"滥伐林木\". So rule: use exact terminology from fact, avoid adding modifiers. Also when multiple crimes, separate with semicolon, no extra descriptors. Also ensure to include all crimes mentioned, not drop. Also avoid adding cause-of-death or relationship descriptors. Also ensure to not infer crimes not explicitly stated. Let's craft.\n\n",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model misinterprets Chinese legal terms, adds extra qualifiers, mismatches specific crime names, includes extra words like \"非法\", \"致人死亡\", \"虐待家庭成员\". Also sometimes omits crimes or adds wrong ones. Need to base on observable signals in facts: e.g., presence of \"二审审理查明\" indicates need to extract crimes from later text, not just generic. Also need to map synonyms correctly: \"非法采伐林木\" vs \"滥伐林木\". So rule: use exact terminology from fact, avoid adding modifiers. Also when multiple crimes, separate with semicolon, no extra descriptors. Also ensure to include all crimes mentioned, not drop. Also avoid adding cause-of-death or relationship descriptors. Also ensure to not infer crimes not explicitly stated. Let's craft.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model misinterprets Chinese legal terms, adds extra qualifiers, mismatches specific crime names, includes extra words like \"非法\", \"致人死亡\", \"虐待家庭成员\". Also sometimes omits crimes or adds wrong ones. Need to base on observable signals in facts: e.g., presence of \"二审审理查明\" indicates need to extract crimes from later text, not just generic. Also need to map synonyms correctly: \"非法采伐林木\" vs \"滥伐林木\". So rule: use exact terminology from fact, avoid adding modifiers. Also when multiple crimes, separate with semicolon, no extra descriptors. Also ensure to include all crimes mentioned, not drop. Also avoid adding cause-of-death or relationship descriptors. Also ensure to not infer crimes not explicitly stated. Let's craft.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 559,
+      "prompt_tokens": 939,
+      "total_tokens": 1498,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 224,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0001867,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0001867,
+        "upstream_inference_prompt_cost": 4.695e-05,
+        "upstream_inference_completions_cost": 0.00013975
+      }
+    }
+  },
+  "raw_response_missing": false
+}

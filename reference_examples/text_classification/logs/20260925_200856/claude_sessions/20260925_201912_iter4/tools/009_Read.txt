@@ -1,0 +1,165 @@
+Read: agents\label_champion_memory.py
+
+
+--- output ---
+1	"""Label Champion Memory — per-label similarity champion with fill.
+2	
+3	Combines the coverage guarantee of label-balanced selection with the
+4	relevance focus of similarity retrieval:
+5	
+6	1. Champion pass: for each seen label, pick the single stored example
+7	   whose raw_question is most Jaccard-similar to the current query.
+8	   Champions are then ranked by their similarity scores.
+9	
+10	2. Fill pass: after one champion per label, add remaining examples in
+11	   similarity-score order until the context budget is exhausted.
+12	
+13	This ensures every seen label appears at least once while still
+14	prioritising the most topically relevant example for each label.
+15	Similarity is measured on raw_question only (not the full input) to
+16	avoid score dilution from shared instruction boilerplate.
+17	"""
+18	
+19	import collections
+20	import hashlib
+21	import json
+22	import re
+23	from typing import Any
+24	
+25	from ..llm import LLMCallable
+26	from ..memory_system import MemorySystem, extract_json_field
+27	
+28	PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+29	
+30	{examples_section}
+31	
+32	**Problem:**
+33	{input}
+34	
+35	**Instructions:**
+36	- Follow the patterns shown in the examples above
+37	- Respond in JSON format
+38	
+39	{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+40	
+41	MAX_CHARS = 30000
+42	
+43	
+44	def _tokenize(text: str) -> frozenset[str]:
+45	    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+46	
+47	
+48	def _jaccard(a: frozenset[str], b: frozenset[str]) -> float:
+49	    if not a and not b:
+50	        return 0.0
+51	    return len(a & b) / len(a | b)
+52	
+53	
+54	class LabelChampionMemory(MemorySystem):
+55	    """Per-label champion retrieval: best match per label, then fill by score."""
+56	
+57	    def __init__(self, llm: LLMCallable):
+58	        super().__init__(llm)
+59	        self.examples: list[dict[str, Any]] = []
+60	
+61	    def _select(self, query: str) -> list[str]:
+62	        if not self.examples:
+63	            return []
+64	
+65	        q_tok = _tokenize(query)
+66	
+67	        # Group by label; compute similarity for each example
+68	        by_label: dict[str, list[tuple[float, int, dict]]] = collections.defaultdict(list)
+69	        for idx, ex in enumerate(self.examples):
+70	            score = _jaccard(q_tok, ex["tokens"])
+71	            by_label[ex["target"]].append((score, idx, ex))
+72	
+73	        # Champion pass: pick best-scoring (most recent on ties) example per label
+74	        champion_indices: set[int] = set()
+75	        champions: list[tuple[float, int, dict]] = []
+76	        for label, scored_exs in by_label.items():
+77	            best = max(scored_exs, key=lambda x: (x[0], x[1]))
+78	            champions.append(best)
+79	            champion_indices.add(best[1])
+80	
+81	        champions.sort(key=lambda x: (x[0], x[1]), reverse=True)
+82	
+83	        parts: list[str] = []
+84	        total_chars = 0
+85	
+86	        for _score, _idx, ex in champions:
+87	            q = ex.get("raw_question", ex["input"])
+88	            part = f"Q: {q}\nA: {ex['target']}"
+89	            if total_chars + len(part) + 2 > MAX_CHARS:
+90	                break
+91	            parts.append(part)
+92	            total_chars += len(part) + 2
+93	
+94	        # Fill pass: remaining non-champion examples ranked by similarity
+95	        remaining: list[tuple[float, int, dict]] = []
+96	        for idx, ex in enumerate(self.examples):
+97	            if idx in champion_indices:
+98	                continue
+99	            score = _jaccard(q_tok, ex["tokens"])
+100	            remaining.append((score, idx, ex))
+101	        remaining.sort(key=lambda x: (x[0], x[1]), reverse=True)
+102	
+103	        for _score, _idx, ex in remaining:
+104	            q = ex.get("raw_question", ex["input"])
+105	            part = f"Q: {q}\nA: {ex['target']}"
+106	            if total_chars + len(part) + 2 > MAX_CHARS:
+107	                break
+108	            parts.append(part)
+109	            total_chars += len(part) + 2
+110	
+111	        return parts
+112	
+113	    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+114	        parts = self._select(input)
+115	        examples_section = "\n\n".join(parts)
+116	        prompt = PROMPT_TEMPLATE.format(
+117	            examples_section=examples_section,
+118	            input=input,
+119	        )
+120	        response = self.call_llm(prompt)
+121	        answer = extract_json_field(response, "final_answer")
+122	        return answer, {
+123	            "full_response": response,
+124	            "num_examples": len(self.examples),
+125	            "num_selected": len(parts),
+126	        }
+127	
+128	    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+129	        for r in batch_results:
+130	            raw_q = r.get("raw_question", r["input"])
+131	            ex: dict[str, Any] = {
+132	                "input": r["input"],
+133	                "target": r["ground_truth"],
+134	                "tokens": _tokenize(raw_q),
+135	            }
+136	            if "raw_question" in r:
+137	                ex["raw_question"] = r["raw_question"]
+138	            self.examples.append(ex)
+139	
+140	    def get_context_length(self) -> int:
+141	        return sum(len(p) + 2 for p in self._select(""))
+142	
+143	    def get_state(self) -> str:
+144	        serialisable = [
+145	            {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+146	            for ex in self.examples
+147	        ]
+148	        return json.dumps({"examples": serialisable}, indent=2)
+149	
+150	    def set_state(self, state: str) -> None:
+151	        data = json.loads(state)
+152	        self.examples = []
+153	        for ex in data.get("examples", []):
+154	            restored = dict(ex)
+155	            if "tokens" in restored and isinstance(restored["tokens"], list):
+156	                restored["tokens"] = frozenset(restored["tokens"])
+157	            else:
+158	                raw_q = restored.get("raw_question", restored.get("input", ""))
+159	                restored["tokens"] = _tokenize(raw_q)
+160	            self.examples.append(restored)
+161	

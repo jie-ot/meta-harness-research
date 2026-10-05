@@ -1,0 +1,147 @@
+Write: C:/tmp/proto_multiview.py
+
+content:
+"""Prototype: multi-view Jaccard similarity.
+
+Splits tokens into positional thirds (prefix, middle, suffix) and scores
+each stored example as max(sim_prefix, sim_middle, sim_suffix).
+
+Tests three variants:
+  A - max over thirds
+  B - max over halves (prefix50, suffix50)
+  C - weighted: 0.5*full + 0.5*max_third
+"""
+import json, re, pathlib, random
+
+CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+
+def has_cjk(text): return bool(CJK_RE.search(text))
+
+def tokenize_word(text):
+    return list(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+def tokenize_bigram(text):
+    t = re.sub(r'\s+', ' ', text.strip())
+    if len(t) < 2: return [t] if t else []
+    return [t[i:i+2] for i in range(len(t)-1)]
+
+def tokenize(text):
+    return tokenize_bigram(text) if has_cjk(text) else tokenize_word(text)
+
+def jaccard(a, b):
+    sa, sb = set(a), set(b)
+    if not sa and not sb: return 0.0
+    return len(sa & sb) / len(sa | sb)
+
+def split_thirds(tokens):
+    n = len(tokens)
+    t1 = n // 3
+    t2 = 2 * n // 3
+    return tokens[:t1], tokens[t1:t2], tokens[t2:]
+
+def split_halves(tokens):
+    n = len(tokens)
+    m = n // 2
+    return tokens[:m], tokens[m:]
+
+def sim_A(q_toks, ex_toks):
+    """max over thirds"""
+    qp, qm, qs = split_thirds(q_toks)
+    ep, em, es = split_thirds(ex_toks)
+    return max(jaccard(qp, ep), jaccard(qm, em), jaccard(qs, es))
+
+def sim_B(q_toks, ex_toks):
+    """max over halves"""
+    qp, qs = split_halves(q_toks)
+    ep, es = split_halves(ex_toks)
+    return max(jaccard(qp, ep), jaccard(qs, es))
+
+def sim_C(q_toks, ex_toks):
+    """weighted full + max_third"""
+    full = jaccard(q_toks, ex_toks)
+    third_max = sim_A(q_toks, ex_toks)
+    return 0.5 * full + 0.5 * third_max
+
+# Load LawBench log
+log_path = pathlib.Path(
+    r"D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples"
+    r"\text_classification\logs\20260925_200856\LawBench\decayed_confusion_memory"
+    r"\gpt-oss-120b\log.jsonl"
+)
+
+steps = []
+with log_path.open(encoding='utf-8') as f:
+    for line in f:
+        obj = json.loads(line)
+        if obj.get('type') == 'step':
+            steps.append(obj)
+        if len(steps) >= 80:
+            break
+
+print(f"Loaded {len(steps)} steps")
+
+# Build a small pool and test retrieval ordering
+pool = []
+for s in steps[:50]:
+    raw_q = s['input_preview']
+    pool.append({'raw_q': raw_q, 'tokens': tokenize(raw_q), 'tgt': s.get('tgt','')})
+
+results_A, results_B, results_C = [], [], []
+
+for query_step in steps[50:70]:
+    q = query_step['input_preview']
+    q_toks = tokenize(q)
+
+    scored_A = sorted(range(len(pool)), key=lambda i: sim_A(q_toks, pool[i]['tokens']), reverse=True)
+    scored_B = sorted(range(len(pool)), key=lambda i: sim_B(q_toks, pool[i]['tokens']), reverse=True)
+    scored_C = sorted(range(len(pool)), key=lambda i: sim_C(q_toks, pool[i]['tokens']), reverse=True)
+    scored_full = sorted(range(len(pool)), key=lambda i: jaccard(q_toks, pool[i]['tokens']), reverse=True)
+
+    # Check top-5 target diversity
+    def diversity(indices):
+        return len(set(pool[i]['tgt'] for i in indices[:5]))
+
+    results_A.append((diversity(scored_A), diversity(scored_full)))
+    results_B.append((diversity(scored_B), diversity(scored_full)))
+    results_C.append((diversity(scored_C), diversity(scored_full)))
+
+avg_div_A = sum(r[0] for r in results_A) / len(results_A)
+avg_div_B = sum(r[0] for r in results_B) / len(results_B)
+avg_div_C = sum(r[0] for r in results_C) / len(results_C)
+avg_div_full = sum(r[1] for r in results_A) / len(results_A)
+
+print(f"Avg top-5 label diversity:")
+print(f"  full jaccard:  {avg_div_full:.2f}")
+print(f"  variant A (max thirds): {avg_div_A:.2f}")
+print(f"  variant B (max halves): {avg_div_B:.2f}")
+print(f"  variant C (0.5*full + 0.5*max_third): {avg_div_C:.2f}")
+
+# Check whether top-1 for variant A agrees with full for error cases
+agree = 0
+for query_step in steps[50:70]:
+    q = query_step['input_preview']
+    q_toks = tokenize(q)
+    scored_A = sorted(range(len(pool)), key=lambda i: sim_A(q_toks, pool[i]['tokens']), reverse=True)
+    scored_full = sorted(range(len(pool)), key=lambda i: jaccard(q_toks, pool[i]['tokens']), reverse=True)
+    if scored_A[0] == scored_full[0]:
+        agree += 1
+print(f"Top-1 agreement (A vs full): {agree}/20 = {agree/20:.0%}")
+
+# Show a few comparisons
+print("\nSample comparison (query vs top retrieved):")
+for i, query_step in enumerate(steps[55:58]):
+    q = query_step['input_preview']
+    q_toks = tokenize(q)
+    scored_full = sorted(range(len(pool)), key=lambda i: jaccard(q_toks, pool[i]['tokens']), reverse=True)
+    scored_A = sorted(range(len(pool)), key=lambda i: sim_A(q_toks, pool[i]['tokens']), reverse=True)
+
+    sim_full_top = jaccard(q_toks, pool[scored_full[0]]['tokens'])
+    sim_A_top = sim_A(q_toks, pool[scored_A[0]]['tokens'])
+
+    print(f"  Query {i}: full top sim={sim_full_top:.3f} target={pool[scored_full[0]]['tgt'][:30]!r}")
+    print(f"          A    top sim={sim_A_top:.3f} target={pool[scored_A[0]]['tgt'][:30]!r}")
+
+
+
+--- output ---
+File created successfully at: C:/tmp/proto_multiview.py (file state is current in your context — no need to Read it back)

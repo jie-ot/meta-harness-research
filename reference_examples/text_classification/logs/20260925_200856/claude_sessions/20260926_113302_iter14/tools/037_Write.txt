@@ -1,0 +1,29 @@
+Write: logs\20260925_200856\pending_eval.json
+
+content:
+{
+  "iteration": 14,
+  "candidates": [
+    {
+      "name": "missed_component_memory",
+      "file": "agents/missed_component_memory.py",
+      "hypothesis": "Tracking per-atomic-component miss counts (splitting compound labels on semicolons and incrementing counts for each component absent from the prediction) and adding a log-scaled component-overlap bonus to Jaccard scoring will outperform decayed_confusion_memory on tasks with compound labels, because the confusion matrix treats compound strings as opaque keys and cannot express which sub-components are systematically under-predicted — the component bonus directly surfaces examples of chronically-missed labels regardless of textual similarity.",
+      "axis": "exploitation",
+      "base_system": "decayed_confusion_memory",
+      "components": ["compound_label_splitting", "missed_component_counter", "component_overlap_bonus", "log_scaled_bonus", "adaptive_tokenizer", "decay", "prediction_normalization", "memory_content_axis", "selection_algorithm_axis"]
+    },
+    {
+      "name": "recent_error_hint_memory",
+      "file": "agents/recent_error_hint_memory.py",
+      "hypothesis": "Prepending a compact 'Recent corrections' section (rolling window of last 10 distinct wrong-pred → correct-gt pairs, most-recent first, rendered as explicit ✗/✓ pairs) above the retrieved examples will outperform decayed_confusion_memory, because the model currently only receives error signal indirectly via the distribution of retrieved examples, whereas an explicit correction list gives the model direct meta-knowledge about its current failure patterns before it processes any examples.",
+      "axis": "exploration",
+      "base_system": "decayed_confusion_memory",
+      "components": ["recent_error_window", "explicit_correction_hint", "two_section_prompt", "deduped_recency_ordering", "adaptive_tokenizer", "decay", "prediction_normalization", "prompt_architecture_axis", "learning_trigger_axis"]
+    }
+  ]
+}
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\pending_eval.json (file state is current in your context — no need to Read it back)

@@ -109,6 +109,32 @@ def _is_retryable(exc: Exception) -> bool:
     )
 
 
+def _completion_cost_usd(response: Any, usage: Any, allow_price_table: bool) -> float:
+    """Prefer the provider's own cost, then LiteLLM's price table."""
+    reported = []
+    if usage is not None:
+        reported.append(getattr(usage, "cost", None))
+        extra = getattr(usage, "model_extra", None) or {}
+        if isinstance(extra, dict):
+            reported.append(extra.get("cost"))
+    hidden = getattr(response, "_hidden_params", None) or {}
+    if isinstance(hidden, dict):
+        reported.append(hidden.get("response_cost"))
+    for value in reported:
+        if value is None:
+            continue
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            continue
+    if not allow_price_table:
+        return 0.0
+    try:
+        return float(completion_cost(completion_response=response) or 0.0)
+    except Exception:
+        return 0.0
+
+
 def _extract_content(response: Any) -> str:
     message = response.choices[0].message
     content = getattr(message, "content", None)
@@ -181,7 +207,7 @@ class ProviderLLM:
         if not path.exists():
             return None
         try:
-            return json.loads(path.read_text())
+            return json.loads(path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             return None
 
@@ -189,7 +215,7 @@ class ProviderLLM:
         tmp = path.with_suffix(".tmp")
         try:
             with self._cache_lock:
-                tmp.write_text(json.dumps(payload))
+                tmp.write_text(json.dumps(payload), encoding="utf-8")
                 tmp.replace(path)
         except OSError:
             pass
@@ -234,13 +260,7 @@ class ProviderLLM:
             except Exception:
                 output_tokens = 0
 
-        if self.api_base:
-            cost = 0.0
-        else:
-            try:
-                cost = float(completion_cost(completion_response=response) or 0.0)
-            except Exception:
-                cost = 0.0
+        cost = _completion_cost_usd(response, usage, allow_price_table=not self.api_base)
 
         return {
             "content": content,

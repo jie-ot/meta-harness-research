@@ -1,0 +1,25 @@
+An AI classifier made an error on this case. Generate a compact correction lesson.
+
+**Correct label:** 危险物品肇事
+**Wrong prediction:** [罪名]过失致人死亡<eoa>
+**Case facts (excerpt):**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明：2014年12月20日12时许，被告人吴某（爆破员）与安全员杨某等人一起领取了720公斤乳化炸药、30枚电雷管到道翁高速TJ07标段路基四队实施爆破，由安全员杨某现场监督，爆破员吴某在杨贤某的协助下填装好炮眼，实施爆破作业。吴某于2014年10月16日取得爆破员证，按照《爆破安全规程》规定不能独立进行爆破作业，吴某违规实施引爆后飞石砸中村民杨家某的头部，致其当场死亡。
+另查明，案发后经当地人民调解委员会组织调解，对民事赔偿部分达成协议，并已履行。
+上述事实，被告人吴某在开庭审理过程中亦无异议，且有受案登记表、证人证言、户籍证明等证据证实，足以认定。
+
+
+Write a lesson that:
+1. States the KEY distinguishing feature that determines the correct label
+2. Explains what makes this different from "[罪名]过失致人死亡<eoa>"
+3. Gives a brief rule a classifier can apply to future cases
+
+Respond only in JSON:
+{"lesson": "<one to three sentences, in the same language as the case facts>", "final_answer": "危险物品肇事"}

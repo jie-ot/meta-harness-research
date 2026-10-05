@@ -1,0 +1,30 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- If the factual scenario describes fraud that is carried out through the creation, signing, or performance of a contract (e.g., false representation of a business role, fictitious project, or fabricate
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控，2016年1月17日凌晨1时许，被告人徐某乙和朋友张某某骑摩车返回家的途中，路过曼谢新寨村民李某家，与在李某家路边休息的王某甲、何某某因琐事发生肢体冲突，被告人徐某乙与张某某在拉扯过程中，被害人李某甲路过遂上前劝架，过程中被被告人徐某乙反手一肘击中面部，致被害人李某甲倒地头部受伤。经鉴定被害人头部被他人打击致左侧颞叶脑挫裂伤出血，伤情达重伤二级。
+针对指控事实，公诉机关当庭宣读和出示了受案登记表、立案决定书、监视居住决定书、户口证明、前科查询说明、到案经过、自首证明、鉴定意见、辨认笔录及照片、现场勘验检查笔录及现场照片、被害人陈述、证人证言、被告人的供述等证据。
+公诉机关认为，被告人徐某乙过失伤害他人致人重伤，其行为已触犯《中华人民共和国刑法》××之规定，犯罪事实清楚，证据确实充分，应当以××追究其刑事责任。被告人徐某乙犯罪后主动投案，如实供述自己的犯罪事实，具有自首情节，适用《中华人民共和国刑法》××××之规定，可以从轻或减轻处罚。
+附带民事诉讼原告人李某甲以被告人徐某乙、附带民事诉讼被告人王某甲、何某某、张某某的行为给其造成经济损失为由，要求判决四被告人连带赔偿附带民事诉讼原告人李某甲残疾赔偿金32968元、医疗费101039.48元、误工费5035元、护理费9000元、住院伙食补助费6900元、营养费18000元、交通费5520元、鉴定费1872元、住宿费26220元、精神抚慰金20000元，共计人民币226554.48元。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

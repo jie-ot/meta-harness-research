@@ -1,0 +1,72 @@
+{
+  "call_id": "ecb0213d734f48bd8742ecf15adae3f6",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791011908-TIlf1b8KhfKGWKO4420D",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"lesson\": \"当事实明确指出被告违反国家毒品管理法规、持有毒品且数量达到法定标准（如海洛因十克以上）时，应使用“非法持有毒品”，而不是仅写“持有毒品”。\",\n  \"final_answer\": \"非法持有毒品\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to output JSON with lesson and final_answer. Lesson: key distinguishing feature is that the law distinguishes \"非法持有毒品\" (illegal possession) vs generic \"持有毒品\". The correct label includes \"非法\" indicating violation of drug management regulations. The wrong prediction omitted \"非法\". So rule: if the fact mentions violation of drug control law and possession of heroin >10g, label as \"非法持有毒品\". Provide concise.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to output JSON with lesson and final_answer. Lesson: key distinguishing feature is that the law distinguishes \"非法持有毒品\" (illegal possession) vs generic \"持有毒品\". The correct label includes \"非法\" indicating violation of drug management regulations. The wrong prediction omitted \"非法\". So rule: if the fact mentions violation of drug control law and possession of heroin >10g, label as \"非法持有毒品\". Provide concise.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to output JSON with lesson and final_answer. Lesson: key distinguishing feature is that the law distinguishes \"非法持有毒品\" (illegal possession) vs generic \"持有毒品\". The correct label includes \"非法\" indicating violation of drug management regulations. The wrong prediction omitted \"非法\". So rule: if the fact mentions violation of drug control law and possession of heroin >10g, label as \"非法持有毒品\". Provide concise.",
+            "reasoning_content": "We need to output JSON with lesson and final_answer. Lesson: key distinguishing feature is that the law distinguishes \"非法持有毒品\" (illegal possession) vs generic \"持有毒品\". The correct label includes \"非法\" indicating violation of drug management regulations. The wrong prediction omitted \"非法\". So rule: if the fact mentions violation of drug control law and possession of heroin >10g, label as \"非法持有毒品\". Provide concise."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 175,
+      "prompt_tokens": 508,
+      "total_tokens": 683,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 119,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 6.915e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 6.915e-05,
+        "upstream_inference_prompt_cost": 2.54e-05,
+        "upstream_inference_completions_cost": 4.375e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

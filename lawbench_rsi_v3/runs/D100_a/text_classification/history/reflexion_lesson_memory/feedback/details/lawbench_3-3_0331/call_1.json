@@ -1,0 +1,72 @@
+{
+  "call_id": "3d3a5cb00304448181ca70e524231fc3",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791038192-fZjIazoCngGhNHpa71hz",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"被告人经营的食品加工公司在生产腌制酱菜时使用了标称为‘湖北高级精制盐’的盐产品，但经检验该盐的碘含量为零，未符合碘缺乏地区必须使用加碘食盐的法规要求。此行为属于在食品生产过程中使用不符合安全标准的原料并对外销售，构成《刑法》规定的生产、销售不符合安全标准的食品罪。案件事实未涉及其他犯罪行为，如伪造印章、诈骗等。因此仅适用该一项罪名。\",\n  \"final_answer\": \"[罪名]生产、销售不符合安全标准的食品<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the crime(s) based on facts. Facts: The defendant operated a food processing company, produced pickled vegetables, added salt product labeled “湖北高级精制盐” with standard GB/T5462. The salt had zero iodine content, while in iodine-deficient areas must use iodized salt. So they used non-iodized salt but labeled as iodized? Actually they added salt product with label indicating standard, but the salt had zero iodine. This is adulteration of food, false labeling, violating food safety. Under Chinese criminal law, offenses: \"生产、销售不符合安全标准的食品\" (producing and selling food that does not meet safety standards). Also possibly \"非法添加非食用盐\" but main is food safety offense.\n\nThe correction rules: If facts describe acquisition, processing, sale of unsafe food, classify under food safety statutes (e.g., 生产、销售不符合安全标准的食品). So we output that offense.\n\nWe need to output only statutory offense name without appending “罪”. So just \"生产、销售不符合安全标准的食品\". Possibly also \"非法添加非食用盐\"? But the rule says list each specific fraud charge separately if multiple fraud categories. Not relevant. No forged seal. No self-surrender? The defense claims self-surrender, but that doesn't affect crime name.\n\nThus single crime: 生产、销售不符合安全标准的食品.\n\nReturn JSON with reasoning and final_answer.\n\nMake sure final_answer format: \"[罪名]生产、销售不符合安全标准的食品<eoa>\"? Actually they want final answer inside JSON field \"final_answer\". The example shows answer like \"[罪名]盗窃<eoa>\" but we need to output JSON with final_answer containing that string. So final_answer should be \"[罪名]生产、销售不符合安全标准的食品<eoa>\".\n\nProceed.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the crime(s) based on facts. Facts: The defendant operated a food processing company, produced pickled vegetables, added salt product labeled “湖北高级精制盐” with standard GB/T5462. The salt had zero iodine content, while in iodine-deficient areas must use iodized salt. So they used non-iodized salt but labeled as iodized? Actually they added salt product with label indicating standard, but the salt had zero iodine. This is adulteration of food, false labeling, violating food safety. Under Chinese criminal law, offenses: \"生产、销售不符合安全标准的食品\" (producing and selling food that does not meet safety standards). Also possibly \"非法添加非食用盐\" but main is food safety offense.\n\nThe correction rules: If facts describe acquisition, processing, sale of unsafe food, classify under food safety statutes (e.g., 生产、销售不符合安全标准的食品). So we output that offense.\n\nWe need to output only statutory offense name without appending “罪”. So just \"生产、销售不符合安全标准的食品\". Possibly also \"非法添加非食用盐\"? But the rule says list each specific fraud charge separately if multiple fraud categories. Not relevant. No forged seal. No self-surrender? The defense claims self-surrender, but that doesn't affect crime name.\n\nThus single crime: 生产、销售不符合安全标准的食品.\n\nReturn JSON with reasoning and final_answer.\n\nMake sure final_answer format: \"[罪名]生产、销售不符合安全标准的食品<eoa>\"? Actually they want final answer inside JSON field \"final_answer\". The example shows answer like \"[罪名]盗窃<eoa>\" but we need to output JSON with final_answer containing that string. So final_answer should be \"[罪名]生产、销售不符合安全标准的食品<eoa>\".\n\nProceed.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine the crime(s) based on facts. Facts: The defendant operated a food processing company, produced pickled vegetables, added salt product labeled “湖北高级精制盐” with standard GB/T5462. The salt had zero iodine content, while in iodine-deficient areas must use iodized salt. So they used non-iodized salt but labeled as iodized? Actually they added salt product with label indicating standard, but the salt had zero iodine. This is adulteration of food, false labeling, violating food safety. Under Chinese criminal law, offenses: \"生产、销售不符合安全标准的食品\" (producing and selling food that does not meet safety standards). Also possibly \"非法添加非食用盐\" but main is food safety offense.\n\nThe correction rules: If facts describe acquisition, processing, sale of unsafe food, classify under food safety statutes (e.g., 生产、销售不符合安全标准的食品). So we output that offense.\n\nWe need to output only statutory offense name without appending “罪”. So just \"生产、销售不符合安全标准的食品\". Possibly also \"非法添加非食用盐\"? But the rule says list each specific fraud charge separately if multiple fraud categories. Not relevant. No forged seal. No self-surrender? The defense claims self-surrender, but that doesn't affect crime name.\n\nThus single crime: 生产、销售不符合安全标准的食品.\n\nReturn JSON with reasoning and final_answer.\n\nMake sure final_answer format: \"[罪名]生产、销售不符合安全标准的食品<eoa>\"? Actually they want final answer inside JSON field \"final_answer\". The example shows answer like \"[罪名]盗窃<eoa>\" but we need to output JSON with final_answer containing that string. So final_answer should be \"[罪名]生产、销售不符合安全标准的食品<eoa>\".\n\nProceed.",
+            "reasoning_content": "We need to determine the crime(s) based on facts. Facts: The defendant operated a food processing company, produced pickled vegetables, added salt product labeled “湖北高级精制盐” with standard GB/T5462. The salt had zero iodine content, while in iodine-deficient areas must use iodized salt. So they used non-iodized salt but labeled as iodized? Actually they added salt product with label indicating standard, but the salt had zero iodine. This is adulteration of food, false labeling, violating food safety. Under Chinese criminal law, offenses: \"生产、销售不符合安全标准的食品\" (producing and selling food that does not meet safety standards). Also possibly \"非法添加非食用盐\" but main is food safety offense.\n\nThe correction rules: If facts describe acquisition, processing, sale of unsafe food, classify under food safety statutes (e.g., 生产、销售不符合安全标准的食品). So we output that offense.\n\nWe need to output only statutory offense name without appending “罪”. So just \"生产、销售不符合安全标准的食品\". Possibly also \"非法添加非食用盐\"? But the rule says list each specific fraud charge separately if multiple fraud categories. Not relevant. No forged seal. No self-surrender? The defense claims self-surrender, but that doesn't affect crime name.\n\nThus single crime: 生产、销售不符合安全标准的食品.\n\nReturn JSON with reasoning and final_answer.\n\nMake sure final_answer format: \"[罪名]生产、销售不符合安全标准的食品<eoa>\"? Actually they want final answer inside JSON field \"final_answer\". The example shows answer like \"[罪名]盗窃<eoa>\" but we need to output JSON with final_answer containing that string. So final_answer should be \"[罪名]生产、销售不符合安全标准的食品<eoa>\".\n\nProceed."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 560,
+      "prompt_tokens": 721,
+      "total_tokens": 1281,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 391,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 66,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00044415,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00044415,
+        "upstream_inference_prompt_cost": 0.00010815,
+        "upstream_inference_completions_cost": 0.000336
+      }
+    }
+  },
+  "raw_response_missing": false
+}

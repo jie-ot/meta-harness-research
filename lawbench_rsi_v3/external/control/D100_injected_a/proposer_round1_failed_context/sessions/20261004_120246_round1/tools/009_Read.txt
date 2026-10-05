@@ -1,0 +1,548 @@
+Read: llm.py
+
+
+--- output ---
+1	"""LLM abstraction for memory systems.
+2	
+3	Thin wrapper around litellm.completion with GPT-OSS harmony parsing.
+4	"""
+5	
+6	import hashlib
+7	import json
+8	import logging
+9	import os
+10	import threading
+11	import time
+12	import uuid
+13	from concurrent.futures import ThreadPoolExecutor, as_completed
+14	from pathlib import Path
+15	from typing import Any, Protocol
+16	
+17	from .pilot_observation import record_call, submit_with_context
+18	
+19	from litellm import completion as litellm_completion
+20	from litellm import completion_cost, token_counter
+21	from openai_harmony import HarmonyEncodingName, Role, load_harmony_encoding
+22	from tenacity import (
+23	    retry,
+24	    retry_if_exception,
+25	    stop_after_attempt,
+26	    wait_exponential,
+27	    wait_random,
+28	)
+29	
+30	logger = logging.getLogger(__name__)
+31	
+32	CACHE_DIR = Path(
+33	    os.path.expanduser(
+34	        os.environ.get(
+35	            "TEXT_CLASSIFICATION_LLM_CACHE_DIR",
+36	            "~/.cache/text-classification/litellm",
+37	        )
+38	    )
+39	)
+40	CACHE_VERSION = 1
+41	KNOWN_PROVIDER_PREFIXES = (
+42	    "anthropic/",
+43	    "azure/",
+44	    "bedrock/",
+45	    "cohere/",
+46	    "gemini/",
+47	    "groq/",
+48	    "ollama/",
+49	    "openai/",
+50	    "openrouter/",
+51	    "together_ai/",
+52	    "togethercomputer/",
+53	    "vertex_ai/",
+54	    "xai/",
+55	)
+56	
+57	MAX_PROMPT_CHARS = 224_000
+58	
+59	_HARMONY_ENC = None
+60	
+61	
+62	def _get_harmony_enc():
+63	    """Lazy-load harmony encoder to avoid import overhead when not using GPT-OSS."""
+64	    global _HARMONY_ENC
+65	    if _HARMONY_ENC is None:
+66	        _HARMONY_ENC = load_harmony_encoding(HarmonyEncodingName.HARMONY_GPT_OSS)
+67	    return _HARMONY_ENC
+68	
+69	
+70	def parse_harmony_response(raw_content: str) -> str:
+71	    """Parse GPT-OSS harmony format, extracting final channel content.
+72	
+73	    Returns the 'final' channel content, or raw content if parsing fails.
+74	    """
+75	    enc = _get_harmony_enc()
+76	    try:
+77	        tokens = enc.encode(raw_content, allowed_special="all")
+78	        parsed = enc.parse_messages_from_completion_tokens(
+79	            tokens, role=Role.ASSISTANT, strict=False
+80	        )
+81	
+82	        for msg in parsed:
+83	            if msg.channel == "final":
+84	                return "".join(c.text for c in msg.content if hasattr(c, "text"))
+85	
+86	        if parsed:
+87	            return "".join(c.text for c in parsed[-1].content if hasattr(c, "text"))
+88	    except Exception:
+89	        pass
+90	
+91	    return raw_content
+92	
+93	
+94	def _is_retryable(exc: Exception) -> bool:
+95	    status = (
+96	        getattr(exc, "status_code", None)
+97	        or getattr(exc, "code", None)
+98	        or getattr(exc, "status", None)
+99	    )
+100	    if status == 429 or (isinstance(status, int) and 500 <= status < 600):
+101	        return True
+102	    text = str(exc).lower()
+103	    return any(
+104	        token in text
+105	        for token in (
+106	            "429",
+107	            "rate limit",
+108	            "too many requests",
+109	            "retry in",
+110	            "timed out",
+111	            "timeout",
+112	            "connection error",
+113	        )
+114	    )
+115	
+116	
+117	def _completion_cost_usd(response: Any, usage: Any, allow_price_table: bool) -> float:
+118	    """Prefer the provider's own cost, then LiteLLM's price table."""
+119	    reported = []
+120	    if usage is not None:
+121	        reported.append(getattr(usage, "cost", None))
+122	        extra = getattr(usage, "model_extra", None) or {}
+123	        if isinstance(extra, dict):
+124	            reported.append(extra.get("cost"))
+125	    hidden = getattr(response, "_hidden_params", None) or {}
+126	    if isinstance(hidden, dict):
+127	        reported.append(hidden.get("response_cost"))
+128	    for value in reported:
+129	        if value is None:
+130	            continue
+131	        try:
+132	            return float(value)
+133	        except (TypeError, ValueError):
+134	            continue
+135	    if not allow_price_table:
+136	        return 0.0
+137	    try:
+138	        return float(completion_cost(completion_response=response) or 0.0)
+139	    except Exception:
+140	        return 0.0
+141	
+142	
+143	def _extract_content(response: Any) -> str:
+144	    message = response.choices[0].message
+145	    content = getattr(message, "content", None)
+146	    if isinstance(content, str):
+147	        return content
+148	    if isinstance(content, list):
+149	        parts = []
+150	        for item in content:
+151	            if isinstance(item, dict) and "text" in item:
+152	                parts.append(item["text"])
+153	            elif hasattr(item, "text"):
+154	                parts.append(item.text)
+155	        return "".join(parts)
+156	    return ""
+157	
+158	
+159	class LLMCallable(Protocol):
+160	    """Protocol for LLM call functions."""
+161	
+162	    def __call__(self, prompt: str) -> str: ...
+163	
+164	
+165	class ProviderLLM:
+166	    """Thin shim that provides the old provider interface on top of litellm."""
+167	
+168	    def __init__(
+169	        self,
+170	        model: str,
+171	        max_concurrent: int = 4,
+172	        api_key: str | None = None,
+173	        api_base: str | None = None,
+174	        cache_mode: str | None = None,
+175	        cache_dir: str | Path | None = None,
+176	    ):
+177	        self.model = model
+178	        self.api_key = api_key
+179	        self.api_base = api_base
+180	        self.cache_mode = cache_mode or os.environ.get("TEXT_CLASSIFICATION_LLM_CACHE_MODE", "run")
+181	        supplied_cache = cache_dir or os.environ.get("TEXT_CLASSIFICATION_LLM_CACHE_DIR")
+182	        if self.cache_mode not in {"off", "run"}:
+183	            raise ValueError("Pilot cache mode must be off or run")
+184	        if self.cache_mode == "run" and not supplied_cache:
+185	            raise ValueError("run cache requires an explicit isolated cache directory")
+186	        self.cache_dir = Path(supplied_cache) if supplied_cache else None
+187	        self.logical_calls = 0
+188	        self.api_requests = 0
+189	        self.cache_hits = 0
+190	        self.failed_requests = 0
+191	        self.total_input_tokens = 0
+192	        self.total_output_tokens = 0
+193	        self.total_cost = 0.0
+194	        self._usage_lock = threading.Lock()
+195	        self._cache_lock = threading.Lock()
+196	        self._executor = ThreadPoolExecutor(max_workers=max_concurrent)
+197	        if self.cache_mode == "run":
+198	            self.cache_dir.mkdir(parents=True, exist_ok=True)
+199	
+200	    def __exit__(self, *exc):
+201	        self._executor.shutdown(wait=True)
+202	        return False
+203	
+204	    def _normalized_model(self) -> str:
+205	        if self.api_base and not self.model.startswith(KNOWN_PROVIDER_PREFIXES):
+206	            return f"openai/{self.model}"
+207	        return self.model
+208	
+209	    def _cache_path(
+210	        self, prompt: str, system_prompt: str | None, kwargs: dict[str, Any]
+211	    ) -> Path:
+212	        payload = {
+213	            "version": CACHE_VERSION,
+214	            "model": self._normalized_model(),
+215	            "api_base": self.api_base,
+216	            "system_prompt": system_prompt,
+217	            "prompt": prompt,
+218	            "kwargs": kwargs,
+219	        }
+220	        digest = hashlib.sha256(
+221	            json.dumps(payload, sort_keys=True, default=str).encode("utf-8")
+222	        ).hexdigest()
+223	        return (self.cache_dir or Path(".")) / f"{digest}.json"
+224	
+225	    def _load_cache(self, path: Path) -> dict[str, Any] | None:
+226	        if not path.exists():
+227	            return None
+228	        try:
+229	            return json.loads(path.read_text(encoding="utf-8"))
+230	        except (OSError, json.JSONDecodeError):
+231	            return None
+232	
+233	    def _save_cache(self, path: Path, payload: dict[str, Any]) -> None:
+234	        tmp = path.with_suffix(".tmp")
+235	        try:
+236	            with self._cache_lock:
+237	                tmp.write_text(json.dumps(payload), encoding="utf-8")
+238	                tmp.replace(path)
+239	        except OSError:
+240	            pass
+241	
+242	    def _call_completion(
+243	        self, prompt: str, system_prompt: str | None, kwargs: dict[str, Any]
+244	    ) -> dict[str, Any]:
+245	        messages = []
+246	        if system_prompt:
+247	            messages.append({"role": "system", "content": system_prompt})
+248	        messages.append({"role": "user", "content": prompt})
+249	
+250	        call_kwargs = dict(kwargs)
+251	        call_kwargs["timeout"] = 600.0
+252	        if self.api_base:
+253	            call_kwargs["base_url"] = self.api_base
+254	            call_kwargs.setdefault("api_key", self.api_key or "local")
+255	        elif self.api_key is not None:
+256	            call_kwargs["api_key"] = self.api_key
+257	
+258	        model = self._normalized_model()
+259	        # Retries are counted here by _generate_one; disable hidden SDK retries.
+260	        response = litellm_completion(model=model, messages=messages, num_retries=0, **call_kwargs)
+261	        content = _extract_content(response)
+262	
+263	        usage = getattr(response, "usage", None)
+264	        input_tokens = getattr(usage, "prompt_tokens", None)
+265	        output_tokens = getattr(usage, "completion_tokens", None)
+266	        if input_tokens is None:
+267	            try:
+268	                input_tokens = token_counter(model=model, messages=messages)
+269	            except Exception:
+270	                input_tokens = 0
+271	        if output_tokens is None:
+272	            try:
+273	                output_tokens = token_counter(model=model, text=content)
+274	            except Exception:
+275	                output_tokens = 0
+276	
+277	        cost = _completion_cost_usd(response, usage, allow_price_table=not self.api_base)
+278	        raw_usage = usage.model_dump() if hasattr(usage, "model_dump") else {}
+279	        provider_cost = raw_usage.get("cost")
+280	        raw_response = {
+281	            "id": getattr(response, "id", None),
+282	            "model": getattr(response, "model", None),
+283	            "choices": [c.model_dump() if hasattr(c, "model_dump") else str(c) for c in response.choices],
+284	            "usage": raw_usage,
+285	        }
+286	
+287	        return {
+288	            "content": content,
+289	            "input_tokens": int(input_tokens or 0),
+290	            "output_tokens": int(output_tokens or 0),
+291	            "cost": cost,
+292	            "reported_usd": float(provider_cost) if provider_cost is not None else None,
+293	            "estimated_usd": cost if provider_cost is None else None,
+294	            "cost_source": "provider_usage" if provider_cost is not None else "litellm_estimate",
+295	            "raw_response": raw_response,
+296	            "provider_usage": raw_usage,
+297	        }
+298	
+299	    def _generate_one(
+300	        self, prompt: str, system_prompt: str | None, kwargs: dict[str, Any]
+301	    ) -> str:
+302	        started = time.monotonic()
+303	        call_id = uuid.uuid4().hex
+304	        call = {"call_id": call_id, "model": self._normalized_model(), "prompt": prompt,
+305	                "system_prompt": system_prompt, "parameters": kwargs, "cache_mode": self.cache_mode}
+306	        with self._usage_lock:
+307	            self.logical_calls += 1
+308	        cache_path = self._cache_path(prompt, system_prompt, kwargs)
+309	        cached = self._load_cache(cache_path) if self.cache_mode == "run" else None
+310	        if cached is not None:
+311	            with self._usage_lock:
+312	                self.cache_hits += 1
+313	            record_call({**call, "event": "cache_hit", "content": cached["content"],
+314	                         "raw_response": cached.get("raw_response"), "cost": 0.0,
+315	                         "wall_seconds": time.monotonic() - started})
+316	            return cached["content"]
+317	
+318	        result = None
+319	        for attempt in range(4):  # One initial request and at most three retries.
+320	            attempt_id = f"{call_id}:{attempt}"
+321	            attempt_start = time.monotonic()
+322	            record_call({**call, "event": "api_started", "attempt_id": attempt_id, "attempt": attempt})
+323	            with self._usage_lock:
+324	                self.api_requests += 1
+325	            try:
+326	                result = self._call_completion(prompt, system_prompt, kwargs)
+327	            except Exception as exc:
+328	                with self._usage_lock:
+329	                    self.failed_requests += 1
+330	                status = getattr(exc, "status_code", None)
+331	                record_call({**call, "event": "api_failed", "attempt_id": attempt_id,
+332	                             "error_type": type(exc).__name__, "http_status": status,
+333	                             "cost": None, "cost_source": "unreported_failure",
+334	                             "wall_seconds": time.monotonic() - attempt_start})
+335	                if status in (401, 403) or attempt == 3 or not _is_retryable(exc):
+336	                    raise
+337	                time.sleep(min(32, 2 ** (attempt + 1)))
+338	                continue
+339	            record_call({**call, **result, "event": "api_result", "attempt_id": attempt_id,
+340	                         "wall_seconds": time.monotonic() - attempt_start})
+341	            break
+342	        if self.cache_mode == "run":
+343	            self._save_cache(cache_path, result)
+344	
+345	        with self._usage_lock:
+346	            self.total_input_tokens += result["input_tokens"]
+347	            self.total_output_tokens += result["output_tokens"]
+348	            self.total_cost += result["cost"]
+349	
+350	        return result["content"]
+351	
+352	    def generate(self, prompts, system_prompt: str | None = None, **kwargs):
+353	        if isinstance(prompts, str):
+354	            return [[self._generate_one(prompts, system_prompt, kwargs)]]
+355	
+356	        prompts = list(prompts)
+357	        if not prompts:
+358	            return []
+359	
+360	        results = [None] * len(prompts)
+361	        futures = {
+362	            submit_with_context(self._executor,
+363	                self._generate_one, prompt, system_prompt, kwargs
+364	            ): idx
+365	            for idx, prompt in enumerate(prompts)
+366	        }
+367	        for future in as_completed(futures):
+368	            idx = futures[future]
+369	            results[idx] = future.result()
+370	        return [[content] for content in results]
+371	
+372	
+373	class LLM:
+374	    """LLM caller backed by litellm. Handles caching, batching, retries."""
+375	
+376	    def __init__(
+377	        self,
+378	        model: str = "openrouter/openai/gpt-oss-120b",
+379	        api_key: str | None = None,
+380	        api_base: str | None = None,
+381	        temperature: float | None = None,
+382	        max_tokens: int = 16384,
+383	        max_workers: int = 32,
+384	        cache_mode: str | None = None,
+385	        cache_dir: str | Path | None = None,
+386	    ):
+387	        self.model = model
+388	        self.is_gpt_oss = "gpt-oss" in model.lower()
+389	
+390	        if temperature is not None:
+391	            self.temperature = temperature
+392	        elif "gpt-5" in model or self.is_gpt_oss:
+393	            self.temperature = 1.0
+394	        else:
+395	            self.temperature = 0.0
+396	
+397	        if api_base is not None and not self.is_gpt_oss and max_tokens > 4096:
+398	            max_tokens = 4096
+399	        self.max_tokens = max_tokens
+400	
+401	        self._model_kwargs: dict[str, Any] = {
+402	            "temperature": self.temperature,
+403	            "max_tokens": self.max_tokens,
+404	        }
+405	
+406	        self._system_prompt = "Reasoning: medium" if self.is_gpt_oss else None
+407	
+408	        if api_base is None and max_workers > 4:
+409	            max_workers = 4
+410	        self._provider = ProviderLLM(
+411	            model=model,
+412	            max_concurrent=max_workers,
+413	            api_key=api_key,
+414	            api_base=api_base,
+415	            cache_mode=cache_mode,
+416	            cache_dir=cache_dir,
+417	        )
+418	
+419	        self._usage_lock = threading.Lock()
+420	        self.total_calls = 0
+421	
+422	    def __enter__(self):
+423	        return self
+424	
+425	    def __exit__(self, *exc):
+426	        if hasattr(self._provider, "__exit__"):
+427	            self._provider.__exit__(*exc)
+428	        return False
+429	
+430	    @property
+431	    def total_input_tokens(self):
+432	        return self._provider.total_input_tokens
+433	
+434	    @property
+435	    def total_output_tokens(self):
+436	        return self._provider.total_output_tokens
+437	
+438	    @property
+439	    def total_cost(self):
+440	        return self._provider.total_cost
+441	
+442	    def _truncate(self, prompt: str) -> str:
+443	        if len(prompt) > MAX_PROMPT_CHARS:
+444	            original_len = len(prompt)
+445	            half = MAX_PROMPT_CHARS // 2
+446	            prompt = prompt[:half] + "\n\n... [TRUNCATED] ...\n\n" + prompt[-half:]
+447	            logger.warning(
+448	                "Prompt truncated: %d -> %d chars (limit %d)",
+449	                original_len,
+450	                len(prompt),
+451	                MAX_PROMPT_CHARS,
+452	            )
+453	        return prompt
+454	
+455	    def __call__(self, prompt: str) -> str:
+456	        """Single prompt call."""
+457	        prompt = self._truncate(prompt)
+458	
+459	        results = self._provider.generate(
+460	            prompt, system_prompt=self._system_prompt, **self._model_kwargs
+461	        )
+462	        content = results[0][0]
+463	
+464	        with self._usage_lock:
+465	            self.total_calls += 1
+466	
+467	        if self.is_gpt_oss:
+468	            content = parse_harmony_response(content)
+469	        return content
+470	
+471	    def get_usage(self) -> dict[str, Any]:
+472	        """Return token usage stats and estimated cost."""
+473	        with self._usage_lock:
+474	            calls = self.total_calls
+475	        return {
+476	            "model": self.model,
+477	            "calls": calls,
+478	            "input_tokens": self.total_input_tokens,
+479	            "output_tokens": self.total_output_tokens,
+480	            "total_tokens": self.total_input_tokens + self.total_output_tokens,
+481	            "estimated_cost_usd": round(self.total_cost, 4),
+482	            "cost_usd_unrounded": self.total_cost,
+483	            "logical_calls": self._provider.logical_calls,
+484	            "api_requests": self._provider.api_requests,
+485	            "cache_hits": self._provider.cache_hits,
+486	            "failed_requests": self._provider.failed_requests,
+487	        }
+488	
+489	    def reset_usage(self):
+490	        """Reset token counters."""
+491	        with self._usage_lock:
+492	            self.total_calls = 0
+493	        self._provider.total_input_tokens = 0
+494	        self._provider.total_output_tokens = 0
+495	        self._provider.total_cost = 0.0
+496	        self._provider.logical_calls = 0
+497	        self._provider.api_requests = 0
+498	        self._provider.cache_hits = 0
+499	        self._provider.failed_requests = 0
+500	
+501	    def batch(self, prompts: list[str]) -> list[str]:
+502	        """Parallel batch call. Returns results in same order as prompts."""
+503	        if not prompts:
+504	            return []
+505	
+506	        prompts = [self._truncate(p) for p in prompts]
+507	        results = self._provider.generate(
+508	            prompts, system_prompt=self._system_prompt, **self._model_kwargs
+509	        )
+510	        contents = [r[0] for r in results]
+511	
+512	        with self._usage_lock:
+513	            self.total_calls += len(prompts)
+514	
+515	        if self.is_gpt_oss:
+516	            contents = [parse_harmony_response(c) for c in contents]
+517	        return contents
+518	
+519	
+520	def make_local_llm(
+521	    model: str = "gpt-oss-120b",
+522	    host: str = os.environ.get("LOCAL_LLM_HOST", "localhost"),
+523	    port: int = int(os.environ.get("LOCAL_LLM_PORT", "30000")),
+524	    max_tokens: int = 4096,
+525	    max_workers: int = 16,
+526	) -> LLM:
+527	    """Create a local LLM caller against an OpenAI-compatible server.
+528	
+529	    Usage:
+530	        llm = make_local_llm()
+531	        response = llm("Hello!")
+532	    """
+533	    return LLM(
+534	        model=model,
+535	        api_base=f"http://{host}:{port}/v1",
+536	        max_tokens=max_tokens,
+537	        max_workers=max_workers,
+538	    )
+539	
+540	
+541	def make_stub_llm(response: str = '{"reasoning": "stub", "final_answer": "stub"}'):
+542	    """Create a stub LLM caller for testing."""
+543	    return lambda prompt: response
+544	

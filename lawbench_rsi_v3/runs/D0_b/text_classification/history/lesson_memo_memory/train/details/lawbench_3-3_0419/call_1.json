@@ -1,0 +1,72 @@
+{
+  "call_id": "e117a61852f748b793abef9ff600fdd3",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791028259-skqAdi91QYXDr4b4M7xX",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"事实中明确指出被告人王1某利用职务便利收受贿赂，构成受贿罪；并且在扫黄行动中通风报信、帮助逃避查处，构成滥用职权罪。没有其他罪名被提及，需直接抽取这两个罪名并用分号分隔。\",\n  \"final_answer\": \"[罪名]受贿;滥用职权<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to extract crime names from facts. The facts mention two crimes: 受贿 (bribery) and 滥用职权 (abuse of power). The key rules: directly extract the crime keywords as they appear, no extra words. Should we use \"受贿\" and \"滥用职权\"? The examples show they output \"受贿;滥用职权\". Ensure format: [罪名]受贿;滥用职权<eoa>. Need JSON with reasoning and final_answer.\n\nCheck if any other crimes: maybe \"收受贿赂\" is the act, but crime is \"受贿\". Also \"滥用职权\" is a crime. So answer.\n\nNow produce JSON.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to extract crime names from facts. The facts mention two crimes: 受贿 (bribery) and 滥用职权 (abuse of power). The key rules: directly extract the crime keywords as they appear, no extra words. Should we use \"受贿\" and \"滥用职权\"? The examples show they output \"受贿;滥用职权\". Ensure format: [罪名]受贿;滥用职权<eoa>. Need JSON with reasoning and final_answer.\n\nCheck if any other crimes: maybe \"收受贿赂\" is the act, but crime is \"受贿\". Also \"滥用职权\" is a crime. So answer.\n\nNow produce JSON.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to extract crime names from facts. The facts mention two crimes: 受贿 (bribery) and 滥用职权 (abuse of power). The key rules: directly extract the crime keywords as they appear, no extra words. Should we use \"受贿\" and \"滥用职权\"? The examples show they output \"受贿;滥用职权\". Ensure format: [罪名]受贿;滥用职权<eoa>. Need JSON with reasoning and final_answer.\n\nCheck if any other crimes: maybe \"收受贿赂\" is the act, but crime is \"受贿\". Also \"滥用职权\" is a crime. So answer.\n\nNow produce JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to extract crime names from facts. The facts mention two crimes: 受贿 (bribery) and 滥用职权 (abuse of power). The key rules: directly extract the crime keywords as they appear, no extra words. Should we use \"受贿\" and \"滥用职权\"? The examples show they output \"受贿;滥用职权\". Ensure format: [罪名]受贿;滥用职权<eoa>. Need JSON with reasoning and final_answer.\n\nCheck if any other crimes: maybe \"收受贿赂\" is the act, but crime is \"受贿\". Also \"滥用职权\" is a crime. So answer.\n\nNow produce JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 277,
+      "prompt_tokens": 5178,
+      "total_tokens": 5455,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 146,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000243385,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000243385,
+        "upstream_inference_prompt_cost": 0.000191586,
+        "upstream_inference_completions_cost": 5.1799e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

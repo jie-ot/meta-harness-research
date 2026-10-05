@@ -1,0 +1,24 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:上海市徐汇区人民检察院指控：2015年8月，被告人任某某通过“QQ”聊天群获知张某丙（另案处理）招募有偿献血者的信息。为牟取非法利益，未经国家卫生行政部门的批准，任某某通过其“QQ”聊天群发布招募有偿献血者的信息。2015年8月20日上午，被告人任某某至本区徐家汇地铁站三号口，收取张某甲、周某某、张某乙、秦某某等多位其组织的献血者手机后，将献血者派往本区浦北路XXX号献血点献血。被告人任某某后在等候点被民警抓获，从其随身背包中查获张某甲、周某某、张某乙、秦某某手机在内的12部献血者手机。
+被告人任某某到案后，如实供述其通过互联网发布消息并组织他人献血渔利的基本犯罪事实。
+公诉机关认定被告人任某某的行为已触犯《中华人民共和国刑法》××××、××××之规定，应当以××追究其共同犯罪的刑事责任。被告人任某某到案后如实供述自己的罪行，根据刑法××××之规定，可以从轻处罚。建议对其判处一年以下××并处罚金的刑事处罚。提请依法审判。
+
+
+Wrong prediction: [罪名]非法采供血<eoa>
+Correct answer: 非法组织卖血
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

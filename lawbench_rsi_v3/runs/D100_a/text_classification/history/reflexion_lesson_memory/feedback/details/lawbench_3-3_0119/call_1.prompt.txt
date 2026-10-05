@@ -1,0 +1,31 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the facts describe forged or false VAT invoices that were used to obtain export tax refunds or to offset tax liabilities, the charge must explicitly include the purpose clause (e.g., “用于骗取出口退税、抵扣
+- When the factual description mentions distinct illegal tax‑related actions (e.g., falsifying VAT invoices, fraudulently obtaining export rebates, and using fake invoices for tax deduction), enumerate 
+- When extracting crimes from the facts, enumerate every distinct statutory offense mentioned, including any qualifying actions (e.g., 故意销毁, 用于骗取出口退税) and related financial documents, and separate each 
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控，（一）非法制造、出售非法制造的用于抵扣税款发票罪
+2011年以来，被告人宋某与其丈夫盖某（在逃）在XX省XX市XX镇XX村的家中使用打印机、笔记本电脑、空白发票等工具非法制造可以用于抵扣税款的发票并出售，以从中赚取开票费用。截至2013年，被告人宋某、盖某非法制造、出售非法制造的可以用于抵扣税款的发票共952份，票面额累计为3.039亿余元。
+（二）××
+2011年以来，被告人宋某与其丈夫盖某（在逃）在XX省XX市XX镇XX村的家中使用打印机、笔记本电脑、空白发票等工具非法制造不能用于骗取出口退税、抵扣税款的其他发票并出售，以从中赚取开票费用。截至2013年，被告人宋某、盖某非法制造、出售非法制造的不能用于骗取出口退税、抵扣税款的其他发票共16份，票面金额累计为0.11亿余元。
+对于上述指控事实，公诉机关提供了书证、物证、证人证言、鉴定意见、被告人供述等证据予以证实。认为被告人宋某伪造、出售伪造的可以用于抵扣税款的其他发票，其行为触犯了《中华人民共和国刑法》××××之规定；被告人宋某伪造、出售伪造的不能用于骗取出口退税、抵扣税款的其他发票，其行为触犯了《中华人民共和国刑法》××××之规定，应当分别以非法制造、出售非法制造的用于抵扣税款发票罪、××追究其刑事责任，并依法实行数罪并罚。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

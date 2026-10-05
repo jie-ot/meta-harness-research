@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- If the alleged bribery is committed by a legal entity (e.g., a company) or its legal representative, the correct charge is "单位行贿" rather than the individual offense "行贿".
+- When the facts describe unauthorized cutting of forest trees that belong to a collective or state entity, label the crime as '盗伐林木' rather than the generic term '非法采伐林木'.
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:合浦县人民检察院指控，2014年11月17日4时许，被告人苏某伙同“大国”、“吉某娘”（身份尚未查明）持油锯驾驶桂E×××××边三轮摩托车到合浦县山口镇新圩村委会龟岭附近广某拉恩索林业有限公司造林基地（公司小班编号425656），盗伐该公司林木。经鉴定，盗伐林木蓄积3.87立方米。对上述指控，公诉机关提供相应的证据。公诉机关认为，被告人苏某盗伐林木，数量较大，其行为触犯了《中华人民共和国刑法》××××的规定，应当以××追究其刑事责任。提请本院依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

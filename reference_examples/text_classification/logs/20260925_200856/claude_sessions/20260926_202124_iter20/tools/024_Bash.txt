@@ -1,0 +1,76 @@
+Bash
+
+command:
+python -c "
+import os, json, re
+from collections import defaultdict
+
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+log_path = os.path.join(base, 'LawBench', 'symmetric_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+lines = open(log_path, encoding='utf-8').readlines()
+
+_WRAPPER_RE = re.compile(r'^\s*\[[^\]]*\]|<eoa>\s*$|\[[^\]]*\]\s*$', re.IGNORECASE)
+
+def _normalize(pred):
+    if not pred: return pred
+    c = _WRAPPER_RE.sub('', pred).strip()
+    return c if c else pred
+
+def _decompose(label):
+    parts = [p.strip() for p in label.split(';') if p.strip()]
+    return parts if parts else [label]
+
+# Simulate two versions of confusion matrix:
+# A) atomic (current)
+# B) decomposed
+
+confusion_atomic = defaultdict(lambda: defaultdict(float))
+confusion_decomp = defaultdict(lambda: defaultdict(float))
+
+steps = [json.loads(l) for l in lines if json.loads(l).get('type') == 'step']
+for s in steps:
+    if not s.get('ok'):
+        pred = _normalize(s['pred'])
+        gt = s['tgt']
+        if pred and pred != gt:
+            # Atomic
+            confusion_atomic[pred][gt] += 1.0
+            confusion_atomic[gt][pred] += 0.5
+            # Decomposed
+            pred_parts = _decompose(pred)
+            gt_parts = _decompose(gt)
+            for pp in pred_parts:
+                for gp in gt_parts:
+                    if pp != gp:
+                        confusion_decomp[pp][gp] += 1.0
+                        confusion_decomp[gp][pp] += 0.5
+
+print('=== ATOMIC confusion ===')
+print(f'  Keys: {len(confusion_atomic)}')
+# Simulate disambiguation: given top-3 candidate labels from pool, look them up
+sample_candidates = ['诈骗', '故意伤害', '盗窃', '受贿', '非法获取公民个人信息']
+hits_atomic = sum(1 for c in sample_candidates if c in confusion_atomic)
+print(f'  Sample candidate lookups hit: {hits_atomic}/{len(sample_candidates)}')
+
+print('=== DECOMPOSED confusion ===')
+print(f'  Keys: {len(confusion_decomp)}')
+hits_decomp = sum(1 for c in sample_candidates if c in confusion_decomp)
+print(f'  Sample candidate lookups hit: {hits_decomp}/{len(sample_candidates)}')
+
+# Show what decomposed finds for 诈骗
+if '诈骗' in confusion_decomp:
+    top = sorted(confusion_decomp['诈骗'].items(), key=lambda x: -x[1])[:5]
+    print(f'  decomposed[诈骗] top: {top}')
+" 
+
+
+description: Prototype candidate 1: compare atomic vs decomposed confusion matrix coverage
+
+--- output ---
+=== ATOMIC confusion ===
+  Keys: 216
+  Sample candidate lookups hit: 5/5
+=== DECOMPOSED confusion ===
+  Keys: 211
+  Sample candidate lookups hit: 5/5
+  decomposed[诈骗] top: [('合同诈骗', 4.0), ('信用卡诈骗', 2.0), ('组织、强迫、引诱、容留、介绍卖淫', 1.0), ('引诱、容留、介绍卖淫', 1.0), ('提供侵入、非法控制计算机信息系统程序、工具', 1.0)]

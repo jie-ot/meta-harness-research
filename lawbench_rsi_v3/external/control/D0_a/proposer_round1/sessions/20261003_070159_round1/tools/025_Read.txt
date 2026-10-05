@@ -1,0 +1,31 @@
+Read: meta_harness.py
+
+limit: 25
+offset: 30
+
+--- output ---
+30	
+31	EVOLVE_DIR = Path(__file__).parent
+32	CONFIG_PATH = EVOLVE_DIR / "config.yaml"
+33	AGENTS_DIR = EVOLVE_DIR / "agents"
+34	BASELINE_FILES = {"__init__.py", "no_memory.py", "fewshot_memory.py", "fewshot_all.py"}
+35	
+36	# These are updated per-run if --run-name is set
+37	LOGS_DIR = EVOLVE_DIR / "logs"
+38	PENDING_EVAL = LOGS_DIR / "pending_eval.json"
+39	FRONTIER_VAL = LOGS_DIR / "frontier_val.json"
+40	EVOLUTION_SUMMARY = LOGS_DIR / "evolution_summary.jsonl"
+41	RESULTS_DIR = LOGS_DIR / "results"
+42	FINALIZED = LOGS_DIR / "finalized.json"
+43	
+44	PROPOSER_ALLOWED_TOOLS = [
+45	    "Read",
+46	    "Glob",
+47	    "Grep",
+48	    "Agent",
+49	    "Write",
+50	    "Edit",
+51	    "Bash",
+52	]
+53	
+54	_interrupted = False

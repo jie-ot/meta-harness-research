@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description indicates that the offender used their official position or entrusted authority to appropriate property for personal gain, rather than physically taking or stealthily removi
+- If the conduct described involves a public official or person in a position of authority misusing their official power to divert public funds, assets, or benefits for personal or relatives' gain, the 
+- If the facts describe the misappropriation of money belonging to a private company or other non‑government entity (e.g., company funds, client payments) rather than state or public treasury funds, the
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控：2015年12月23日，被告人杨某利用担任台州市椒江区前所街道上徐某的职务之便，将上徐村村委会向村民收取的预收建设费用人民币140000元挪出，用于支付自己经营的眼镜厂支出等。
+2016年3月20日，被告人杨某再次利用担任上徐某的职务之便，将上徐村村有资金人民币51765元挪出，用于归还自己经营眼镜厂的银行贷款。
+同年3月31日，被告人杨某将挪用的资金悉数归还到村集体账户。2017年2月23日10时许，杨某在台州市椒江区前所街道上徐村2号的家中被台州市公安局椒江分局经侦大队民警传唤到案。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

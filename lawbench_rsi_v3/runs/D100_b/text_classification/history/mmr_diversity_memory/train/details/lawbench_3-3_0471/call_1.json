@@ -1,0 +1,72 @@
+{
+  "call_id": "5ab44ee7ef914ff4938bc409aa49bf70",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791080583-vrjD7lk5hmOcEFB03qOK",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\"reasoning\":\"The facts describe a company (unit) and its legal representative giving a cash gift to a government official (mayor) in exchange for procurement contracts. This is bribery where the unit (company) offers a bribe to a state functionary. The appropriate charge from the list is \\\"单位行贿\\\" (unit bribery). Since the individual also participated, the generic \\\"行贿\\\" can also apply.\", \"final_answer\":\"[罪名]单位行贿;行贿<eoa>\"}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the appropriate charge(s) for the given facts.\n\nFacts: Zhao1 is legal representative of a company. Zhao2 is mayor. Zhao2 instructed procurement of 120+ million RMB of white wine from Zhao1's company for government reception. In November, Zhao1 gave Zhao2 300,000 RMB in his office as a thank-you gift for procurement and to hope to continue being designated supplier. Zhao2 accepted the bribe.\n\nThus the crime is bribery: the company (unit) gave a bribe to a state functionary (mayor). The charge could be \"对单位行贿\" (bribing a unit) or \"对非国家工作人员行贿\"? Actually Zhao2 is a state functionary (mayor). The company is a unit (enterprise). The act is giving a bribe to a state functionary. The list includes \"对单位行贿\" (bribing a unit) and \"对非国家工作人员行贿\". Also \"行贿\" (generic). In examples, for similar scenario: earlier example: \"行贿\" used for bribery to state officials. Example: \"吴某\" case: they gave 10万 to officials, answer: 行贿. So generic \"行贿\" is used. Also there is \"单位行贿\" (unit bribery) maybe for a unit giving bribe? The list includes \"单位行贿\". That likely corresponds to a unit (company) bribing a state functionary. In the example with \"吴某\" they gave 10万 to officials, answer: 行贿 (not \"单位行贿\"). But that case: \"吴某\" was an individual? He was a person, not a unit. So \"行贿\" used for individuals. For a unit, maybe \"单位行贿\". Let's see other examples: In the case \"威海经济技术开发区人民检察院指控：...单位受贿事实\" they had \"单位受贿\". That's for a unit receiving bribes. For bribery by a unit, we have \"单位行贿\". Not seen in examples but present in list.\n\nThus we need to decide which label best fits. The fact says \"被告单位肇东市福泰兴酒业有限公司、被告人赵1某的行为已构成××\". So they are charging both the unit and the person. The appropriate charge likely \"单位行贿\". Also could include \"行贿\". The list includes both \"行贿\" and \"单位行贿\". Which to choose? The instruction: use exact label from list. If multiple, separate with semicolons. The case includes both unit and individual. Could be \"单位行贿;行贿\". But typical classification maybe just \"行贿\". However they explicitly mention unit. In training examples, they used \"行贿\" for individual. For unit they used \"单位受贿\" for unit receiving bribes. Not sure about \"单位行贿\". I think correct charge: \"单位行贿\". Possibly also \"行贿\". But we can include both.\n\nLet's output: [罪名]单位行贿;行贿<eoa>\n\nCheck list: \"单位行贿\" exists. \"行贿\" exists.\n\nThus final answer.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the appropriate charge(s) for the given facts.\n\nFacts: Zhao1 is legal representative of a company. Zhao2 is mayor. Zhao2 instructed procurement of 120+ million RMB of white wine from Zhao1's company for government reception. In November, Zhao1 gave Zhao2 300,000 RMB in his office as a thank-you gift for procurement and to hope to continue being designated supplier. Zhao2 accepted the bribe.\n\nThus the crime is bribery: the company (unit) gave a bribe to a state functionary (mayor). The charge could be \"对单位行贿\" (bribing a unit) or \"对非国家工作人员行贿\"? Actually Zhao2 is a state functionary (mayor). The company is a unit (enterprise). The act is giving a bribe to a state functionary. The list includes \"对单位行贿\" (bribing a unit) and \"对非国家工作人员行贿\". Also \"行贿\" (generic). In examples, for similar scenario: earlier example: \"行贿\" used for bribery to state officials. Example: \"吴某\" case: they gave 10万 to officials, answer: 行贿. So generic \"行贿\" is used. Also there is \"单位行贿\" (unit bribery) maybe for a unit giving bribe? The list includes \"单位行贿\". That likely corresponds to a unit (company) bribing a state functionary. In the example with \"吴某\" they gave 10万 to officials, answer: 行贿 (not \"单位行贿\"). But that case: \"吴某\" was an individual? He was a person, not a unit. So \"行贿\" used for individuals. For a unit, maybe \"单位行贿\". Let's see other examples: In the case \"威海经济技术开发区人民检察院指控：...单位受贿事实\" they had \"单位受贿\". That's for a unit receiving bribes. For bribery by a unit, we have \"单位行贿\". Not seen in examples but present in list.\n\nThus we need to decide which label best fits. The fact says \"被告单位肇东市福泰兴酒业有限公司、被告人赵1某的行为已构成××\". So they are charging both the unit and the person. The appropriate charge likely \"单位行贿\". Also could include \"行贿\". The list includes both \"行贿\" and \"单位行贿\". Which to choose? The instruction: use exact label from list. If multiple, separate with semicolons. The case includes both unit and individual. Could be \"单位行贿;行贿\". But typical classification maybe just \"行贿\". However they explicitly mention unit. In training examples, they used \"行贿\" for individual. For unit they used \"单位受贿\" for unit receiving bribes. Not sure about \"单位行贿\". I think correct charge: \"单位行贿\". Possibly also \"行贿\". But we can include both.\n\nLet's output: [罪名]单位行贿;行贿<eoa>\n\nCheck list: \"单位行贿\" exists. \"行贿\" exists.\n\nThus final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine the appropriate charge(s) for the given facts.\n\nFacts: Zhao1 is legal representative of a company. Zhao2 is mayor. Zhao2 instructed procurement of 120+ million RMB of white wine from Zhao1's company for government reception. In November, Zhao1 gave Zhao2 300,000 RMB in his office as a thank-you gift for procurement and to hope to continue being designated supplier. Zhao2 accepted the bribe.\n\nThus the crime is bribery: the company (unit) gave a bribe to a state functionary (mayor). The charge could be \"对单位行贿\" (bribing a unit) or \"对非国家工作人员行贿\"? Actually Zhao2 is a state functionary (mayor). The company is a unit (enterprise). The act is giving a bribe to a state functionary. The list includes \"对单位行贿\" (bribing a unit) and \"对非国家工作人员行贿\". Also \"行贿\" (generic). In examples, for similar scenario: earlier example: \"行贿\" used for bribery to state officials. Example: \"吴某\" case: they gave 10万 to officials, answer: 行贿. So generic \"行贿\" is used. Also there is \"单位行贿\" (unit bribery) maybe for a unit giving bribe? The list includes \"单位行贿\". That likely corresponds to a unit (company) bribing a state functionary. In the example with \"吴某\" they gave 10万 to officials, answer: 行贿 (not \"单位行贿\"). But that case: \"吴某\" was an individual? He was a person, not a unit. So \"行贿\" used for individuals. For a unit, maybe \"单位行贿\". Let's see other examples: In the case \"威海经济技术开发区人民检察院指控：...单位受贿事实\" they had \"单位受贿\". That's for a unit receiving bribes. For bribery by a unit, we have \"单位行贿\". Not seen in examples but present in list.\n\nThus we need to decide which label best fits. The fact says \"被告单位肇东市福泰兴酒业有限公司、被告人赵1某的行为已构成××\". So they are charging both the unit and the person. The appropriate charge likely \"单位行贿\". Also could include \"行贿\". The list includes both \"行贿\" and \"单位行贿\". Which to choose? The instruction: use exact label from list. If multiple, separate with semicolons. The case includes both unit and individual. Could be \"单位行贿;行贿\". But typical classification maybe just \"行贿\". However they explicitly mention unit. In training examples, they used \"行贿\" for individual. For unit they used \"单位受贿\" for unit receiving bribes. Not sure about \"单位行贿\". I think correct charge: \"单位行贿\". Possibly also \"行贿\". But we can include both.\n\nLet's output: [罪名]单位行贿;行贿<eoa>\n\nCheck list: \"单位行贿\" exists. \"行贿\" exists.\n\nThus final answer.",
+            "reasoning_content": "We need to determine the appropriate charge(s) for the given facts.\n\nFacts: Zhao1 is legal representative of a company. Zhao2 is mayor. Zhao2 instructed procurement of 120+ million RMB of white wine from Zhao1's company for government reception. In November, Zhao1 gave Zhao2 300,000 RMB in his office as a thank-you gift for procurement and to hope to continue being designated supplier. Zhao2 accepted the bribe.\n\nThus the crime is bribery: the company (unit) gave a bribe to a state functionary (mayor). The charge could be \"对单位行贿\" (bribing a unit) or \"对非国家工作人员行贿\"? Actually Zhao2 is a state functionary (mayor). The company is a unit (enterprise). The act is giving a bribe to a state functionary. The list includes \"对单位行贿\" (bribing a unit) and \"对非国家工作人员行贿\". Also \"行贿\" (generic). In examples, for similar scenario: earlier example: \"行贿\" used for bribery to state officials. Example: \"吴某\" case: they gave 10万 to officials, answer: 行贿. So generic \"行贿\" is used. Also there is \"单位行贿\" (unit bribery) maybe for a unit giving bribe? The list includes \"单位行贿\". That likely corresponds to a unit (company) bribing a state functionary. In the example with \"吴某\" they gave 10万 to officials, answer: 行贿 (not \"单位行贿\"). But that case: \"吴某\" was an individual? He was a person, not a unit. So \"行贿\" used for individuals. For a unit, maybe \"单位行贿\". Let's see other examples: In the case \"威海经济技术开发区人民检察院指控：...单位受贿事实\" they had \"单位受贿\". That's for a unit receiving bribes. For bribery by a unit, we have \"单位行贿\". Not seen in examples but present in list.\n\nThus we need to decide which label best fits. The fact says \"被告单位肇东市福泰兴酒业有限公司、被告人赵1某的行为已构成××\". So they are charging both the unit and the person. The appropriate charge likely \"单位行贿\". Also could include \"行贿\". The list includes both \"行贿\" and \"单位行贿\". Which to choose? The instruction: use exact label from list. If multiple, separate with semicolons. The case includes both unit and individual. Could be \"单位行贿;行贿\". But typical classification maybe just \"行贿\". However they explicitly mention unit. In training examples, they used \"行贿\" for individual. For unit they used \"单位受贿\" for unit receiving bribes. Not sure about \"单位行贿\". I think correct charge: \"单位行贿\". Possibly also \"行贿\". But we can include both.\n\nLet's output: [罪名]单位行贿;行贿<eoa>\n\nCheck list: \"单位行贿\" exists. \"行贿\" exists.\n\nThus final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 827,
+      "prompt_tokens": 21017,
+      "total_tokens": 21844,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 717,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000918219,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000918219,
+        "upstream_inference_prompt_cost": 0.000777629,
+        "upstream_inference_completions_cost": 0.00014059
+      }
+    }
+  },
+  "raw_response_missing": false
+}

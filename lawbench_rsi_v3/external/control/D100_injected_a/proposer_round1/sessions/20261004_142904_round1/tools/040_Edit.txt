@@ -1,0 +1,42 @@
+Edit: .prototypes\act_decomposition_union_memory.py
+
+replace_all: False
+old_string:
+    # Fake model: charges whatever the act in the prompt contains; returns nothing
+    # for one designated act so the terse retry path is exercised.
+    def fake_llm(prompt: str) -> str:
+        seen_prompts.append(prompt)
+        if "伪造货币" in prompt or "假币版样" in prompt:
+            ans = "伪造货币"
+        elif "砍伤" in prompt:
+            ans = "故意伤害"
+        elif "通讯电缆" in prompt:
+            ans = "盗窃"
+        else:
+            ans = "盗窃"
+        if "第二起" in prompt:
+            ans = ""  # forces the retry path
+        return json.dumps({"reasoning": "x", "final_answer": f"[罪名]{ans}<eoa>" if ans else ""})
+
+new_string:
+    # Fake model. It only ever sees one act at a time, so it returns whatever that
+    # act's own text supports — this is what makes the missing whole-narrative view
+    # the *agent's* job rather than the model's. Returns nothing for one act so the
+    # terse retry path is exercised.
+    def fake_llm(prompt: str) -> str:
+        seen_prompts.append(prompt)
+        if "砍伤" in prompt:
+            ans = "故意伤害"
+        elif "假币版样" in prompt or "假人民币" in prompt:
+            ans = "伪造货币"
+        elif "通讯电缆" in prompt:
+            ans = "盗窃"
+        else:
+            ans = "盗窃"
+        if "第二起" in prompt:
+            ans = ""  # forces the retry path
+        return json.dumps({"reasoning": "x", "final_answer": f"[罪名]{ans}<eoa>" if ans else ""})
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_a\text_classification\.prototypes\act_decomposition_union_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

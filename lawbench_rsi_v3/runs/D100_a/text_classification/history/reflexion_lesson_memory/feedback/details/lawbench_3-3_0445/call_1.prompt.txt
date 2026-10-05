@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the facts describe an unintentional fire caused by negligence (e.g., accidental ignition during a ritual or domestic activity) that results in forest or property damage, the appropriate charge is
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- If the facts describe a fire caused by negligence or accident without any intent to set fire, classify the offense as 失火 (negligent fire) rather than 放火 (arson).
+- If the facts describe the use of a false or deceptive contract (e.g., a sale, lease, transfer agreement) to obtain money or property, classify the offense as “合同诈骗” rather than the generic “诈骗”.
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明：
+2010年12月开始至2011年7月，被告人武某甲伙同申某、石某、穆某（均另案处理）违反土地管理法规，未经审批擅自在武安市马庄乡白庄村东山上雇佣他人挖山采石，致使大面积林地被毁坏。经鉴定，被毁坏的林地面积为12.1亩。
+上述事实，被告人在开庭审理过程中亦无异议。且有物证荒山转包协议、证人武某甲、武某乙等人证言、现场勘查笔录、鉴定结论等证据所证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

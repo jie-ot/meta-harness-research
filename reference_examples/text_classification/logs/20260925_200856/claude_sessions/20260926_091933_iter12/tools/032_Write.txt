@@ -1,0 +1,189 @@
+Write: proto_iter12b.py
+
+content:
+"""Prototype for iter12 candidates v2: prefix-key indexing and error-resampling pool."""
+import json, re, math
+from collections import defaultdict
+from pathlib import Path
+
+BASE = Path(__file__).parent / "logs" / "20260925_200856"
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+def _has_cjk(t): return bool(_CJK_RE.search(t))
+def _tok_word(t): return frozenset(re.findall(r"[A-Za-z0-9]+", t.lower()))
+def _tok_bigram(t):
+    t = re.sub(r'\s+', ' ', t.strip())
+    return frozenset(t[i:i+2] for i in range(len(t)-1)) if len(t) >= 2 else frozenset()
+def _tok(t): return _tok_bigram(t) if _has_cjk(t) else _tok_word(t)
+
+def _jaccard(a, b):
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+def _extract_prefix_key(raw_question: str) -> str:
+    """Return first non-empty line of raw_question, stripped."""
+    for line in raw_question.splitlines():
+        line = line.strip()
+        if line:
+            return line
+    return raw_question[:200]
+
+def load_steps(dataset, system):
+    p = BASE / dataset / system / "gpt-oss-120b" / "log.jsonl"
+    steps = []
+    for line in p.read_text(encoding="utf-8").splitlines():
+        obj = json.loads(line)
+        if obj["type"] == "step":
+            steps.append(obj)
+    return steps
+
+steps_law = load_steps("LawBench", "adaptive_tokenizer_confusion_memory")
+steps_usp  = load_steps("USPTO",   "adaptive_tokenizer_confusion_memory")
+print(f"LawBench: {len(steps_law)} steps,  USPTO: {len(steps_usp)} steps")
+
+# Check what the "raw_question" preview looks like for USPTO
+print("\n--- USPTO first-line prefix examples ---")
+for s in steps_usp[:5]:
+    preview = s["input_preview"]
+    lines = [l.strip() for l in preview.splitlines() if l.strip()]
+    full_tok = _tok(preview[:600])
+    prefix = _extract_prefix_key(preview[:600])
+    prefix_tok = _tok(prefix)
+    print(f"  prefix: '{prefix[:80]}'")
+    print(f"  prefix_tok count: {len(prefix_tok)},  full_tok count: {len(full_tok)}")
+    print(f"  target: {s['tgt'][:60]}")
+    print()
+
+print("\n--- LawBench first-line prefix examples ---")
+for s in steps_law[:5]:
+    preview = s["input_preview"]
+    prefix = _extract_prefix_key(preview[:600])
+    prefix_tok = _tok(prefix)
+    full_tok = _tok(preview[:600])
+    print(f"  prefix: '{prefix[:80]}'")
+    print(f"  prefix_tok count: {len(prefix_tok)},  full_tok count: {len(full_tok)}")
+    print()
+
+# ---- Build memories ----
+def build_memory(steps, train_n):
+    examples = []
+    errors = []
+    for s in steps[:train_n]:
+        raw_q = s["input_preview"][:600]
+        tgt = s["tgt"]
+        full_tok = _tok(raw_q)
+        prefix = _extract_prefix_key(raw_q)
+        prefix_tok = _tok(prefix)
+        ex = {"tokens": full_tok, "prefix_tok": prefix_tok, "target": tgt}
+        examples.append(ex)
+        if not s["ok"]:
+            errors.append(ex)
+    return examples, errors
+
+examples_law, errors_law = build_memory(steps_law, 150)
+examples_usp, errors_usp = build_memory(steps_usp, 40)
+print(f"\nLawBench: {len(examples_law)} examples, {len(errors_law)} errors "
+      f"({100*len(errors_law)//max(1,len(examples_law))}% error rate)")
+print(f"USPTO: {len(examples_usp)} examples, {len(errors_usp)} errors "
+      f"({100*len(errors_usp)//max(1,len(examples_usp))}% error rate)")
+
+# ---- Ranking methods ----
+def rank_baseline(query_tok, examples):
+    return sorted(range(len(examples)), key=lambda i: -_jaccard(query_tok, examples[i]["tokens"]))
+
+def rank_prefix_key(query_raw, examples, alpha=0.7):
+    """alpha * prefix_jaccard + (1-alpha) * full_jaccard"""
+    q_full = _tok(query_raw)
+    q_prefix = _tok(_extract_prefix_key(query_raw))
+    scores = []
+    for i, ex in enumerate(examples):
+        sim_full = _jaccard(q_full, ex["tokens"])
+        sim_prefix = _jaccard(q_prefix, ex["prefix_tok"])
+        score = alpha * sim_prefix + (1.0 - alpha) * sim_full
+        scores.append((i, score))
+    scores.sort(key=lambda x: -x[1])
+    return [i for i, _ in scores]
+
+def rank_prefix_only(query_raw, examples):
+    q_prefix = _tok(_extract_prefix_key(query_raw))
+    return sorted(range(len(examples)),
+                  key=lambda i: -_jaccard(q_prefix, examples[i]["prefix_tok"]))
+
+def rank_error_pool(query_tok, examples, errors, error_frac=0.4, topk=20):
+    """Draw top error_frac*topk from errors, rest from full examples, no duplicates."""
+    n_err = max(1, int(topk * error_frac))
+    err_ranked = sorted(range(len(errors)), key=lambda i: -_jaccard(query_tok, errors[i]["tokens"]))
+    all_ranked = sorted(range(len(examples)), key=lambda i: -_jaccard(query_tok, examples[i]["tokens"]))
+    # Map error back to example indices
+    err_ex_indices = []
+    for ei in err_ranked[:n_err*3]:
+        err_ex = errors[ei]
+        # find matching example index
+        for xi, ex in enumerate(examples):
+            if ex is err_ex and xi not in err_ex_indices:
+                err_ex_indices.append(xi)
+                break
+        if len(err_ex_indices) >= n_err:
+            break
+    # Combine: errors first, then fill from full ranking
+    seen = set(err_ex_indices)
+    combined = list(err_ex_indices)
+    for xi in all_ranked:
+        if xi not in seen:
+            combined.append(xi)
+    return combined
+
+# ---- Evaluate ----
+def eval_method(test_steps, examples, rank_fn, name):
+    hits, ranks = 0, []
+    for s in test_steps:
+        query_raw = s["input_preview"][:600]
+        query_tok = _tok(query_raw)
+        tgt = s["tgt"]
+        ranking = rank_fn(query_raw, query_tok)
+        for pos, idx in enumerate(ranking[:80]):
+            if examples[idx]["target"] == tgt:
+                ranks.append(pos + 1)
+                hits += 1
+                break
+    avg = sum(ranks)/len(ranks) if ranks else float('inf')
+    mrr = sum(1/r for r in ranks)/len(test_steps) if ranks else 0.0
+    print(f"  {name:<36} rank@hit={avg:5.1f}  MRR={mrr:.3f}  found={hits}/{len(test_steps)}")
+
+print("\n=== LawBench (test 150-200) ===")
+test_law = steps_law[150:200]
+eval_method(test_law, examples_law, lambda raw, tok: rank_baseline(tok, examples_law), "baseline (full jaccard)")
+eval_method(test_law, examples_law, lambda raw, tok: rank_prefix_key(raw, examples_law, 0.5), "prefix_key α=0.5")
+eval_method(test_law, examples_law, lambda raw, tok: rank_prefix_key(raw, examples_law, 0.7), "prefix_key α=0.7")
+eval_method(test_law, examples_law, lambda raw, tok: rank_prefix_key(raw, examples_law, 0.9), "prefix_key α=0.9")
+eval_method(test_law, examples_law, lambda raw, tok: rank_prefix_only(raw, examples_law), "prefix_only")
+eval_method(test_law, examples_law, lambda raw, tok: rank_error_pool(tok, examples_law, errors_law, 0.3), "error_pool 30%")
+eval_method(test_law, examples_law, lambda raw, tok: rank_error_pool(tok, examples_law, errors_law, 0.4), "error_pool 40%")
+
+print("\n=== USPTO (test 40-50) ===")
+test_usp = steps_usp[40:50] if len(steps_usp) > 40 else steps_usp
+eval_method(test_usp, examples_usp, lambda raw, tok: rank_baseline(tok, examples_usp), "baseline (full jaccard)")
+eval_method(test_usp, examples_usp, lambda raw, tok: rank_prefix_key(raw, examples_usp, 0.7), "prefix_key α=0.7")
+eval_method(test_usp, examples_usp, lambda raw, tok: rank_prefix_only(raw, examples_usp), "prefix_only")
+eval_method(test_usp, examples_usp, lambda raw, tok: rank_error_pool(tok, examples_usp, errors_usp, 0.4), "error_pool 40%")
+
+# Extra diagnostics for USPTO prefix keys
+print("\n--- USPTO prefix key uniqueness ---")
+usp_prefixes = [ex["prefix_tok"] for ex in examples_usp]
+unique_prefixes = len(set(frozenset(t) for t in usp_prefixes))
+print(f"  {unique_prefixes} unique prefix token sets out of {len(usp_prefixes)} examples")
+# Show unique prefix strings
+pstrs = {}
+for s in steps_usp[:40]:
+    pk = _extract_prefix_key(s["input_preview"][:600])
+    pstrs[pk[:80]] = pstrs.get(pk[:80], 0) + 1
+print(f"  Top prefix strings:")
+for p, c in sorted(pstrs.items(), key=lambda x: -x[1])[:8]:
+    print(f"    [{c}x] {p}")
+
+print("\nDone.")
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\proto_iter12b.py (file state is current in your context — no need to Read it back)

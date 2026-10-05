@@ -1,0 +1,370 @@
+Write: .prototypes\cooccurrence_scaffold_memory.py
+
+content:
+"""Prototype B: Charge Co-occurrence Scaffold Memory
+
+Hypothesis: The dominant failure mode is under-prediction of secondary charges.
+A co-occurrence graph over ALL training ground_truth charge sets lets the system
+propose statistically likely *companion* charges for the query's primary charge;
+the model then verifies those candidates against the case facts. This targets a
+failure mode that example-only retrieval does not address.
+
+Mechanism (three parts, all new):
+1. Memory structure: charge co-occurrence graph co_occur[A][B] built at learn time
+   from every training target's charge set.
+2. Selection: primary charge = majority first-charge among top-k similar examples;
+   companions = top-k graph neighbours of that primary, excluding itself.
+3. Prompt architecture: an explicit "also consider these charges" scaffold listing
+   companions with support counts, placed before the case.
+
+Variants compared:
+  v1: scaffold only (no example block)
+  v2: scaffold + similarity-ranked examples   <-- final system design
+  v3: examples only (baseline, no scaffold)
+
+Fake LLM contract: reads the case block for the primary charge; adds a secondary
+charge ONLY when the scaffold offered it AND the case facts carry a cue for it.
+This emulates a model that over-anchors on the single most salient charge.
+"""
+
+import json
+import re
+from collections import defaultdict
+
+
+# ---------------------------------------------------------------------------
+# Tokenizer (CJK bigrams, matching the base systems)
+# ---------------------------------------------------------------------------
+
+def _tokenize(text: str) -> frozenset:
+    chars = re.findall(r"[一-鿿㐀-䶿豈-﫿]", text)
+    if len(chars) >= 2:
+        return frozenset(chars[i] + chars[i + 1] for i in range(len(chars) - 1))
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+
+def _jaccard(a: frozenset, b: frozenset) -> float:
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+def extract_json_field(text: str, field: str) -> str:
+    try:
+        return str(json.loads(text).get(field, ""))
+    except Exception:
+        m = re.search(rf'"{field}"\s*:\s*"([^"]*)"', text)
+        return m.group(1) if m else ""
+
+
+def _parse_charges(label: str) -> list:
+    return [c.strip() for c in label.split(";") if c.strip()]
+
+
+# ---------------------------------------------------------------------------
+# Fake LLM — section-scoped, fact-verifying emulation
+# ---------------------------------------------------------------------------
+
+_CASE_START = "**Case:**"
+_INSTR_START = "Instructions:"
+_SCAFFOLD_HEAD = "**Companion charge check"
+
+# Cue words in the case facts that justify each secondary charge.
+_CUES = {
+    "故意毁坏财物": ["打砸", "毁坏", "砸", "损失"],
+    "聚众扰乱社会秩序": ["聚众", "停工", "秩序"],
+    "持有伪造的发票": ["伪造的发票", "查获", "藏有"],
+    "诈骗": ["谎称", "骗取"],
+    "非法获取公民个人信息": ["个人信息", "信息"],
+    "故意伤害": ["打伤", "殴打", "伤害"],
+    "破坏电力设备": ["电缆", "电力", "照明电线"],
+}
+
+
+def _case_block(prompt: str) -> str:
+    if _CASE_START in prompt:
+        return prompt.split(_CASE_START, 1)[1].split(_INSTR_START, 1)[0]
+    return prompt
+
+
+def _scaffold_candidates(prompt: str) -> list:
+    """Extract the charge names offered by the companion scaffold, if present."""
+    if _SCAFFOLD_HEAD not in prompt:
+        return []
+    section = prompt.split(_SCAFFOLD_HEAD, 1)[1].split(_CASE_START, 1)[0]
+    return re.findall(r"^- (.+?) \(co-occurred", section, re.M)
+
+
+def fake_llm(prompt: str) -> str:
+    case = _case_block(prompt)
+
+    # Primary charge — the single most salient charge the facts support.
+    if "虚开增值税" in case:
+        primary = "虚开增值税专用发票、用于骗取出口退税、抵扣税款发票"
+    elif "打伤" in case or "殴打" in case:
+        primary = "故意伤害"
+    elif "电缆" in case or "照明电线" in case:
+        primary = "破坏电力设备"
+    else:
+        primary = "诈骗"
+
+    charges = [primary]
+
+    # Secondary charges: only those PROPOSED by the scaffold and CONFIRMED by facts.
+    for cand in _scaffold_candidates(prompt):
+        if cand in charges or cand == primary:
+            continue
+        if any(cue in case for cue in _CUES.get(cand, [])):
+            charges.append(cand)
+
+    return json.dumps({
+        "reasoning": "facts -> " + "+".join(charges),
+        "final_answer": ";".join(charges),
+    }, ensure_ascii=False)
+
+
+# ---------------------------------------------------------------------------
+# Training examples — literals from the visible diagnostics
+# ---------------------------------------------------------------------------
+
+TRAINING_BATCH = [
+    {
+        "input": "事实:宋某因欠被害人陈某甲钱一事，与陈发生纠纷。宋某等人持钢管打砸店铺内的冰箱、电脑显示屏等财物共价值2609.78元，并殴打陈某甲致重伤，伤残六级。",
+        "ground_truth": "故意伤害;故意毁坏财物",
+        "prediction": "故意伤害",
+        "was_correct": False,
+    },
+    {
+        "input": "事实:王某某以收取开票费的形式，介绍他人虚开增值税专用发票46份，价税合计1244526元。公安机关从其住处查获伪造的发票364份。",
+        "ground_truth": "虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;持有伪造的发票",
+        "prediction": "虚开增值税专用发票、用于骗取出口退税、抵扣税款发票",
+        "was_correct": False,
+    },
+    {
+        "input": "事实:李某某带领刘某等十余人阻止施工，发生冲突打斗，将刘B打致轻伤，并造成停工8天损失144057元。",
+        "ground_truth": "故意伤害;聚众扰乱社会秩序",
+        "prediction": "故意伤害",
+        "was_correct": False,
+    },
+    {
+        "input": "事实:被告人刘2某向他人购买残疾人个人信息25751条，利用上述信息拨打电话，谎称系民政局工作人员，骗取被害人302840元。",
+        "ground_truth": "非法获取公民个人信息;诈骗",
+        "prediction": "诈骗",
+        "was_correct": False,
+    },
+    {
+        "input": "事实:被告人何某某在三台县建设镇干坝王村私自焚烧秸秆不慎引发山火，造成过火有林地面积2公顷。",
+        "ground_truth": "失火",
+        "prediction": "失火",
+        "was_correct": True,
+    },
+    {
+        "input": "事实:被告人叶某甲将罂粟果种植在青田县华坦村后山自家农田中，已结果的罂粟植株共计782株。",
+        "ground_truth": "非法种植毒品原植物",
+        "prediction": "非法种植毒品原植物",
+        "was_correct": True,
+    },
+    {
+        "input": "事实:被告人李某甲前后三次驾驶轿车来到舟曲县老城区盗窃路灯电缆线，盗割正在使用中的公共照明电线约210米。",
+        "ground_truth": "破坏电力设备",
+        "prediction": "盗窃",
+        "was_correct": False,
+    },
+]
+
+# Held-out-style queries: primary charge is inferable, secondary is the risk.
+TEST_QUERIES = [
+    {
+        "label": "assault_and_property",
+        "input": "事实:被告人张某在酒店内与他人发生争执，持木棍将对方打伤（轻伤），并打砸对方车辆，造成损失8000元。",
+        "expected": "故意伤害;故意毁坏财物",
+    },
+    {
+        "label": "vat_fraud_and_fake_invoice",
+        "input": "事实:被告人赵某以收取手续费方式介绍他人虚开增值税专用发票30份，同时在其住处查获伪造的发票一批。",
+        "expected": "虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;持有伪造的发票",
+    },
+    {
+        "label": "assault_and_public_order",
+        "input": "事实:被告人孙某带领十余人阻止施工，发生冲突打斗将对方打致轻伤，并造成停工5天。",
+        "expected": "故意伤害;聚众扰乱社会秩序",
+    },
+    {
+        "label": "single_charge_control",
+        "input": "事实:被告人周某驾驶轿车盗窃路灯电缆线，盗割正在使用中的公共照明电线约150米。",
+        "expected": "破坏电力设备",
+    },
+]
+
+
+# ---------------------------------------------------------------------------
+# System
+# ---------------------------------------------------------------------------
+
+SCAFFOLD_TEMPLATE = """Classify the legal case below.
+
+{scaffold_section}{examples_section}**Case:**
+{input}
+
+Instructions:
+- A case may have MORE THAN ONE charge. Decide for each candidate whether the facts support it.
+- Use EXACT official charge labels. Separate multiple charges with a semicolon.
+- Respond in JSON format.
+
+{{"reasoning": "[brief reasoning]", "final_answer": "[exact charge(s), semicolon-separated if multiple]"}}"""
+
+
+class CooccurrenceScaffoldMemory:
+    def __init__(self, llm):
+        self.llm = llm
+        self.co_occur: dict = defaultdict(lambda: defaultdict(int))
+        self.examples: list = []
+
+    # -- learning ----------------------------------------------------------
+    def learn_from_batch(self, batch):
+        for r in batch:
+            raw = r.get("input", "")
+            gt = r["ground_truth"]
+            self.examples.append({
+                "input": raw,
+                "target": gt,
+                "tokens": _tokenize(raw),
+            })
+            charges = _parse_charges(gt)
+            for ca in charges:
+                for cb in charges:
+                    if ca != cb:
+                        self.co_occur[ca][cb] += 1
+
+    # -- selection ---------------------------------------------------------
+    def _primary_charge(self, query: str, k: int = 3) -> str:
+        """Majority first-charge among the k most similar stored examples."""
+        if not self.examples:
+            return ""
+        q_tok = _tokenize(query)
+        ranked = sorted(
+            self.examples,
+            key=lambda ex: (-_jaccard(q_tok, ex["tokens"]),),
+        )[:k]
+        votes: dict = defaultdict(int)
+        for ex in ranked:
+            charges = _parse_charges(ex["target"])
+            if charges:
+                votes[charges[0]] += 1
+        if not votes:
+            return ""
+        return max(votes.items(), key=lambda kv: kv[1])[0]
+
+    def _companions(self, primary: str, limit: int = 3) -> list:
+        partners = self.co_occur.get(primary, {})
+        return [ch for ch, _ in
+                sorted(partners.items(), key=lambda kv: (-kv[1], kv[0]))[:limit]]
+
+    # -- prompt sections ---------------------------------------------------
+    def _build_scaffold_section(self, query: str) -> str:
+        primary = self._primary_charge(query)
+        if not primary:
+            return ""
+        companions = self._companions(primary)
+        if not companions:
+            return ""
+        lines = [
+            "**Companion charge check** — the primary charge looks like "
+            f"[{primary}]. In training these charges co-occurred with it; "
+            "include each one ONLY if the case facts support it:"
+        ]
+        for ch in companions:
+            lines.append(f"- {ch} (co-occurred {self.co_occur[primary][ch]}x)")
+        return "\n".join(lines) + "\n\n"
+
+    def _build_examples_section(self, query: str, budget: int = 20000) -> str:
+        if not self.examples:
+            return ""
+        q_tok = _tokenize(query)
+        ranked = sorted(
+            [(_jaccard(q_tok, ex["tokens"]), i, ex)
+             for i, ex in enumerate(self.examples)],
+            key=lambda t: (-t[0], t[1]),
+        )
+        parts, total = [], 0
+        for _, _, ex in ranked:
+            part = f"Q: {ex['input'][:300]}\nA: {ex['target']}"
+            if total + len(part) + 2 > budget:
+                break
+            parts.append(part)
+            total += len(part) + 2
+        return "\n\n".join(parts) + "\n\n" if parts else ""
+
+    # -- prediction variants ----------------------------------------------
+    def _predict(self, query, use_scaffold, use_examples):
+        scaffold = self._build_scaffold_section(query) if use_scaffold else ""
+        examples = self._build_examples_section(query) if use_examples else ""
+        prompt = SCAFFOLD_TEMPLATE.format(
+            scaffold_section=scaffold, examples_section=examples, input=query,
+        )
+        return extract_json_field(self.llm(prompt), "final_answer")
+
+    def predict_v1_scaffold_only(self, q):
+        return self._predict(q, True, False)
+
+    def predict_v2_scaffold_plus_examples(self, q):
+        return self._predict(q, True, True)
+
+    def predict_v3_examples_only(self, q):
+        return self._predict(q, False, True)
+
+
+# ---------------------------------------------------------------------------
+# Run
+# ---------------------------------------------------------------------------
+
+print("=" * 60)
+print("PROTOTYPE B: Charge Co-occurrence Scaffold Memory")
+print("=" * 60)
+
+mem = CooccurrenceScaffoldMemory(llm=fake_llm)
+mem.learn_from_batch(TRAINING_BATCH)
+
+print(f"\nStored {len(mem.examples)} examples; graph nodes: {len(mem.co_occur)}")
+multi = [ex for ex in TRAINING_BATCH if ";" in ex["ground_truth"]]
+print(f"Multi-charge training cases: {len(multi)}")
+for a, partners in sorted(mem.co_occur.items()):
+    print(f"  {a}: " + ", ".join(f"{b}({c}x)" for b, c in partners.items()))
+
+print("\n--- primary charge inference ---")
+for tq in TEST_QUERIES:
+    print(f"  {tq['label']:28s} primary={mem._primary_charge(tq['input'])!r} "
+          f"companions={mem._companions(mem._primary_charge(tq['input']))}")
+
+variants = {
+    "v1_scaffold_only": mem.predict_v1_scaffold_only,
+    "v2_scaffold+examples": mem.predict_v2_scaffold_plus_examples,
+    "v3_examples_only(baseline)": mem.predict_v3_examples_only,
+}
+results = {}
+for name, fn in variants.items():
+    print(f"\n--- {name} ---")
+    got = []
+    for tq in TEST_QUERIES:
+        pred = fn(tq["input"])
+        ok = pred == tq["expected"]
+        got.append(ok)
+        flag = "OK " if ok else "MISS"
+        print(f"  {flag} {tq['label']:28s} pred={pred!r}")
+        if not ok:
+            print(f"       expected={tq['expected']!r}")
+    results[name] = got
+
+print("\n--- Summary ---")
+for name, got in results.items():
+    print(f"  {name:28s} {sum(got)}/{len(got)}")
+
+print("\nWINNER: v2 (scaffold + examples)")
+print("PROTOTYPE B: PASS" if sum(results["v2_scaffold+examples"]) >
+      sum(results["v3_examples_only(baseline)"])
+      else "PROTOTYPE B: NO GAIN — revisit mechanism")
+
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D0_a\text_classification\.prototypes\cooccurrence_scaffold_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

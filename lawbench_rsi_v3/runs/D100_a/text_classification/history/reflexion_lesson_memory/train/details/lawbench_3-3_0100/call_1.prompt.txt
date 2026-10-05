@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+- When the case facts explicitly describe separate actions of selling, buying, or transporting counterfeit currency, label each distinct offense (e.g., 出售假币, 购买假币, 运输假币) rather than using a generic term
+- When the defendant’s conduct consists of teaching, instructing, or transmitting criminal techniques or methods to others, the appropriate charge is “传授犯罪方法” rather than the generic “帮助信息网络犯罪活动”.
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经再审查明，原审对原审被告人柏某认定实施诈骗犯罪事实清楚，证据充分，再审予以确认。
+又查明，原审被告人柏某因犯××，由上海市静安区人民检察院于2011年3月4日向上海市静安区人民法院提起公诉，上海市静安区人民法院于2011年4月12日以（2011）静刑初字第83号刑事判决书作出一审判决，认定被告人柏某犯××，判处××，并处罚金人民币××元，连同原判××，并处罚金人民币××元，决定执行××六个月，并处罚金人民币××元。
+上述事实，有上海市静安区人民法院（2011）静刑初字第83号刑事判决书、执行通知书等证据为证，原审被告人柏某亦供认不讳。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

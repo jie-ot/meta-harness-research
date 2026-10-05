@@ -1,0 +1,72 @@
+{
+  "call_id": "82959d58c55546e7976d778fff614b0d",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791019064-rNyO3yrs2ltEWS3PSN25",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"被告人非法使用工具在自然保护区砍伐并携带国家二级重点保护植物（闽楠）树块，构成《刑法》规定的非法采伐、毁坏国家重点保护植物罪。同时，行为人将砍伐的树块搬运并企图转移，属于对国家重点保护植物的盗窃行为，应当以盗窃罪并案处理。根据指示，列出法定罪名时不加“罪”字，并在多个罪名之间用分号分隔。\",\n  \"final_answer\": \"[罪名]非法采伐、毁坏国家重点保护植物;盗窃<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": " need to determine crimes. Facts: illegal cutting of protected plant (闽楠) which is a national second-level key protected plant. Also theft? They cut and took tree blocks. That's illegal logging of protected species. According to Chinese criminal law, illegal logging of protected trees is \"非法采伐、毁坏国家重点保护植物罪\" maybe \"非法采伐、毁坏国家重点保护植物罪\". Also theft? The correction rule: If theft or misappropriation of a species designated as nationally protected plant or animal, classification must include both theft charge and t... The rule truncated: \"theft charge and t\". Probably means include both theft and illegal logging? Actually rule: \"If the factual description involves the theft or misappropriation of a species that is designated as a nationally protected plant or animal, the classification must include both the theft charge and t\". Likely means include both theft (盗窃) and illegal hunting? But we need to output statutory offense names without appending “罪”. So we need names like \"非法采伐国家重点保护植物\" maybe. Also need theft? The act of taking the tree blocks is theft of protected plant. So include \"盗窃\" maybe? But rule says when listing crime name(s) between tags, output only statutory offense name without appending the character “罪”. So we should output something like \"非法采伐国家重点保护植物;盗窃\". However need correct statutory name: Under Chinese law, Article 338 of Criminal Law: \"非法采伐、毁坏国家重点保护植物罪\". So offense name: \"非法采伐毁坏国家重点保护植物\". Might be \"非法采伐、毁坏国家重点保护植物\". Without \"罪\". So we list that. Also theft: \"盗窃\". So final answer: [罪名]非法采伐、毁坏国家重点保护植物;盗窃<eoa>\n\nCheck rule about unauthorized cutting of forest trees belonging to collective or state entity: label as '盗伐林木' rather than generic '非法采伐林木'. Here trees are protected species, not just forest trees. So use specific protected plant offense. So include that.\n\nThus final JSON.",
+          "provider_specific_fields": {
+            "reasoning": " need to determine crimes. Facts: illegal cutting of protected plant (闽楠) which is a national second-level key protected plant. Also theft? They cut and took tree blocks. That's illegal logging of protected species. According to Chinese criminal law, illegal logging of protected trees is \"非法采伐、毁坏国家重点保护植物罪\" maybe \"非法采伐、毁坏国家重点保护植物罪\". Also theft? The correction rule: If theft or misappropriation of a species designated as nationally protected plant or animal, classification must include both theft charge and t... The rule truncated: \"theft charge and t\". Probably means include both theft and illegal logging? Actually rule: \"If the factual description involves the theft or misappropriation of a species that is designated as a nationally protected plant or animal, the classification must include both the theft charge and t\". Likely means include both theft (盗窃) and illegal hunting? But we need to output statutory offense names without appending “罪”. So we need names like \"非法采伐国家重点保护植物\" maybe. Also need theft? The act of taking the tree blocks is theft of protected plant. So include \"盗窃\" maybe? But rule says when listing crime name(s) between tags, output only statutory offense name without appending the character “罪”. So we should output something like \"非法采伐国家重点保护植物;盗窃\". However need correct statutory name: Under Chinese law, Article 338 of Criminal Law: \"非法采伐、毁坏国家重点保护植物罪\". So offense name: \"非法采伐毁坏国家重点保护植物\". Might be \"非法采伐、毁坏国家重点保护植物\". Without \"罪\". So we list that. Also theft: \"盗窃\". So final answer: [罪名]非法采伐、毁坏国家重点保护植物;盗窃<eoa>\n\nCheck rule about unauthorized cutting of forest trees belonging to collective or state entity: label as '盗伐林木' rather than generic '非法采伐林木'. Here trees are protected species, not just forest trees. So use specific protected plant offense. So include that.\n\nThus final JSON.",
+            "refusal": null,
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": " need to determine crimes. Facts: illegal cutting of protected plant (闽楠) which is a national second-level key protected plant. Also theft? They cut and took tree blocks. That's illegal logging of protected species. According to Chinese criminal law, illegal logging of protected trees is \"非法采伐、毁坏国家重点保护植物罪\" maybe \"非法采伐、毁坏国家重点保护植物罪\". Also theft? The correction rule: If theft or misappropriation of a species designated as nationally protected plant or animal, classification must include both theft charge and t... The rule truncated: \"theft charge and t\". Probably means include both theft and illegal logging? Actually rule: \"If the factual description involves the theft or misappropriation of a species that is designated as a nationally protected plant or animal, the classification must include both the theft charge and t\". Likely means include both theft (盗窃) and illegal hunting? But we need to output statutory offense names without appending “罪”. So we need names like \"非法采伐国家重点保护植物\" maybe. Also need theft? The act of taking the tree blocks is theft of protected plant. So include \"盗窃\" maybe? But rule says when listing crime name(s) between tags, output only statutory offense name without appending the character “罪”. So we should output something like \"非法采伐国家重点保护植物;盗窃\". However need correct statutory name: Under Chinese law, Article 338 of Criminal Law: \"非法采伐、毁坏国家重点保护植物罪\". So offense name: \"非法采伐毁坏国家重点保护植物\". Might be \"非法采伐、毁坏国家重点保护植物\". Without \"罪\". So we list that. Also theft: \"盗窃\". So final answer: [罪名]非法采伐、毁坏国家重点保护植物;盗窃<eoa>\n\nCheck rule about unauthorized cutting of forest trees belonging to collective or state entity: label as '盗伐林木' rather than generic '非法采伐林木'. Here trees are protected species, not just forest trees. So use specific protected plant offense. So include that.\n\nThus final JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": " need to determine crimes. Facts: illegal cutting of protected plant (闽楠) which is a national second-level key protected plant. Also theft? They cut and took tree blocks. That's illegal logging of protected species. According to Chinese criminal law, illegal logging of protected trees is \"非法采伐、毁坏国家重点保护植物罪\" maybe \"非法采伐、毁坏国家重点保护植物罪\". Also theft? The correction rule: If theft or misappropriation of a species designated as nationally protected plant or animal, classification must include both theft charge and t... The rule truncated: \"theft charge and t\". Probably means include both theft and illegal logging? Actually rule: \"If the factual description involves the theft or misappropriation of a species that is designated as a nationally protected plant or animal, the classification must include both the theft charge and t\". Likely means include both theft (盗窃) and illegal hunting? But we need to output statutory offense names without appending “罪”. So we need names like \"非法采伐国家重点保护植物\" maybe. Also need theft? The act of taking the tree blocks is theft of protected plant. So include \"盗窃\" maybe? But rule says when listing crime name(s) between tags, output only statutory offense name without appending the character “罪”. So we should output something like \"非法采伐国家重点保护植物;盗窃\". However need correct statutory name: Under Chinese law, Article 338 of Criminal Law: \"非法采伐、毁坏国家重点保护植物罪\". So offense name: \"非法采伐毁坏国家重点保护植物\". Might be \"非法采伐、毁坏国家重点保护植物\". Without \"罪\". So we list that. Also theft: \"盗窃\". So final answer: [罪名]非法采伐、毁坏国家重点保护植物;盗窃<eoa>\n\nCheck rule about unauthorized cutting of forest trees belonging to collective or state entity: label as '盗伐林木' rather than generic '非法采伐林木'. Here trees are protected species, not just forest trees. So use specific protected plant offense. So include that.\n\nThus final JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 629,
+      "prompt_tokens": 637,
+      "total_tokens": 1266,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0003782,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0003782,
+        "upstream_inference_prompt_cost": 6.37e-05,
+        "upstream_inference_completions_cost": 0.0003145
+      }
+    }
+  },
+  "raw_response_missing": false
+}

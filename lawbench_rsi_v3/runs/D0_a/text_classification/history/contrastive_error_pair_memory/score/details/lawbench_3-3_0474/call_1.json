@@ -1,0 +1,72 @@
+{
+  "call_id": "9d68bd2bf5ed4b409817e623a19600db",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791028150-XUwpyHj14AXcnHYYD3GF",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"被告人刘某甲等人在未取得采矿许可证的情况下，非法开采稀土矿，且造成了矿产资源的破坏价值。根据《中华人民共和国刑法》第三百三十八条的规定，这构成非法采矿罪。案件事实仅涉及非法采矿行为，没有其他并发罪名。\",\n  \"final_answer\": \"[罪名]非法采矿<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate criminal charge(s) for illegal mining causing resource damage. In Chinese criminal law, the crime is \"非法采矿罪\" (illegal mining). Also possibly \"破坏资源罪\"? Actually there is a specific offense: \"非法采矿罪\" under Article 338 of Criminal Law (now 338? Actually Article 338: illegal mining of mineral resources, causing damage. The charge is \"非法采矿罪\". So answer should be that.\n\nCheck examples: For similar case earlier: \"陆2某人民检察院指控：...制造毒品冰毒\" they gave answer \"窝藏、包庇;包庇毒品犯罪分子\" which is weird. But for illegal mining, we need correct label. Look at earlier example: \"事实:安远县人民检察院指控，2013年2月底，被告人刘某甲、刘某乙（另案处理）合伙从一定南张老板（另案处理）手里买了一个稀土矿...非法开采稀土...非法采矿造成的矿产资源破坏价值为4963500元。\" The answer likely \"非法采矿\". Let's verify other similar: There is example \"事实:江西省...非法采矿\" maybe not. But typical label: \"非法采矿\". So final answer: [罪名]非法采矿<eoa>.\n\nCheck if need \"非法采矿罪\". In examples they use short label without \"罪\"? For example earlier: \"掩饰、隐瞒犯罪所得、犯罪所得收益\". They include \"罪\" omitted? Actually they wrote \"掩饰、隐瞒犯罪所得、犯罪所得收益\". That's the official term \"掩饰、隐瞒犯罪所得罪\". They omitted \"罪\". So they list the core phrase without \"罪\". For \"非法采矿罪\", they would likely output \"非法采矿\". Let's see other examples: \"非法占用农用地\" they output \"非法占用农用地\". That's the crime name without \"罪\". So we should output \"非法采矿\". Possibly \"非法采矿罪\" but pattern suggests omit \"罪\". Use \"非法采矿\". So final answer JSON.\n\n",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate criminal charge(s) for illegal mining causing resource damage. In Chinese criminal law, the crime is \"非法采矿罪\" (illegal mining). Also possibly \"破坏资源罪\"? Actually there is a specific offense: \"非法采矿罪\" under Article 338 of Criminal Law (now 338? Actually Article 338: illegal mining of mineral resources, causing damage. The charge is \"非法采矿罪\". So answer should be that.\n\nCheck examples: For similar case earlier: \"陆2某人民检察院指控：...制造毒品冰毒\" they gave answer \"窝藏、包庇;包庇毒品犯罪分子\" which is weird. But for illegal mining, we need correct label. Look at earlier example: \"事实:安远县人民检察院指控，2013年2月底，被告人刘某甲、刘某乙（另案处理）合伙从一定南张老板（另案处理）手里买了一个稀土矿...非法开采稀土...非法采矿造成的矿产资源破坏价值为4963500元。\" The answer likely \"非法采矿\". Let's verify other similar: There is example \"事实:江西省...非法采矿\" maybe not. But typical label: \"非法采矿\". So final answer: [罪名]非法采矿<eoa>.\n\nCheck if need \"非法采矿罪\". In examples they use short label without \"罪\"? For example earlier: \"掩饰、隐瞒犯罪所得、犯罪所得收益\". They include \"罪\" omitted? Actually they wrote \"掩饰、隐瞒犯罪所得、犯罪所得收益\". That's the official term \"掩饰、隐瞒犯罪所得罪\". They omitted \"罪\". So they list the core phrase without \"罪\". For \"非法采矿罪\", they would likely output \"非法采矿\". Let's see other examples: \"非法占用农用地\" they output \"非法占用农用地\". That's the crime name without \"罪\". So we should output \"非法采矿\". Possibly \"非法采矿罪\" but pattern suggests omit \"罪\". Use \"非法采矿\". So final answer JSON.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine appropriate criminal charge(s) for illegal mining causing resource damage. In Chinese criminal law, the crime is \"非法采矿罪\" (illegal mining). Also possibly \"破坏资源罪\"? Actually there is a specific offense: \"非法采矿罪\" under Article 338 of Criminal Law (now 338? Actually Article 338: illegal mining of mineral resources, causing damage. The charge is \"非法采矿罪\". So answer should be that.\n\nCheck examples: For similar case earlier: \"陆2某人民检察院指控：...制造毒品冰毒\" they gave answer \"窝藏、包庇;包庇毒品犯罪分子\" which is weird. But for illegal mining, we need correct label. Look at earlier example: \"事实:安远县人民检察院指控，2013年2月底，被告人刘某甲、刘某乙（另案处理）合伙从一定南张老板（另案处理）手里买了一个稀土矿...非法开采稀土...非法采矿造成的矿产资源破坏价值为4963500元。\" The answer likely \"非法采矿\". Let's verify other similar: There is example \"事实:江西省...非法采矿\" maybe not. But typical label: \"非法采矿\". So final answer: [罪名]非法采矿<eoa>.\n\nCheck if need \"非法采矿罪\". In examples they use short label without \"罪\"? For example earlier: \"掩饰、隐瞒犯罪所得、犯罪所得收益\". They include \"罪\" omitted? Actually they wrote \"掩饰、隐瞒犯罪所得、犯罪所得收益\". That's the official term \"掩饰、隐瞒犯罪所得罪\". They omitted \"罪\". So they list the core phrase without \"罪\". For \"非法采矿罪\", they would likely output \"非法采矿\". Let's see other examples: \"非法占用农用地\" they output \"非法占用农用地\". That's the crime name without \"罪\". So we should output \"非法采矿\". Possibly \"非法采矿罪\" but pattern suggests omit \"罪\". Use \"非法采矿\". So final answer JSON.\n\n",
+            "refusal": null,
+            "reasoning_content": "We need to determine appropriate criminal charge(s) for illegal mining causing resource damage. In Chinese criminal law, the crime is \"非法采矿罪\" (illegal mining). Also possibly \"破坏资源罪\"? Actually there is a specific offense: \"非法采矿罪\" under Article 338 of Criminal Law (now 338? Actually Article 338: illegal mining of mineral resources, causing damage. The charge is \"非法采矿罪\". So answer should be that.\n\nCheck examples: For similar case earlier: \"陆2某人民检察院指控：...制造毒品冰毒\" they gave answer \"窝藏、包庇;包庇毒品犯罪分子\" which is weird. But for illegal mining, we need correct label. Look at earlier example: \"事实:安远县人民检察院指控，2013年2月底，被告人刘某甲、刘某乙（另案处理）合伙从一定南张老板（另案处理）手里买了一个稀土矿...非法开采稀土...非法采矿造成的矿产资源破坏价值为4963500元。\" The answer likely \"非法采矿\". Let's verify other similar: There is example \"事实:江西省...非法采矿\" maybe not. But typical label: \"非法采矿\". So final answer: [罪名]非法采矿<eoa>.\n\nCheck if need \"非法采矿罪\". In examples they use short label without \"罪\"? For example earlier: \"掩饰、隐瞒犯罪所得、犯罪所得收益\". They include \"罪\" omitted? Actually they wrote \"掩饰、隐瞒犯罪所得、犯罪所得收益\". That's the official term \"掩饰、隐瞒犯罪所得罪\". They omitted \"罪\". So they list the core phrase without \"罪\". For \"非法采矿罪\", they would likely output \"非法采矿\". Let's see other examples: \"非法占用农用地\" they output \"非法占用农用地\". That's the crime name without \"罪\". So we should output \"非法采矿\". Possibly \"非法采矿罪\" but pattern suggests omit \"罪\". Use \"非法采矿\". So final answer JSON.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 574,
+      "prompt_tokens": 23948,
+      "total_tokens": 24522,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 526,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.001235,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.001235,
+        "upstream_inference_prompt_cost": 0.001077215158112844,
+        "upstream_inference_completions_cost": 0.00015778484188715592
+      }
+    }
+  },
+  "raw_response_missing": false
+}

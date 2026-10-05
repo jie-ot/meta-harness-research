@@ -1,0 +1,30 @@
+Bash
+
+command:
+python -c "
+import os, json
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+# Check LawBench memory state
+mem_path = os.path.join(base, 'LawBench', 'symmetric_confusion_memory', 'gpt-oss-120b', 'memory.json')
+with open(mem_path, encoding='utf-8') as f:
+    mem = json.load(f)
+print(f'LawBench examples: {len(mem[\"examples\"])}')
+print(f'LawBench confusion entries: {len(mem[\"confusion\"])}')
+# Show unique labels in pool
+labels = set(e['target'] for e in mem['examples'])
+print(f'Unique labels in pool: {len(labels)}')
+# Show a few confusion entries
+for k, v in list(mem['confusion'].items())[:3]:
+    print(f'  confusion[{repr(k[:30])}] = {v}')
+"
+
+
+description: Inspect LawBench memory state from frontier system
+
+--- output ---
+LawBench examples: 200
+LawBench confusion entries: 65
+Unique labels in pool: 143
+  confusion['诈骗'] = {'票据诈骗;信用卡诈骗;合同诈骗': 0.0694428401872336, '非法吸收公众存款': 0.16608338398760714, '合同诈骗': 0.25034408974245487, '介绍贿赂': 0.30735686772502346, '诈骗;非法行医': 0.48767497911552943, '妨害信用卡管理;诈骗': 0.5688000922764596}
+  confusion['盗窃'] = {'盗窃;非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品': 0.263520094465742, '职务侵占': 0.8573749999999999}
+  confusion['生产、销售假药'] = {'生产、销售有毒、有害食品': 0.17516381940403067, '非法生产、销售药品': 0.07494512702440771, '非法生产、销售毒品': 0.11891344262766605}

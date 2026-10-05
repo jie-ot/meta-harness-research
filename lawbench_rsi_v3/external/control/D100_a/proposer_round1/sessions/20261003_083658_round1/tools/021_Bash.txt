@@ -1,0 +1,25 @@
+Bash
+
+command: python .prototypes/reflexion_lesson_memory.py
+description: Run reflexion lesson memory prototype
+
+--- output ---
+Lessons stored: 4
+  [0] keywords=['伪造', '房产证', '土地证', '证件']
+       lesson=当事实描述伪造房产证等国家证件时，罪名应为伪造、变造、买卖国家机关公文、证件、印章，而非伪造国家机关证件罪（后者带罪字后缀是错误格式）...
+  [1] keywords=['合同', '签订', '履行', '骗取']
+       lesson=在签订、履行合同过程中骗取财物的，罪名为合同诈骗，而非普通诈骗...
+  [2] keywords=[]
+       lesson=注意区分相似罪名的具体构成要件...
+  [3] keywords=['电缆', '电线', '路灯', '盗割', '公共']
+       lesson=盗割正在使用中的公共电力设施（电缆、电线）的，罪名为破坏电力设备，而非盗窃...
+
+── Retrieval test ──────────────────────────────────────
+  伪造房产证场景: matched=1 lessons, answer=[罪名]合同诈骗<eoa>
+  合同诈骗场景: matched=2 lessons, answer=[罪名]合同诈骗<eoa>
+  电缆盗割场景: matched=2 lessons, answer=[罪名]合同诈骗<eoa>
+  无关场景: matched=1 lessons, answer=[罪名]合同诈骗<eoa>
+
+Prototype B PASSED
+Reflexion lesson memory: errors distilled into transfer rules,
+retrieved by keyword/bigram overlap at predict time.

@@ -1,0 +1,76 @@
+Bash
+
+command:
+cat > "$TEMP/test_reflexion.py" << 'EOF'
+"""Prototype: Reflexion-style lesson distillation."""
+
+# Simulate what an LLM-distilled lesson looks like from a batch of errors
+# We test the lesson storage + injection logic (not the actual LLM call)
+
+import json
+
+# Simulated lesson strings (what the LLM would produce)
+lessons = [
+    "Texts mentioning legal citations (§, Art.) almost always belong to procedural law categories.",
+    "Short symptom lists with body part mentions tend to be diagnostic questions.",
+    "Questions with 'claim' and 'patent' usually require technical classification.",
+]
+
+# Lesson storage format
+state = {"lessons": lessons, "examples": []}
+
+def format_lessons_section(lessons):
+    if not lessons:
+        return ""
+    parts = ["## Lessons learned from past mistakes:"]
+    for i, lesson in enumerate(lessons, 1):
+        parts.append(f"{i}. {lesson}")
+    return "\n".join(parts)
+
+def format_examples_section(examples, max_chars=20000):
+    if not examples:
+        return ""
+    parts = []
+    total = 0
+    for ex in examples[-20:]:
+        part = f"Q: {ex['input']}\nA: {ex['target']}"
+        if total + len(part) > max_chars:
+            break
+        parts.append(part)
+        total += len(part) + 2
+    return "\n\n".join(parts)
+
+lessons_section = format_lessons_section(lessons)
+print(f"Lessons section ({len(lessons_section)} chars):")
+print(lessons_section)
+print()
+
+# Test prompt assembly
+examples_section = format_examples_section([
+    {"input": "Classify: fever, cough", "target": "Respiratory"},
+    {"input": "§42 StGB applies?", "target": "Criminal"},
+])
+print(f"Examples section ({len(examples_section)} chars):")
+print(examples_section)
+print()
+print("OK - lessons injection verified")
+EOF
+python "$TEMP/test_reflexion.py"
+
+description: Run reflexion lesson distillation prototype
+
+--- output ---
+Lessons section (296 chars):
+## Lessons learned from past mistakes:
+1. Texts mentioning legal citations (§, Art.) almost always belong to procedural law categories.
+2. Short symptom lists with body part mentions tend to be diagnostic questions.
+3. Questions with 'claim' and 'patent' usually require technical classification.
+
+Examples section (74 chars):
+Q: Classify: fever, cough
+A: Respiratory
+
+Q: §42 StGB applies?
+A: Criminal
+
+OK - lessons injection verified

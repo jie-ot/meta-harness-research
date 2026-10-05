@@ -1,0 +1,72 @@
+{
+  "call_id": "27c6cffca4c747f28c39e78b70e3cae3",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791079311-RL04ilVH6strrZ3277Pw",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The re‑examination confirms that the original trial found the defendant 柏某 guilty of fraud, and the facts explicitly state “实施诈骗犯罪”. No other criminal conduct is described. Therefore the appropriate charge is 诈骗.\",\n  \"final_answer\": \"[罪名]诈骗<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the crime(s) based on facts. The facts: re-examination confirms that original trial recognized defendant Bai (柏) committed fraud (诈骗). It says \"原审对原审被告人柏某认定实施诈骗犯罪事实清楚\". So the crime is fraud. However also mentions \"因犯××\" but placeholder. The pattern: they want to output the crime(s) as per the correct label. In examples, for fraud they sometimes use \"诈骗\". But note the common mistakes: they gave example where \"诈骗\" should be \"违法发放贷款\". That's a specific case where the crime is not simply \"诈骗\". But here the fact says \"实施诈骗犯罪\". So likely the correct label is \"诈骗\". However check if there is any nuance: The case is about re-trial confirming fraud. So answer: [罪名]诈骗<eoa>. Should we include any other? The text also mentions \"因犯××\" but unknown. So only fraud.\n\nThus final answer JSON with reasoning and final answer.\n\n",
+          "provider_specific_fields": {
+            "reasoning": "We need to determine the crime(s) based on facts. The facts: re-examination confirms that original trial recognized defendant Bai (柏) committed fraud (诈骗). It says \"原审对原审被告人柏某认定实施诈骗犯罪事实清楚\". So the crime is fraud. However also mentions \"因犯××\" but placeholder. The pattern: they want to output the crime(s) as per the correct label. In examples, for fraud they sometimes use \"诈骗\". But note the common mistakes: they gave example where \"诈骗\" should be \"违法发放贷款\". That's a specific case where the crime is not simply \"诈骗\". But here the fact says \"实施诈骗犯罪\". So likely the correct label is \"诈骗\". However check if there is any nuance: The case is about re-trial confirming fraud. So answer: [罪名]诈骗<eoa>. Should we include any other? The text also mentions \"因犯××\" but unknown. So only fraud.\n\nThus final answer JSON with reasoning and final answer.\n\n",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the crime(s) based on facts. The facts: re-examination confirms that original trial recognized defendant Bai (柏) committed fraud (诈骗). It says \"原审对原审被告人柏某认定实施诈骗犯罪事实清楚\". So the crime is fraud. However also mentions \"因犯××\" but placeholder. The pattern: they want to output the crime(s) as per the correct label. In examples, for fraud they sometimes use \"诈骗\". But note the common mistakes: they gave example where \"诈骗\" should be \"违法发放贷款\". That's a specific case where the crime is not simply \"诈骗\". But here the fact says \"实施诈骗犯罪\". So likely the correct label is \"诈骗\". However check if there is any nuance: The case is about re-trial confirming fraud. So answer: [罪名]诈骗<eoa>. Should we include any other? The text also mentions \"因犯××\" but unknown. So only fraud.\n\nThus final answer JSON with reasoning and final answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": "We need to determine the crime(s) based on facts. The facts: re-examination confirms that original trial recognized defendant Bai (柏) committed fraud (诈骗). It says \"原审对原审被告人柏某认定实施诈骗犯罪事实清楚\". So the crime is fraud. However also mentions \"因犯××\" but placeholder. The pattern: they want to output the crime(s) as per the correct label. In examples, for fraud they sometimes use \"诈骗\". But note the common mistakes: they gave example where \"诈骗\" should be \"违法发放贷款\". That's a specific case where the crime is not simply \"诈骗\". But here the fact says \"实施诈骗犯罪\". So likely the correct label is \"诈骗\". However check if there is any nuance: The case is about re-trial confirming fraud. So answer: [罪名]诈骗<eoa>. Should we include any other? The text also mentions \"因犯××\" but unknown. So only fraud.\n\nThus final answer JSON with reasoning and final answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 293,
+      "prompt_tokens": 21696,
+      "total_tokens": 21989,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 252,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000852562,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000852562,
+        "upstream_inference_prompt_cost": 0.000802752,
+        "upstream_inference_completions_cost": 4.981e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

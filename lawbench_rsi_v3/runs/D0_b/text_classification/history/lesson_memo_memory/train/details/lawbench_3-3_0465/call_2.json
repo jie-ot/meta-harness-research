@@ -1,0 +1,72 @@
+{
+  "call_id": "9ab2e757fdac49a89af4bd994f92b0df",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791027040-EMKWQpkrm1oOHT4oLxmE",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n\"lesson\": \"- 只列出事实陈述中明确出现的罪名，避免自行推断或添加未在案情中出现的罪名。\\n- 使用法律条文的完整名称，包括所有必需的助词和内部标点（如“的”“、”），不要省略或替换成近义词。\\n- 多罪名时仅用英文分号“;”分隔，分号前后不留空格，保持顺序与案情中出现的顺序一致。\\n- 输出必须严格遵守格式：先写“[罪名]”，随后紧跟罪名列表，最后以“<eoa>”结束，禁止出现多余的空格、换行或其他字符。\\n- 对于包含并列项的单一罪名（如“走私国家禁止进出口的货物、物品”），在罪名内部使用中文顿号“、”而非分号或其他符号。\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to derive up to 5 concise rules to avoid similar errors. Look at errors: The model often misorders or misidentifies correct charge names, sometimes missing \"的\" or punctuation, sometimes using wrong synonyms, sometimes missing \"的\" in \"走私国家禁止进出口的货物、物品\". Also sometimes includes extra charges not present, or wrong charge type (e.g., \"非法从事特种作业致人死亡\" vs \"重大责任事故\").\n\nObservations: The prompt asks to output charges in a specific format: [罪名]...<eoa>. The model sometimes outputs extra spaces, missing semicolons, wrong punctuation. Also sometimes misinterprets the fact snippet due to truncation.\n\nPotential rules:\n\n1. Identify all distinct crimes explicitly mentioned in the fact, not infer additional ones.\n\n2. Preserve exact legal terminology as in the correct answer, including \"的\" and punctuation (e.g., \"走私国家禁止进出口的货物、物品\").\n\n3. When multiple crimes, separate with semicolon without extra spaces, order as appears in fact.\n\n4. Do not add generic categories like \"重大责任事故\" unless fact explicitly states that term.\n\n5. Ensure the output format exactly matches: [罪名]...<eoa> with no extra characters.\n\nAlso note that sometimes the correct answer uses Chinese punctuation \"、\" for enumeration within a single charge. So rule about using correct internal punctuation.\n\nLet's craft 5 rules.\n\n",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to derive up to 5 concise rules to avoid similar errors. Look at errors: The model often misorders or misidentifies correct charge names, sometimes missing \"的\" or punctuation, sometimes using wrong synonyms, sometimes missing \"的\" in \"走私国家禁止进出口的货物、物品\". Also sometimes includes extra charges not present, or wrong charge type (e.g., \"非法从事特种作业致人死亡\" vs \"重大责任事故\").\n\nObservations: The prompt asks to output charges in a specific format: [罪名]...<eoa>. The model sometimes outputs extra spaces, missing semicolons, wrong punctuation. Also sometimes misinterprets the fact snippet due to truncation.\n\nPotential rules:\n\n1. Identify all distinct crimes explicitly mentioned in the fact, not infer additional ones.\n\n2. Preserve exact legal terminology as in the correct answer, including \"的\" and punctuation (e.g., \"走私国家禁止进出口的货物、物品\").\n\n3. When multiple crimes, separate with semicolon without extra spaces, order as appears in fact.\n\n4. Do not add generic categories like \"重大责任事故\" unless fact explicitly states that term.\n\n5. Ensure the output format exactly matches: [罪名]...<eoa> with no extra characters.\n\nAlso note that sometimes the correct answer uses Chinese punctuation \"、\" for enumeration within a single charge. So rule about using correct internal punctuation.\n\nLet's craft 5 rules.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to derive up to 5 concise rules to avoid similar errors. Look at errors: The model often misorders or misidentifies correct charge names, sometimes missing \"的\" or punctuation, sometimes using wrong synonyms, sometimes missing \"的\" in \"走私国家禁止进出口的货物、物品\". Also sometimes includes extra charges not present, or wrong charge type (e.g., \"非法从事特种作业致人死亡\" vs \"重大责任事故\").\n\nObservations: The prompt asks to output charges in a specific format: [罪名]...<eoa>. The model sometimes outputs extra spaces, missing semicolons, wrong punctuation. Also sometimes misinterprets the fact snippet due to truncation.\n\nPotential rules:\n\n1. Identify all distinct crimes explicitly mentioned in the fact, not infer additional ones.\n\n2. Preserve exact legal terminology as in the correct answer, including \"的\" and punctuation (e.g., \"走私国家禁止进出口的货物、物品\").\n\n3. When multiple crimes, separate with semicolon without extra spaces, order as appears in fact.\n\n4. Do not add generic categories like \"重大责任事故\" unless fact explicitly states that term.\n\n5. Ensure the output format exactly matches: [罪名]...<eoa> with no extra characters.\n\nAlso note that sometimes the correct answer uses Chinese punctuation \"、\" for enumeration within a single charge. So rule about using correct internal punctuation.\n\nLet's craft 5 rules.\n\n",
+            "reasoning_content": "We need to derive up to 5 concise rules to avoid similar errors. Look at errors: The model often misorders or misidentifies correct charge names, sometimes missing \"的\" or punctuation, sometimes using wrong synonyms, sometimes missing \"的\" in \"走私国家禁止进出口的货物、物品\". Also sometimes includes extra charges not present, or wrong charge type (e.g., \"非法从事特种作业致人死亡\" vs \"重大责任事故\").\n\nObservations: The prompt asks to output charges in a specific format: [罪名]...<eoa>. The model sometimes outputs extra spaces, missing semicolons, wrong punctuation. Also sometimes misinterprets the fact snippet due to truncation.\n\nPotential rules:\n\n1. Identify all distinct crimes explicitly mentioned in the fact, not infer additional ones.\n\n2. Preserve exact legal terminology as in the correct answer, including \"的\" and punctuation (e.g., \"走私国家禁止进出口的货物、物品\").\n\n3. When multiple crimes, separate with semicolon without extra spaces, order as appears in fact.\n\n4. Do not add generic categories like \"重大责任事故\" unless fact explicitly states that term.\n\n5. Ensure the output format exactly matches: [罪名]...<eoa> with no extra characters.\n\nAlso note that sometimes the correct answer uses Chinese punctuation \"、\" for enumeration within a single charge. So rule about using correct internal punctuation.\n\nLet's craft 5 rules.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 526,
+      "prompt_tokens": 949,
+      "total_tokens": 1475,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 374,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 256,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00017895,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00017895,
+        "upstream_inference_prompt_cost": 4.745e-05,
+        "upstream_inference_completions_cost": 0.0001315
+      }
+    }
+  },
+  "raw_response_missing": false
+}

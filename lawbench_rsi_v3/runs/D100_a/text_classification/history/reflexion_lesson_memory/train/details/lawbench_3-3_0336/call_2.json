@@ -1,0 +1,72 @@
+{
+  "call_id": "4e5114dffc6d4cf0ae51ee5e5ed24a2d",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791018107-Sj91eBZYqDJN8K3hHNoW",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"If the factual description emphasizes unlawful entry into a dwelling (e.g., breaking windows, forced entry, entering a residence) as a distinct act, the appropriate charge is \\\"非法侵入住宅\\\" rather than theft, even if theft also occurred.\",\n  \"keywords\": [\n    \"翻窗\",\n    \"入户\",\n    \"住宅\",\n    \"非法侵入\",\n    \"强行进入\",\n    \"撬开抽屉锁\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce JSON with rule and keywords. The error: AI predicted \"盗窃\" but correct answer is \"非法侵入住宅\". So classification error: misclassifying the crime when the act is illegal entry (trespassing) rather than theft. The rule: When the factual description includes forced entry into a dwelling (e.g., breaking windows, entering a residence) without mention of theft as the primary charge, the appropriate charge is \"非法侵入住宅\" rather than theft. So rule: If the act involves unlawful entry into a residential premises, regardless of any theft, the primary charge is illegal intrusion. Keywords: \"翻窗\", \"入户\", \"非法侵入\", \"住宅\", \"撬开抽屉锁\"? Actually theft is also present, but the correct answer is illegal intrusion. So rule: prioritize illegal intrusion when the description emphasizes entry method. Keywords: \"翻窗\", \"入户\", \"住宅\", \"非法侵入\", \"撬开抽屉锁\". Provide 3-6.\n\nReturn JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce JSON with rule and keywords. The error: AI predicted \"盗窃\" but correct answer is \"非法侵入住宅\". So classification error: misclassifying the crime when the act is illegal entry (trespassing) rather than theft. The rule: When the factual description includes forced entry into a dwelling (e.g., breaking windows, entering a residence) without mention of theft as the primary charge, the appropriate charge is \"非法侵入住宅\" rather than theft. So rule: If the act involves unlawful entry into a residential premises, regardless of any theft, the primary charge is illegal intrusion. Keywords: \"翻窗\", \"入户\", \"非法侵入\", \"住宅\", \"撬开抽屉锁\"? Actually theft is also present, but the correct answer is illegal intrusion. So rule: prioritize illegal intrusion when the description emphasizes entry method. Keywords: \"翻窗\", \"入户\", \"住宅\", \"非法侵入\", \"撬开抽屉锁\". Provide 3-6.\n\nReturn JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce JSON with rule and keywords. The error: AI predicted \"盗窃\" but correct answer is \"非法侵入住宅\". So classification error: misclassifying the crime when the act is illegal entry (trespassing) rather than theft. The rule: When the factual description includes forced entry into a dwelling (e.g., breaking windows, entering a residence) without mention of theft as the primary charge, the appropriate charge is \"非法侵入住宅\" rather than theft. So rule: If the act involves unlawful entry into a residential premises, regardless of any theft, the primary charge is illegal intrusion. Keywords: \"翻窗\", \"入户\", \"非法侵入\", \"住宅\", \"撬开抽屉锁\"? Actually theft is also present, but the correct answer is illegal intrusion. So rule: prioritize illegal intrusion when the description emphasizes entry method. Keywords: \"翻窗\", \"入户\", \"住宅\", \"非法侵入\", \"撬开抽屉锁\". Provide 3-6.\n\nReturn JSON.",
+            "reasoning_content": "We need to produce JSON with rule and keywords. The error: AI predicted \"盗窃\" but correct answer is \"非法侵入住宅\". So classification error: misclassifying the crime when the act is illegal entry (trespassing) rather than theft. The rule: When the factual description includes forced entry into a dwelling (e.g., breaking windows, entering a residence) without mention of theft as the primary charge, the appropriate charge is \"非法侵入住宅\" rather than theft. So rule: If the act involves unlawful entry into a residential premises, regardless of any theft, the primary charge is illegal intrusion. Keywords: \"翻窗\", \"入户\", \"非法侵入\", \"住宅\", \"撬开抽屉锁\"? Actually theft is also present, but the correct answer is illegal intrusion. So rule: prioritize illegal intrusion when the description emphasizes entry method. Keywords: \"翻窗\", \"入户\", \"住宅\", \"非法侵入\", \"撬开抽屉锁\". Provide 3-6.\n\nReturn JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 326,
+      "prompt_tokens": 337,
+      "total_tokens": 663,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 223,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 6.553e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 6.553e-05,
+        "upstream_inference_prompt_cost": 1.011e-05,
+        "upstream_inference_completions_cost": 5.542e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

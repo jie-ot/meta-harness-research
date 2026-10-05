@@ -1,0 +1,30 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- Label the offense as '赌博' unless the factual description explicitly meets the statutory elements of '组织赌博' (e.g., the defendant organized, operated, or managed a gambling venue as defined by law).
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the facts describe a defendant’s role in a scheme that withdraws money from victims’ bank or credit‑card accounts, classify the conduct under the specific statutory offenses of fraud (诈骗) and, if
+- If the factual description indicates that the offender used their official position or entrusted authority to appropriate property for personal gain, rather than physically taking or stealthily removi
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，2014年5月28日至7月2日期间，被告人马某先后伙同钟某甲、欧某甲（均已另案判决）、“林某甲”（另案处理）经商议后在佛山市禅城区汾江中路科学馆附近的“女神酒吧”、普君新城“赫某咖啡店”，组织、招聘马某、欧某乙、郑某、“勤弟”、陈某甲、蔡某甲、许某甲、蔡某乙、张某甲、吴某甲、杨某、林某乙、钟某乙、陈某乙、翁某、李某甲、张某乙、刘某甲、姚某、黎某、赵某、周某丙、陈某丙、麦某、何某、陈某丁、郑某（已另案判决）等人员实施诈骗，向被害人出售以次充好的酒水及其他食品，骗取他人财物。其中，钟某甲、欧某甲负责提供场所，马某、“林某甲”负责组织“键盘手”、“酒托女”，共同实施经营管理；马某、欧某乙、郑某、“勤弟”等人为“酒托头”，负责招聘、组织“酒托女”，对“酒托女”进行管理及分发“酒托女”的提成；李某甲等人系“键盘手”，负责假冒女性的身份通过网络聊天约见被害人，将被害人的联系方式派发给“酒托女”；张某甲、吴某甲、杨某、林某乙、张某乙、刘某甲、姚某、黎某、赵某、周某丙、陈某丙、麦某、何某、陈某丁、郑某、欧某乙等人为“酒托女”，负责冒充网友将被害人带至“女神酒吧”、“赫某咖啡店”消费；蔡某甲负责调酒、进货；许某甲系服务员，负责下单及与林某甲、欧某甲等老板核对当日的营业额；陈某乙、翁某、蔡某乙系服务员，李某甲兼做服务员，负责下单及与马某、欧某乙等“酒托头”核对当日的营业额；陈某甲系收银员，钟某甲亦兼做收银员，负责收银和计算营业额。欧某甲、钟某甲等老板从每日总营业额中按照一定的比例分获提成。“酒托头”从其管理的全部“酒托女”所骗取的钱款中按照一定比例分获提成，“键盘手”与“酒托女”从其所骗取的钱款中按照一定比例分获提成，服务员、收银员等员工领取固定工资。
+被告人马某伙同他人共骗取人民币198272元，其中：2014年5月28日至2014年6月22日期间，被告人马某伙同钟某甲等人在“女神酒吧”共骗取被害人李某乙等人共计人民币77157元。2014年6月18日至6月26日，被告人马某伙同欧某甲等人在“赫某”骗取被害人卢某等人人民币26746元，2014年6月29日至7月2日期间，被告人马某伙同欧某甲等人在“女神酒吧”共骗取被害人李某丙等人共计人民币94369元。
+2015年11月12日22时许，被告人马某在广东省××××县西堤路边被民警抓获。
+上述事实，被告人马某在开庭审理过程中无异议，并有被害人吕某、黄某乙、李某乙、王某甲、蒙某、方某、李某丙、罗某、曾某、何时光、胡某、吴某乙、陈某戊、刘某乙、谢某乙、冯某、章某、梁某甲、卢某、周某甲、李某丁、余某、周某乙、莫某、丘某、许某乙、颜某、邝某、冼某、陈某己、王某乙、洪某、张某丙、蔡某丙、孙某、卜某、梁某乙、彭某、成某、王某丙、熊某、梁某丙、陈某庚的陈述及辨认笔录、指认照片，证人欧某甲、钟某甲、蒋某、许某甲、陈某甲、马某、吴某甲、杨某、张某甲、林某乙、钟某乙、蔡某乙、欧某乙、翁某、刘某甲、张某乙、姚某、黎某、李某甲、赵某、周某丙、陈某丙、陈某乙、郑某、麦某、何某、陈某丁的证言及辨认笔录，抓获经过，扣押物品清单，收据，消费情况记账单，点菜单，进货单，QQ聊天记录，银行流水清单、POS机签购单及收据，户籍材料，刑事判决书及释放证明书，被告人马某在侦查阶段的供述及辨认笔录等证据证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

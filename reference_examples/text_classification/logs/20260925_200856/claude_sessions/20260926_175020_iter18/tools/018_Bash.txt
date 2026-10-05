@@ -1,0 +1,48 @@
+Bash
+
+command:
+cd "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples" && uv run python C:/tmp/proto_reasoning.py 2>&1
+
+description: Run reasoning trace prototype
+
+--- output ---
+Loaded 200 steps
+Steps with metadata field: 0
+
+Correct steps in first 60: 12
+  Sample correct step keys: ['type', 't', 'step', 'input_preview', 'pred', 'tgt', 'ok', 'prompt_len', 'prompt_hash']
+
+Checking log for checkpoints with full_response...
+  No reasoning in memory_state (first checkpoint checked)
+
+Checking if steps carry full_response or reasoning...
+  Step keys: ['type', 't', 'step', 'input_preview', 'pred', 'tgt', 'ok', 'prompt_len', 'prompt_hash']
+
+Correct examples with reasoning: 12
+
+Format A (reasoning first):
+Reasoning: Based on the facts provided, this appears to be a case of 故意毁坏财物
+Q: 请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+A: 故意毁坏财物
+
+Format C (reasoning after answer):
+Q: 请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+A: 故意毁坏财物
+Reasoning: Based on the facts provided, this appears to be a case of 故意毁坏财物
+
+Context budget: plain=2336 chars, with_reasoning=2637 chars (+301)
+  With 30k budget, reasoning adds 13% overhead
+  => fewer examples fit; need to cap reasoning chars or limit to top-K
+Shell cwd was reset to D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification

@@ -1,0 +1,72 @@
+{
+  "call_id": "046f6e99409c4e328202577b8e7ba658",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791126093-dh3rOuUMnhL2J3Gc9xmW",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The fact describes a public official who accepted a bribe while in office. This conduct constitutes the crime of accepting bribes (受贿罪). None of the listed charge names in the lexicon apply, so the appropriate statutory charge is used.\",\n  \"final_answer\": \"[罪名]受贿罪<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to read the fact: It's about a public official receiving bribe. The lexicon provided includes only five charge names: \n- 伪造、变造、买卖国家机关公文、证件、印章\n- 拐卖妇女、儿童\n- 拐骗儿童\n- 故意毁坏财物\n- 破坏计算机信息系统\n\nNone of these match bribery (受贿罪). The instruction says: \"If no listed name fits, use the correct statutory name anyway.\" So we should output the correct charge: 受贿罪. But the format expects the charge name inside [罪名] and <eoa>. So final answer: [罪名]受贿罪<eoa>\n\nWe also need to include reasoning in JSON? The instruction at end: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"} So we need to output a JSON object with keys reasoning and final_answer. The final_answer should be the string with [罪名]...<eoa>. So produce:\n\n{\n \"reasoning\": \"The fact describes a public official receiving a bribe, which is the crime of accepting bribes (受贿罪). No listed charge matches, so we use the correct statutory name.\",\n \"final_answer\": \"[罪名]受贿罪<eoa>\"\n}\n\nMake sure formatting matches.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to read the fact: It's about a public official receiving bribe. The lexicon provided includes only five charge names: \n- 伪造、变造、买卖国家机关公文、证件、印章\n- 拐卖妇女、儿童\n- 拐骗儿童\n- 故意毁坏财物\n- 破坏计算机信息系统\n\nNone of these match bribery (受贿罪). The instruction says: \"If no listed name fits, use the correct statutory name anyway.\" So we should output the correct charge: 受贿罪. But the format expects the charge name inside [罪名] and <eoa>. So final answer: [罪名]受贿罪<eoa>\n\nWe also need to include reasoning in JSON? The instruction at end: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"} So we need to output a JSON object with keys reasoning and final_answer. The final_answer should be the string with [罪名]...<eoa>. So produce:\n\n{\n \"reasoning\": \"The fact describes a public official receiving a bribe, which is the crime of accepting bribes (受贿罪). No listed charge matches, so we use the correct statutory name.\",\n \"final_answer\": \"[罪名]受贿罪<eoa>\"\n}\n\nMake sure formatting matches.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to read the fact: It's about a public official receiving bribe. The lexicon provided includes only five charge names: \n- 伪造、变造、买卖国家机关公文、证件、印章\n- 拐卖妇女、儿童\n- 拐骗儿童\n- 故意毁坏财物\n- 破坏计算机信息系统\n\nNone of these match bribery (受贿罪). The instruction says: \"If no listed name fits, use the correct statutory name anyway.\" So we should output the correct charge: 受贿罪. But the format expects the charge name inside [罪名] and <eoa>. So final answer: [罪名]受贿罪<eoa>\n\nWe also need to include reasoning in JSON? The instruction at end: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"} So we need to output a JSON object with keys reasoning and final_answer. The final_answer should be the string with [罪名]...<eoa>. So produce:\n\n{\n \"reasoning\": \"The fact describes a public official receiving a bribe, which is the crime of accepting bribes (受贿罪). No listed charge matches, so we use the correct statutory name.\",\n \"final_answer\": \"[罪名]受贿罪<eoa>\"\n}\n\nMake sure formatting matches.",
+            "refusal": null,
+            "reasoning_content": "We need to read the fact: It's about a public official receiving bribe. The lexicon provided includes only five charge names: \n- 伪造、变造、买卖国家机关公文、证件、印章\n- 拐卖妇女、儿童\n- 拐骗儿童\n- 故意毁坏财物\n- 破坏计算机信息系统\n\nNone of these match bribery (受贿罪). The instruction says: \"If no listed name fits, use the correct statutory name anyway.\" So we should output the correct charge: 受贿罪. But the format expects the charge name inside [罪名] and <eoa>. So final answer: [罪名]受贿罪<eoa>\n\nWe also need to include reasoning in JSON? The instruction at end: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"} So we need to output a JSON object with keys reasoning and final_answer. The final_answer should be the string with [罪名]...<eoa>. So produce:\n\n{\n \"reasoning\": \"The fact describes a public official receiving a bribe, which is the crime of accepting bribes (受贿罪). No listed charge matches, so we use the correct statutory name.\",\n \"final_answer\": \"[罪名]受贿罪<eoa>\"\n}\n\nMake sure formatting matches."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 383,
+      "prompt_tokens": 1226,
+      "total_tokens": 1609,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 304,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00010189,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00010189,
+        "upstream_inference_prompt_cost": 3.678e-05,
+        "upstream_inference_completions_cost": 6.511e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

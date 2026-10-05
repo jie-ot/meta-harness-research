@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the facts describe a defendant’s role in a scheme that withdraws money from victims’ bank or credit‑card accounts, classify the conduct under the specific statutory offenses of fraud (诈骗) and, if
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the facts describe that the defendant both forged and altered (or otherwise changed) a resident identity card, the charge must include both terms ‘伪造’ and ‘变造’ (e.g., ‘伪造、变造居民身份证’).
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:贵州省威宁彝族回族苗族自治县人民检察院指控，被害人周某2系被告人周某1的三爷爷，2016年10月11日12时许，周某1撬锁进入威宁自治县二塘镇产底村二组周某2家中，将周某2放在卧室木箱内的居民身份证2张（周某2、赵某）、户口本1本、银行卡2张、信用社存折1张、合作医疗交款薄1本、现金1700元盗走。2016年10月31日19时许，周某1邀约杨某（另案处理），让杨某在六盘水市七中门口的农业银行ATM机上取款7000元，但杨某擅自取款8000元，将其中1000元据为己有，周某1得款后分给杨某现金200元，帮杨某交话费30元，剩余赃款被周某1用于偿还贷款及生活开支。案发后周某1家属代其对被害人进行了赔偿，并得到被害人谅解。据此，认为被告人周某1的行为已触犯《中华人民共和国刑法》××之规定，涉嫌犯××，应追究其刑事责任而向本院提起公诉，建议对其判处六个月至一年六个月××，请依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

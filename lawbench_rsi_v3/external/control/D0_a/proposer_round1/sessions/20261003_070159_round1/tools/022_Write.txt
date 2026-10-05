@@ -1,0 +1,257 @@
+Write: agents\reflexion_lesson_memory.py
+
+content:
+"""Reflexion Lesson Memory — LLM-generated error lessons replace raw example storage.
+
+Mechanism change from confusion_disambiguation_memory:
+
+Raw example storage forces the model to generalize from surface-level text at
+predict time: it sees a similar-looking past case and must infer the distinguishing
+legal principle itself. LLM-generated lessons invert this: at learn time, an LLM
+analyzes each error and produces a compact rule ("when facts show X the correct
+charge is Y, not Z") that IS the generalization. At predict time the model receives
+pre-digested legal distinctions rather than raw examples.
+
+This is a Reflexion-style approach applied to online classification:
+- **Memory content** (axis B): lessons instead of raw examples
+- **LLM usage in learning** (axis F): LLM invoked during learn_from_batch
+
+Cold start: works fine with no lessons — degrades to a plain prompt with no context.
+Warm: lessons section grows to up to MAX_LESSONS most-recent entries; raw examples
+stored as a compact fallback pool for similarity-based gap filling.
+"""
+
+import json
+import re
+from collections import defaultdict
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+# ---------------------------------------------------------------------------
+# Prompt templates
+# ---------------------------------------------------------------------------
+
+LESSON_GENERATION_TEMPLATE = """An AI classifier made an error on this case. Generate a compact correction lesson.
+
+**Correct label:** {ground_truth}
+**Wrong prediction:** {prediction}
+**Case facts (excerpt):**
+{input_excerpt}
+
+Write a lesson that:
+1. States the KEY distinguishing feature that determines the correct label
+2. Explains what makes this different from "{prediction}"
+3. Gives a brief rule a classifier can apply to future cases
+
+Respond only in JSON:
+{{"lesson": "<one to three sentences, in the same language as the case facts>", "final_answer": "{ground_truth}"}}"""
+
+PREDICT_TEMPLATE = """Solve the classification problem below.
+
+{lessons_section}{examples_section}**Problem:**
+{input}
+
+**Instructions:**
+- Apply the correction lessons above if any are relevant
+- Use the EXACT official label — do not append or drop characters
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[exact label(s), semicolon-separated if multiple]"}}"""
+
+# ---------------------------------------------------------------------------
+# Constants
+# ---------------------------------------------------------------------------
+
+MAX_CHARS = 30000
+# Keep only the most recent lessons to stay focused and avoid stale noise
+MAX_LESSONS = 25
+# Character budget for lessons section (leave room for examples and the problem)
+LESSONS_BUDGET = 8000
+# Minimum input excerpt length for lesson generation
+_EXCERPT_LEN = 600
+# Similarity tokenizer
+
+
+def _tokenize(text: str) -> frozenset[str]:
+    """CJK character bigrams + ASCII tokens for fallback similarity."""
+    chars = re.findall(r"[一-鿿㐀-䶿豈-﫿]", text)
+    if len(chars) >= 2:
+        return frozenset(chars[i] + chars[i + 1] for i in range(len(chars) - 1))
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+
+def _jaccard(a: frozenset[str], b: frozenset[str]) -> float:
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+# ---------------------------------------------------------------------------
+# Memory system
+# ---------------------------------------------------------------------------
+
+class ReflexionLessonMemory(MemorySystem):
+    """Error-driven lesson memory: LLM-generated rules guide future predictions."""
+
+    def __init__(self, llm: LLMCallable):
+        super().__init__(llm)
+        # Ordered list of lessons, newest last
+        self.lessons: list[dict[str, str]] = []
+        # Raw examples kept as lightweight similarity fallback
+        self.examples: list[dict[str, Any]] = []
+
+    # ------------------------------------------------------------------
+    # Learning: generate lesson from each error
+    # ------------------------------------------------------------------
+
+    def _generate_lesson(
+        self, input_text: str, prediction: str, ground_truth: str
+    ) -> str | None:
+        """Call the LLM to produce a correction lesson. Returns lesson text or None."""
+        excerpt = input_text[:_EXCERPT_LEN]
+        prompt = LESSON_GENERATION_TEMPLATE.format(
+            ground_truth=ground_truth,
+            prediction=prediction,
+            input_excerpt=excerpt,
+        )
+        response = self.call_llm(prompt)
+        lesson_text = extract_json_field(response, "lesson")
+        return lesson_text if lesson_text else None
+
+    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+        for r in batch_results:
+            raw_q = r.get("raw_question", r["input"])
+            # Always store as a compact example for the similarity fallback
+            self.examples.append({
+                "input": r["input"],
+                "target": r["ground_truth"],
+                "tokens": _tokenize(raw_q),
+                "raw_question": raw_q,
+            })
+
+            if not r.get("was_correct", True):
+                pred = r.get("prediction", "")
+                gt = r["ground_truth"]
+                if pred and pred != gt:
+                    lesson_text = self._generate_lesson(r["input"], pred, gt)
+                    if lesson_text:
+                        self.lessons.append({
+                            "ground_truth": gt,
+                            "prediction": pred,
+                            "lesson_text": lesson_text,
+                        })
+                        # Trim to keep only the most recent lessons
+                        if len(self.lessons) > MAX_LESSONS:
+                            self.lessons = self.lessons[-MAX_LESSONS:]
+
+    # ------------------------------------------------------------------
+    # Retrieval helpers
+    # ------------------------------------------------------------------
+
+    def _build_lessons_section(self) -> str:
+        """Format lessons into a prompt section within LESSONS_BUDGET chars."""
+        if not self.lessons:
+            return ""
+        lines = ["**Correction lessons — apply these rules when relevant:**"]
+        total = len(lines[0])
+        added = 0
+        # Most recent lessons first (reversed), most useful at top
+        for ls in reversed(self.lessons):
+            line = (
+                f"- Correct label 【{ls['ground_truth']}】 (not 「{ls['prediction']}」): "
+                f"{ls['lesson_text']}"
+            )
+            if total + len(line) + 1 > LESSONS_BUDGET:
+                break
+            lines.append(line)
+            total += len(line) + 1
+            added += 1
+        if added == 0:
+            return ""
+        return "\n".join(lines) + "\n\n"
+
+    def _build_examples_section(self, query: str) -> str:
+        """Fill remaining char budget with similarity-ranked raw examples."""
+        if not self.examples:
+            return ""
+        q_tok = _tokenize(query)
+        ranked = sorted(
+            [(_jaccard(q_tok, ex["tokens"]), i, ex) for i, ex in enumerate(self.examples)],
+            key=lambda x: (x[0], x[1]),
+            reverse=True,
+        )
+        parts: list[str] = []
+        total = 0
+        for _, _, ex in ranked:
+            q = ex.get("raw_question", ex["input"])
+            part = f"Q: {q}\nA: {ex['target']}"
+            if total + len(part) + 2 > MAX_CHARS:
+                break
+            parts.append(part)
+            total += len(part) + 2
+        if not parts:
+            return ""
+        return "\n\n".join(parts) + "\n\n"
+
+    # ------------------------------------------------------------------
+    # Prediction
+    # ------------------------------------------------------------------
+
+    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+        lessons_sec = self._build_lessons_section()
+        # Reserve char space for lessons section
+        examples_budget = MAX_CHARS - len(lessons_sec)
+        examples_sec = self._build_examples_section(input) if examples_budget > 500 else ""
+
+        prompt = PREDICT_TEMPLATE.format(
+            lessons_section=lessons_sec,
+            examples_section=examples_sec,
+            input=input,
+        )
+        response = self.call_llm(prompt)
+        answer = extract_json_field(response, "final_answer")
+        return answer, {
+            "full_response": response,
+            "num_lessons": len(self.lessons),
+            "num_examples": len(self.examples),
+            "lessons_section_chars": len(lessons_sec),
+        }
+
+    # ------------------------------------------------------------------
+    # State serialization
+    # ------------------------------------------------------------------
+
+    def get_context_length(self) -> int:
+        lessons_sec = self._build_lessons_section()
+        examples_sec = self._build_examples_section("")
+        return len(lessons_sec) + len(examples_sec)
+
+    def get_state(self) -> str:
+        serialisable_examples = [
+            {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+            for ex in self.examples
+        ]
+        return json.dumps({
+            "lessons": self.lessons,
+            "examples": serialisable_examples,
+        }, indent=2, ensure_ascii=False)
+
+    def set_state(self, state: str) -> None:
+        data = json.loads(state)
+        self.lessons = data.get("lessons", [])
+        self.examples = []
+        for ex in data.get("examples", []):
+            restored = dict(ex)
+            if "tokens" in restored and isinstance(restored["tokens"], list):
+                restored["tokens"] = frozenset(restored["tokens"])
+            else:
+                raw_q = restored.get("raw_question", restored.get("input", ""))
+                restored["tokens"] = _tokenize(raw_q)
+            self.examples.append(restored)
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D0_a\text_classification\agents\reflexion_lesson_memory.py (file state is current in your context — no need to Read it back)

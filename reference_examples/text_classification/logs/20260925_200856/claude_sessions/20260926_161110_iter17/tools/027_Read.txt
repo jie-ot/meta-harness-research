@@ -1,0 +1,253 @@
+Read: agents\difficulty_sorted_memory.py
+
+
+--- output ---
+1	"""Difficulty-Sorted Prompt Memory.
+2	
+3	Extends decayed_confusion_memory with a novel prompt-ordering mechanism (axis A):
+4	after the standard two-phase retrieval, the selected examples are re-ordered
+5	before formatting so that examples whose labels are most frequently the *true*
+6	label in confusion-matrix errors appear LAST in the prompt — immediately before
+7	the question.
+8	
+9	Why this might help: transformer attention exhibits a recency bias, meaning
+10	positions close to the generation boundary exert disproportionately strong
+11	influence on the prediction.  In the standard system, selection order determines
+12	prompt order, so the highest-similarity example (which is often a generic
+13	representative of a common label) ends up first and the rare disambiguation
+14	example ends up last by accident.  By sorting ascending on confusion-target
+15	affinity we deliberately push the examples the model most needs for
+16	disambiguation to the position where they have maximal influence — right above
+17	the question — while leaving easy/unambiguous examples earlier.
+18	
+19	Sort key: confusion column affinity of the example's label = sum of all
+20	confusion counts where that label is the ground-truth (the model predicted
+21	something else but this was correct).  High affinity ↔ label is frequently
+22	mis-predicted ↔ disambiguation examples for this label are most valuable near
+23	the question.
+24	
+25	Cold start: all affinities are 0, so stable sort preserves the original
+26	similarity order exactly — no cold-start regression.
+27	
+28	Everything else (retrieval, decay, normalisation, adaptive tokenizer) is
+29	identical to decayed_confusion_memory.  Any accuracy delta is attributable
+30	purely to the ordering change.
+31	"""
+32	
+33	import json
+34	import re
+35	from collections import defaultdict
+36	from typing import Any
+37	
+38	from ..llm import LLMCallable
+39	from ..memory_system import MemorySystem, extract_json_field
+40	
+41	PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+42	
+43	{examples_section}
+44	
+45	**Problem:**
+46	{input}
+47	
+48	**Instructions:**
+49	- Follow the patterns shown in the examples above
+50	- Respond in JSON format
+51	
+52	{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+53	
+54	MAX_CHARS = 30000
+55	_TOP_CANDIDATE_LABELS = 3
+56	_DISAMBIG_PER_CONFUSION = 2
+57	
+58	DECAY_FACTOR = 0.95      # multiply all counts after each step
+59	PRUNE_THRESHOLD = 0.05   # drop entries with count below this
+60	
+61	_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+62	_WRAPPER_RE = re.compile(r'^\s*\[[^\]]*\]|<eoa>\s*$|\[[^\]]*\]\s*$', re.IGNORECASE)
+63	
+64	
+65	def _has_cjk(text: str) -> bool:
+66	    return bool(_CJK_RE.search(text))
+67	
+68	
+69	def _tokenize_word(text: str) -> frozenset:
+70	    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+71	
+72	
+73	def _tokenize_bigram(text: str) -> frozenset:
+74	    t = re.sub(r'\s+', ' ', text.strip())
+75	    if len(t) < 2:
+76	        return frozenset([t]) if t else frozenset()
+77	    return frozenset(t[i:i + 2] for i in range(len(t) - 1))
+78	
+79	
+80	def _tokenize_adaptive(text: str) -> frozenset:
+81	    return _tokenize_bigram(text) if _has_cjk(text) else _tokenize_word(text)
+82	
+83	
+84	def _jaccard(a: frozenset, b: frozenset) -> float:
+85	    if not a and not b:
+86	        return 0.0
+87	    return len(a & b) / len(a | b)
+88	
+89	
+90	def _normalize_prediction(pred: str) -> str:
+91	    """Strip format wrappers so predictions match ground-truth label strings."""
+92	    if not pred:
+93	        return pred
+94	    cleaned = _WRAPPER_RE.sub('', pred).strip()
+95	    return cleaned if cleaned else pred
+96	
+97	
+98	class DecayedConfusionMemory(MemorySystem):
+99	    """Adaptive-tokenizer confusion memory with exponentially-decayed confusion counts."""
+100	
+101	    def __init__(self, llm: LLMCallable):
+102	        super().__init__(llm)
+103	        self.examples: list[dict[str, Any]] = []
+104	        # Float-valued counts to allow decay
+105	        self.confusion: dict[str, dict[str, float]] = defaultdict(lambda: defaultdict(float))
+106	
+107	    def _scored(self, query: str) -> list[tuple[float, int, dict]]:
+108	        q_tok = _tokenize_adaptive(query)
+109	        result = [
+110	            (_jaccard(q_tok, ex["tokens"]), idx, ex)
+111	            for idx, ex in enumerate(self.examples)
+112	        ]
+113	        result.sort(key=lambda x: (x[0], x[1]), reverse=True)
+114	        return result
+115	
+116	    def _confusion_targets_for(self, labels: list[str]) -> list[str]:
+117	        label_set = set(labels)
+118	        counts: dict[str, float] = defaultdict(float)
+119	        for lbl in labels:
+120	            row = self.confusion.get(lbl, {})
+121	            for actual, cnt in row.items():
+122	                if actual not in label_set:
+123	                    counts[actual] += cnt
+124	        return [lbl for lbl, _ in sorted(counts.items(), key=lambda x: (-x[1], x[0]))]
+125	
+126	    def _build_parts(self, query: str) -> list[str]:
+127	        if not self.examples:
+128	            return []
+129	
+130	        ranked = self._scored(query)
+131	        top_labels = [ex["target"] for _, _, ex in ranked[:_TOP_CANDIDATE_LABELS]]
+132	        confused_with = self._confusion_targets_for(top_labels)
+133	
+134	        parts: list[str] = []
+135	        used_indices: set[int] = set()
+136	        total_chars = 0
+137	
+138	        def try_add(idx: int, ex: dict) -> bool:
+139	            nonlocal total_chars
+140	            if idx in used_indices:
+141	                return False
+142	            q = ex.get("raw_question", ex["input"])
+143	            part = f"Q: {q}\nA: {ex['target']}"
+144	            if total_chars + len(part) + 2 > MAX_CHARS:
+145	                return False
+146	            parts.append(part)
+147	            used_indices.add(idx)
+148	            total_chars += len(part) + 2
+149	            return True
+150	
+151	        if confused_with:
+152	            disambig_labels_needed = set(confused_with[:_TOP_CANDIDATE_LABELS])
+153	            per_label_disambig: dict[str, list[tuple[float, int, dict]]] = defaultdict(list)
+154	            for score, idx, ex in ranked:
+155	                if ex["target"] in disambig_labels_needed:
+156	                    per_label_disambig[ex["target"]].append((score, idx, ex))
+157	
+158	            for _round in range(_DISAMBIG_PER_CONFUSION):
+159	                for lbl in confused_with[:_TOP_CANDIDATE_LABELS]:
+160	                    pool = per_label_disambig.get(lbl, [])
+161	                    for score, idx, ex in pool:
+162	                        if idx not in used_indices:
+163	                            try_add(idx, ex)
+164	                            break
+165	
+166	        for _, idx, ex in ranked:
+167	            if total_chars >= MAX_CHARS:
+168	                break
+169	            try_add(idx, ex)
+170	
+171	        return parts
+172	
+173	    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+174	        parts = self._build_parts(input)
+175	        examples_section = "\n\n".join(parts)
+176	        prompt = PROMPT_TEMPLATE.format(
+177	            examples_section=examples_section,
+178	            input=input,
+179	        )
+180	        response = self.call_llm(prompt)
+181	        answer = extract_json_field(response, "final_answer")
+182	        return answer, {
+183	            "full_response": response,
+184	            "num_examples": len(self.examples),
+185	            "num_selected": len(parts),
+186	            "num_confusion_pairs": sum(len(v) for v in self.confusion.values()),
+187	        }
+188	
+189	    def _decay_confusion(self) -> None:
+190	        """Multiply all confusion counts by DECAY_FACTOR and prune near-zero entries."""
+191	        to_delete_outer = []
+192	        for pred, actuals in self.confusion.items():
+193	            to_delete_inner = []
+194	            for actual in actuals:
+195	                actuals[actual] *= DECAY_FACTOR
+196	                if actuals[actual] < PRUNE_THRESHOLD:
+197	                    to_delete_inner.append(actual)
+198	            for actual in to_delete_inner:
+199	                del actuals[actual]
+200	            if not actuals:
+201	                to_delete_outer.append(pred)
+202	        for pred in to_delete_outer:
+203	            del self.confusion[pred]
+204	
+205	    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+206	        for r in batch_results:
+207	            raw_q = r.get("raw_question", r["input"])
+208	            ex: dict[str, Any] = {
+209	                "input": r["input"],
+210	                "target": r["ground_truth"],
+211	                "tokens": _tokenize_adaptive(raw_q),
+212	            }
+213	            if "raw_question" in r:
+214	                ex["raw_question"] = r["raw_question"]
+215	            self.examples.append(ex)
+216	
+217	            if not r.get("was_correct", True):
+218	                pred = _normalize_prediction(r.get("prediction", ""))
+219	                gt = r["ground_truth"]
+220	                if pred and pred != gt:
+221	                    self.confusion[pred][gt] += 1.0
+222	
+223	        # Decay after processing the full batch
+224	        self._decay_confusion()
+225	
+226	    def get_state(self) -> str:
+227	        serialisable = [
+228	            {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+229	            for ex in self.examples
+230	        ]
+231	        confusion_plain = {k: dict(v) for k, v in self.confusion.items()}
+232	        return json.dumps({"examples": serialisable, "confusion": confusion_plain}, indent=2)
+233	
+234	    def set_state(self, state: str) -> None:
+235	        data = json.loads(state)
+236	        self.examples = []
+237	        for ex in data.get("examples", []):
+238	            restored = dict(ex)
+239	            if "tokens" in restored and isinstance(restored["tokens"], list):
+240	                restored["tokens"] = frozenset(restored["tokens"])
+241	            else:
+242	                raw_q = restored.get("raw_question", restored.get("input", ""))
+243	                restored["tokens"] = _tokenize_adaptive(raw_q)
+244	            self.examples.append(restored)
+245	        self.confusion = defaultdict(lambda: defaultdict(float))
+246	        for pred, actuals in data.get("confusion", {}).items():
+247	            for actual, cnt in actuals.items():
+248	                self.confusion[pred][actual] = float(cnt)
+249	

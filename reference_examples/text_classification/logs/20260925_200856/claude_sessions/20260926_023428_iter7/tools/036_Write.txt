@@ -1,0 +1,29 @@
+Write: logs\20260925_200856\pending_eval.json
+
+content:
+{
+  "iteration": 7,
+  "candidates": [
+    {
+      "name": "adaptive_tokenizer_confusion_memory",
+      "file": "agents/adaptive_tokenizer_confusion_memory.py",
+      "hypothesis": "Routing to character bigrams for CJK text and word tokens for ASCII/Latin text will recover the USPTO and Symptom2Disease accuracy lost by ngram_confusion_memory while keeping LawBench at 38%, because the adaptive strategy avoids the mutual degradation caused by applying a single tokenizer to all scripts.",
+      "axis": "exploitation",
+      "base_system": "confusion_disambiguation_memory + ngram_confusion_memory",
+      "components": ["adaptive_tokenizer", "cjk_detection", "bigram_cjk", "word_token_ascii", "confusion_matrix", "disambiguation_phase", "similarity_fill"]
+    },
+    {
+      "name": "llm_rule_synthesis_memory",
+      "file": "agents/llm_rule_synthesis_memory.py",
+      "hypothesis": "Synthesising and storing concise LLM-generated pairwise decision rules for high-confusion label pairs, then injecting those rules at the top of the predict prompt, will outperform pure example retrieval because it provides explicit boundary guidance that the model would otherwise have to infer from raw examples alone.",
+      "axis": "exploration",
+      "base_system": "confusion_disambiguation_memory",
+      "components": ["adaptive_tokenizer", "confusion_matrix", "llm_rule_synthesis", "pairwise_rules", "rule_injection_prompt", "disambiguation_phase", "similarity_fill", "llm_usage_in_learning"]
+    }
+  ]
+}
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\pending_eval.json (file state is current in your context — no need to Read it back)

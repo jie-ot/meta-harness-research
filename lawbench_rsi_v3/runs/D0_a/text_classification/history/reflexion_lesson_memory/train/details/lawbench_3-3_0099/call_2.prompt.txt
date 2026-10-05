@@ -1,0 +1,24 @@
+An AI classifier made an error on this case. Generate a compact correction lesson.
+
+**Correct label:** 生产、销售假药
+**Wrong prediction:** [罪名]非法生产、销售假药<eoa>
+**Case facts (excerpt):**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:仙居县人民检察院指控：
+2012年四、五月间，被告人吴某在本县南峰街道世纪新村二区二幢西灿头一楼开设的“龙腾性保健店”内，销售“海狗鞭”、“美国79胶囊”、“艾某可”、“金刚钻”等。同年5月30日，公安机关将其查获，扣押“海狗鞭”12盒、“美国79胶囊”2盒、“艾某可”2盒、“金刚钻”10盒，共计26盒（260粒）。经台州市食品药品检验所检验及仙居县食品药品监督管理局认定，查扣的海狗鞭”、“美国79胶囊”、“艾某可”、“金刚钻”均系假药。
+
+
+Write a lesson that:
+1. States the KEY distinguishing feature that determines the correct label
+2. Explains what makes this different from "[罪名]非法生产、销售假药<eoa>"
+3. Gives a brief rule a classifier can apply to future cases
+
+Respond only in JSON:
+{"lesson": "<one to three sentences, in the same language as the case facts>", "final_answer": "生产、销售假药"}

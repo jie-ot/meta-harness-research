@@ -1,0 +1,29 @@
+Write: logs\20260925_200856\pending_eval.json
+
+content:
+{
+  "iteration": 3,
+  "candidates": [
+    {
+      "name": "label_champion_memory",
+      "file": "agents/label_champion_memory.py",
+      "hypothesis": "Picking the single most query-similar example per label (champion pass) and then filling remaining context with non-champion examples ranked by similarity will outperform both similarity_retrieval_memory (which ignores label coverage) and label_balanced_memory (which ignores per-example relevance), because it guarantees every seen label appears at least once while still surfacing the most topically relevant representative for each label.",
+      "axis": "exploitation",
+      "base_system": "similarity_retrieval_memory + label_balanced_memory",
+      "components": ["per_label_champion", "similarity_ranking", "coverage_guarantee", "fill_phase"]
+    },
+    {
+      "name": "mmr_memory",
+      "file": "agents/mmr_memory.py",
+      "hypothesis": "Greedy Maximum Marginal Relevance selection (lambda=0.6) will outperform pure similarity ranking because it penalises redundant examples at each step, naturally producing a diverse and relevant context set without requiring explicit label bookkeeping — reducing token waste from near-duplicate examples that pure Jaccard ranking tends to cluster.",
+      "axis": "exploration",
+      "base_system": "similarity_retrieval_memory",
+      "components": ["mmr", "relevance_diversity_tradeoff", "greedy_selection", "redundancy_penalty"]
+    }
+  ]
+}
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\pending_eval.json (file state is current in your context — no need to Read it back)

@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the facts describe a person performing any medical diagnosis, treatment, or related procedure without a valid medical license, classify the conduct under the statutory offense of “非法行医” rather th
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- When the facts describe manufacturing or distributing drugs that are counterfeit, adulterated, or otherwise not meeting legal standards (i.e., ‘假药’), the appropriate charge is “生产、销售假药” rather than th
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:广州市白云区人民检察院指控，2012年10月开始，被告人陈某纠集同案人周某、姚某甲（均已判处），在未经美某、欧某、资生堂等注册商标所有人授权或许可的情况下，以本市白云区太和镇谢家庄荫兰西路四街3栋1、2楼作为地下工厂，生产假冒上述注册商标的商品。2013年6月，周某出面承租本市白云区太和镇谢家庄荫兰西路四街4栋2楼作为仓库，用于存放生产好的假冒注册商标的商品。2013年7月29日，公安人员在上址抓获周某、姚某甲，并缴获假冒上述注册商标的商品1批、空压机、搅拌机、压饼机等作案工具及原材料、单据1批等物。2015年7月8日，陈某到公安机关投案自首。经鉴定，上述假冒注册商标的商品共价值15872550元。为证实指控的事实，公诉机关随案移送了证人证言、书证、鉴定结论等证据。据此，公诉机关认为被告人陈某的行为已触犯《中华人民共和国刑法》××之规定，构成××。提请本院依法判处
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

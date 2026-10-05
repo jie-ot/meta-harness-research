@@ -1,0 +1,31 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the alleged bribery is committed by a legal entity (e.g., a company) or its legal representative, the correct charge is "单位行贿" rather than the individual offense "行贿".
+- When the facts describe manufacturing or distributing drugs that are counterfeit, adulterated, or otherwise not meeting legal standards (i.e., ‘假药’), the appropriate charge is “生产、销售假药” rather than th
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the facts describe the use of a false or deceptive contract (e.g., a sale, lease, transfer agreement) to obtain money or property, classify the offense as “合同诈骗” rather than the generic “诈骗”.
+- When extracting the crime name, output the exact statutory offense term (e.g., “行贿”) without adding descriptive prefixes or qualifiers such as “对国家工作人员”。
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:本院再审查明，华清水泥公司于2004年4月7日由被告人任某和其子林某2名自然人分别出资发起成立，法定代表人为任某，住所地汉川市新河镇曹家口村。2005年12月该公司取得生产许可证。2008年7月该公司为配合汉川电厂三期工程扩建与汉川电厂三期工程建设拆迁领导小组签订拆迁协议，获得1150万1某现金补偿后停产拆迁、完成职工安置并征地另外建厂。2010年7月被告人任某和其子林某将华清水泥公司所属厂地、设备以234万1某协议转让给彭某和郭某，住所地变更为汉川市新河镇马庙村，法定代表人变更为彭某。2010年9月任某为申报关闭小企业中央财政补助资金，在与彭某签订华清水泥公司补偿资金分配协议后，该公司更名为汉川市华祥再生资源有限公司，不能作为关闭企业申报中央财政补助资金；任某也不能作为华清水泥公司法定代表人申报中央财政补助资金。任某为获得中央财政补助资金，经汉川市经济商务和信息化局副局长熊某授意，安排工作人员陈某编造职工人数等虚假的申报资料。2010年10月，汉川市财政局、汉川市经济商务和信息化局以关闭华清水泥公司等三家企业的名义向湖北省人民政府相关部门申报关闭小企业中央财政补助资金，获得湖北省经济和信息化委员会的批复同意，并于2011年3月获得湖北省财政厅下拨的关闭小企业中央财政补助资金117万1某。
+2011年5月华清水泥公司以淘汰落后生产线的名义，通过汉川市经济商务和信息化局申报淘汰落后产能中央财政奖励资金，获得了“淘汰落后产能10万吨Φ2.1×8m粉磨站1台”的认定。但是，汉川市环保局出具的《水泥行业验收审批表》、被告人任某提供的《设备供货合同》、汉川市华祥再生资源有限公司出具的证明材料均证明华清水泥公司只有1台10万吨Φ2.4×8m粉磨站。
+华清水泥公司最初以10万吨Φ2.4×8m粉磨站申报中央财政奖励资金，由于不符合条件，被告人任某为获取项目资金，将申报资料中Φ2.4×8m粉磨站改为根本不存在的Φ2.1×8m粉磨站作为淘汰设备进行申报。
+华清水泥公司申报资料反映，该公司于2010年4月完成淘汰关闭，前3年主要产品产量分别为8万吨、9万吨、9万吨，销售收入分别为4500万1某、5900万1某、6400万1某，利润分别为560万1某、850万1某、960万1某，上缴增值税和企业所得税合计分别为123万1某、179万1某、144万1某。但工商年检资料反映，2008年7月该公司为配合汉川电厂三期工程扩建与汉川电厂三期工程建设拆迁领导小组签订拆迁协议，获得1150万1某现金补偿后停产拆迁，至2010年6月9日仍在筹建厂房之中，未进行生产经营；税务部门留存的损益表也反映以上期间内该公司未进行生产经营。被告人任某为获取项目资金，编造华清水泥公司虚假的生产经营情况，该公司真实情况不符合申报中央财政奖励资金相关文件规定企业连续3年生产的要求。
+经汉川市经济商务和信息化局副局长熊某授意，任某为获得中央财政专项资金，安排工作人员陈某编造虚假的申报资料，然后由熊某违反规定签发了为华清水泥公司申请国家专项资金的文件，并将虚假的申报资料呈报上级部门。2012年3月汉川市财政局将前述两项中央财政专项资金合计81万1某（其中45.2万1某系汉川市政府应该退回该公司的免征土地契税）拨付到汉川市金1某置业有限公司（被告人任某为股东和法定代表人）。随即，金1某置业有限公司转出45万1某至原华清水泥公司股东林某个人账户，支付彭某10万1某，余款作为公司周转金。（上述款项81万1某已于2013年4月23日被追回）
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

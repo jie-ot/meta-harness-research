@@ -1,0 +1,72 @@
+{
+  "call_id": "a1c2aa574e914ddcbfe4adf4f008a94c",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017137-j6gSu2nQsHYeAFQ545gH",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the facts describe a person knowingly assisting a known criminal by providing shelter, resources, or false statements to evade detection or punishment, classify the offense as the statutory crimes of 窝藏 (concealing) and/or 包庇 (sheltering), not a generic description like “帮助逃跑”.\",\n  \"keywords\": [\n    \"明知\",\n    \"帮助\",\n    \"联系出逃车辆\",\n    \"提供出逃资金\",\n    \"逃匿\",\n    \"谎称未离开\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with rule and keywords. The error: AI gave \"帮助犯罪分子逃跑\" which is not a legal charge; correct charges are \"窝藏、包庇\". So rule: ensure classification uses specific legal charge terms from Chinese criminal law, not generic descriptions. So rule: When the fact mentions \"帮助...联系车辆、提供资金\" and \"明知...犯罪\" and \"帮助逃匿\", the correct charge is \"窝藏罪\" or \"包庇罪\" rather than vague \"帮助逃跑\". So rule: map actions of providing assistance to a known criminal to the statutory offenses of \"窝藏\" (concealing) and \"包庇\" (sheltering). Keywords: \"明知\", \"帮助\", \"联系出逃车辆\", \"提供出逃资金\", \"逃匿\", \"陪同\", \"谎称未离开\". Provide JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with rule and keywords. The error: AI gave \"帮助犯罪分子逃跑\" which is not a legal charge; correct charges are \"窝藏、包庇\". So rule: ensure classification uses specific legal charge terms from Chinese criminal law, not generic descriptions. So rule: When the fact mentions \"帮助...联系车辆、提供资金\" and \"明知...犯罪\" and \"帮助逃匿\", the correct charge is \"窝藏罪\" or \"包庇罪\" rather than vague \"帮助逃跑\". So rule: map actions of providing assistance to a known criminal to the statutory offenses of \"窝藏\" (concealing) and \"包庇\" (sheltering). Keywords: \"明知\", \"帮助\", \"联系出逃车辆\", \"提供出逃资金\", \"逃匿\", \"陪同\", \"谎称未离开\". Provide JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with rule and keywords. The error: AI gave \"帮助犯罪分子逃跑\" which is not a legal charge; correct charges are \"窝藏、包庇\". So rule: ensure classification uses specific legal charge terms from Chinese criminal law, not generic descriptions. So rule: When the fact mentions \"帮助...联系车辆、提供资金\" and \"明知...犯罪\" and \"帮助逃匿\", the correct charge is \"窝藏罪\" or \"包庇罪\" rather than vague \"帮助逃跑\". So rule: map actions of providing assistance to a known criminal to the statutory offenses of \"窝藏\" (concealing) and \"包庇\" (sheltering). Keywords: \"明知\", \"帮助\", \"联系出逃车辆\", \"提供出逃资金\", \"逃匿\", \"陪同\", \"谎称未离开\". Provide JSON.",
+            "reasoning_content": "We need to produce a JSON with rule and keywords. The error: AI gave \"帮助犯罪分子逃跑\" which is not a legal charge; correct charges are \"窝藏、包庇\". So rule: ensure classification uses specific legal charge terms from Chinese criminal law, not generic descriptions. So rule: When the fact mentions \"帮助...联系车辆、提供资金\" and \"明知...犯罪\" and \"帮助逃匿\", the correct charge is \"窝藏罪\" or \"包庇罪\" rather than vague \"帮助逃跑\". So rule: map actions of providing assistance to a known criminal to the statutory offenses of \"窝藏\" (concealing) and \"包庇\" (sheltering). Keywords: \"明知\", \"帮助\", \"联系出逃车辆\", \"提供出逃资金\", \"逃匿\", \"陪同\", \"谎称未离开\". Provide JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 317,
+      "prompt_tokens": 471,
+      "total_tokens": 788,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 205,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00026085,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00026085,
+        "upstream_inference_prompt_cost": 7.065e-05,
+        "upstream_inference_completions_cost": 0.0001902
+      }
+    }
+  },
+  "raw_response_missing": false
+}

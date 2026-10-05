@@ -1,0 +1,36 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the facts describe a person in a managerial or official position receiving money or valuables in exchange for using their职务便利, classify the crime simply as "受贿" unless the source explicitly states 
+- If the factual description includes both the procurement of benefits through the abuse of official position (e.g., accepting bribes) **and** the misuse of that position to facilitate or conceal the wr
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+- When the case facts describe multiple distinct criminal conduct or explicitly mention additional offenses (e.g., “数罪并罚”, “其他罪”, “并且…”， “同时” etc.), output every applicable charge separated by semicolon
+- When the factual description contains multiple distinct illegal actions (e.g., theft of property and illegal harvesting of protected flora or fauna), list every applicable crime separated by semicolon
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:连云港市新浦区人民检察院指控：
+职务侵占
+2002年至2006年4月，被告人杨某担任灌云县基督教三自爱国运动委员会（以下简称“灌云县三自会”）及灌云县中心堂会计。2006年4月至2011年7月，任灌云县三自会主任及中心堂负责人，2011年8月辞职。2006年至2010年期间，被告人杨某利用担任职务上的便利，采取重复报账、虚假报账等手段，侵吞单位公款共计196000元。分述如下：
+1.2006年，灌云县三自会将建某购置木椅工程承包给刘某，价款共计人民币103213元，后被告人杨某多次以支付木椅款的名义从灌云县中心堂财务支取共计88000元，至2008年，杨某与刘某将工程款结清。期间，被告人杨某利用职务之便，于2006年4月将木椅款103213元从灌云县三自会财务上入账报销。以此方式，侵吞单位公款88000元；
+2.2007年1月，被告人杨某利用职务之便，将灌云县燕尾港教堂奉献灌云县三自会建某的8000元收入列为支出，实际侵吞单位公款8000元；
+3.2010年青海玉树4.14地震后，灌云县三自会信徒向灾区捐款人民币115410.2元，被告人杨某通过伪造“江苏省行政事业性收费收据”，虚构已向灾区捐赠救灾款100000元，将该款占为己有。
+二、挪用特定款物
+2008年四川汶川地震至2010年青海玉树地震期间，灌云县信徒共计向灾区捐款合计316717.5元。期间，被告人杨某将该笔专项救灾款用于支付中心堂欠高展工程款32000元、欠张某借款15000元、欠杨姊妹借款45000元、欠王1某借款2000元、欠圩丰街教堂2000元，支付看望信徒爱心款1000元、省神学基金15000元，支付信徒崔某赔偿款20000元，共计挪用救灾款人民币132000元。
+为证实其指控，公诉机关向法庭提交了相关书证，证人证言，被告人供述和辩解等证据。
+公诉机关认为，被告人杨某利用职务上的便利，将本单位财物非法占为己有，数额巨大；被告人杨某挪用用于救灾款物，情节严重，致使国家和人民群众利益遭受重大损害，其行为分别构成××、××。被告人杨某一人犯数罪，应数罪并罚。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

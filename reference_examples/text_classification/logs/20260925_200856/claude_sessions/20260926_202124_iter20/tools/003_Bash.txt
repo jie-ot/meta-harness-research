@@ -1,0 +1,45 @@
+Bash
+
+command:
+cat "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\evolution_summary.jsonl" | python -c "import sys,json; lines=[json.loads(l) for l in sys.stdin]; [print(f\"iter={l['iteration']} sys={l['system']} avg={l['avg_val']} delta={l.get('delta','?')}\") for l in lines]"
+
+description: Print compact summary of all iterations
+
+--- output ---
+iter=1 sys=contrastive_error_memory avg=36.0 delta=-7.8
+iter=1 sys=reflexion_memory avg=29.3 delta=-14.5
+iter=2 sys=label_balanced_memory avg=44.7 delta=-0.9
+iter=2 sys=similarity_retrieval_memory avg=45.6 delta=-0.0
+iter=3 sys=label_champion_memory avg=46.2 delta=0.0
+iter=3 sys=mmr_memory avg=45.8 delta=-0.4
+iter=4 sys=label_aware_prompt_memory avg=43.8 delta=-3.8
+iter=4 sys=confusion_disambiguation_memory avg=47.6 delta=-0.0
+iter=5 sys=confusion_mmr_memory avg=46.9 delta=-0.7
+iter=5 sys=difficulty_weighted_mmr_memory avg=40.9 delta=-6.7
+iter=6 sys=ngram_confusion_memory avg=47.3 delta=-0.5
+iter=6 sys=label_grouped_memory avg=47.8 delta=-0.0
+iter=7 sys=adaptive_tokenizer_confusion_memory avg=51.6 delta=-0.0
+iter=7 sys=llm_rule_synthesis_memory avg=44.0 delta=-7.6
+iter=8 sys=confusion_normalized_bfs_memory avg=48.9 delta=-2.7
+iter=8 sys=label_prototype_memory avg=48.2 delta=-3.4
+iter=9 sys=fixed_confusion_memory avg=50.9 delta=-0.7
+iter=9 sys=idf_confusion_memory avg=48.4 delta=-3.2
+iter=10 sys=anchor_last_memory avg=46.0 delta=-5.6
+iter=10 sys=utility_weighted_memory avg=45.8 delta=-5.8
+iter=11 sys=contrastive_boundary_memory avg=46.7 delta=-4.9
+iter=11 sys=cluster_confusion_memory avg=50.2 delta=-1.4
+iter=12 sys=anchor_recency_confusion_memory avg=45.6 delta=-6.0
+iter=12 sys=discriminative_similarity_memory avg=47.8 delta=-3.8
+iter=13 sys=unified_confusion_retrieval_memory avg=49.6 delta=-2.6
+iter=13 sys=decayed_confusion_memory avg=52.2 delta=0.0
+iter=14 sys=missed_component_memory avg=46.9 delta=-5.3
+iter=14 sys=recent_error_hint_memory avg=45.6 delta=-6.6
+iter=15 sys=two_pass_confusion_memory avg=49.6 delta=-2.6
+iter=15 sys=category_cluster_memory avg=48.9 delta=-3.3
+iter=16 sys=hard_buffer_memory avg=0 delta=-52.2
+iter=16 sys=label_centroid_memory avg=48.9 delta=-3.3
+iter=17 sys=rrf_confusion_memory avg=42.9 delta=-9.3
+iter=17 sys=difficulty_sorted_memory avg=49.6 delta=-2.6
+iter=18 sys=reasoning_trace_memory avg=48.4 delta=-3.8
+iter=18 sys=error_summary_memory avg=48.9 delta=-3.3
+iter=19 sys=symmetric_confusion_memory avg=52.2 delta=0.0

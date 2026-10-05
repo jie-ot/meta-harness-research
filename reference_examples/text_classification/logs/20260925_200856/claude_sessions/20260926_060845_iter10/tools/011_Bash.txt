@@ -1,0 +1,22 @@
+Bash [ERROR]
+
+command:
+powershell -Command "
+$base = 'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+# Read last 5 lines of fixed_confusion_memory log for LawBench
+$log = Join-Path $base 'LawBench\fixed_confusion_memory'
+$files = Get-ChildItem $log -Recurse -Filter 'log.jsonl' -ErrorAction SilentlyContinue
+if ($files) { Get-Content $files[0].FullName -Tail 5 }
+"
+
+
+description: Read last entries from fixed_confusion_memory LawBench log
+
+--- output ---
+Exit code 1
+����λ�� ��:6 �ַ�: 5
++ if () { Get-Content [0].FullName -Tail 5 }
++     ~
+��if (������� if �����ȱ��������
+    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : IfStatementMissingCondition

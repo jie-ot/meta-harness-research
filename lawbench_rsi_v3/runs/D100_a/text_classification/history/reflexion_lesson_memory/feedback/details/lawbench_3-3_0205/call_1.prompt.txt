@@ -1,0 +1,33 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the alleged bribery is committed by a legal entity (e.g., a company) or its legal representative, the correct charge is "单位行贿" rather than the individual offense "行贿".
+- If the facts describe the use of a false or deceptive contract (e.g., a sale, lease, transfer agreement) to obtain money or property, classify the offense as “合同诈骗” rather than the generic “诈骗”.
+- When the alleged offender is not a public official (i.e., not a state functionary) but the conduct involves accepting or soliciting a bribe, the correct charge is '非国家工作人员受贿' rather than the generic '
+- When the facts describe bribery directed at persons who are not state officials or at a legal entity (unit), the charge must be specified as “对非国家工作人员行贿” and/or “对单位行贿” rather than the generic “行贿”.
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，被告人陈某自1995年10月至2012年8月担任上海市长宁区中心医院财务科科长，全面负责该院的财务工作。2012年9月，陈某退休后被长宁区中心医院聘为财务科顾问，直至案发。
+任职财务科科长期间，陈某通过原上海市长宁区妇幼保健院财务人员鲁某某（另处）介绍认识江某某（另处）。2000年左右，陈某与鲁某某以及上海东信投资管理有限公司股东江某某等人进行商议，由长宁区中心医院将资金委托上海东信投资管理有限公司进行管理。通过陈某的推荐，长宁区中心医院与上海东信投资管理有限公司签订了委托资产管理协议，约定委托资产的运用限于国债等具有稳定投资收益的有价证券投资，后长宁区中心医院先后将人民币1，000余万元交由上海东信投资管理有限公司，陈某则代表长宁区中心医院负责监管协议履行。同年，陈某与鲁某某共同收受上海东信投资管理有限公司江某某给予的贿赂人民币20万元，陈某实得人民币10万元。
+2004年，由江某某担任法定代表人的上海凯旋投资管理有限公司成立，陈某收受江某某给予的该公司17%干股。2014年12月至2015年1月间，陈某先后多次收受江某某给予的退股费共计人民币93万元。
+经查，上海东信投资管理有限公司接受长宁区中心医院的资金后，未按照协议将资金用于具有稳定投资收益的有价证券投资，并伪造对账单等凭证隐瞒事实。至今，长宁区中心医院尚未收回上述委托管理资金。
+2015年3月2日，被告人陈某向检察机关投案自首，如实供述了上述受贿事实，并退赃人民币93万元。
+本院审理期间，被告人陈某退赃人民币10万元。
+上述事实，被告人陈某在开庭审理过程中亦无异议，且有证人董某、陈某某、江某某、鲁某某、朱某、唐某某、陈某某等人证言，上海市长宁区中心医院、上海市同仁医院组织机构代码证，被告人陈某的干部履历表、任职批复文件、职务证明、聘用协议书等材料，上海东信投资管理有限公司、上海凯旋投资管理有限公司工商登记材料，委托资产管理协议，被告人陈某银行卡交易明细，上海市长宁区人民检察院扣押财物清单、案发经过等证据证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+- When the facts describe the acquisition, processing, and sale of animal-derived products that are unsafe or of unknown origin, classify the offense under food safety statutes (e.g., 生产、销售不符合安全标准的食品) r
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控，2015年10月25日，经定兴县公安局民警在工作中发现，被告人侯某经营的瑞鑫食品加工有限公司生产腌制的酱菜中添加了印有“湖北高级精制盐”标准号GB／T5462的盐产品，将其查获。经检验，查获的盐产品碘含量为零，根据相关法规规定，碘缺乏地区，必须使用加碘食盐。
+针对上述指控，公诉机关向法庭提供了相关证据，并建议适用《中华人民共和国刑法》××之规定对被告人侯某进行处罚。
+被告人侯某对定兴县人民检察院的指控供认。被告人的辩护人提出被告人侯某并不是被抓获的，他是于2015年10月30日中午接到定兴县公安局干警马某让其去公安局的电话，他才去的公安局，而且是让他的朋友张某开车送他去的公安局，到公安局后他如实供述了自己的犯罪事实，应认定被告人侯某为投案自首并从轻处罚，辩护人提供了证人马某、朱某、张某出庭作证。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

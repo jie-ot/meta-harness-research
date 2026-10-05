@@ -1,0 +1,72 @@
+{
+  "call_id": "c803c96a31884750a26bbb95f3a6b4ef",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791035869-3wxz8OEFRuKfLe8aAPZm",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant collected large sums of money from individuals by promising high interest loans, fabricated business purposes, and failed to repay, constituting illegal fundraising from the public. This matches the charge label '非法吸收公众存款' used in the examples for similar schemes. No other listed charge applies.\",\n  \"final_answer\": \"[罪名]非法吸收公众存款<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate charge(s) based on facts. The case: large illegal fundraising / loan fraud. The charge label likely \"非法集资\" or \"诈骗\". In examples, they used \"诈骗\" for loan fraud? Let's see earlier examples: The \"信用卡诈骗\" label used for credit card fraud. \"违法发放贷款\" label used for illegal loan issuance by bank staff. \"抢夺\" etc.\n\nWe need to match to one of the provided charge labels. The list of charge headers given: 抢夺, 信用卡诈骗, 违法发放贷款, 虚开增值税专用发票、用于骗取出口退税、抵扣税款发票, plus other examples: 容留他人吸毒, 伪造、变造、买卖国家机关公文、证件、印章, 盗窃;传授犯罪方法, 非法吸收公众存款, 拐卖妇女、儿童, 诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫, 侵犯著作权, 盗窃;非法狩猎, 持有、使用假币;盗窃, 提供侵入、非法控制计算机信息系统程序、工具.\n\nOur case is about illegal fundraising, promising high interest, not repaid. That is \"非法集资\" (illegal fundraising) or \"诈骗\" (fraud). The charge label list does not include \"非法集资\" explicitly. However there is \"非法吸收公众存款\" which is similar but that charge is for illegal acceptance of public deposits. In this case, they are borrowing from individuals with high interest, promising returns, but not repaying. That is \"非法集资\" or \"诈骗\". The example for \"非法吸收公众存款\" had a case of a mutual aid scheme, collecting money from many people, illegal deposit. This case is similar: they collected from 7 people, but maybe qualifies as \"非法吸收公众存款\". The label \"非法吸收公众存款\" appears in examples. So likely we should use that.\n\nBut the charge header list includes \"非法发放贷款\" (illegal loan issuance) which is for bank staff giving loans illegally. Not applicable.\n\nThus answer: [罪名]非法吸收公众存款<eoa>\n\nCheck if multiple charges? The prosecution says \"以非法占有为目的，采用诈骗方法非法集资\". Could be \"诈骗\". But the label \"诈骗\" appears in many examples. However the specific charge for this type is \"非法集资\" but not in list. So maybe they want \"诈骗\". The example for \"诈骗;组织、强迫...\" shows multiple charges. But we need to use exact label strings from section headers. The only relevant header is \"非法吸收公众存款\". So answer that.\n\nReturn JSON with reasoning and final answer.\n\n",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate charge(s) based on facts. The case: large illegal fundraising / loan fraud. The charge label likely \"非法集资\" or \"诈骗\". In examples, they used \"诈骗\" for loan fraud? Let's see earlier examples: The \"信用卡诈骗\" label used for credit card fraud. \"违法发放贷款\" label used for illegal loan issuance by bank staff. \"抢夺\" etc.\n\nWe need to match to one of the provided charge labels. The list of charge headers given: 抢夺, 信用卡诈骗, 违法发放贷款, 虚开增值税专用发票、用于骗取出口退税、抵扣税款发票, plus other examples: 容留他人吸毒, 伪造、变造、买卖国家机关公文、证件、印章, 盗窃;传授犯罪方法, 非法吸收公众存款, 拐卖妇女、儿童, 诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫, 侵犯著作权, 盗窃;非法狩猎, 持有、使用假币;盗窃, 提供侵入、非法控制计算机信息系统程序、工具.\n\nOur case is about illegal fundraising, promising high interest, not repaid. That is \"非法集资\" (illegal fundraising) or \"诈骗\" (fraud). The charge label list does not include \"非法集资\" explicitly. However there is \"非法吸收公众存款\" which is similar but that charge is for illegal acceptance of public deposits. In this case, they are borrowing from individuals with high interest, promising returns, but not repaying. That is \"非法集资\" or \"诈骗\". The example for \"非法吸收公众存款\" had a case of a mutual aid scheme, collecting money from many people, illegal deposit. This case is similar: they collected from 7 people, but maybe qualifies as \"非法吸收公众存款\". The label \"非法吸收公众存款\" appears in examples. So likely we should use that.\n\nBut the charge header list includes \"非法发放贷款\" (illegal loan issuance) which is for bank staff giving loans illegally. Not applicable.\n\nThus answer: [罪名]非法吸收公众存款<eoa>\n\nCheck if multiple charges? The prosecution says \"以非法占有为目的，采用诈骗方法非法集资\". Could be \"诈骗\". But the label \"诈骗\" appears in many examples. However the specific charge for this type is \"非法集资\" but not in list. So maybe they want \"诈骗\". The example for \"诈骗;组织、强迫...\" shows multiple charges. But we need to use exact label strings from section headers. The only relevant header is \"非法吸收公众存款\". So answer that.\n\nReturn JSON with reasoning and final answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine appropriate charge(s) based on facts. The case: large illegal fundraising / loan fraud. The charge label likely \"非法集资\" or \"诈骗\". In examples, they used \"诈骗\" for loan fraud? Let's see earlier examples: The \"信用卡诈骗\" label used for credit card fraud. \"违法发放贷款\" label used for illegal loan issuance by bank staff. \"抢夺\" etc.\n\nWe need to match to one of the provided charge labels. The list of charge headers given: 抢夺, 信用卡诈骗, 违法发放贷款, 虚开增值税专用发票、用于骗取出口退税、抵扣税款发票, plus other examples: 容留他人吸毒, 伪造、变造、买卖国家机关公文、证件、印章, 盗窃;传授犯罪方法, 非法吸收公众存款, 拐卖妇女、儿童, 诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫, 侵犯著作权, 盗窃;非法狩猎, 持有、使用假币;盗窃, 提供侵入、非法控制计算机信息系统程序、工具.\n\nOur case is about illegal fundraising, promising high interest, not repaid. That is \"非法集资\" (illegal fundraising) or \"诈骗\" (fraud). The charge label list does not include \"非法集资\" explicitly. However there is \"非法吸收公众存款\" which is similar but that charge is for illegal acceptance of public deposits. In this case, they are borrowing from individuals with high interest, promising returns, but not repaying. That is \"非法集资\" or \"诈骗\". The example for \"非法吸收公众存款\" had a case of a mutual aid scheme, collecting money from many people, illegal deposit. This case is similar: they collected from 7 people, but maybe qualifies as \"非法吸收公众存款\". The label \"非法吸收公众存款\" appears in examples. So likely we should use that.\n\nBut the charge header list includes \"非法发放贷款\" (illegal loan issuance) which is for bank staff giving loans illegally. Not applicable.\n\nThus answer: [罪名]非法吸收公众存款<eoa>\n\nCheck if multiple charges? The prosecution says \"以非法占有为目的，采用诈骗方法非法集资\". Could be \"诈骗\". But the label \"诈骗\" appears in many examples. However the specific charge for this type is \"非法集资\" but not in list. So maybe they want \"诈骗\". The example for \"诈骗;组织、强迫...\" shows multiple charges. But we need to use exact label strings from section headers. The only relevant header is \"非法吸收公众存款\". So answer that.\n\nReturn JSON with reasoning and final answer.\n\n",
+            "refusal": null,
+            "reasoning_content": "We need to determine appropriate charge(s) based on facts. The case: large illegal fundraising / loan fraud. The charge label likely \"非法集资\" or \"诈骗\". In examples, they used \"诈骗\" for loan fraud? Let's see earlier examples: The \"信用卡诈骗\" label used for credit card fraud. \"违法发放贷款\" label used for illegal loan issuance by bank staff. \"抢夺\" etc.\n\nWe need to match to one of the provided charge labels. The list of charge headers given: 抢夺, 信用卡诈骗, 违法发放贷款, 虚开增值税专用发票、用于骗取出口退税、抵扣税款发票, plus other examples: 容留他人吸毒, 伪造、变造、买卖国家机关公文、证件、印章, 盗窃;传授犯罪方法, 非法吸收公众存款, 拐卖妇女、儿童, 诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫, 侵犯著作权, 盗窃;非法狩猎, 持有、使用假币;盗窃, 提供侵入、非法控制计算机信息系统程序、工具.\n\nOur case is about illegal fundraising, promising high interest, not repaid. That is \"非法集资\" (illegal fundraising) or \"诈骗\" (fraud). The charge label list does not include \"非法集资\" explicitly. However there is \"非法吸收公众存款\" which is similar but that charge is for illegal acceptance of public deposits. In this case, they are borrowing from individuals with high interest, promising returns, but not repaying. That is \"非法集资\" or \"诈骗\". The example for \"非法吸收公众存款\" had a case of a mutual aid scheme, collecting money from many people, illegal deposit. This case is similar: they collected from 7 people, but maybe qualifies as \"非法吸收公众存款\". The label \"非法吸收公众存款\" appears in examples. So likely we should use that.\n\nBut the charge header list includes \"非法发放贷款\" (illegal loan issuance) which is for bank staff giving loans illegally. Not applicable.\n\nThus answer: [罪名]非法吸收公众存款<eoa>\n\nCheck if multiple charges? The prosecution says \"以非法占有为目的，采用诈骗方法非法集资\". Could be \"诈骗\". But the label \"诈骗\" appears in many examples. However the specific charge for this type is \"非法集资\" but not in list. So maybe they want \"诈骗\". The example for \"诈骗;组织、强迫...\" shows multiple charges. But we need to use exact label strings from section headers. The only relevant header is \"非法吸收公众存款\". So answer that.\n\nReturn JSON with reasoning and final answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 713,
+      "prompt_tokens": 4813,
+      "total_tokens": 5526,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 623,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0002656,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0002656,
+        "upstream_inference_prompt_cost": 0.00014439,
+        "upstream_inference_completions_cost": 0.00012121
+      }
+    }
+  },
+  "raw_response_missing": false
+}

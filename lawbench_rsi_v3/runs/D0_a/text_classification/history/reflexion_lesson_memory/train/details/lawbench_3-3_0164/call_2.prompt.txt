@@ -1,0 +1,25 @@
+An AI classifier made an error on this case. Generate a compact correction lesson.
+
+**Correct label:** 非法携带枪支、弹药、管制刀具、危险物品危及公共安全;寻衅滋事
+**Wrong prediction:** [罪名]故意伤害;非法携带枪支危及公共安全<eoa>
+**Case facts (excerpt):**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:北京市房山区人民检察院起诉书指控：
+（一）2013年11月9日晚22时许，郭×1（另案处理）在北京市房山区中医院与医生发生争执，后郭×1打电话叫来其父亲郭×2、男朋友晋×1（均另案处理），晋×1叫上被告人潘×1，在中医医院急诊内科办公室，郭×1指认医生后，被告人潘×1与郭×2、晋×1使用血压计、凳子、拳脚对值班医生李×1、付×、范×进行殴打，造成李×1头部多发软组织损伤，付×腹部软组织损伤，范×头部多发软组织损伤，经北京市公安司法鉴定中心鉴定，李×1、付×、范×三人均为轻微伤。
+（二）2014年1月30日23时许，被告人潘×1驾驶车牌号为京×的蓝色菲亚特轿车行驶至北京市房山区燕山迎风杏花西里社区塔湾岗亭北侧时，被巡逻民警查获，当场从车内后备箱起获黑色枪状物1支、带有警徽图样的匕首1把。经北京市公安司法鉴定中心鉴定，该枪状物为枪支，经北京市公安局房山分局认定，带有警徽图样的匕首为××刀具。被告人潘×1于2015年3月5日被抓获归案。
+公诉机关就以上指控向本院提供了被告人供述、被害人陈述、证人证言、鉴定意见等证据材料，认为被告人潘×1随意殴打他人，致三人轻微伤
+
+Write a lesson that:
+1. States the KEY distinguishing feature that determines the correct label
+2. Explains what makes this different from "[罪名]故意伤害;非法携带枪支危及公共安全<eoa>"
+3. Gives a brief rule a classifier can apply to future cases
+
+Respond only in JSON:
+{"lesson": "<one to three sentences, in the same language as the case facts>", "final_answer": "非法携带枪支、弹药、管制刀具、危险物品危及公共安全;寻衅滋事"}

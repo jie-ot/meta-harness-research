@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- When the facts describe unauthorized cutting of forest trees that belong to a collective or state entity, label the crime as '盗伐林木' rather than the generic term '非法采伐林木'.
+- When the facts describe a person performing any medical diagnosis, treatment, or related procedure without a valid medical license, classify the conduct under the statutory offense of “非法行医” rather th
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:广西壮族自治区融水苗族自治县人民检察院指控，2014年8月份，被告人覃某在没有办理林木釆伐许可证的情况下，雇工砍伐位于融水苗族自治县贝江林场新安分场5林班8.1.1小班（地名：西江屯陆罗槽）的一处由其母亲种植的杉木。经广西桂江林业调查规划设计有限公司调查鉴定，被告人覃某砍伐的林木森林蓄积量为16.6立方米，出材量为12.7立方米。
+公诉机关为证明指控的事实，提供了相应的证据证实。
+公诉机关认为，被告人覃某违反森林法规，未领取林木釆伐许可证，滥伐林木，数量较大，其行为触犯《中华人民共和国刑法》××之规定，构成××，提请本院依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,72 @@
+{
+  "call_id": "913a7d558872494b9d924e09fdac5230",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791026582-bHGVvmht8MwLr9AsisE3",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"lesson\": \"- 当事实段落中出现**多个**独立的违法行为描述时，必须逐一对应列出**每一项**罪名，切勿只取其中一项或自行合并。\\n- 罪名的表述应严格依据事实中的**限定词**（如对象、方式、情节）来确定，避免使用过于宽泛或不符的表述（如仅写“行贿”而忽略“对非国家工作人员行贿”。）\\n- 若事实仅提供**地点、人物等信息而未出现明确的违法行为**，模型不应凭空猜测罪名，而应返回“信息不足”或请求补充事实。\\n- 对于法律中已有**专门罪名**覆盖的情形（如“聚众斗殴”已涵盖“聚众扰乱社会秩序”与“故意伤害”），应直接使用该专门罪名，而不是列出其组成要素的多个罪名。\\n- 在列出多罪名时，使用**分号**分隔，且顺序应与事实中出现的先后或重要性相匹配，避免出现不存在的罪名或重复的罪名。\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to infer patterns of errors. The task: model is asked to output crime names based on facts. Errors include missing multiple crimes, adding extra unrelated crimes, misidentifying specifics (e.g., \"对非国家工作人员行贿\" vs \"行贿\"), truncating, etc.\n\nWe need to produce up to 5 concise rules, based on observable signals in facts, not just repeating errors.\n\nObservations:\n\n1. When facts contain multiple distinct illegal behaviors (e.g., \"诈骗\" and \"聚众扰乱公共场所秩序、交通秩序\"), model often outputs only first or wrong combination. So rule: Identify and separate distinct illegal conduct described; each should be a separate charge.\n\n2. Model sometimes adds extra crimes not present (e.g., \"冒充军人招摇撞骗罪\" vs correct \"冒充军人招摇撞骗\" maybe fine; but also adds \"单位受贿;受贿;危险驾驶\" when only two). So rule: Avoid overgeneralizing; only output crimes explicitly supported by fact text.\n\n3. Model misinterprets partial phrases: e.g., \"对非国家工作人员行贿\" vs \"行贿\". The correct charge is specific to non-state staff. So rule: Pay attention to qualifiers (对象、对象身份) that affect the precise statutory charge.\n\n4. Model sometimes outputs generic crime when fact includes location names only (e.g., \"葫芦岛市连山区人\" leads to \"冒充军人招摇撞骗罪\" which is unrelated). Likely due to insufficient context; rule: Ensure that the fact snippet contains clear illegal act description; if not, request clarification rather than guess.\n\n5. Model sometimes merges multiple crimes incorrectly (e.g., \"故意伤害;聚众扰乱社会秩序\" vs correct \"聚众斗殴\"). So rule: Recognize specific statutory offense that subsumes other descriptions; e.g., \"聚众斗殴\" is the proper charge rather than separate \"故意伤害\" and \"聚众扰乱社会秩序\".\n\nThus produce lessons.\n\nLet's craft JSON with \"lesson\" key and bullet list.\n\n",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to infer patterns of errors. The task: model is asked to output crime names based on facts. Errors include missing multiple crimes, adding extra unrelated crimes, misidentifying specifics (e.g., \"对非国家工作人员行贿\" vs \"行贿\"), truncating, etc.\n\nWe need to produce up to 5 concise rules, based on observable signals in facts, not just repeating errors.\n\nObservations:\n\n1. When facts contain multiple distinct illegal behaviors (e.g., \"诈骗\" and \"聚众扰乱公共场所秩序、交通秩序\"), model often outputs only first or wrong combination. So rule: Identify and separate distinct illegal conduct described; each should be a separate charge.\n\n2. Model sometimes adds extra crimes not present (e.g., \"冒充军人招摇撞骗罪\" vs correct \"冒充军人招摇撞骗\" maybe fine; but also adds \"单位受贿;受贿;危险驾驶\" when only two). So rule: Avoid overgeneralizing; only output crimes explicitly supported by fact text.\n\n3. Model misinterprets partial phrases: e.g., \"对非国家工作人员行贿\" vs \"行贿\". The correct charge is specific to non-state staff. So rule: Pay attention to qualifiers (对象、对象身份) that affect the precise statutory charge.\n\n4. Model sometimes outputs generic crime when fact includes location names only (e.g., \"葫芦岛市连山区人\" leads to \"冒充军人招摇撞骗罪\" which is unrelated). Likely due to insufficient context; rule: Ensure that the fact snippet contains clear illegal act description; if not, request clarification rather than guess.\n\n5. Model sometimes merges multiple crimes incorrectly (e.g., \"故意伤害;聚众扰乱社会秩序\" vs correct \"聚众斗殴\"). So rule: Recognize specific statutory offense that subsumes other descriptions; e.g., \"聚众斗殴\" is the proper charge rather than separate \"故意伤害\" and \"聚众扰乱社会秩序\".\n\nThus produce lessons.\n\nLet's craft JSON with \"lesson\" key and bullet list.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to infer patterns of errors. The task: model is asked to output crime names based on facts. Errors include missing multiple crimes, adding extra unrelated crimes, misidentifying specifics (e.g., \"对非国家工作人员行贿\" vs \"行贿\"), truncating, etc.\n\nWe need to produce up to 5 concise rules, based on observable signals in facts, not just repeating errors.\n\nObservations:\n\n1. When facts contain multiple distinct illegal behaviors (e.g., \"诈骗\" and \"聚众扰乱公共场所秩序、交通秩序\"), model often outputs only first or wrong combination. So rule: Identify and separate distinct illegal conduct described; each should be a separate charge.\n\n2. Model sometimes adds extra crimes not present (e.g., \"冒充军人招摇撞骗罪\" vs correct \"冒充军人招摇撞骗\" maybe fine; but also adds \"单位受贿;受贿;危险驾驶\" when only two). So rule: Avoid overgeneralizing; only output crimes explicitly supported by fact text.\n\n3. Model misinterprets partial phrases: e.g., \"对非国家工作人员行贿\" vs \"行贿\". The correct charge is specific to non-state staff. So rule: Pay attention to qualifiers (对象、对象身份) that affect the precise statutory charge.\n\n4. Model sometimes outputs generic crime when fact includes location names only (e.g., \"葫芦岛市连山区人\" leads to \"冒充军人招摇撞骗罪\" which is unrelated). Likely due to insufficient context; rule: Ensure that the fact snippet contains clear illegal act description; if not, request clarification rather than guess.\n\n5. Model sometimes merges multiple crimes incorrectly (e.g., \"故意伤害;聚众扰乱社会秩序\" vs correct \"聚众斗殴\"). So rule: Recognize specific statutory offense that subsumes other descriptions; e.g., \"聚众斗殴\" is the proper charge rather than separate \"故意伤害\" and \"聚众扰乱社会秩序\".\n\nThus produce lessons.\n\nLet's craft JSON with \"lesson\" key and bullet list.\n\n",
+            "reasoning_content": "We need to infer patterns of errors. The task: model is asked to output crime names based on facts. Errors include missing multiple crimes, adding extra unrelated crimes, misidentifying specifics (e.g., \"对非国家工作人员行贿\" vs \"行贿\"), truncating, etc.\n\nWe need to produce up to 5 concise rules, based on observable signals in facts, not just repeating errors.\n\nObservations:\n\n1. When facts contain multiple distinct illegal behaviors (e.g., \"诈骗\" and \"聚众扰乱公共场所秩序、交通秩序\"), model often outputs only first or wrong combination. So rule: Identify and separate distinct illegal conduct described; each should be a separate charge.\n\n2. Model sometimes adds extra crimes not present (e.g., \"冒充军人招摇撞骗罪\" vs correct \"冒充军人招摇撞骗\" maybe fine; but also adds \"单位受贿;受贿;危险驾驶\" when only two). So rule: Avoid overgeneralizing; only output crimes explicitly supported by fact text.\n\n3. Model misinterprets partial phrases: e.g., \"对非国家工作人员行贿\" vs \"行贿\". The correct charge is specific to non-state staff. So rule: Pay attention to qualifiers (对象、对象身份) that affect the precise statutory charge.\n\n4. Model sometimes outputs generic crime when fact includes location names only (e.g., \"葫芦岛市连山区人\" leads to \"冒充军人招摇撞骗罪\" which is unrelated). Likely due to insufficient context; rule: Ensure that the fact snippet contains clear illegal act description; if not, request clarification rather than guess.\n\n5. Model sometimes merges multiple crimes incorrectly (e.g., \"故意伤害;聚众扰乱社会秩序\" vs correct \"聚众斗殴\"). So rule: Recognize specific statutory offense that subsumes other descriptions; e.g., \"聚众斗殴\" is the proper charge rather than separate \"故意伤害\" and \"聚众扰乱社会秩序\".\n\nThus produce lessons.\n\nLet's craft JSON with \"lesson\" key and bullet list.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 739,
+      "prompt_tokens": 958,
+      "total_tokens": 1697,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 522,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00023265,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00023265,
+        "upstream_inference_prompt_cost": 4.79e-05,
+        "upstream_inference_completions_cost": 0.00018475
+      }
+    }
+  },
+  "raw_response_missing": false
+}

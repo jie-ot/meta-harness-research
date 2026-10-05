@@ -1,0 +1,37 @@
+Edit: .prototypes\label_lexicon_snap_memory.py
+
+replace_all: False
+old_string:
+state = m.get_state()
+m2 = LabelLexiconSnapMemory(FakeLLM("[罪名]失火<eoa>"))
+m2.set_state(state)
+assert len(m2.examples) == len(m.examples)
+assert m2.lexicon == m.lexicon
+assert sorted(m2.label_counts.items()) == sorted(m.label_counts.items())
+ans3, _ = m2.predict("事实:被告人盗窃路灯电缆线，破坏电力设备。")
+print("round-trip predict ->", repr(ans3), "| lexicon restored:", len(m2.lexicon))
+assert ans3 == ans2, (ans3, ans2)
+
+new_string:
+state = m.get_state()
+# Restoring into an instance backed by the SAME fake model must reproduce the
+# identical prediction -- that isolates state fidelity from model stochasticity.
+m2 = LabelLexiconSnapMemory(FakeLLM("[罪名]破坏电力设施<eoa>"))
+m2.set_state(state)
+assert len(m2.examples) == len(m.examples)
+assert m2.lexicon == m.lexicon
+assert sorted(m2.label_counts.items()) == sorted(m.label_counts.items())
+ans3, meta3 = m2.predict("事实:被告人盗窃路灯电缆线，破坏电力设备。")
+print("round-trip predict ->", repr(ans3), "| lexicon restored:", len(m2.lexicon))
+assert ans3 == ans2, (ans3, ans2)
+assert meta3["num_selected"] == meta2["num_selected"]
+
+# And a cold instance must not be affected by restored state elsewhere.
+m3 = LabelLexiconSnapMemory(FakeLLM("[罪名]失火<eoa>"))
+ans4, _ = m3.predict("事实:被告人焚烧秸秆引发山火。")
+print("unrelated instance predict ->", repr(ans4))
+assert ans4 == "失火", ans4
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\.prototypes\label_lexicon_snap_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

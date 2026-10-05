@@ -1,0 +1,72 @@
+{
+  "call_id": "372a21edfd594fe3a43eab26212a2307",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791018234-KejqVoh4mbXSNMgWOznk",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"If the factual description indicates that the defendant established, operated, or maintained a venue or equipment specifically for gambling (e.g., opening a game hall, installing gambling machines, running a casino), the correct charge is “开设赌场罪” (establishing a casino) rather than the broader “组织赌博罪”.\",\n  \"keywords\": [\n    \"开设游戏厅\",\n    \"设置赌博机\",\n    \"经营赌博场所\",\n    \"设立赌博场所\",\n    \"开设赌场\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with rule and keywords. The error: AI predicted \"组织赌博\" but correct answer is \"开设赌场\". So classification error: mislabeling the specific crime. Need rule: differentiate between \"组织赌博\" vs \"开设赌场\" maybe the correct legal term is \"开设赌场罪\" (establishing a casino). So rule: When facts describe establishing a gambling venue (e.g., setting up gambling machines, operating a game hall), the appropriate charge is \"开设赌场罪\" rather than \"组织赌博罪\". Keywords: \"开设游戏厅\", \"设置赌博机\", \"开设赌场\", \"经营赌博场所\", \"设立赌博场所\". Provide rule.\n\nReturn JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with rule and keywords. The error: AI predicted \"组织赌博\" but correct answer is \"开设赌场\". So classification error: mislabeling the specific crime. Need rule: differentiate between \"组织赌博\" vs \"开设赌场\" maybe the correct legal term is \"开设赌场罪\" (establishing a casino). So rule: When facts describe establishing a gambling venue (e.g., setting up gambling machines, operating a game hall), the appropriate charge is \"开设赌场罪\" rather than \"组织赌博罪\". Keywords: \"开设游戏厅\", \"设置赌博机\", \"开设赌场\", \"经营赌博场所\", \"设立赌博场所\". Provide rule.\n\nReturn JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with rule and keywords. The error: AI predicted \"组织赌博\" but correct answer is \"开设赌场\". So classification error: mislabeling the specific crime. Need rule: differentiate between \"组织赌博\" vs \"开设赌场\" maybe the correct legal term is \"开设赌场罪\" (establishing a casino). So rule: When facts describe establishing a gambling venue (e.g., setting up gambling machines, operating a game hall), the appropriate charge is \"开设赌场罪\" rather than \"组织赌博罪\". Keywords: \"开设游戏厅\", \"设置赌博机\", \"开设赌场\", \"经营赌博场所\", \"设立赌博场所\". Provide rule.\n\nReturn JSON.",
+            "reasoning_content": "We need to produce a JSON with rule and keywords. The error: AI predicted \"组织赌博\" but correct answer is \"开设赌场\". So classification error: mislabeling the specific crime. Need rule: differentiate between \"组织赌博\" vs \"开设赌场\" maybe the correct legal term is \"开设赌场罪\" (establishing a casino). So rule: When facts describe establishing a gambling venue (e.g., setting up gambling machines, operating a game hall), the appropriate charge is \"开设赌场罪\" rather than \"组织赌博罪\". Keywords: \"开设游戏厅\", \"设置赌博机\", \"开设赌场\", \"经营赌博场所\", \"设立赌博场所\". Provide rule.\n\nReturn JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 275,
+      "prompt_tokens": 451,
+      "total_tokens": 726,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 179,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 9.13e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 9.13e-05,
+        "upstream_inference_prompt_cost": 2.255e-05,
+        "upstream_inference_completions_cost": 6.875e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

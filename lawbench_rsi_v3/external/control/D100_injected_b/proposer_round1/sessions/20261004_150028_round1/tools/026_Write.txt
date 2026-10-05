@@ -1,0 +1,283 @@
+Write: .prototypes\label_lexicon_snap_memory.py
+
+content:
+"""Prototype A: guarded lexicon snapping + Chinese bigram retrieval.
+
+No file/network I/O. All examples are literals copied from visible traces.
+
+Core claim to falsify:
+  A guarded longest-common-substring snap against the observed label lexicon
+  repairs near-miss labels WITHOUT damaging already-correct short labels.
+
+Guards under test:
+  G1 len(LCS) >= 4
+  G2 len(LCS) >= 0.6 * len(candidate)
+  G3 unique maximal match (ties -> do not snap)
+  G4 trailing '罪' stripped only when the stripped form is a lexicon entry
+"""
+
+# ----------------------------------------------------------------------------
+# Literal lexicon: labels and label-parts seen in the visible score/feedback
+# traces. Multi-label targets are split on the evaluator separators.
+# ----------------------------------------------------------------------------
+TARGETS = [
+    "单位行贿",
+    "销售假冒注册商标的商品",
+    "非法持有、私藏枪支、弹药;故意伤害;聚众斗殴",
+    "破坏电力设备",
+    "非法种植毒品原植物",
+    "失火",
+    "盗窃",
+    "诈骗",
+    "行贿",
+    "故意伤害",
+    "拐骗儿童",
+    "盗伐林木",
+    "滥伐林木",
+    "挪用公款",
+    "挪用资金",
+    "受贿",
+    "非国家工作人员受贿",
+    "开设赌场",
+    "赌博",
+    "合同诈骗",
+    "保险诈骗",
+    "假冒注册商标",
+    "非法采矿",
+    "掩饰、隐瞒犯罪所得、犯罪所得收益",
+    "非法持有、私藏枪支、弹药",
+    "聚众斗殴",
+    "破坏计算机信息系统",
+]
+
+SEPS = [";", "；", ",", "，", "、"]
+
+
+def split_labels(text):
+    for sep in SEPS:
+        if sep in text:
+            return [p.strip() for p in text.split(sep) if p.strip()]
+    return [text.strip()] if text.strip() else []
+
+
+def build_lexicon(targets):
+    lex = set()
+    for t in targets:
+        for part in split_labels(t):
+            if part:
+                lex.add(part)
+    return lex
+
+
+# ----------------------------------------------------------------------------
+# Candidate A core: guarded snap
+# ----------------------------------------------------------------------------
+def lcs_len(a, b):
+    """Length of the longest common substring of a and b."""
+    if not a or not b:
+        return 0
+    prev = [0] * (len(b) + 1)
+    best = 0
+    for i in range(1, len(a) + 1):
+        cur = [0] * (len(b) + 1)
+        ai = a[i - 1]
+        for j in range(1, len(b) + 1):
+            if ai == b[j - 1]:
+                cur[j] = prev[j - 1] + 1
+                if cur[j] > best:
+                    best = cur[j]
+        prev = cur
+    return best
+
+
+def snap(cand, lex, min_run=4, cover=0.6):
+    """Snap a candidate label to the lexicon entry it is a near-miss variant of."""
+    cand = cand.strip()
+    if not cand:
+        return cand
+    if cand in lex:
+        return cand
+    # G4: spurious trailing '罪'
+    if len(cand) > 1 and cand.endswith("罪") and cand[:-1] in lex:
+        return cand[:-1]
+    if len(cand) < min_run:
+        return cand
+    best_run = 0
+    winners = []
+    for entry in lex:
+        run = lcs_len(cand, entry)
+        if run > best_run:
+            best_run = run
+            winners = [entry]
+        elif run == best_run and run > 0:
+            winners.append(entry)
+    # G1
+    if best_run < min_run:
+        return cand
+    # G2
+    if best_run < cover * len(cand):
+        return cand
+    # G3
+    if len(winners) != 1:
+        return cand
+    return winners[0]
+
+
+# ----------------------------------------------------------------------------
+# Candidate A supporting infra: Chinese character bigram similarity
+# (replaces the ASCII-only tokenizer that degenerate-matched Chinese text)
+# ----------------------------------------------------------------------------
+def bigrams(text):
+    text = "".join(text.split())
+    if len(text) < 2:
+        return frozenset(text)
+    return frozenset(text[i:i + 2] for i in range(len(text) - 1))
+
+
+def dice(a, b):
+    if not a and not b:
+        return 0.0
+    if not a or not b:
+        return 0.0
+    return 2 * len(a & b) / (len(a) + len(b))
+
+
+# ----------------------------------------------------------------------------
+# Fake LLM: returns the literal raw predictions observed in the traces.
+# ----------------------------------------------------------------------------
+class FakeLLM:
+    def __init__(self, mapping):
+        self.mapping = mapping
+        self.calls = 0
+
+    def __call__(self, prompt):
+        self.calls += 1
+        for key, val in self.mapping.items():
+            if key in prompt:
+                return val
+        return '{"reasoning": "n/a", "final_answer": "失火"}'
+
+
+def extract_final_answer(response):
+    import json
+    try:
+        return json.loads(response)["final_answer"]
+    except Exception:
+        return ""
+
+
+def strip_wrappers(pred):
+    p = pred.strip()
+    if "[罪名]" in p:
+        p = p.split("[罪名]", 1)[1]
+    for marker in ("<eoa>", "\n"):
+        if marker in p:
+            p = p.split(marker, 1)[0]
+    return p.strip()
+
+
+def canonicalize_set(pred, lex):
+    return [snap(x, lex) for x in split_labels(strip_wrappers(pred))]
+
+
+# ----------------------------------------------------------------------------
+# Variant harness
+# ----------------------------------------------------------------------------
+LEX = build_lexicon(TARGETS)
+
+CASES = [
+    # (raw model output, expected canonical set, why)
+    ("[罪名]破坏电力设施<eoa>", ["破坏电力设备"], "share 破坏电力 (4) -> snap"),
+    ("[罪名]非法种植罂粟<eoa>", ["非法种植毒品原植物"], "share 非法种植 (4) -> snap"),
+    ("[罪名]盗窃;破坏电力设施<eoa>", ["盗窃", "破坏电力设备"], "mixed: one safe, one snapped"),
+    ("[罪名]拐骗儿童罪<eoa>", ["拐骗儿童"], "G4 spurious 罪 suffix"),
+    ("[罪名]盗窃<eoa>", ["盗窃"], "exact, must NOT snap"),
+    ("[罪名]失火<eoa>", ["失火"], "exact short, must NOT snap"),
+    ("[罪名]诈骗<eoa>", ["诈骗"], "exact short, must NOT snap"),
+    ("[罪名]行贿<eoa>", ["行贿"], "exact, must NOT be pulled to 单位行贿"),
+    ("[罪名]故意伤害<eoa>", ["故意伤害"], "exact, must NOT snap"),
+    ("[罪名]受贿<eoa>", ["受贿"], "exact, must NOT be pulled to 非国家工作人员受贿"),
+    ("[罪名]盗窃;诈骗<eoa>", ["盗窃", "诈骗"], "both exact"),
+    ("[罪名]侵犯注册商标专用权<eoa>", ["侵犯注册商标专用权"], "G2 blocks: run 4 < 0.6*9"),
+    ("[罪名]非法采矿<eoa>", ["非法采矿"], "exact, plausible standalone"),
+    ("[罪名]掩饰、隐瞒犯罪所得<eoa>", ["掩饰、隐瞒犯罪所得"], "exact sub-part"),
+]
+
+print("=== Variant comparison: guard settings ===")
+for min_run, cover in [(3, 0.5), (4, 0.6), (4, 0.8)]:
+    snapped = sum(1 for raw, exp, _ in CASES if canonicalize_set(raw, LEX) != [exp])
+    print(f"min_run={min_run} cover={cover}: {snapped}/{len(CASES)} cases differ from expectation")
+
+print()
+print("=== Chosen variant: min_run=4, cover=0.6 ===")
+fails = 0
+for raw, exp, why in CASES:
+    got = canonicalize_set(raw, LEX)
+    ok = got == exp
+    fails += 0 if ok else 1
+    print(f"{'PASS' if ok else 'FAIL'}  {raw:38s} -> {got}   ({why})")
+
+print()
+print("=== Retrieval signal check: degenerate tokens vs bigrams ===")
+q = "公诉机关指控，被告人李某甲盗窃路灯电缆线，破坏电力设备"
+stored_a = "被告人盗窃正在使用中的公共照明电线，构成破坏电力设备"
+stored_b = "被告人叶某甲非法种植罂粟782株，构成非法种植毒品原植物"
+
+import re as _re
+def old_tokens(text):
+    return frozenset(_re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+print("old tokenizer:", "query_jaccard_set =", sorted(old_tokens(q)))
+for name, s in [("related", stored_a), ("unrelated", stored_b)]:
+    print(f"  old jaccard vs {name}: {len(old_tokens(q) & old_tokens(s)) / max(1, len(old_tokens(q) | old_tokens(s))):.4f}"
+          f"   bigram dice vs {name}: {dice(bigrams(q), bigrams(s)):.4f}")
+
+print()
+print("=== End-to-end predict/learn with fake LLM ===")
+fake = FakeLLM({"案件事实": '{"reasoning": "...", "final_answer": "[罪名]盗窃;破坏电力设施<eoa>"}'})
+
+
+class ProtoA:
+    def __init__(self, llm):
+        self.llm = llm
+        self.examples = []
+        self.lexicon = set()
+
+    def learn_from_batch(self, batch_results):
+        for r in batch_results:
+            self.examples.append({"input": r["input"], "target": r["ground_truth"]})
+            for p in split_labels(r["ground_truth"]):
+                self.lexicon.add(p)
+
+    def predict(self, input):
+        # inject nearest example by bigram dice (retrieval is fixed infra)
+        ranked = sorted(
+            self.examples,
+            key=lambda ex: -dice(bigrams(input), bigrams(ex.get("raw_question", ex["input"]))),
+        )[:2]
+        body = "\n\n".join(f"Q: {ex['input']}\nA: {ex['target']}" for ex in ranked)
+        prompt = f"{body}\n\n**Problem:**\n{input}\n\n**Instructions:** respond in JSON"
+        response = self.llm(prompt)
+        raw = extract_final_answer(response)
+        return canonicalize_set(raw, self.lexicon)
+
+
+m = ProtoA(fake)
+m.learn_from_batch([
+    {"input": "x", "ground_truth": "破坏电力设备"},
+    {"input": "y", "ground_truth": "非法种植毒品原植物"},
+    {"input": "z", "ground_truth": "盗窃"},
+])
+out = m.predict("事实: 被告人盗窃路灯电缆线，破坏电力设备")
+print("predicted:", out, "| expected ['盗窃', '破坏电力设备'] ->", out == ["盗窃", "破坏电力设备"])
+
+print()
+if fails == 0 and out == ["盗窃", "破坏电力设备"]:
+    print("PROTOTYPE A OK: all guarded-snap cases behave as predicted")
+else:
+    print(f"PROTOTYPE A REVIEW: {fails} case(s) differ")
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\.prototypes\label_lexicon_snap_memory.py (file state is current in your context — no need to Read it back)

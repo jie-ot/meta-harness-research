@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+- If the facts describe a person in a managerial or official position receiving money or valuables in exchange for using their职务便利, classify the crime simply as "受贿" unless the source explicitly states 
+- If the facts only describe forging, altering, or selling state‑issued documents or certificates and do not contain any separate act of deceiving another party for financial gain, assign only the forge
+- When the factual description contains multiple distinct illegal actions (e.g., fraud and any form of prostitution‑related conduct), list every applicable crime separated by semicolons rather than sele
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:山西省太原西峪地区人民检察院指控，2013年9月5日晚上8时许，在太原市第一监狱八监区十分监区八组，罪犯史某坐在同组罪犯邹某床上给罪犯冯某捶背，邹某回到房间后让史某离开，史某没有离开，将一个小塑料夹扔到邹某身上并躺在邹某床上，邹某过来用手拍了史某的头，史某离开后，邹某对史某进行指责，双方发生争吵，后史某用手朝邹某的面部击打一拳，至邹某鼻骨骨折。经法医鉴定，邹某因外伤致鼻骨粉碎性骨折，其损伤构成轻伤。
+山西省太原市西峪地区人民检察院向本院提交了，书证，证人证言，法医学鉴定书，被害人陈述，被告人供述等证据，指控被告人史某的行为构成××，请求依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,72 @@
+{
+  "call_id": "b19a8befc09a4e14b728d3d053984953",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017085-qYIHIaFtU3OfKsSft0f5",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the facts describe cutting or felling forest trees without a logging permit, the correct statutory charge is the specific offense “滥伐林木”, not a generic term like “非法采伐森林木材”.\",\n  \"keywords\": [\n    \"未办理采伐许可证\",\n    \"指使他人砍伐\",\n    \"森林公安\",\n    \"伐倒\",\n    \"立木蓄积\",\n    \"非法采伐\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with a rule to prevent the classification error: the AI predicted \"非法采伐森林木材\" but correct answer is \"滥伐林木\". So the error is using a wrong legal term. The rule should be: Use the specific statutory offense term \"滥伐林木\" for illegal cutting of forest trees without permit, rather than generic \"非法采伐森林木材\". So rule: When facts involve cutting trees without a logging permit, the correct charge is \"滥伐林木\". Keywords: \"未办理采伐许可证\", \"指使他人砍伐\", \"森林公安\", \"伐倒\", \"立木蓄积\", \"非法采伐\". Provide JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with a rule to prevent the classification error: the AI predicted \"非法采伐森林木材\" but correct answer is \"滥伐林木\". So the error is using a wrong legal term. The rule should be: Use the specific statutory offense term \"滥伐林木\" for illegal cutting of forest trees without permit, rather than generic \"非法采伐森林木材\". So rule: When facts involve cutting trees without a logging permit, the correct charge is \"滥伐林木\". Keywords: \"未办理采伐许可证\", \"指使他人砍伐\", \"森林公安\", \"伐倒\", \"立木蓄积\", \"非法采伐\". Provide JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with a rule to prevent the classification error: the AI predicted \"非法采伐森林木材\" but correct answer is \"滥伐林木\". So the error is using a wrong legal term. The rule should be: Use the specific statutory offense term \"滥伐林木\" for illegal cutting of forest trees without permit, rather than generic \"非法采伐森林木材\". So rule: When facts involve cutting trees without a logging permit, the correct charge is \"滥伐林木\". Keywords: \"未办理采伐许可证\", \"指使他人砍伐\", \"森林公安\", \"伐倒\", \"立木蓄积\", \"非法采伐\". Provide JSON.",
+            "reasoning_content": "We need to produce a JSON with a rule to prevent the classification error: the AI predicted \"非法采伐森林木材\" but correct answer is \"滥伐林木\". So the error is using a wrong legal term. The rule should be: Use the specific statutory offense term \"滥伐林木\" for illegal cutting of forest trees without permit, rather than generic \"非法采伐森林木材\". So rule: When facts involve cutting trees without a logging permit, the correct charge is \"滥伐林木\". Keywords: \"未办理采伐许可证\", \"指使他人砍伐\", \"森林公安\", \"伐倒\", \"立木蓄积\", \"非法采伐\". Provide JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 275,
+      "prompt_tokens": 403,
+      "total_tokens": 678,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 167,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 6.1661e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 6.1661e-05,
+        "upstream_inference_prompt_cost": 1.4911e-05,
+        "upstream_inference_completions_cost": 4.675e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

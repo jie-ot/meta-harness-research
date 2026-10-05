@@ -1,0 +1,26 @@
+Bash
+
+command:
+BASE="D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856"
+for ds in USPTO Symptom2Disease LawBench; do
+  for sys in adaptive_tokenizer_confusion_memory anchor_recency_confusion_memory discriminative_similarity_memory; do
+    f="$BASE/$ds/$sys/gpt-oss-120b/val.json"
+    if [ -f "$f" ]; then
+      acc=$(python3 -c "import json; d=json.load(open('$f')); print(d.get('accuracy','?'))")
+      echo "$ds / $sys: $acc"
+    fi
+  done
+done
+
+description: Get per-dataset val accuracy for iter12 candidates and frontier
+
+--- output ---
+USPTO / adaptive_tokenizer_confusion_memory: 
+USPTO / anchor_recency_confusion_memory: 
+USPTO / discriminative_similarity_memory: 
+Symptom2Disease / adaptive_tokenizer_confusion_memory: 
+Symptom2Disease / anchor_recency_confusion_memory: 
+Symptom2Disease / discriminative_similarity_memory: 
+LawBench / adaptive_tokenizer_confusion_memory: 
+LawBench / anchor_recency_confusion_memory: 
+LawBench / discriminative_similarity_memory:

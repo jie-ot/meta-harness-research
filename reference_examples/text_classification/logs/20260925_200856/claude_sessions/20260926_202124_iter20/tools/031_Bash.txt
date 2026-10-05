@@ -1,0 +1,142 @@
+Bash
+
+command:
+python -c "
+import os, json, re
+from collections import defaultdict
+
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+log_path = os.path.join(base, 'LawBench', 'symmetric_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+lines = open(log_path, encoding='utf-8').readlines()
+steps = [json.loads(l) for l in lines if json.loads(l).get('type') == 'step']
+
+_CJK_RE = re.compile(r'[\u4e00-\u9fff\u3040-\u30ff\uff00-\uffef]')
+def _has_cjk(t): return bool(_CJK_RE.search(t))
+def _tok_bigram(t):
+    t2 = re.sub(r'\s+', ' ', t.strip())
+    return frozenset(t2[i:i+2] for i in range(len(t2)-1)) if len(t2)>=2 else frozenset()
+def _tok_word(t): return frozenset(re.findall(r'[A-Za-z0-9]+', t.lower()))
+def _tok(t): return _tok_bigram(t) if _has_cjk(t) else _tok_word(t)
+def _jaccard(a,b):
+    if not a and not b: return 0.0
+    return len(a&b)/len(a|b)
+
+# Prototype temporal_stratified_memory
+STRATUM_SIZE = 25  # examples per stratum
+
+pool = []
+# Count how many unique labels each stratum covers
+stratum_label_counts = defaultdict(set)
+label_first_seen = {}
+
+for i, s in enumerate(steps):
+    gt = s['tgt']
+    if gt not in label_first_seen:
+        label_first_seen[gt] = i
+    stratum = i // STRATUM_SIZE
+    stratum_label_counts[stratum].add(gt)
+    pool.append({'input': s.get('input_preview',''), 'target': gt, 'tok': _tok(s.get('input_preview','')), 'step': i})
+
+print('Labels per stratum:')
+for k in sorted(stratum_label_counts):
+    print(f'  stratum {k} (steps {k*STRATUM_SIZE}-{(k+1)*STRATUM_SIZE-1}): {len(stratum_label_counts[k])} unique labels')
+
+# Simulate stratified retrieval vs pure similarity for last 50 steps
+def stratified_retrieve(query, pool, budget=30000, stratum_size=25):
+    q_tok = _tok(query)
+    stratified = defaultdict(list)
+    for ex in pool:
+        s = ex['step'] // stratum_size
+        stratified[s].append(ex)
+    
+    parts = []
+    used = set()
+    total = 0
+    
+    def add(ex):
+        nonlocal total
+        idx = ex['step']
+        if idx in used: return False
+        part = f'Q: {ex[\"input\"][:200]}\nA: {ex[\"target\"]}'
+        if total + len(part) + 2 > budget: return False
+        parts.append(part)
+        used.add(idx)
+        total += len(part) + 2
+        return True
+    
+    # Phase 1: one best per stratum
+    for s in sorted(stratified):
+        candidates = sorted(stratified[s], key=lambda ex: -_jaccard(q_tok, ex['tok']))
+        for ex in candidates:
+            if add(ex): break
+    
+    # Phase 2: fill with remaining by similarity
+    ranked = sorted(pool, key=lambda ex: -_jaccard(q_tok, ex['tok']))
+    for ex in ranked:
+        if total >= budget: break
+        add(ex)
+    
+    return parts
+
+def baseline_retrieve(query, pool, budget=30000):
+    q_tok = _tok(query)
+    ranked = sorted(pool, key=lambda ex: -_jaccard(q_tok, ex['tok']))
+    parts = []
+    total = 0
+    for ex in ranked:
+        if total >= budget: break
+        part = f'Q: {ex[\"input\"][:200]}\nA: {ex[\"target\"]}'
+        if total + len(part) + 2 > budget: break
+        parts.append(part)
+        total += len(part) + 2
+    return parts
+
+# Measure GT coverage in retrieved examples for error steps
+train_pool = [{'input': s.get('input_preview',''), 'target': s['tgt'], 'tok': _tok(s.get('input_preview','')), 'step': i}
+              for i, s in enumerate(steps[:150])]
+test_steps = steps[150:200]
+
+strat_gt_in_context = 0
+base_gt_in_context = 0
+strat_unique_labels = []
+base_unique_labels = []
+
+for s in test_steps:
+    q = s.get('input_preview','')
+    gt = s['tgt']
+    
+    sp = stratified_retrieve(q, train_pool)
+    bp = baseline_retrieve(q, train_pool)
+    
+    s_labels = set(p.split('\nA: ')[1].strip() for p in sp if '\nA: ' in p)
+    b_labels = set(p.split('\nA: ')[1].strip() for p in bp if '\nA: ' in p)
+    
+    strat_unique_labels.append(len(s_labels))
+    base_unique_labels.append(len(b_labels))
+    
+    if gt in s_labels: strat_gt_in_context += 1
+    if gt in b_labels: base_gt_in_context += 1
+
+print(f'GT in retrieved context (stratified): {strat_gt_in_context}/50')
+print(f'GT in retrieved context (baseline):   {base_gt_in_context}/50')
+print(f'Avg unique labels (stratified): {sum(strat_unique_labels)/len(strat_unique_labels):.1f}')
+print(f'Avg unique labels (baseline):   {sum(base_unique_labels)/len(base_unique_labels):.1f}')
+"
+
+
+description: Prototype temporal_stratified_memory: measure GT coverage and label diversity
+
+--- output ---
+Labels per stratum:
+  stratum 0 (steps 0-24): 24 unique labels
+  stratum 1 (steps 25-49): 25 unique labels
+  stratum 2 (steps 50-74): 24 unique labels
+  stratum 3 (steps 75-99): 25 unique labels
+  stratum 4 (steps 100-124): 25 unique labels
+  stratum 5 (steps 125-149): 21 unique labels
+  stratum 6 (steps 150-174): 22 unique labels
+  stratum 7 (steps 175-199): 24 unique labels
+GT in retrieved context (stratified): 22/50
+GT in retrieved context (baseline):   22/50
+Avg unique labels (stratified): 107.1
+Avg unique labels (baseline):   107.0

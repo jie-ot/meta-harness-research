@@ -1,0 +1,42 @@
+Bash
+
+command:
+cd "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification" && uv run python C:/tmp/test_ngram.py 2>&1
+
+description: Run bigram tokenizer prototype on real LawBench log data
+
+--- output ---
+=== Word-token sizes (should be near 0 for Chinese text) ===
+  step 0: 4 tokens -> ['2012', '2014', '73', 'eoa']
+  step 1: 5 tokens -> ['1', '2', '2017', '3305', 'eoa']
+  step 2: 6 tokens -> ['19', '2', '2015', '3', '8', 'eoa']
+  step 3: 5 tokens -> ['15', '2', '2016', '4', 'eoa']
+  step 4: 3 tokens -> ['10', '2016', 'eoa']
+
+=== Bigram sizes ===
+  step 0: 158 bigrams (sample: ['指控', '12', '款7', '<e'])
+  step 1: 168 bigrams (sample: ['查明', '明，', '年1', '<e'])
+  step 2: 149 bigrams (sample: ['指控', '李某', '在纠', '市某'])
+  step 3: 160 bigrams (sample: ['指控', '路逃', ':洋', '某在'])
+  step 4: 158 bigrams (sample: ['指控', '缅甸', '（音', '<e'])
+
+=== Pairwise Jaccard: word-token vs bigram ===
+  step0 vs step1: word=0.1250  bigram=0.3697  trigram=0.3622
+  step1 vs step2: word=0.2222  bigram=0.3965  trigram=0.3796
+  step2 vs step3: word=0.2222  bigram=0.4372  trigram=0.4213
+  step3 vs step4: word=0.3333  bigram=0.4009  trigram=0.3943
+
+=== Cross-step similarity matrix (bigram): first 5 queries ===
+  (0,1): 0.3697
+  (0,2): 0.4481
+  (0,3): 0.4196
+  (0,4): 0.3860
+  (1,2): 0.3965
+  (1,3): 0.3498
+  (1,4): 0.3527
+  (2,3): 0.4372
+  (2,4): 0.4018
+  (3,4): 0.4009
+
+=== Cold-start jaccard (empty vs query): 0.0000 (should be 0)
+Done.

@@ -1,0 +1,72 @@
+{
+  "call_id": "c838e9facdc04d44afe5d0ef5205c4b0",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791126095-8EozKxOQNUXkPd0I7wDu",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"案件事实表明，被告人徐某利用介绍工作为名将两名缅甸女子骗至中国，并通过介绍将其中一名女子卖给当地居民作为妻子，且涉及金钱交易。上述行为符合《中华人民共和国刑法》关于拐卖妇女的规定，构成拐卖妇女罪。\",\n  \"final_answer\": \"[罪名]拐卖妇女罪<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to read the problem: It's Chinese legal case. The facts: Two Burmese women were lured to China under job introduction, then taken to a hotel, then one of them (苗某) through defendant 徐某 introduced, sold to a resident 徐某3 as wife, and 徐某3's mother paid 50,000 RMB to 岳某. The prosecution says defendant 徐某 is guilty of 拐卖妇女 (trafficking women). So the charge is \"拐卖妇女罪\". The question: \"请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" So we need to output reasoning and final answer in JSON with fields \"reasoning\" and \"final_answer\". The final answer should be in the format: [罪名]拐卖妇女罪<eoa>. Possibly multiple charges? Only one. So final answer string: \"[罪名]拐卖妇女罪<eoa>\".\n\nWe need to include reasoning in Chinese? The example shows they gave reasoning in the answer? The instruction: \"Follow the answer format shown in the examples exactly\". The examples show only final answer, not reasoning. But the overall instruction says: \"Please first do reasoning analysis, then write final answer between [罪名] and <eoa>.\" And the output must be JSON with \"reasoning\" and \"final_answer\". So we need to produce JSON with those keys. The \"final_answer\" should contain the formatted string.\n\nThus produce:\n\n{\n  \"reasoning\": \"根据事实...构成拐卖妇女罪。\",\n  \"final_answer\": \"[罪名]拐卖妇女罪<eoa>\"\n}\n\nMake sure no extra spaces? Probably fine.\n\nLet's craft reasoning: The facts show that the defendant facilitated the trafficking of two foreign women, luring them under false pretenses, selling one as a wife, receiving payment. This meets elements of crime of trafficking women under Chinese criminal law. So charge is 拐卖妇女罪.\n\nReturn JSON.",
+          "provider_specific_fields": {
+            "reasoning": "We need to read the problem: It's Chinese legal case. The facts: Two Burmese women were lured to China under job introduction, then taken to a hotel, then one of them (苗某) through defendant 徐某 introduced, sold to a resident 徐某3 as wife, and 徐某3's mother paid 50,000 RMB to 岳某. The prosecution says defendant 徐某 is guilty of 拐卖妇女 (trafficking women). So the charge is \"拐卖妇女罪\". The question: \"请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" So we need to output reasoning and final answer in JSON with fields \"reasoning\" and \"final_answer\". The final answer should be in the format: [罪名]拐卖妇女罪<eoa>. Possibly multiple charges? Only one. So final answer string: \"[罪名]拐卖妇女罪<eoa>\".\n\nWe need to include reasoning in Chinese? The example shows they gave reasoning in the answer? The instruction: \"Follow the answer format shown in the examples exactly\". The examples show only final answer, not reasoning. But the overall instruction says: \"Please first do reasoning analysis, then write final answer between [罪名] and <eoa>.\" And the output must be JSON with \"reasoning\" and \"final_answer\". So we need to produce JSON with those keys. The \"final_answer\" should contain the formatted string.\n\nThus produce:\n\n{\n  \"reasoning\": \"根据事实...构成拐卖妇女罪。\",\n  \"final_answer\": \"[罪名]拐卖妇女罪<eoa>\"\n}\n\nMake sure no extra spaces? Probably fine.\n\nLet's craft reasoning: The facts show that the defendant facilitated the trafficking of two foreign women, luring them under false pretenses, selling one as a wife, receiving payment. This meets elements of crime of trafficking women under Chinese criminal law. So charge is 拐卖妇女罪.\n\nReturn JSON.",
+            "refusal": null,
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to read the problem: It's Chinese legal case. The facts: Two Burmese women were lured to China under job introduction, then taken to a hotel, then one of them (苗某) through defendant 徐某 introduced, sold to a resident 徐某3 as wife, and 徐某3's mother paid 50,000 RMB to 岳某. The prosecution says defendant 徐某 is guilty of 拐卖妇女 (trafficking women). So the charge is \"拐卖妇女罪\". The question: \"请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" So we need to output reasoning and final answer in JSON with fields \"reasoning\" and \"final_answer\". The final answer should be in the format: [罪名]拐卖妇女罪<eoa>. Possibly multiple charges? Only one. So final answer string: \"[罪名]拐卖妇女罪<eoa>\".\n\nWe need to include reasoning in Chinese? The example shows they gave reasoning in the answer? The instruction: \"Follow the answer format shown in the examples exactly\". The examples show only final answer, not reasoning. But the overall instruction says: \"Please first do reasoning analysis, then write final answer between [罪名] and <eoa>.\" And the output must be JSON with \"reasoning\" and \"final_answer\". So we need to produce JSON with those keys. The \"final_answer\" should contain the formatted string.\n\nThus produce:\n\n{\n  \"reasoning\": \"根据事实...构成拐卖妇女罪。\",\n  \"final_answer\": \"[罪名]拐卖妇女罪<eoa>\"\n}\n\nMake sure no extra spaces? Probably fine.\n\nLet's craft reasoning: The facts show that the defendant facilitated the trafficking of two foreign women, luring them under false pretenses, selling one as a wife, receiving payment. This meets elements of crime of trafficking women under Chinese criminal law. So charge is 拐卖妇女罪.\n\nReturn JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to read the problem: It's Chinese legal case. The facts: Two Burmese women were lured to China under job introduction, then taken to a hotel, then one of them (苗某) through defendant 徐某 introduced, sold to a resident 徐某3 as wife, and 徐某3's mother paid 50,000 RMB to 岳某. The prosecution says defendant 徐某 is guilty of 拐卖妇女 (trafficking women). So the charge is \"拐卖妇女罪\". The question: \"请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" So we need to output reasoning and final answer in JSON with fields \"reasoning\" and \"final_answer\". The final answer should be in the format: [罪名]拐卖妇女罪<eoa>. Possibly multiple charges? Only one. So final answer string: \"[罪名]拐卖妇女罪<eoa>\".\n\nWe need to include reasoning in Chinese? The example shows they gave reasoning in the answer? The instruction: \"Follow the answer format shown in the examples exactly\". The examples show only final answer, not reasoning. But the overall instruction says: \"Please first do reasoning analysis, then write final answer between [罪名] and <eoa>.\" And the output must be JSON with \"reasoning\" and \"final_answer\". So we need to produce JSON with those keys. The \"final_answer\" should contain the formatted string.\n\nThus produce:\n\n{\n  \"reasoning\": \"根据事实...构成拐卖妇女罪。\",\n  \"final_answer\": \"[罪名]拐卖妇女罪<eoa>\"\n}\n\nMake sure no extra spaces? Probably fine.\n\nLet's craft reasoning: The facts show that the defendant facilitated the trafficking of two foreign women, luring them under false pretenses, selling one as a wife, receiving payment. This meets elements of crime of trafficking women under Chinese criminal law. So charge is 拐卖妇女罪.\n\nReturn JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 545,
+      "prompt_tokens": 894,
+      "total_tokens": 1439,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 431,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00049527,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00049527,
+        "upstream_inference_prompt_cost": 8.652e-05,
+        "upstream_inference_completions_cost": 0.00040875
+      }
+    }
+  },
+  "raw_response_missing": false
+}

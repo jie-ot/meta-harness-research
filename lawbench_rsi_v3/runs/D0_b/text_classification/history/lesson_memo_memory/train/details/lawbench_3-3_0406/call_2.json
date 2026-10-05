@@ -1,0 +1,72 @@
+{
+  "call_id": "9ad4d0c02c3640a595ca839cd42cda12",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791026793-psYzL1zwoOeJiBCTYWY5",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"lesson\": \"- 读取事实时，务必提取所有出现的行为关键词（如“强制猥亵”“侮辱妇女”“危险驾驶”“窝藏”“包庇”“妨害公务”“非法狩猎”“假冒注册商标”等），并据此列出对应的罪名，避免遗漏或自行补充未出现的罪名。\\n- 对相似但法律意义不同的词要精准区分，例如“阻碍公务”应对应“妨害公务”，而不是直接使用“阻碍公务”。\\n- 当事实中出现多个指控或并列的行为时，必须输出多个罪名并用分号分隔，切忌只给出单一罪名或随意组合不相关的罪名。\\n- 地名、检察院名称等信息仅是案件背景，不能作为判定罪名的依据；判决应完全基于行为描述和法律条文对应。\\n- 避免在没有明确事实支持的情况下加入额外罪名（如“抢劫罪”“故意毁坏财物罪”等），坚持只列出事实中明确提到或可以直接推断的犯罪。\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to summarize up to 5 concise \"lessons\" (判案规律) to avoid similar errors. Based on observed errors: The model often misidentifies the correct crime(s). Issues: 1) It sometimes outputs a single crime when multiple are needed, or wrong combination. 2) It misinterprets the phrasing of the fact snippet (e.g., \"公诉机关指控：2\" ambiguous). 3) It confuses similar-sounding crimes (e.g., \"阻碍公务\" vs \"妨害公务\"). 4) It overgenerates specific crimes (e.g., \"非法捕猎、收购、运输、出售国家重点保护野生动物罪\" vs correct \"非法狩猎\"). 5) It adds extra crimes not present (e.g., \"抢劫罪\" when not in fact). Need to base on observable signals: presence of keywords like \"强制猥亵\", \"侮辱妇女\", \"危险驾驶\", \"窝藏、包庇\", \"妨害公务\", \"非法狩猎\", \"假冒注册商标\". Also note that the fact snippet often includes location names (e.g., \"江苏省新沂市人民\") which are not informative for crime; model may overfit to location.\n\nThus lessons: 1) Identify all distinct criminal conduct mentioned in fact text; don't assume single crime. 2) Pay attention to exact legal terminology; differentiate similar terms (阻碍 vs 妨害). 3) When the fact includes a list of charges, ensure to output each as separate, matching order? 4) Avoid adding crimes not explicitly supported by fact; rely on explicit keywords. 5) Recognize that location names are irrelevant; focus on action descriptors.\n\nNow produce JSON with \"lesson\".",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to summarize up to 5 concise \"lessons\" (判案规律) to avoid similar errors. Based on observed errors: The model often misidentifies the correct crime(s). Issues: 1) It sometimes outputs a single crime when multiple are needed, or wrong combination. 2) It misinterprets the phrasing of the fact snippet (e.g., \"公诉机关指控：2\" ambiguous). 3) It confuses similar-sounding crimes (e.g., \"阻碍公务\" vs \"妨害公务\"). 4) It overgenerates specific crimes (e.g., \"非法捕猎、收购、运输、出售国家重点保护野生动物罪\" vs correct \"非法狩猎\"). 5) It adds extra crimes not present (e.g., \"抢劫罪\" when not in fact). Need to base on observable signals: presence of keywords like \"强制猥亵\", \"侮辱妇女\", \"危险驾驶\", \"窝藏、包庇\", \"妨害公务\", \"非法狩猎\", \"假冒注册商标\". Also note that the fact snippet often includes location names (e.g., \"江苏省新沂市人民\") which are not informative for crime; model may overfit to location.\n\nThus lessons: 1) Identify all distinct criminal conduct mentioned in fact text; don't assume single crime. 2) Pay attention to exact legal terminology; differentiate similar terms (阻碍 vs 妨害). 3) When the fact includes a list of charges, ensure to output each as separate, matching order? 4) Avoid adding crimes not explicitly supported by fact; rely on explicit keywords. 5) Recognize that location names are irrelevant; focus on action descriptors.\n\nNow produce JSON with \"lesson\".",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to summarize up to 5 concise \"lessons\" (判案规律) to avoid similar errors. Based on observed errors: The model often misidentifies the correct crime(s). Issues: 1) It sometimes outputs a single crime when multiple are needed, or wrong combination. 2) It misinterprets the phrasing of the fact snippet (e.g., \"公诉机关指控：2\" ambiguous). 3) It confuses similar-sounding crimes (e.g., \"阻碍公务\" vs \"妨害公务\"). 4) It overgenerates specific crimes (e.g., \"非法捕猎、收购、运输、出售国家重点保护野生动物罪\" vs correct \"非法狩猎\"). 5) It adds extra crimes not present (e.g., \"抢劫罪\" when not in fact). Need to base on observable signals: presence of keywords like \"强制猥亵\", \"侮辱妇女\", \"危险驾驶\", \"窝藏、包庇\", \"妨害公务\", \"非法狩猎\", \"假冒注册商标\". Also note that the fact snippet often includes location names (e.g., \"江苏省新沂市人民\") which are not informative for crime; model may overfit to location.\n\nThus lessons: 1) Identify all distinct criminal conduct mentioned in fact text; don't assume single crime. 2) Pay attention to exact legal terminology; differentiate similar terms (阻碍 vs 妨害). 3) When the fact includes a list of charges, ensure to output each as separate, matching order? 4) Avoid adding crimes not explicitly supported by fact; rely on explicit keywords. 5) Recognize that location names are irrelevant; focus on action descriptors.\n\nNow produce JSON with \"lesson\".",
+            "reasoning_content": "We need to summarize up to 5 concise \"lessons\" (判案规律) to avoid similar errors. Based on observed errors: The model often misidentifies the correct crime(s). Issues: 1) It sometimes outputs a single crime when multiple are needed, or wrong combination. 2) It misinterprets the phrasing of the fact snippet (e.g., \"公诉机关指控：2\" ambiguous). 3) It confuses similar-sounding crimes (e.g., \"阻碍公务\" vs \"妨害公务\"). 4) It overgenerates specific crimes (e.g., \"非法捕猎、收购、运输、出售国家重点保护野生动物罪\" vs correct \"非法狩猎\"). 5) It adds extra crimes not present (e.g., \"抢劫罪\" when not in fact). Need to base on observable signals: presence of keywords like \"强制猥亵\", \"侮辱妇女\", \"危险驾驶\", \"窝藏、包庇\", \"妨害公务\", \"非法狩猎\", \"假冒注册商标\". Also note that the fact snippet often includes location names (e.g., \"江苏省新沂市人民\") which are not informative for crime; model may overfit to location.\n\nThus lessons: 1) Identify all distinct criminal conduct mentioned in fact text; don't assume single crime. 2) Pay attention to exact legal terminology; differentiate similar terms (阻碍 vs 妨害). 3) When the fact includes a list of charges, ensure to output each as separate, matching order? 4) Avoid adding crimes not explicitly supported by fact; rely on explicit keywords. 5) Recognize that location names are irrelevant; focus on action descriptors.\n\nNow produce JSON with \"lesson\"."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 650,
+      "prompt_tokens": 941,
+      "total_tokens": 1591,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 399,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000145317,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000145317,
+        "upstream_inference_prompt_cost": 3.4817e-05,
+        "upstream_inference_completions_cost": 0.0001105
+      }
+    }
+  },
+  "raw_response_missing": false
+}

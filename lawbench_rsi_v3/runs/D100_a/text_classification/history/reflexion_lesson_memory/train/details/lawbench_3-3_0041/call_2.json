@@ -1,0 +1,72 @@
+{
+  "call_id": "ac0707d5c6a14fd8a6e105c3e17e5b60",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017656-K2xhv49QMKGJlo2mZOSS",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When classifying fraud offenses, assign the generic charge 诈骗 only if the deception does not involve the formation or execution of a bona‑fide contract; use 合同诈骗 only when the crime centers on a false or fraudulent contract that the victim relied upon to transfer property or money. Also list charges in the order they appear chronologically in the facts.\",\n  \"keywords\": [\n    \"骗取\",\n    \"以...名义\",\n    \"虚假合同\",\n    \"无实际合同\",\n    \"诬告\",\n    \"伪证\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with a rule to prevent the classification error: The AI predicted \"合同诈骗;诬告陷害\" but correct answer is \"诬告陷害;诈骗\". So the error is mislabeling \"诈骗\" as \"合同诈骗\". The case involves fraud (骗取钱财) but not necessarily contract fraud; it's general fraud. The rule: distinguish between general fraud (诈骗) and contract fraud (合同诈骗) based on presence of contract elements. Also ensure ordering? The correct answer order is \"诬告陷害;诈骗\". The AI swapped order? It gave \"合同诈骗;诬告陷害\". So need rule: Use specific charge names based on factual elements; do not default to contract fraud when only fraud via deception without contract. Keywords: \"骗取\", \"以...名义\", \"无实际合同\", \"虚假合同\", \"诬告\", \"伪证\". Provide rule.\n\nLet's craft JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with a rule to prevent the classification error: The AI predicted \"合同诈骗;诬告陷害\" but correct answer is \"诬告陷害;诈骗\". So the error is mislabeling \"诈骗\" as \"合同诈骗\". The case involves fraud (骗取钱财) but not necessarily contract fraud; it's general fraud. The rule: distinguish between general fraud (诈骗) and contract fraud (合同诈骗) based on presence of contract elements. Also ensure ordering? The correct answer order is \"诬告陷害;诈骗\". The AI swapped order? It gave \"合同诈骗;诬告陷害\". So need rule: Use specific charge names based on factual elements; do not default to contract fraud when only fraud via deception without contract. Keywords: \"骗取\", \"以...名义\", \"无实际合同\", \"虚假合同\", \"诬告\", \"伪证\". Provide rule.\n\nLet's craft JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with a rule to prevent the classification error: The AI predicted \"合同诈骗;诬告陷害\" but correct answer is \"诬告陷害;诈骗\". So the error is mislabeling \"诈骗\" as \"合同诈骗\". The case involves fraud (骗取钱财) but not necessarily contract fraud; it's general fraud. The rule: distinguish between general fraud (诈骗) and contract fraud (合同诈骗) based on presence of contract elements. Also ensure ordering? The correct answer order is \"诬告陷害;诈骗\". The AI swapped order? It gave \"合同诈骗;诬告陷害\". So need rule: Use specific charge names based on factual elements; do not default to contract fraud when only fraud via deception without contract. Keywords: \"骗取\", \"以...名义\", \"无实际合同\", \"虚假合同\", \"诬告\", \"伪证\". Provide rule.\n\nLet's craft JSON.",
+            "reasoning_content": "We need to produce a JSON with a rule to prevent the classification error: The AI predicted \"合同诈骗;诬告陷害\" but correct answer is \"诬告陷害;诈骗\". So the error is mislabeling \"诈骗\" as \"合同诈骗\". The case involves fraud (骗取钱财) but not necessarily contract fraud; it's general fraud. The rule: distinguish between general fraud (诈骗) and contract fraud (合同诈骗) based on presence of contract elements. Also ensure ordering? The correct answer order is \"诬告陷害;诈骗\". The AI swapped order? It gave \"合同诈骗;诬告陷害\". So need rule: Use specific charge names based on factual elements; do not default to contract fraud when only fraud via deception without contract. Keywords: \"骗取\", \"以...名义\", \"无实际合同\", \"虚假合同\", \"诬告\", \"伪证\". Provide rule.\n\nLet's craft JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 332,
+      "prompt_tokens": 677,
+      "total_tokens": 1009,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 228,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00011685,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00011685,
+        "upstream_inference_prompt_cost": 3.385e-05,
+        "upstream_inference_completions_cost": 8.3e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

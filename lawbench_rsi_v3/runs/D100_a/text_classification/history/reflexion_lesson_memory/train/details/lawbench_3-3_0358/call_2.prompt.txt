@@ -1,0 +1,23 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:贵州省织金县人民检察院指控：2012年以来，被告人姜某以织金县城关镇为中心，通过来会的方式变相吸收社会上不特定公众的存款，严重扰乱了当地的金融秩序。其所邀的“会”为月会，并分为“红会”和“黑某”，红会为会员在结会前每月交会金1000、2000或3000元，黑某为会员在结会后每月交会金1100、2200或3300元（其中100、200、300元为利息），变相吸收公众存款。截止2015年初，共给刘某芳、罗某举等18名被害人造成经济损失共计1087700元。被告人姜某将所吸收的会金用于支付会金、偿还借款和借给他人等方面。
+案发后，被告人姜某于2015年6月16日主动到公安机关投案，并如实供述犯罪事实。
+
+
+Wrong prediction: [罪名]非法吸收公众存款罪<eoa>
+Correct answer: 非法吸收公众存款
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

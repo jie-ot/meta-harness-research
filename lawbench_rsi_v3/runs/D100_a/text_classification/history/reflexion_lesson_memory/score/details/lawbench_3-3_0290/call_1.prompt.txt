@@ -1,0 +1,31 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the facts describe the misappropriation of money belonging to a private company or other non‑government entity (e.g., company funds, client payments) rather than state or public treasury funds, the
+- If the described conduct involves using personal or official connections to arrange or facilitate a bribe—i.e., acting as an intermediary who introduces a bribe or obtains money by promising to use in
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the facts show that the defendant only provided shelter, assistance, or concealment for drug offenders and did not personally produce, possess, or traffic the narcotics, classify the offense as 窝
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控：一、2012年到2014年间，被告人许某利用担任中原银行新乡分行（原新乡银行）卫北支行行长的职务便利，逢年过节分五次收受河南中原重工制造有限公司总经理葛某现金共5万元，为其在贷款业务方面提供帮助。
+二、2013年至2015年间，许某利用担任中原银行新乡分行（原新乡银行）卫北支行行长的职务便利，逢年过节分三次收受新乡市城投混凝土有限公司总经理王某现金、购物卡共2万元，为其在贷款业务方面提供帮助。
+三、2013年至2015年间，许某利用担任中原银行新乡分行（原新乡银行）卫北支行行长的职务便利，逢年过节分五次收受新乡市金原纺织有限公司总经理张某2现金共1万元，为其在贷款业务方面提供帮助。
+四、2013年至2014年，许某利用担任中原银行新乡分行（原新乡银行）卫北支行行长的职务便利，逢年过节分三次收受新乡市聚和缘商务酒店负责人张某1现金、购物卡共计1.1万元，为其在贷款业务方面提供帮助。
+公诉机关要求以××追究被告人许某的刑事责任，并提供证据，要求依法予以惩处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

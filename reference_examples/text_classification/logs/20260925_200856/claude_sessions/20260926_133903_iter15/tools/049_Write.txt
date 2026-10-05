@@ -1,0 +1,150 @@
+Write: write_reports.py
+
+content:
+import os
+
+REPORTS = r"D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\reports"
+os.makedirs(REPORTS, exist_ok=True)
+
+reports = {}
+
+reports["iter_09.md"] = (
+    "# Iteration 9 Report\n\n"
+    "## What changed\n"
+    "- **fixed_confusion_memory**: prediction normalization only — strip format wrappers before storing confusion keys.\n"
+    "- **idf_confusion_memory**: IDF-weighted Jaccard on top of normalization.\n\n"
+    "## Results\n"
+    "| System | Avg val | Delta |\n"
+    "|--------|---------|-------|\n"
+    "| fixed_confusion_memory | 50.9% | -0.7 |\n"
+    "| idf_confusion_memory | 48.4% | -3.2 |\n\n"
+    "## Why\n"
+    "Normalization alone reached 50.9%, confirming the confusion phase was silently broken in all prior systems: "
+    "predictions stored with wrappers like [TAG]label<eoa> never matched plain ground-truth strings, so the "
+    "disambiguation phase never fired. IDF hurt because at pool sizes of 50-200 examples, estimates are noisy; "
+    "high-IDF tokens are often formatting artifacts, not discriminative signal.\n\n"
+    "## Takeaway\n"
+    "Prediction normalization is confirmed essential and must appear in every future system. "
+    "IDF weighting at small corpus sizes adds noise.\n"
+)
+
+reports["iter_10.md"] = (
+    "# Iteration 10 Report\n\n"
+    "## What changed\n"
+    "- **anchor_last_memory**: placed the single best-matching example per top candidate label at the very end of "
+    "context (immediately before the question), filling the remaining budget normally.\n"
+    "- **utility_weighted_memory**: per-example utility scores (+1 when in context and correct, -1 otherwise), "
+    "sigmoid-scaled as a retrieval weight.\n\n"
+    "## Results\n"
+    "| System | Avg val | Delta |\n"
+    "|--------|---------|-------|\n"
+    "| anchor_last_memory | 46.0% | -5.6 |\n"
+    "| utility_weighted_memory | 45.8% | -5.8 |\n\n"
+    "## Why\n"
+    "Anchor placement assumes proximity bias strong enough to override retrieval quality. Displacing "
+    "high-similarity examples from the fill budget costs more than the positional gain. Utility weighting "
+    "at batch_size=1 accumulates too few signals per example; early accidents permanently bias scores.\n\n"
+    "## Takeaway\n"
+    "Prompt ordering effects exist but are too small to justify displacing quality examples. "
+    "Per-example feedback needs larger batches to be reliable.\n"
+)
+
+reports["iter_11.md"] = (
+    "# Iteration 11 Report\n\n"
+    "## What changed\n"
+    "- **contrastive_boundary_memory**: dedicated \"Common Confusions\" section with explicit "
+    "\"[NOT: wrong_label]\" annotations per disambiguation example.\n"
+    "- **cluster_confusion_memory**: expanded top candidate labels to their full connected component in the "
+    "undirected confusion graph (BFS, both edge directions), one representative per cluster member.\n\n"
+    "## Results\n"
+    "| System | Avg val | Delta |\n"
+    "|--------|---------|-------|\n"
+    "| contrastive_boundary_memory | 46.7% | -4.9 |\n"
+    "| cluster_confusion_memory | 50.2% | -1.4 |\n\n"
+    "## Why\n"
+    "Explicit [NOT: wrong_label] annotations surface the wrong label prominently; the model anchors on those "
+    "tokens rather than treating them as a negation. Cluster BFS surfaces transitively confused labels that "
+    "share fewer tokens with the query, diluting the disambiguation signal while consuming context budget.\n\n"
+    "## Takeaway\n"
+    "Negative annotations in prompts are harmful at this scale. Confusion graph expansion should stay at "
+    "depth 1. The single-hop approach is already near-optimal for the confusion mechanism.\n"
+)
+
+reports["iter_12.md"] = (
+    "# Iteration 12 Report\n\n"
+    "## What changed\n"
+    "- **anchor_recency_confusion_memory**: one anchor (most-recent example per label) plus an 80-example "
+    "recency window, replacing the unbounded pool.\n"
+    "- **discriminative_similarity_memory**: label-discriminativeness-weighted Jaccard where "
+    "w(t) = 1 / num_distinct_labels_containing_t.\n\n"
+    "## Results\n"
+    "| System | Avg val | Delta |\n"
+    "|--------|---------|-------|\n"
+    "| anchor_recency_confusion_memory | 45.6% | -6.0 |\n"
+    "| discriminative_similarity_memory | 47.8% | -3.8 |\n\n"
+    "## Why\n"
+    "Bounded pool (80 examples) truncates the LawBench training set: with 116 labels and ~300 training "
+    "examples, the window covers only the last 25% of the label space. Discriminativeness weighting has "
+    "the same small-corpus noise problem as IDF: tokens appearing in only one label get maximum weight "
+    "even if they are formatting artifacts.\n\n"
+    "## Takeaway\n"
+    "Pool size bounds hurt multi-label datasets. Stick with the full unbounded pool and plain adaptive Jaccard.\n"
+)
+
+reports["iter_13.md"] = (
+    "# Iteration 13 Report\n\n"
+    "## What changed\n"
+    "- **unified_confusion_retrieval_memory**: single unified ranking: "
+    "score(ex) = jaccard(q, ex) + alpha * log(1 + confusion_affinity(ex.label)).\n"
+    "- **decayed_confusion_memory**: multiply all confusion counts by 0.95 after each learn_from_batch call, "
+    "prune entries below 0.05.\n\n"
+    "## Results\n"
+    "| System | Avg val | Delta |\n"
+    "|--------|---------|-------|\n"
+    "| unified_confusion_retrieval_memory | 49.6% | -2.6 |\n"
+    "| decayed_confusion_memory | 52.2% | +0.0 |\n\n"
+    "decayed_confusion_memory became the new Pareto leader at 52.2%.\n\n"
+    "## Why\n"
+    "Unified scoring promotes confusion-affiliated examples even when topically unrelated to the current "
+    "query. The two-phase approach (confusion slots first, then similarity fill) is better because confusion "
+    "examples only reach context when topically relevant examples for those labels exist. Decay is near-free: "
+    "early confusions corrected later kept high accumulated counts, displacing currently-active confusions.\n\n"
+    "## Takeaway\n"
+    "decayed_confusion_memory is the new frontier. Decay is required in all future confusion-based systems. "
+    "Unified additive scoring is weaker than the two-phase approach.\n"
+)
+
+reports["iter_14.md"] = (
+    "# Iteration 14 Report\n\n"
+    "## What changed\n"
+    "- **missed_component_memory**: split compound labels on semicolons, tracked per-atomic-component miss "
+    "counts, added a log-scaled component-overlap bonus to Jaccard scoring.\n"
+    "- **recent_error_hint_memory**: compact rolling window of the last 10 distinct wrong-to-correct pairs "
+    "prepended as a \"Recent corrections\" section above retrieved examples.\n\n"
+    "## Results\n"
+    "| System | Avg val | Delta |\n"
+    "|--------|---------|-------|\n"
+    "| missed_component_memory | 46.9% | -5.3 |\n"
+    "| recent_error_hint_memory | 45.6% | -6.6 |\n\n"
+    "## Why\n"
+    "Compound label splitting treated semicolons as delimiters across all datasets: on USPTO (SMILES uses "
+    "semicolons as formula separators) and LawBench (single-string labels), splitting produces nonsensical "
+    "sub-components. Recent error hints put wrong-answer strings directly in the prompt; the model anchors "
+    "on those tokens rather than treating them as corrections.\n\n"
+    "## Takeaway\n"
+    "Dataset-specific assumptions must be validated as general before inclusion. Explicit error history in "
+    "the prompt context is harmful; raw Q/A examples are more reliable than meta-commentary about past failures.\n"
+)
+
+for filename, content in reports.items():
+    path = os.path.join(REPORTS, filename)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(content)
+    print(f"wrote {filename}")
+
+print("all done")
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\write_reports.py (file state is current in your context — no need to Read it back)

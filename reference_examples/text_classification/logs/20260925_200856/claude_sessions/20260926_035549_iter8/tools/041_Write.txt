@@ -1,0 +1,29 @@
+Write: logs\20260925_200856\pending_eval.json
+
+content:
+{
+  "iteration": 8,
+  "candidates": [
+    {
+      "name": "confusion_normalized_bfs_memory",
+      "file": "agents/confusion_normalized_bfs_memory.py",
+      "hypothesis": "Normalizing raw predictions before storing them in the confusion matrix (stripping format wrappers like '[TAG]label<eoa>') will unlock the disambiguation phase that has never fired in any prior system, because confusion keys currently have zero overlap with ground-truth labels. With normalization active, BFS depth-2 traversal with count/depth weight decay will additionally surface transitively confused label clusters missed by single-hop lookup, improving LawBench beyond 38%.",
+      "axis": "exploitation",
+      "base_system": "adaptive_tokenizer_confusion_memory",
+      "components": ["prediction_normalization", "format_wrapper_stripping", "bfs_depth2", "weighted_traversal", "adaptive_tokenizer", "confusion_matrix"]
+    },
+    {
+      "name": "label_prototype_memory",
+      "file": "agents/label_prototype_memory.py",
+      "hypothesis": "Maintaining one LLM-written discriminative prototype per label (a 1-2 sentence description of what makes that label distinct from its confusors) and injecting the top-K most query-similar prototypes above few-shot examples will outperform pure example retrieval, because compressed categorical descriptions provide targeted boundary guidance the model would otherwise have to infer from raw examples alone — without the O(N^2) context cost that regressed llm_rule_synthesis_memory.",
+      "axis": "exploration",
+      "base_system": "adaptive_tokenizer_confusion_memory",
+      "components": ["per_label_prototype", "llm_synthesis", "incremental_update", "error_threshold_trigger", "prototype_similarity_retrieval", "memory_content_axis", "llm_usage_in_learning"]
+    }
+  ]
+}
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\pending_eval.json (file state is current in your context — no need to Read it back)

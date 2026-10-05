@@ -1,0 +1,41 @@
+Bash
+
+command:
+python "D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/lawbench_rsi_v3/runs/D100_a/text_classification/.prototypes/contrastive_error_memory_proto.py"
+
+description: Re-run contrastive_error_memory prototype after assertion fix
+
+--- output ---
+=== VARIANT 1: input-similarity retrieval ===
+Stored 10 error pairs, 3 positive examples
+Retrieved 3 mistake pairs for query:
+  ✗ 错误: 挪用公款
+  ✓ 正确: 挪用资金
+  ✗ 错误: 拐卖妇女
+  ✓ 正确: 拐卖妇女、儿童
+  ✗ 错误: 贩卖毒品;徇私枉法
+  ✓ 正确: 走私、贩卖、运输、制造毒品;徇私枉法
+
+=== VARIANT 2: predicted-label overlap retrieval ===
+Top 3 pairs by combined score:
+  ✗ 挪用公款 → ✓ 挪用资金
+  ✗ 挪用资金 → ✓ 职务侵占
+  ✗ 拐卖妇女 → ✓ 拐卖妇女、儿童
+
+=== VARIANT 3: confusion-cluster grouping ===
+10 unique (wrong→correct) clusters:
+  ✗ 故意毁坏财物罪 → ✓ 故意毁坏财物  (出现1次)
+  ✗ 拐卖妇女 → ✓ 拐卖妇女、儿童  (出现1次)
+  ✗ 受贿 → ✓ 非国家工作人员受贿  (出现1次)
+  ✗ 伪造国家机关证件罪;诈骗罪 → ✓ 伪造、变造、买卖国家机关公文、证件、印章  (出现1次)
+  ✗ 敲诈勒索罪;非法控制计算机信息系统罪 → ✓ 破坏计算机信息系统  (出现1次)
+
+Top retrieved mistakes for '挪用资金' query: [('挪用公款', '挪用资金'), ('拐卖妇女', '拐卖妇女、儿童')]
+
+WINNER: VARIANT 1 (input-similarity retrieval) with contrastive section
+Reason: V2's pred-label overlap adds marginal signal vs noise at cold start.
+        V3 (frequency clusters) loses input-to-pair matching entirely.
+        V1 with a dedicated 'Common Mistakes' section directly before examples
+        leverages both input sim AND explicit before/after corrections.
+
+All prototype tests PASSED

@@ -1,0 +1,33 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the facts describe a person in a managerial or official position receiving money or valuables in exchange for using their职务便利, classify the crime simply as "受贿" unless the source explicitly states 
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- If the facts describe a public quarantine or inspection official who, by abusing official duties and issuing false quarantine documents, helps others obtain state subsidies or other benefits, the appr
+- When the facts describe a person knowingly assisting a known criminal by providing shelter, resources, or false statements to evade detection or punishment, classify the offense as the statutory crime
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:长沙市岳麓区人民检察院指控：（一）××
+2009年至2013年间，被告人常2某利用其担任湖南省科技厅发展计划处副处长和调研员的职务之便，为他人在申报国家创新基金项目等方面谋取利益，索取或收受王某甲、陈某和李某乙现金共计人民币27.9417万某。具体事实如下：
+1、2009年至2013年6月，长沙海联投资咨询管理有限公司董事长王某甲为其公司提供咨询服务的项目在申报国家创新基金项目过程中能获得被告人常2某的帮助，分多次送给常2某共计16.5万某。
+2、2011年春节后，湖南合创咨询公司总经理陈某为其公司提供咨询服务的项目在申报国家创新基金项目过程中能获得被告人常2某的帮助，在常2某办公室送给常2某现金人民币5万某和一盒珍珠项链。
+3、2008年下半年，被告人常2某找到湖南四达科技咨询有限公司（以下简称四达公司）总经理李某乙要求四达公司为其报销私人消费的发票，李某乙与该公司董事长廖某商量后同意为其报销。2009年至2012年间，被告人常2某分4次将其私人消费的发票交给李某乙在四达公司报销，获取现金共计人民币64417元。
+（二）××
+2011年，湖南省创新基金管理中心主任聂某甲（另案处理）以中心业务招待经费不足为由，找到分管中心业务工作的湖南省科技厅发展计划处副处长常2某和工作人员李某丙商议，提出找几家企业虚假申办省科技计划项目，请其关照立项后再将立项资金从相关企业中提现取回，作为中心的“工作经费”。被告人常2某明知《湖南省科技计划管理项目办法》、《湖南省科技计划项目经费管理办法》、《湖南省科技型中小企业技术创新基金项目管理暂行办法》等规章对湖南省科技计划项目和湖南省创新基金项目的申报、立项和项目经费的使用均有明确规定，弄虚作假套取财政专项资金系违法行为，却放弃自身监管职责，同意并支持聂某甲的提议，于2011年至2013年间将聂某甲勾结湘潭湘工科技有限公司等7家企业虚假申报的省科技计划项目列入立项，致使省级科技计划项目补助资金150万某被套取，其中104万某被聂某甲占为己有。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

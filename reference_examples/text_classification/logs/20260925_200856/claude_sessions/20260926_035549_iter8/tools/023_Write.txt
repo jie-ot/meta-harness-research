@@ -1,0 +1,77 @@
+Write: C:/tmp/proto_bfs.py
+
+content:
+"""Prototype: multi-hop BFS on confusion graph retrieval."""
+import json, os, re
+from collections import defaultdict, deque
+
+LOG = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\LawBench\adaptive_tokenizer_confusion_memory\gpt-oss-120b\log.jsonl'
+MEM = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\LawBench\adaptive_tokenizer_confusion_memory\gpt-oss-120b\memory.json'
+
+# Load confusion matrix from saved state
+state = json.loads(open(MEM, encoding='utf-8').read())
+confusion = state['confusion']  # pred -> {actual: count}
+
+# Build a directed graph: pred -> actual (confused direction)
+# Edge weight = count
+graph = defaultdict(dict)
+for pred, actuals in confusion.items():
+    for actual, cnt in actuals.items():
+        graph[pred][actual] = cnt
+
+print(f"Graph nodes: {len(graph)}, total edges: {sum(len(v) for v in graph.values())}")
+
+# BFS from a set of seed labels up to depth max_depth
+def bfs_confusion_neighbors(seeds, max_depth=2, max_nodes=8):
+    visited = set(seeds)
+    frontier = list(seeds)
+    result = []  # (label, depth, edge_weight)
+    q = deque((s, 0, 999) for s in seeds)
+    while q:
+        node, depth, weight = q.popleft()
+        if depth > 0:
+            result.append((node, depth, weight))
+        if depth >= max_depth:
+            continue
+        # Follow edges sorted by weight desc
+        neighbors = sorted(graph.get(node, {}).items(), key=lambda x: -x[1])
+        for neighbor, edge_w in neighbors[:3]:  # top-3 per node
+            if neighbor not in visited and len(result) < max_nodes:
+                visited.add(neighbor)
+                q.append((neighbor, depth+1, edge_w))
+    return result
+
+# Test: simulate what top-3 predicted labels might be for a LawBench case
+# Use common high-confusion seeds
+test_seeds_v1 = ['诈骗', '受贿', '盗窃']
+test_seeds_v2 = ['故意伤害', '强制猥亵妇女', '生产、销售假药']
+
+for seeds in [test_seeds_v1, test_seeds_v2]:
+    neighbors = bfs_confusion_neighbors(seeds)
+    print(f"\nBFS from {seeds}:")
+    for label, depth, w in neighbors:
+        print(f"  depth={depth} w={w} label={label}")
+
+# Variant: limit to depth=1 for comparison
+def bfs_depth1(seeds, max_nodes=6):
+    result = []
+    for s in seeds:
+        for neighbor, cnt in sorted(graph.get(s, {}).items(), key=lambda x: -x[1])[:2]:
+            result.append((neighbor, 1, cnt))
+    return result
+
+print("\n--- Depth-1 comparison ---")
+for seeds in [test_seeds_v1]:
+    n1 = bfs_depth1(seeds)
+    n2 = bfs_confusion_neighbors(seeds, max_depth=2)
+    unique_d1 = set(x[0] for x in n1)
+    unique_d2 = set(x[0] for x in n2)
+    print(f"Depth-1 finds {len(unique_d1)} extra labels: {unique_d1}")
+    print(f"Depth-2 finds {len(unique_d2)} extra labels: {unique_d2}")
+    new_in_d2 = unique_d2 - unique_d1 - set(seeds)
+    print(f"Labels only found by depth-2: {new_in_d2}")
+
+
+
+--- output ---
+File created successfully at: C:/tmp/proto_bfs.py (file state is current in your context — no need to Read it back)

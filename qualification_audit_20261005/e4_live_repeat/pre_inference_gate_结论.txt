@@ -1,0 +1,14 @@
+E4实施前检查与最小链路验证：在首条分类推理前停止
+
+R4B代码、trained memory、manifest和score split仍匹配冻结哈希。manifest前20项已在结果前锁定；独立渲染的20个runtime input、target、constructed/actual prompt均与历史R4B逐字一致。
+首条为lawbench_3-3_0481，prompt 30,802字符，SHA-256=8c8a9a81a59618313eb294b4df164c47844afc2775024def0962e0a53d4c7a2f。
+
+官方CLI目录确认gpt-5.6-sol支持max；thread/start也回显model=gpt-5.6-sol、provider=openai、effort=max、ephemeral=true、readOnly/network=false。
+但thread/start同时回报instruction_source_count=1。严格协议要求任务模型只有原harness语义，因此脚本没有发送turn/start。该instruction source的路径/内容未保存，也没有为通过检查而放宽条件。
+
+首条结果：失败于推理前隔离门。分类请求数0，答案/正确性/耗时/token均无，工具调用0，答案重试0。
+额度：2026-10-05T07:29:01Z查询，codex 7天窗used=88%、derived remaining=12%、reset=2026-10-10T02:34:00Z。没有调用后快照，因为没有推理。
+完整40次预算：无法用0个任务样本估算；12%粗粒度剩余额度且bucket到模型的计量关系未知，因此不保守批准余下39次。
+
+语义差异：app-server为Codex agent transport；CLI 0.149.1没有temperature/max-output-token字段，也没有关闭核心工具声明的字段。web已禁用、cwd隔离、沙箱只读；这些仍不足以证明raw-completion等价。
+没有读取/复制凭证，没有登录、权限、配置、原代码/日志修改，没有安装软件。ephemeral helper关闭stdio后正常退出。

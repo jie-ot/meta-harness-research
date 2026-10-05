@@ -1,0 +1,29 @@
+Write: logs\20260925_200856\pending_eval.json
+
+content:
+{
+  "iteration": 15,
+  "candidates": [
+    {
+      "name": "two_pass_confusion_memory",
+      "file": "agents/two_pass_confusion_memory.py",
+      "hypothesis": "Making a cheap first-pass LLM prediction on 3 examples and using that tentative label as the confusion-matrix lookup key will outperform decayed_confusion_memory, because all prior confusion systems use the labels of the top retrieved examples as a proxy for the model's likely prediction — a proxy that fired on the correct confusion key for 0/146 LawBench error cases — whereas using the actual tentative prediction as the key identified the correct disambiguation target for 48/146 of those same errors with zero regressions.",
+      "axis": "exploitation",
+      "base_system": "decayed_confusion_memory",
+      "components": ["two_pass_predict", "tentative_label_lookup", "confusion_matrix", "decay", "adaptive_tokenizer", "prediction_normalization", "llm_usage_in_predict"]
+    },
+    {
+      "name": "category_cluster_memory",
+      "file": "agents/category_cluster_memory.py",
+      "hypothesis": "Extracting a structural category tag from the input (e.g. reaction type, task type, domain prefix) and filling the context from within-category examples first before falling back to cross-category similarity will outperform decayed_confusion_memory, because a shared preamble or task descriptor in the input dominates Jaccard similarity and makes retrieval insensitive to the specific instance — same-category examples are categorically more informative demonstrations than cross-category examples with marginally better token overlap.",
+      "axis": "exploration",
+      "base_system": "decayed_confusion_memory",
+      "components": ["category_tag_extraction", "two_level_retrieval_hierarchy", "same_category_priority", "cross_category_fallback", "adaptive_tokenizer", "confusion_matrix", "decay", "prediction_normalization", "selection_algorithm_axis"]
+    }
+  ]
+}
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\pending_eval.json (file state is current in your context — no need to Read it back)

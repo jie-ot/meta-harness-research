@@ -1,0 +1,112 @@
+Write: .prototypes\label_lexicon_snap_memory.py
+
+content:
+"""Final validation for agent A: label_lexicon_snap_memory.
+
+Imports the REAL agent module and drives it with a fake LLM. All example text
+is a literal copied from the visible traces; no files are opened.
+"""
+
+import importlib
+
+Mod = importlib.import_module(
+    "text_classification.agents.label_lexicon_snap_memory"
+)
+Memory = Mod.LabelLexiconSnapMemory
+snap = Mod._snap
+canon = Mod._canonicalize
+split_units = Mod._split_units
+bigrams = Mod._bigrams
+dice = Mod._dice
+
+
+class FakeLLM:
+    def __init__(self, answer):
+        self.answer = answer
+        self.calls = 0
+
+    def __call__(self, prompt):
+        self.calls += 1
+        return '{"reasoning": "because", "final_answer": "' + self.answer + '"}'
+
+
+LEX = set()
+for t in [
+    "破坏电力设备", "非法种植毒品原植物", "失火", "盗窃", "诈骗", "行贿",
+    "故意伤害", "拐骗儿童", "掩饰、隐瞒犯罪所得、犯罪所得收益",
+    "非法持有、私藏枪支、弹药", "受贿", "开设赌场", "赌博", "单位行贿",
+    "销售假冒注册商标的商品",
+]:
+    for u in split_units(t):
+        LEX.add(u)
+
+CARDS = [
+    ("[罪名]破坏电力设施<eoa>", "破坏电力设备"),
+    ("[罪名]非法种植罂粟<eoa>", "非法种植毒品原植物"),
+    ("[罪名]拐骗儿童罪<eoa>", "拐骗儿童"),
+    ("[罪名]盗窃<eoa>", "盗窃"),
+    ("[罪名]受贿<eoa>", "受贿"),
+    ("[罪名]行贿<eoa>", "行贿"),
+    ("[罪名]盗窃;破坏电力设施<eoa>", "盗窃;破坏电力设备"),
+    ("[罪名]掩饰、隐瞒犯罪所得<eoa>", "掩饰、隐瞒犯罪所得、犯罪所得收益"),
+    ("[罪名]掩饰、隐瞒犯罪所得、犯罪所得收益<eoa>",
+     "掩饰、隐瞒犯罪所得、犯罪所得收益"),
+    ("[罪名]非法持有、私藏枪支、弹药<eoa>", "非法持有、私藏枪支、弹药"),
+]
+bad = 0
+for raw, exp in CARDS:
+    got = canon(raw, LEX)
+    ok = got == exp
+    bad += 0 if ok else 1
+    print(f"{'PASS' if ok else 'FAIL'}  snap: {raw:42s} -> {got}")
+
+print()
+print("bigram signal:",
+      f"related={dice(bigrams('被告人盗窃电缆线'), bigrams('被告人盗窃公共照明电线')):.3f}",
+      f"unrelated={dice(bigrams('被告人盗窃电缆线'), bigrams('被告人种植罂粟')):.3f}")
+
+print()
+cold = Memory(FakeLLM("[罪名]失火<eoa>"))
+ans, meta = cold.predict("事实:被告人焚烧秸秆引发山火，过火林地2.0公顷。")
+print("cold-start predict ->", repr(ans), "| examples:", meta["num_examples"],
+      "| lexicon:", meta["lexicon_size"])
+assert ans == "失火", ans
+assert meta["num_examples"] == 0
+
+m = Memory(FakeLLM("[罪名]破坏电力设施<eoa>"))
+m.learn_from_batch([
+    {"input": "Q1", "ground_truth": "破坏电力设备",
+     "raw_question": "被告人盗割正在使用中的公共照明电线",
+     "prediction": "[罪名]盗窃<eoa>", "was_correct": False},
+    {"input": "Q2", "ground_truth": "盗窃",
+     "raw_question": "被告人窃取他人财物", "prediction": "盗窃",
+     "was_correct": True},
+])
+ans2, meta2 = m.predict("事实:被告人盗窃路灯电缆线，破坏电力设备。")
+print("post-learn predict ->", repr(ans2), "| repaired:", meta2["repaired"],
+      "| lexicon:", meta2["lexicon_size"])
+assert ans2 == "盗窃;破坏电力设备", ans2
+
+state = m.get_state()
+m2 = Memory(FakeLLM("[罪名]失火<eoa>"))
+m2.set_state(state)
+assert len(m2.examples) == len(m.examples)
+assert m2.lexicon == m.lexicon
+assert sorted(m2.label_counts.items()) == sorted(m.label_counts.items())
+ans3, _ = m2.predict("事实:被告人盗窃路灯电缆线，破坏电力设备。")
+print("round-trip predict ->", repr(ans3), "| lexicon restored:", len(m2.lexicon))
+assert ans3 == ans2, (ans3, ans2)
+
+empty_state = Memory(FakeLLM("x")).get_state()
+print("empty get_state() chars:", len(empty_state))
+
+print()
+if bad == 0 and ans2 == "盗窃;破坏电力设备" and ans3 == ans2 and ans == "失火":
+    print("AGENT A OK: import, guarded snap, cold start, learning, state round-trip")
+else:
+    print(f"AGENT A REVIEW: snap_fails={bad} ans2={ans2!r} ans3={ans3!r}")
+
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\.prototypes\label_lexicon_snap_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

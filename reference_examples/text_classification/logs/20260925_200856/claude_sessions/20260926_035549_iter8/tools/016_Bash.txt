@@ -1,0 +1,25 @@
+Bash [ERROR]
+
+command:
+python3 -c "
+import os, glob, json
+
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+for ds in ['USPTO', 'LawBench', 'Symptom2Disease']:
+    path = os.path.join(base, ds, 'adaptive_tokenizer_confusion_memory')
+    logs = glob.glob(os.path.join(path, '**', 'log.jsonl'), recursive=True)
+    print(f'=== {ds} logs: {logs}')
+    for lf in logs[:1]:
+        lines = open(lf, encoding='utf-8').read().strip().split('\n')
+        print(f'  Total entries: {len(lines)}')
+        wrongs = [json.loads(l) for l in lines if json.loads(l).get('was_correct') is False]
+        print(f'  Wrong: {len(wrongs)}')
+        for w in wrongs[:3]:
+            print(f'    pred={w.get(\"prediction\",\"?\")!r:40s} gt={w.get(\"ground_truth\",\"?\")!r}')
+"
+
+
+description: Read training logs for frontier system across all datasets
+
+--- output ---
+Exit code 49

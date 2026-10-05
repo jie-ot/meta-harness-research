@@ -1,0 +1,72 @@
+{
+  "call_id": "eda1a5ac789a4839932d65df88043d55",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791028089-v96RrB8Oidr8qWg80Q9z",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant knowingly helped her son, a wanted criminal, evade capture by giving him money to flee, continuously providing him shelter and food, and using a false identity to conceal his whereabouts during medical treatment. These actions constitute the crime of harboring and concealing a criminal under Chinese criminal law, i.e., the offense of \\\"窝藏、包庇\\\". No other distinct offenses are indicated.\",\n  \"final_answer\": \"[罪名]窝藏、包庇<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate criminal charge(s) for the facts.\n\nFacts: Li Moumou (mother?) knows her son Li Moumou Jia is a criminal wanted by police. After police attempted to capture him at home, she gave him 400 yuan to escape. Then she long-term harbored him, providing food, shelter. Also during his hospitalization, she gave false name \"Li Moumou Yi\" to avoid police detection, and provided medical expenses and accompaniment.\n\nThus she is guilty of \"窝藏罪\" (concealing a criminal). In Chinese criminal law, the term is \"窝藏、包庇罪\" (concealing and harboring). The correct label from earlier examples: For similar case, they used \"窝藏、包庇;包庇毒品犯罪分子\" but that was for drug case. For general case, the correct label is \"窝藏、包庇\". The earlier example: \"事实:陆2某人民检察院指控：... 其行为已触犯《中华人民共和国刑法》××之规定，应当以制造毒品罪追究其刑事责任。\" The answer: \"窝藏、包庇;包庇毒品犯罪分子\". That seems to be for drug case. For non-drug, just \"窝藏、包庇\". Also earlier example: \"事实:龙江县人民检察院指控...容留他人吸食毒品...\". Answer: \"容留他人吸毒\". So for harboring a criminal, the charge is \"窝藏、包庇\". Possibly also \"帮助犯罪分子逃跑\" but that's part of same.\n\nThus final answer: [罪名]窝藏、包庇<eoa>\n\nCheck format: JSON with \"final_answer\": \"[罪名]窝藏、包庇<eoa>\"? Actually they want JSON with final_answer field containing the string with [罪名]...<eoa>. In examples they output just the label? The instruction: Respond in JSON format with \"final_answer\": \"[exact label(s), semicolon-separated if multiple]\". So final_answer should be the string inside brackets? Probably include the brackets? The examples: They gave final answer as \"[罪名]盗窃<eoa>\"? Not sure. The instruction: \"write the final answer in [罪名] and <eoa> between\". So final answer should be like \"[罪名]窝藏、包庇<eoa>\". So final_answer field should contain that string.\n\nThus JSON: {\"reasoning\":\"...\",\"final_answer\":\"[罪名]窝藏、包庇<eoa>\"}",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate criminal charge(s) for the facts.\n\nFacts: Li Moumou (mother?) knows her son Li Moumou Jia is a criminal wanted by police. After police attempted to capture him at home, she gave him 400 yuan to escape. Then she long-term harbored him, providing food, shelter. Also during his hospitalization, she gave false name \"Li Moumou Yi\" to avoid police detection, and provided medical expenses and accompaniment.\n\nThus she is guilty of \"窝藏罪\" (concealing a criminal). In Chinese criminal law, the term is \"窝藏、包庇罪\" (concealing and harboring). The correct label from earlier examples: For similar case, they used \"窝藏、包庇;包庇毒品犯罪分子\" but that was for drug case. For general case, the correct label is \"窝藏、包庇\". The earlier example: \"事实:陆2某人民检察院指控：... 其行为已触犯《中华人民共和国刑法》××之规定，应当以制造毒品罪追究其刑事责任。\" The answer: \"窝藏、包庇;包庇毒品犯罪分子\". That seems to be for drug case. For non-drug, just \"窝藏、包庇\". Also earlier example: \"事实:龙江县人民检察院指控...容留他人吸食毒品...\". Answer: \"容留他人吸毒\". So for harboring a criminal, the charge is \"窝藏、包庇\". Possibly also \"帮助犯罪分子逃跑\" but that's part of same.\n\nThus final answer: [罪名]窝藏、包庇<eoa>\n\nCheck format: JSON with \"final_answer\": \"[罪名]窝藏、包庇<eoa>\"? Actually they want JSON with final_answer field containing the string with [罪名]...<eoa>. In examples they output just the label? The instruction: Respond in JSON format with \"final_answer\": \"[exact label(s), semicolon-separated if multiple]\". So final_answer should be the string inside brackets? Probably include the brackets? The examples: They gave final answer as \"[罪名]盗窃<eoa>\"? Not sure. The instruction: \"write the final answer in [罪名] and <eoa> between\". So final answer should be like \"[罪名]窝藏、包庇<eoa>\". So final_answer field should contain that string.\n\nThus JSON: {\"reasoning\":\"...\",\"final_answer\":\"[罪名]窝藏、包庇<eoa>\"}",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine appropriate criminal charge(s) for the facts.\n\nFacts: Li Moumou (mother?) knows her son Li Moumou Jia is a criminal wanted by police. After police attempted to capture him at home, she gave him 400 yuan to escape. Then she long-term harbored him, providing food, shelter. Also during his hospitalization, she gave false name \"Li Moumou Yi\" to avoid police detection, and provided medical expenses and accompaniment.\n\nThus she is guilty of \"窝藏罪\" (concealing a criminal). In Chinese criminal law, the term is \"窝藏、包庇罪\" (concealing and harboring). The correct label from earlier examples: For similar case, they used \"窝藏、包庇;包庇毒品犯罪分子\" but that was for drug case. For general case, the correct label is \"窝藏、包庇\". The earlier example: \"事实:陆2某人民检察院指控：... 其行为已触犯《中华人民共和国刑法》××之规定，应当以制造毒品罪追究其刑事责任。\" The answer: \"窝藏、包庇;包庇毒品犯罪分子\". That seems to be for drug case. For non-drug, just \"窝藏、包庇\". Also earlier example: \"事实:龙江县人民检察院指控...容留他人吸食毒品...\". Answer: \"容留他人吸毒\". So for harboring a criminal, the charge is \"窝藏、包庇\". Possibly also \"帮助犯罪分子逃跑\" but that's part of same.\n\nThus final answer: [罪名]窝藏、包庇<eoa>\n\nCheck format: JSON with \"final_answer\": \"[罪名]窝藏、包庇<eoa>\"? Actually they want JSON with final_answer field containing the string with [罪名]...<eoa>. In examples they output just the label? The instruction: Respond in JSON format with \"final_answer\": \"[exact label(s), semicolon-separated if multiple]\". So final_answer should be the string inside brackets? Probably include the brackets? The examples: They gave final answer as \"[罪名]盗窃<eoa>\"? Not sure. The instruction: \"write the final answer in [罪名] and <eoa> between\". So final answer should be like \"[罪名]窝藏、包庇<eoa>\". So final_answer field should contain that string.\n\nThus JSON: {\"reasoning\":\"...\",\"final_answer\":\"[罪名]窝藏、包庇<eoa>\"}",
+            "refusal": null,
+            "reasoning_content": "We need to determine appropriate criminal charge(s) for the facts.\n\nFacts: Li Moumou (mother?) knows her son Li Moumou Jia is a criminal wanted by police. After police attempted to capture him at home, she gave him 400 yuan to escape. Then she long-term harbored him, providing food, shelter. Also during his hospitalization, she gave false name \"Li Moumou Yi\" to avoid police detection, and provided medical expenses and accompaniment.\n\nThus she is guilty of \"窝藏罪\" (concealing a criminal). In Chinese criminal law, the term is \"窝藏、包庇罪\" (concealing and harboring). The correct label from earlier examples: For similar case, they used \"窝藏、包庇;包庇毒品犯罪分子\" but that was for drug case. For general case, the correct label is \"窝藏、包庇\". The earlier example: \"事实:陆2某人民检察院指控：... 其行为已触犯《中华人民共和国刑法》××之规定，应当以制造毒品罪追究其刑事责任。\" The answer: \"窝藏、包庇;包庇毒品犯罪分子\". That seems to be for drug case. For non-drug, just \"窝藏、包庇\". Also earlier example: \"事实:龙江县人民检察院指控...容留他人吸食毒品...\". Answer: \"容留他人吸毒\". So for harboring a criminal, the charge is \"窝藏、包庇\". Possibly also \"帮助犯罪分子逃跑\" but that's part of same.\n\nThus final answer: [罪名]窝藏、包庇<eoa>\n\nCheck format: JSON with \"final_answer\": \"[罪名]窝藏、包庇<eoa>\"? Actually they want JSON with final_answer field containing the string with [罪名]...<eoa>. In examples they output just the label? The instruction: Respond in JSON format with \"final_answer\": \"[exact label(s), semicolon-separated if multiple]\". So final_answer should be the string inside brackets? Probably include the brackets? The examples: They gave final answer as \"[罪名]盗窃<eoa>\"? Not sure. The instruction: \"write the final answer in [罪名] and <eoa> between\". So final answer should be like \"[罪名]窝藏、包庇<eoa>\". So final_answer field should contain that string.\n\nThus JSON: {\"reasoning\":\"...\",\"final_answer\":\"[罪名]窝藏、包庇<eoa>\"}"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 675,
+      "prompt_tokens": 23914,
+      "total_tokens": 24589,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 644,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00083892,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00083892,
+        "upstream_inference_prompt_cost": 0.00071742,
+        "upstream_inference_completions_cost": 0.0001215
+      }
+    }
+  },
+  "raw_response_missing": false
+}

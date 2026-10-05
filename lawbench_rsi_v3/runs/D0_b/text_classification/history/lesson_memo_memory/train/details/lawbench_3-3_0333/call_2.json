@@ -1,0 +1,72 @@
+{
+  "call_id": "57503b5cd27a410aa0d232ebcb7dc31d",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791027900-xuT8qro2wZDRYBNaG1Kt",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"lesson\": \"- 当事实段落中出现明确的违法行为关键词（如“生产、销售不符合安全标准的食品”“虚开增值税专用发票”“失火”等），直接把对应的法定罪名抽取出来，不要凭空猜测其他罪名。\\n- 如果事实中列举了多个不同的违法行为，要在答案中用分号“;”分隔列出所有对应的罪名，确保不遗漏任何一项。\\n- 避免仅凭地名、人物姓名或案件编号等与犯罪行为无关的表面信息来判断罪名；除非事实中明确说明了违法行为，否则不要依据这些信息推断罪名。\\n- 当事实以“经审理查明”或类似的审判结论开头时，后面的文字通常就是法院认定的犯罪事实，应该把这些文字视为最可靠的罪名依据。\\n- 除非事实中明确指出信息不足，否则不要默认“信息不足”。只要能在文本中找到任何与刑事行为对应的关键词，就应给出相应的罪名。\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce up to 5 concise rules to avoid similar errors. Based on cases: model often outputs generic or unrelated crimes, misinterprets incomplete facts, picks wrong crime due to missing key terms, overgeneralizes, fails to parse multi-charge cases, misidentifies based on location names, etc.\n\nWe need to base on observable signals in facts: presence of \"经审理查明\" indicates conclusion; presence of \"生产、销售\" indicates product crime; presence of \"非法买卖国家重点保护植物新品种\" not in fact; need to map keywords to crimes. Also need to handle multiple charges separated by semicolons.\n\nRules: 1) Identify explicit legal terms in fact (e.g., \"生产、销售不符合安全标准的食品\") and map directly. 2) When fact contains multiple distinct illegal acts, output multiple charges separated by semicolon. 3) If fact only provides vague info (e.g., name, location) without criminal conduct, answer \"信息不足\" is wrong; should indicate insufficient info? Actually correct answer expects specific crime based on hidden context? In examples, they gave specific crimes even though fact snippet incomplete; maybe the full fact includes more but truncated. So rule: don't rely on truncated snippet; consider that missing part may contain key verbs; but we can't guess. Better rule: if fact snippet lacks clear illegal act, respond with \"信息不足\" is acceptable? But correct answer expects specific crime, so model should not default to insufficient. So rule: avoid defaulting to insufficient when there are legal keywords like \"生产、销售\", \"虚开增值税专用发票\", \"失火\". 4) Avoid using location names as basis for crime. 5) Recognize pattern \"经审理查明\" signals that the following text lists findings; extract crimes directly.\n\nLet's craft 5 rules.\n\n",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to produce up to 5 concise rules to avoid similar errors. Based on cases: model often outputs generic or unrelated crimes, misinterprets incomplete facts, picks wrong crime due to missing key terms, overgeneralizes, fails to parse multi-charge cases, misidentifies based on location names, etc.\n\nWe need to base on observable signals in facts: presence of \"经审理查明\" indicates conclusion; presence of \"生产、销售\" indicates product crime; presence of \"非法买卖国家重点保护植物新品种\" not in fact; need to map keywords to crimes. Also need to handle multiple charges separated by semicolons.\n\nRules: 1) Identify explicit legal terms in fact (e.g., \"生产、销售不符合安全标准的食品\") and map directly. 2) When fact contains multiple distinct illegal acts, output multiple charges separated by semicolon. 3) If fact only provides vague info (e.g., name, location) without criminal conduct, answer \"信息不足\" is wrong; should indicate insufficient info? Actually correct answer expects specific crime based on hidden context? In examples, they gave specific crimes even though fact snippet incomplete; maybe the full fact includes more but truncated. So rule: don't rely on truncated snippet; consider that missing part may contain key verbs; but we can't guess. Better rule: if fact snippet lacks clear illegal act, respond with \"信息不足\" is acceptable? But correct answer expects specific crime, so model should not default to insufficient. So rule: avoid defaulting to insufficient when there are legal keywords like \"生产、销售\", \"虚开增值税专用发票\", \"失火\". 4) Avoid using location names as basis for crime. 5) Recognize pattern \"经审理查明\" signals that the following text lists findings; extract crimes directly.\n\nLet's craft 5 rules.\n\n",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce up to 5 concise rules to avoid similar errors. Based on cases: model often outputs generic or unrelated crimes, misinterprets incomplete facts, picks wrong crime due to missing key terms, overgeneralizes, fails to parse multi-charge cases, misidentifies based on location names, etc.\n\nWe need to base on observable signals in facts: presence of \"经审理查明\" indicates conclusion; presence of \"生产、销售\" indicates product crime; presence of \"非法买卖国家重点保护植物新品种\" not in fact; need to map keywords to crimes. Also need to handle multiple charges separated by semicolons.\n\nRules: 1) Identify explicit legal terms in fact (e.g., \"生产、销售不符合安全标准的食品\") and map directly. 2) When fact contains multiple distinct illegal acts, output multiple charges separated by semicolon. 3) If fact only provides vague info (e.g., name, location) without criminal conduct, answer \"信息不足\" is wrong; should indicate insufficient info? Actually correct answer expects specific crime based on hidden context? In examples, they gave specific crimes even though fact snippet incomplete; maybe the full fact includes more but truncated. So rule: don't rely on truncated snippet; consider that missing part may contain key verbs; but we can't guess. Better rule: if fact snippet lacks clear illegal act, respond with \"信息不足\" is acceptable? But correct answer expects specific crime, so model should not default to insufficient. So rule: avoid defaulting to insufficient when there are legal keywords like \"生产、销售\", \"虚开增值税专用发票\", \"失火\". 4) Avoid using location names as basis for crime. 5) Recognize pattern \"经审理查明\" signals that the following text lists findings; extract crimes directly.\n\nLet's craft 5 rules.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to produce up to 5 concise rules to avoid similar errors. Based on cases: model often outputs generic or unrelated crimes, misinterprets incomplete facts, picks wrong crime due to missing key terms, overgeneralizes, fails to parse multi-charge cases, misidentifies based on location names, etc.\n\nWe need to base on observable signals in facts: presence of \"经审理查明\" indicates conclusion; presence of \"生产、销售\" indicates product crime; presence of \"非法买卖国家重点保护植物新品种\" not in fact; need to map keywords to crimes. Also need to handle multiple charges separated by semicolons.\n\nRules: 1) Identify explicit legal terms in fact (e.g., \"生产、销售不符合安全标准的食品\") and map directly. 2) When fact contains multiple distinct illegal acts, output multiple charges separated by semicolon. 3) If fact only provides vague info (e.g., name, location) without criminal conduct, answer \"信息不足\" is wrong; should indicate insufficient info? Actually correct answer expects specific crime based on hidden context? In examples, they gave specific crimes even though fact snippet incomplete; maybe the full fact includes more but truncated. So rule: don't rely on truncated snippet; consider that missing part may contain key verbs; but we can't guess. Better rule: if fact snippet lacks clear illegal act, respond with \"信息不足\" is acceptable? But correct answer expects specific crime, so model should not default to insufficient. So rule: avoid defaulting to insufficient when there are legal keywords like \"生产、销售\", \"虚开增值税专用发票\", \"失火\". 4) Avoid using location names as basis for crime. 5) Recognize pattern \"经审理查明\" signals that the following text lists findings; extract crimes directly.\n\nLet's craft 5 rules.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 640,
+      "prompt_tokens": 945,
+      "total_tokens": 1585,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 474,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000154645,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000154645,
+        "upstream_inference_prompt_cost": 3.4965e-05,
+        "upstream_inference_completions_cost": 0.00011968
+      }
+    }
+  },
+  "raw_response_missing": false
+}

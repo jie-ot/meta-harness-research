@@ -1,0 +1,72 @@
+{
+  "call_id": "133a8cd215e6481e9311e30e00fd03c4",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791021818-ueO7zAhfAClFuLrzR2lb",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant was caught transporting large quantities of poppy shells and poppy seeds, which are raw materials for narcotics. This constitutes illegal possession of narcotics and the illegal transport of protected plant material. The closest matching labels in the provided list are “非法持有毒品” for possession and “非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品” for the illegal transport of plant seeds.\",\n  \"final_answer\": \"非法持有毒品;非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine charges based on facts: transporting poppy shells and poppy seeds (opium poppy). This is illegal transport of drug raw material. The prosecution says \"构成运输毒品罪、非法运输毒品原植物种子罪\". So charges: \"运输毒品罪\" and \"非法运输毒品原植物种子罪\". However the list of canonical charge labels includes \"非法持有毒品\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\", \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\", \"非法种植毒品原植物\". But not exactly \"运输毒品罪\". The list includes \"非法持有毒品\", \"非法种植毒品原植物\". Also \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\". Not exactly. However there is \"非法运输毒品原植物种子罪\" maybe mapped to \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\"? Not exactly. The list includes \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\". That is about protected plants, not drug plants. But poppy is a narcotic plant, maybe considered \"国家重点保护植物\"? Not sure. The list also includes \"非法种植毒品原植物\". That's about cultivation. Not transport.\n\nWe need to choose from list. The best match: \"非法持有毒品\" is possession, not transport. \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\" maybe covers transport of protected plant seeds. But poppy is a narcotic plant, not necessarily protected. However the charge \"非法运输毒品原植物种子罪\" is a specific crime under Chinese law: \"非法运输毒品原植物、原植物制品\". The list may have a label \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\". That seems similar but not exact. Could be the intended label for this scenario. Also there is \"非法种植毒品原植物\". Not transport.\n\nThus we might output two charges: \"非法持有毒品\" and \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\". But the facts are about transport, not possession. However they were caught with poppy shells and seeds in vehicle. That is possession and transport. So maybe both \"非法持有毒品\" and \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\". But the list includes \"非法持有毒品\". That covers possession. So final answer: [罪名]非法持有毒品;非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品<eoa>\n\nCheck format: need JSON with \"final_answer\". Provide reasoning.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to determine charges based on facts: transporting poppy shells and poppy seeds (opium poppy). This is illegal transport of drug raw material. The prosecution says \"构成运输毒品罪、非法运输毒品原植物种子罪\". So charges: \"运输毒品罪\" and \"非法运输毒品原植物种子罪\". However the list of canonical charge labels includes \"非法持有毒品\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\", \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\", \"非法种植毒品原植物\". But not exactly \"运输毒品罪\". The list includes \"非法持有毒品\", \"非法种植毒品原植物\". Also \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\". Not exactly. However there is \"非法运输毒品原植物种子罪\" maybe mapped to \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\"? Not exactly. The list includes \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\". That is about protected plants, not drug plants. But poppy is a narcotic plant, maybe considered \"国家重点保护植物\"? Not sure. The list also includes \"非法种植毒品原植物\". That's about cultivation. Not transport.\n\nWe need to choose from list. The best match: \"非法持有毒品\" is possession, not transport. \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\" maybe covers transport of protected plant seeds. But poppy is a narcotic plant, not necessarily protected. However the charge \"非法运输毒品原植物种子罪\" is a specific crime under Chinese law: \"非法运输毒品原植物、原植物制品\". The list may have a label \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\". That seems similar but not exact. Could be the intended label for this scenario. Also there is \"非法种植毒品原植物\". Not transport.\n\nThus we might output two charges: \"非法持有毒品\" and \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\". But the facts are about transport, not possession. However they were caught with poppy shells and seeds in vehicle. That is possession and transport. So maybe both \"非法持有毒品\" and \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\". But the list includes \"非法持有毒品\". That covers possession. So final answer: [罪名]非法持有毒品;非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品<eoa>\n\nCheck format: need JSON with \"final_answer\". Provide reasoning.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine charges based on facts: transporting poppy shells and poppy seeds (opium poppy). This is illegal transport of drug raw material. The prosecution says \"构成运输毒品罪、非法运输毒品原植物种子罪\". So charges: \"运输毒品罪\" and \"非法运输毒品原植物种子罪\". However the list of canonical charge labels includes \"非法持有毒品\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\", \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\", \"非法种植毒品原植物\". But not exactly \"运输毒品罪\". The list includes \"非法持有毒品\", \"非法种植毒品原植物\". Also \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\". Not exactly. However there is \"非法运输毒品原植物种子罪\" maybe mapped to \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\"? Not exactly. The list includes \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\". That is about protected plants, not drug plants. But poppy is a narcotic plant, maybe considered \"国家重点保护植物\"? Not sure. The list also includes \"非法种植毒品原植物\". That's about cultivation. Not transport.\n\nWe need to choose from list. The best match: \"非法持有毒品\" is possession, not transport. \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\" maybe covers transport of protected plant seeds. But poppy is a narcotic plant, not necessarily protected. However the charge \"非法运输毒品原植物种子罪\" is a specific crime under Chinese law: \"非法运输毒品原植物、原植物制品\". The list may have a label \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\". That seems similar but not exact. Could be the intended label for this scenario. Also there is \"非法种植毒品原植物\". Not transport.\n\nThus we might output two charges: \"非法持有毒品\" and \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\". But the facts are about transport, not possession. However they were caught with poppy shells and seeds in vehicle. That is possession and transport. So maybe both \"非法持有毒品\" and \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\". But the list includes \"非法持有毒品\". That covers possession. So final answer: [罪名]非法持有毒品;非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品<eoa>\n\nCheck format: need JSON with \"final_answer\". Provide reasoning.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to determine charges based on facts: transporting poppy shells and poppy seeds (opium poppy). This is illegal transport of drug raw material. The prosecution says \"构成运输毒品罪、非法运输毒品原植物种子罪\". So charges: \"运输毒品罪\" and \"非法运输毒品原植物种子罪\". However the list of canonical charge labels includes \"非法持有毒品\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\", \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\", \"非法种植毒品原植物\". But not exactly \"运输毒品罪\". The list includes \"非法持有毒品\", \"非法种植毒品原植物\". Also \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\". Not exactly. However there is \"非法运输毒品原植物种子罪\" maybe mapped to \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\"? Not exactly. The list includes \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\". That is about protected plants, not drug plants. But poppy is a narcotic plant, maybe considered \"国家重点保护植物\"? Not sure. The list also includes \"非法种植毒品原植物\". That's about cultivation. Not transport.\n\nWe need to choose from list. The best match: \"非法持有毒品\" is possession, not transport. \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\" maybe covers transport of protected plant seeds. But poppy is a narcotic plant, not necessarily protected. However the charge \"非法运输毒品原植物种子罪\" is a specific crime under Chinese law: \"非法运输毒品原植物、原植物制品\". The list may have a label \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\". That seems similar but not exact. Could be the intended label for this scenario. Also there is \"非法种植毒品原植物\". Not transport.\n\nThus we might output two charges: \"非法持有毒品\" and \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\". But the facts are about transport, not possession. However they were caught with poppy shells and seeds in vehicle. That is possession and transport. So maybe both \"非法持有毒品\" and \"非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品\". But the list includes \"非法持有毒品\". That covers possession. So final answer: [罪名]非法持有毒品;非法收购、运输、加工、出售国家重点保护植物、国家重点保护植物制品<eoa>\n\nCheck format: need JSON with \"final_answer\". Provide reasoning."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 781,
+      "prompt_tokens": 21490,
+      "total_tokens": 22271,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 821,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0009279,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0009279,
+        "upstream_inference_prompt_cost": 0.00079513,
+        "upstream_inference_completions_cost": 0.00013277
+      }
+    }
+  },
+  "raw_response_missing": false
+}

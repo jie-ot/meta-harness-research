@@ -1,0 +1,49 @@
+Write: logs\20260925_200856\reports\iter12_report.md
+
+content:
+# Iteration 12 Report
+
+## What changed
+Two candidates targeting the frontier (`adaptive_tokenizer_confusion_memory`, 51.6% avg):
+
+- **anchor_recency_confusion_memory** (exploitation, axis D/C): Replaced the unbounded example
+  pool with a bounded structure — one "anchor" example per label (always updated to most recent)
+  plus an 80-example recency window — hypothesizing that LawBench's 116-label space needs forced
+  per-label coverage and that a bounded pool would avoid dilution from early-training examples.
+
+- **discriminative_similarity_memory** (exploration, axis C/B): Replaced plain Jaccard with
+  label-discriminativeness-weighted Jaccard where `w(t) = 1 / num_distinct_labels_containing_t`,
+  down-weighting tokens that appear across many labels and up-weighting label-exclusive tokens.
+
+## Results
+Both regressed versus the frontier:
+- `anchor_recency_confusion_memory`: 45.6% (-6.0)
+- `discriminative_similarity_memory`: 47.8% (-3.8)
+
+## Why they regressed
+
+**anchor_recency_confusion_memory**: A hard recency cutoff of 80 destroys coverage for rare labels
+that appear once in training and then not again. The anchor dict mitigates this only partially —
+anchors get stale as training progresses, and the 80-example window still misses many labels on
+tasks with 100+ classes. The net effect was worse coverage than the unbounded pool.
+
+**discriminative_similarity_memory**: Discriminativeness weighting assumes that tokens unique to
+one or two labels are the most reliable signal. In practice, such tokens are often noise (rare
+proper nouns, OCR artifacts) that happen to appear in one training example. Downweighting common
+tokens removed real signal — words like verb roots or domain terms that appear across several
+labels are often the most useful retrieval anchors.
+
+## Takeaway for future iterations
+- Pool bounding consistently regresses (two attempts now); do not revisit.
+- Token-level re-weighting has been tried three ways (IDF, discriminativeness, adaptive script)
+  and only script-adaptivity helped. Don't revisit per-token weighting beyond that.
+- The two-phase architecture (confusion slots → similarity fill) may be sub-optimal because
+  confusion slots can be low-similarity to the query. A **unified single-pass scoring** that
+  multiplies similarity by confusion affinity would avoid wasting slots on irrelevant examples.
+- Per-label temporal tracking of error rates (with decay) has not been tried and targets a
+  different axis from the confusion matrix.
+
+
+
+--- output ---
+File created successfully at: D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/reports/iter12_report.md (file state is current in your context — no need to Read it back)

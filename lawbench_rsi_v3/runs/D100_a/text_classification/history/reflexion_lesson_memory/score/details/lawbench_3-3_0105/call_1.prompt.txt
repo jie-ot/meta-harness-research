@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description indicates that the offender used their official position or entrusted authority to appropriate property for personal gain, rather than physically taking or stealthily removi
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- If the factual scenario describes fraud that is carried out through the creation, signing, or performance of a contract (e.g., false representation of a business role, fictitious project, or fabricate
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:齐齐哈尔市龙沙区人民检察院指控，（一）诈骗犯罪：2016年3月至5月，被告人兰某以为被害人办理在校生贷款并转贷牟利为由，在齐齐哈尔市龙沙区“尚城国际”2803室诈骗被害人王某1人民币43582元，案发前归还王某1人民币14579元；诈骗被害人李某1人民币32910元、价值人民币4888元的苹果6plus手机一部、价值人民币4388元的苹果手机一部、价值人民币3288元的苹果SE手机一部、价值人民币769元的卡西欧手表一块，案发前归还李某1人民币18000元；诈骗被害人李某2人民币27150元、价值人民币6288元的苹果6plus手机一部、价值人民币3188元的苹果SE手机一部，案发前归还李某2人民币1354元；诈骗被害人周某人民币12055元、价值人民币3188元的苹果SE手机一部、价值人民币2888元的苹果平板电脑一部。综上，被告人兰某诈骗金额共计人民币110703元。（二）伪造金融票证犯罪：2016年4月15日，被告人兰某在齐齐哈尔市龙沙区“百脑汇”伪造一张面额为人民币2万某的中国工商银行整存整取存单。2016年7月18日，被告人兰某被公安机关抓获。
+公诉机关以相应证据证实上述指控事实，认为被告人兰某诈骗公私财物，数额巨大，其行为触犯了《中华人民共和国刑法》××之规定，伪造金融票证，其行为触犯了《中华人民共和国刑法》××之规定，犯罪事实清楚，证据确实、充分，应当以××、伪造金融票证罪追究兰某的刑事责任，对其实行数罪并罚，同时公诉机关向本院提出以××判处兰某四年至六年××，并处罚金、以伪造金融票证罪判处兰某六个月至一年××的量刑建议。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

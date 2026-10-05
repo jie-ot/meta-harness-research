@@ -1,0 +1,335 @@
+Write: agents\llm_rule_synthesis_memory.py
+
+content:
+"""LLM Rule Synthesis Memory — distills confusion pairs into injected decision rules.
+
+All prior systems store raw Q/A examples and rely on the LLM to generalise from
+them at predict time. This system adds a fundamentally new memory type: short
+natural-language decision rules synthesised by the LLM from pairs of confounded
+labels, stored alongside examples, and injected at the top of the predict prompt
+as high-priority guidance.
+
+Mechanism (axes B + F — memory content + LLM usage in learning):
+1. Adaptive tokenizer (bigrams for CJK, word tokens for ASCII) for robust retrieval
+   across scripts (fix from iter6 analysis).
+2. During learn_from_batch, when a confusion pair (predicted → actual) reaches a
+   threshold, call the LLM once to synthesise a 1-2 sentence rule that names the
+   discriminating features between the two labels. Rules are stored keyed by
+   (predicted, actual) and never recomputed unless the pair goes stale.
+3. At predict time, after scoring examples, inject stored rules whose labels overlap
+   with the top candidate labels before the example list. The model sees explicit
+   decision guidance drawn from its own past errors rather than having to infer
+   boundaries from raw examples alone.
+4. Fill remaining context with confusion-matrix-guided examples (same as
+   confusion_disambiguation_memory).
+
+Unlike reflexion_memory (iter1, 29.3%), which tried to distil global per-batch
+summaries, this system synthesises targeted pairwise rules tied to measured
+confusion counts — more specific, lower LLM overhead, and grounded in real error
+data rather than whole-batch summaries.
+"""
+
+import json
+import re
+from collections import defaultdict
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+# Main prediction prompt — rules section appears before examples
+PROMPT_TEMPLATE = """Solve the problem below based on the examples and decision notes provided.
+
+{rules_section}{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- The disambiguation notes above are high priority — follow them when choosing between similar answers
+- Follow the patterns shown in the examples
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+PROMPT_TEMPLATE_COLD = """Solve the problem below.
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+# Prompt used by the LLM to synthesise a rule for a confusion pair
+RULE_SYNTHESIS_PROMPT = """A classifier has confused these two answer categories.
+
+Label it sometimes predicts instead of the correct one: "{pred}"
+The correct label it missed: "{actual}"
+
+Examples of correct "{actual}" answers:
+{actual_examples}
+
+Examples of "{pred}" answers:
+{pred_examples}
+
+Write a single decision rule (1-2 sentences) that describes the key features that
+distinguish when "{actual}" is the right answer versus "{pred}". Be concrete and
+focus on the most discriminating signals in the input text.
+
+Respond in JSON format:
+{{"rule": "Choose '{actual}' when ...; choose '{pred}' when ..."}}"""
+
+MAX_CHARS = 30000
+_TOP_CANDIDATE_LABELS = 3
+_DISAMBIG_PER_CONFUSION = 2
+# How many times a pair must be confused before synthesising a rule
+_RULE_THRESHOLD = 2
+# Max examples to show in the synthesis prompt per label
+_SYNTH_EXAMPLES = 3
+
+# CJK Unicode ranges
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+
+
+def _has_cjk(text: str) -> bool:
+    return bool(_CJK_RE.search(text))
+
+
+def _tokenize_word(text: str) -> frozenset:
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+
+def _tokenize_bigram(text: str) -> frozenset:
+    t = re.sub(r'\s+', ' ', text.strip())
+    if len(t) < 2:
+        return frozenset([t]) if t else frozenset()
+    return frozenset(t[i:i + 2] for i in range(len(t) - 1))
+
+
+def _tokenize_adaptive(text: str) -> frozenset:
+    return _tokenize_bigram(text) if _has_cjk(text) else _tokenize_word(text)
+
+
+def _jaccard(a: frozenset, b: frozenset) -> float:
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+def _rule_key(pred: str, actual: str) -> str:
+    return f"{pred}\x00{actual}"
+
+
+class LlmRuleSynthesisMemory(MemorySystem):
+    """Confusion-matrix retrieval + LLM-synthesised pairwise disambiguation rules."""
+
+    def __init__(self, llm: LLMCallable):
+        super().__init__(llm)
+        self.examples: list[dict[str, Any]] = []
+        # confusion[predicted][actual] = count
+        self.confusion: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+        # Synthesised rules keyed by _rule_key(pred, actual)
+        self.rules: dict[str, str] = {}
+
+    # ------------------------------------------------------------------
+    # Retrieval helpers
+    # ------------------------------------------------------------------
+
+    def _scored(self, query: str) -> list[tuple[float, int, dict]]:
+        q_tok = _tokenize_adaptive(query)
+        result = [
+            (_jaccard(q_tok, ex["tokens"]), idx, ex)
+            for idx, ex in enumerate(self.examples)
+        ]
+        result.sort(key=lambda x: (x[0], x[1]), reverse=True)
+        return result
+
+    def _confusion_targets_for(self, labels: list[str]) -> list[str]:
+        label_set = set(labels)
+        counts: dict[str, int] = defaultdict(int)
+        for lbl in labels:
+            for actual, cnt in self.confusion.get(lbl, {}).items():
+                if actual not in label_set:
+                    counts[actual] += cnt
+        return [lbl for lbl, _ in sorted(counts.items(), key=lambda x: (-x[1], x[0]))]
+
+    def _rules_for_candidates(self, candidate_labels: list[str]) -> str:
+        """Return a formatted rules block for labels overlapping with candidates."""
+        label_set = set(candidate_labels)
+        relevant: list[str] = []
+        for key, rule in self.rules.items():
+            pred, actual = key.split("\x00", 1)
+            if pred in label_set or actual in label_set:
+                relevant.append(f'- {rule}')
+        if not relevant:
+            return ""
+        return "**Disambiguation Notes (follow these first):**\n" + "\n".join(relevant) + "\n\n"
+
+    def _build_parts(self, query: str) -> list[str]:
+        if not self.examples:
+            return []
+
+        ranked = self._scored(query)
+        top_labels = [ex["target"] for _, _, ex in ranked[:_TOP_CANDIDATE_LABELS]]
+        confused_with = self._confusion_targets_for(top_labels)
+
+        parts: list[str] = []
+        used_indices: set[int] = set()
+        total_chars = 0
+
+        def try_add(idx: int, ex: dict) -> bool:
+            nonlocal total_chars
+            if idx in used_indices:
+                return False
+            q = ex.get("raw_question", ex["input"])
+            part = f"Q: {q}\nA: {ex['target']}"
+            if total_chars + len(part) + 2 > MAX_CHARS:
+                return False
+            parts.append(part)
+            used_indices.add(idx)
+            total_chars += len(part) + 2
+            return True
+
+        if confused_with:
+            disambig_labels_needed = set(confused_with[:_TOP_CANDIDATE_LABELS])
+            per_label_disambig: dict[str, list[tuple[float, int, dict]]] = defaultdict(list)
+            for score, idx, ex in ranked:
+                if ex["target"] in disambig_labels_needed:
+                    per_label_disambig[ex["target"]].append((score, idx, ex))
+            for _round in range(_DISAMBIG_PER_CONFUSION):
+                for lbl in confused_with[:_TOP_CANDIDATE_LABELS]:
+                    pool = per_label_disambig.get(lbl, [])
+                    for score, idx, ex in pool:
+                        if idx not in used_indices:
+                            try_add(idx, ex)
+                            break
+
+        for _, idx, ex in ranked:
+            if total_chars >= MAX_CHARS:
+                break
+            try_add(idx, ex)
+
+        return parts
+
+    # ------------------------------------------------------------------
+    # Rule synthesis
+    # ------------------------------------------------------------------
+
+    def _synthesise_rule(self, pred: str, actual: str) -> str:
+        """Call the LLM to produce a pairwise decision rule; return the rule string."""
+        actual_exs = [ex for ex in self.examples if ex["target"] == actual][:_SYNTH_EXAMPLES]
+        pred_exs = [ex for ex in self.examples if ex["target"] == pred][:_SYNTH_EXAMPLES]
+
+        def fmt(exs: list[dict]) -> str:
+            return "\n".join(
+                f"  - {ex.get('raw_question', ex['input'])[:300]}" for ex in exs
+            ) or "  (none yet)"
+
+        prompt = RULE_SYNTHESIS_PROMPT.format(
+            pred=pred,
+            actual=actual,
+            actual_examples=fmt(actual_exs),
+            pred_examples=fmt(pred_exs),
+        )
+        response = self.call_llm(prompt)
+        rule = extract_json_field(response, "rule")
+        if not rule:
+            # Fallback: use raw response trimmed
+            rule = response.strip()[:200]
+        return rule
+
+    def _maybe_synthesise_rules(self) -> None:
+        """Synthesise rules for any confusion pairs that have reached the threshold."""
+        for pred, row in self.confusion.items():
+            for actual, cnt in row.items():
+                if cnt >= _RULE_THRESHOLD and _rule_key(pred, actual) not in self.rules:
+                    rule = self._synthesise_rule(pred, actual)
+                    if rule:
+                        self.rules[_rule_key(pred, actual)] = rule
+
+    # ------------------------------------------------------------------
+    # MemorySystem interface
+    # ------------------------------------------------------------------
+
+    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+        parts = self._build_parts(input)
+        examples_section = "\n\n".join(parts)
+
+        if not parts and not self.rules:
+            prompt = PROMPT_TEMPLATE_COLD.format(input=input)
+        else:
+            ranked = self._scored(input) if self.examples else []
+            top_labels = [ex["target"] for _, _, ex in ranked[:_TOP_CANDIDATE_LABELS]]
+            rules_section = self._rules_for_candidates(top_labels)
+            prompt = PROMPT_TEMPLATE.format(
+                rules_section=rules_section,
+                examples_section=examples_section,
+                input=input,
+            )
+
+        response = self.call_llm(prompt)
+        answer = extract_json_field(response, "final_answer")
+        return answer, {
+            "full_response": response,
+            "num_examples": len(self.examples),
+            "num_selected": len(parts),
+            "num_rules": len(self.rules),
+            "num_confusion_pairs": sum(len(v) for v in self.confusion.values()),
+        }
+
+    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+        for r in batch_results:
+            raw_q = r.get("raw_question", r["input"])
+            ex: dict[str, Any] = {
+                "input": r["input"],
+                "target": r["ground_truth"],
+                "tokens": _tokenize_adaptive(raw_q),
+            }
+            if "raw_question" in r:
+                ex["raw_question"] = r["raw_question"]
+            self.examples.append(ex)
+
+            if not r.get("was_correct", True):
+                pred = r.get("prediction", "")
+                gt = r["ground_truth"]
+                if pred and pred != gt:
+                    self.confusion[pred][gt] += 1
+
+        # Synthesise any new rules that have crossed the threshold
+        self._maybe_synthesise_rules()
+
+    def get_state(self) -> str:
+        serialisable = [
+            {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+            for ex in self.examples
+        ]
+        confusion_plain = {k: dict(v) for k, v in self.confusion.items()}
+        return json.dumps({
+            "examples": serialisable,
+            "confusion": confusion_plain,
+            "rules": self.rules,
+        }, indent=2)
+
+    def set_state(self, state: str) -> None:
+        data = json.loads(state)
+        self.examples = []
+        for ex in data.get("examples", []):
+            restored = dict(ex)
+            if "tokens" in restored and isinstance(restored["tokens"], list):
+                restored["tokens"] = frozenset(restored["tokens"])
+            else:
+                raw_q = restored.get("raw_question", restored.get("input", ""))
+                restored["tokens"] = _tokenize_adaptive(raw_q)
+            self.examples.append(restored)
+        self.confusion = defaultdict(lambda: defaultdict(int))
+        for pred, actuals in data.get("confusion", {}).items():
+            for actual, cnt in actuals.items():
+                self.confusion[pred][actual] = cnt
+        self.rules = data.get("rules", {})
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\llm_rule_synthesis_memory.py (file state is current in your context — no need to Read it back)

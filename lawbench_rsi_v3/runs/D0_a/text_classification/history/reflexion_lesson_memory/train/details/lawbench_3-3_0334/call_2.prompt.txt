@@ -1,0 +1,24 @@
+An AI classifier made an error on this case. Generate a compact correction lesson.
+
+**Correct label:** 生产、销售有毒、有害食品
+**Wrong prediction:** [罪名]非法持有毒品<eoa>
+**Case facts (excerpt):**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:北京市丰台区人民检察院指控：
+2015年2月12日，被告人许×在本市丰台区六里桥北里莲花池长途汽车站北门外马路对面烟酒店，以九十元的价格向强×出售藏药王一盒，后被民警抓获。当场起获“藏药王”九盒、“黑倍王”五盒，经检测均含有西地那非成分。
+
+
+Write a lesson that:
+1. States the KEY distinguishing feature that determines the correct label
+2. Explains what makes this different from "[罪名]非法持有毒品<eoa>"
+3. Gives a brief rule a classifier can apply to future cases
+
+Respond only in JSON:
+{"lesson": "<one to three sentences, in the same language as the case facts>", "final_answer": "生产、销售有毒、有害食品"}

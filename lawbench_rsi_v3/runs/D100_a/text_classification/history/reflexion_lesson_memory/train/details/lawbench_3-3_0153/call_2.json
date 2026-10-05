@@ -1,0 +1,72 @@
+{
+  "call_id": "ed84c31de214441eb39071863bccf3bd",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791018894-bHpvVp3FzUTkxcNTK0tu",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"If the facts describe more than one distinct illegal act or more than one category of the same offense (e.g., multiple types of tickets being sold), list every applicable charge separated by semicolons.\",\n  \"keywords\": [\n    \"多种票种\",\n    \"多项违法行为\",\n    \"同时出售\",\n    \"预订并加价出售\",\n    \"票面价值...多张\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with rule and keywords. The error: AI predicted only \"倒卖车票\" but correct answer includes \"倒卖车票、船票\". Actually the case is about railway tickets, not boat tickets. But correct answer says both? Possibly the classification includes both ticket scalping for train and boat? The error is missing the second charge. The rule: ensure to include all applicable charges when multiple offenses exist, especially when the facts mention multiple types of tickets or multiple illegal acts. Keywords: \"多种票种\", \"多项犯罪\", \"同时涉及...\". Provide rule.\n\nLet's craft: \"When the factual description mentions more than one distinct illegal activity or multiple categories of the same type of crime, list all applicable charges separated by semicolons.\" Keywords: \"多种票种\", \"多项违法行为\", \"同时出售\", \"预订...并加价出售\", \"票面价值...多张\". Provide JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with rule and keywords. The error: AI predicted only \"倒卖车票\" but correct answer includes \"倒卖车票、船票\". Actually the case is about railway tickets, not boat tickets. But correct answer says both? Possibly the classification includes both ticket scalping for train and boat? The error is missing the second charge. The rule: ensure to include all applicable charges when multiple offenses exist, especially when the facts mention multiple types of tickets or multiple illegal acts. Keywords: \"多种票种\", \"多项犯罪\", \"同时涉及...\". Provide rule.\n\nLet's craft: \"When the factual description mentions more than one distinct illegal activity or multiple categories of the same type of crime, list all applicable charges separated by semicolons.\" Keywords: \"多种票种\", \"多项违法行为\", \"同时出售\", \"预订...并加价出售\", \"票面价值...多张\". Provide JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with rule and keywords. The error: AI predicted only \"倒卖车票\" but correct answer includes \"倒卖车票、船票\". Actually the case is about railway tickets, not boat tickets. But correct answer says both? Possibly the classification includes both ticket scalping for train and boat? The error is missing the second charge. The rule: ensure to include all applicable charges when multiple offenses exist, especially when the facts mention multiple types of tickets or multiple illegal acts. Keywords: \"多种票种\", \"多项犯罪\", \"同时涉及...\". Provide rule.\n\nLet's craft: \"When the factual description mentions more than one distinct illegal activity or multiple categories of the same type of crime, list all applicable charges separated by semicolons.\" Keywords: \"多种票种\", \"多项违法行为\", \"同时出售\", \"预订...并加价出售\", \"票面价值...多张\". Provide JSON.",
+            "reasoning_content": "We need to produce a JSON with rule and keywords. The error: AI predicted only \"倒卖车票\" but correct answer includes \"倒卖车票、船票\". Actually the case is about railway tickets, not boat tickets. But correct answer says both? Possibly the classification includes both ticket scalping for train and boat? The error is missing the second charge. The rule: ensure to include all applicable charges when multiple offenses exist, especially when the facts mention multiple types of tickets or multiple illegal acts. Keywords: \"多种票种\", \"多项犯罪\", \"同时涉及...\". Provide rule.\n\nLet's craft: \"When the factual description mentions more than one distinct illegal activity or multiple categories of the same type of crime, list all applicable charges separated by semicolons.\" Keywords: \"多种票种\", \"多项违法行为\", \"同时出售\", \"预订...并加价出售\", \"票面价值...多张\". Provide JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 298,
+      "prompt_tokens": 485,
+      "total_tokens": 783,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 245,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 176,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 9.875e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 9.875e-05,
+        "upstream_inference_prompt_cost": 2.425e-05,
+        "upstream_inference_completions_cost": 7.45e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

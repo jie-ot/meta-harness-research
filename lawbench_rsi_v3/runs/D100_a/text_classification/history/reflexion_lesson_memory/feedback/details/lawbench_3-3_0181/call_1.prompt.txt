@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- If the alleged bribery is committed by a legal entity (e.g., a company) or its legal representative, the correct charge is "单位行贿" rather than the individual offense "行贿".
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:上海市宝山区人民检察院指控：
+被告人蒋某某自2012年起，多次以每份人民币50元（以下币种均为人民币）的价格从张某某等人处购买上海甲、上海乙的上海市国家税务局通用机打发票、上海市商业零售统一发票共计2，000余份。之后，被告人蒋某某以每份100元的价格向山东恒顺网业有限公司等单位出售上述部分发票及自己经营并处于实际停业状态的上海丽类露贸易有限公司的上海市商业零售统一发票。
+2013年12月10日，上海市公安局宝山分局民警在上海市宝山区祁连二村XXX号XXX室抓获被告人蒋某某，并当场查获了被告人蒋某某用于对外出售的上海甲等单位的发票共计1，097份。被告人蒋某某到案后如实供述了上述犯罪事实。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

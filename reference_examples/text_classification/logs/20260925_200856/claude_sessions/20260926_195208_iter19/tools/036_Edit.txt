@@ -1,0 +1,289 @@
+Edit: agents\multi_window_retrieval_memory.py
+
+replace_all: False
+old_string:
+"""Temporally-Decayed Confusion Memory.
+
+Extends adaptive_tokenizer_confusion_memory with one structural change to the
+learning strategy (axis E): confusion counts decay exponentially after each
+training step, so the confusion matrix reflects the model's *current* error
+patterns rather than its entire accumulated history.
+
+Problem with the baseline: confusion counts are monotonically increasing integers.
+A label pair confused heavily early in training (when the model had few examples)
+accumulates a large count that permanently dominates disambiguation slot selection,
+even after the model has seen dozens of corrective examples and stopped making
+that mistake. The disambiguation phase keeps injecting examples for a boundary
+the model no longer needs.
+
+Fix: after each learn_from_batch call, multiply every existing confusion count by
+DECAY_FACTOR (< 1). New error events are added with weight 1.0. Counts that decay
+below a threshold are pruned to keep the matrix sparse. This gives recent errors
+higher relative weight without requiring explicit timestamps.
+
+Retrieval algorithm is identical to adaptive_tokenizer_confusion_memory (two-phase:
+confusion slots then similarity fill) so any delta is attributable purely to the
+decay mechanism. Also includes the prediction-normalization fix.
+"""
+
+new_string:
+"""Per-Label Recent Memory.
+
+Replaces the unbounded global example pool of decayed_confusion_memory with a
+per-label FIFO pool of fixed size K=2. All other mechanics are retained unchanged
+(adaptive tokenizer, confusion matrix with decay, prediction normalization,
+two-phase disambiguation + similarity fill).
+
+Problem with the baseline: the global example pool grows without bound. On tasks
+with large label spaces (100+ labels) seen in training order, the pool after N steps
+overrepresents labels that appear frequently or early and underrepresents labels seen
+rarely or late. A similarity fill from a 200-example pool dominated by 20 frequent
+labels will rarely surface examples of the other 80 labels, even when they would
+have helped.
+
+Fix: maintain a bounded deque of at most K examples per label. When a new example
+for label L arrives it appends to L's deque, evicting the oldest if len > K. At
+predict time, flatten all per-label deques into a single scored pool and rank by
+Jaccard. This guarantees:
+  - Every label seen during training has at least 1 example (and at most K).
+  - The stored examples are always the K most recent for each label — the freshest
+    signal available.
+  - Pool size is bounded at (distinct_labels × K), not O(N).
+
+No parameter borrowed from any prior system changes here; the pool structure itself
+is the new mechanism (axis D/C combined: memory sizing + selection structure).
+"""
+
+import json
+import re
+from collections import defaultdict, deque
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+
+{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Follow the patterns shown in the examples above
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+MAX_CHARS = 30000
+_TOP_CANDIDATE_LABELS = 3
+_DISAMBIG_PER_CONFUSION = 2
+_PER_LABEL_K = 2        # max examples stored per label
+
+DECAY_FACTOR = 0.95
+PRUNE_THRESHOLD = 0.05
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+_WRAPPER_RE = re.compile(r'^\s*\[[^\]]*\]|<eoa>\s*$|\[[^\]]*\]\s*$', re.IGNORECASE)
+
+
+def _has_cjk(text: str) -> bool:
+    return bool(_CJK_RE.search(text))
+
+
+def _tokenize_word(text: str) -> frozenset:
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+
+def _tokenize_bigram(text: str) -> frozenset:
+    t = re.sub(r'\s+', ' ', text.strip())
+    if len(t) < 2:
+        return frozenset([t]) if t else frozenset()
+    return frozenset(t[i:i + 2] for i in range(len(t) - 1))
+
+
+def _tokenize_adaptive(text: str) -> frozenset:
+    return _tokenize_bigram(text) if _has_cjk(text) else _tokenize_word(text)
+
+
+def _jaccard(a: frozenset, b: frozenset) -> float:
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+def _normalize_prediction(pred: str) -> str:
+    if not pred:
+        return pred
+    cleaned = _WRAPPER_RE.sub('', pred).strip()
+    return cleaned if cleaned else pred
+
+
+class PerLabelRecentMemory(MemorySystem):
+    """Per-label FIFO pool (K=2) with decayed confusion disambiguation."""
+
+    def __init__(self, llm: LLMCallable):
+        super().__init__(llm)
+        # Per-label bounded deque: label -> deque of example dicts
+        self.pool: dict[str, deque] = defaultdict(lambda: deque(maxlen=_PER_LABEL_K))
+        self.confusion: dict[str, dict[str, float]] = defaultdict(lambda: defaultdict(float))
+
+    def _flat_examples(self) -> list[dict[str, Any]]:
+        """Flatten per-label deques into a single list for scoring."""
+        result = []
+        for lbl_deque in self.pool.values():
+            result.extend(lbl_deque)
+        return result
+
+    def _scored(self, query: str) -> list[tuple[float, int, dict]]:
+        q_tok = _tokenize_adaptive(query)
+        flat = self._flat_examples()
+        result = [
+            (_jaccard(q_tok, ex["tokens"]), idx, ex)
+            for idx, ex in enumerate(flat)
+        ]
+        result.sort(key=lambda x: (x[0], x[1]), reverse=True)
+        return result
+
+    def _confusion_targets_for(self, labels: list[str]) -> list[str]:
+        label_set = set(labels)
+        counts: dict[str, float] = defaultdict(float)
+        for lbl in labels:
+            row = self.confusion.get(lbl, {})
+            for actual, cnt in row.items():
+                if actual not in label_set:
+                    counts[actual] += cnt
+        return [lbl for lbl, _ in sorted(counts.items(), key=lambda x: (-x[1], x[0]))]
+
+    def _build_parts(self, query: str) -> list[str]:
+        flat = self._flat_examples()
+        if not flat:
+            return []
+
+        ranked = self._scored(query)
+        top_labels = [ex["target"] for _, _, ex in ranked[:_TOP_CANDIDATE_LABELS]]
+        confused_with = self._confusion_targets_for(top_labels)
+
+        parts: list[str] = []
+        used_indices: set[int] = set()
+        total_chars = 0
+
+        def try_add(idx: int, ex: dict) -> bool:
+            nonlocal total_chars
+            if idx in used_indices:
+                return False
+            q = ex.get("raw_question", ex["input"])
+            part = f"Q: {q}\nA: {ex['target']}"
+            if total_chars + len(part) + 2 > MAX_CHARS:
+                return False
+            parts.append(part)
+            used_indices.add(idx)
+            total_chars += len(part) + 2
+            return True
+
+        if confused_with:
+            disambig_labels_needed = set(confused_with[:_TOP_CANDIDATE_LABELS])
+            per_label_disambig: dict[str, list[tuple[float, int, dict]]] = defaultdict(list)
+            for score, idx, ex in ranked:
+                if ex["target"] in disambig_labels_needed:
+                    per_label_disambig[ex["target"]].append((score, idx, ex))
+
+            for _round in range(_DISAMBIG_PER_CONFUSION):
+                for lbl in confused_with[:_TOP_CANDIDATE_LABELS]:
+                    pool = per_label_disambig.get(lbl, [])
+                    for score, idx, ex in pool:
+                        if idx not in used_indices:
+                            try_add(idx, ex)
+                            break
+
+        for _, idx, ex in ranked:
+            if total_chars >= MAX_CHARS:
+                break
+            try_add(idx, ex)
+
+        return parts
+
+    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+        parts = self._build_parts(input)
+        examples_section = "\n\n".join(parts)
+        prompt = PROMPT_TEMPLATE.format(
+            examples_section=examples_section,
+            input=input,
+        )
+        response = self.call_llm(prompt)
+        answer = extract_json_field(response, "final_answer")
+        return answer, {
+            "full_response": response,
+            "num_labels_tracked": len(self.pool),
+            "num_selected": len(parts),
+            "num_confusion_pairs": sum(len(v) for v in self.confusion.values()),
+        }
+
+    def _decay_confusion(self) -> None:
+        to_delete_outer = []
+        for pred, actuals in self.confusion.items():
+            to_delete_inner = []
+            for actual in actuals:
+                actuals[actual] *= DECAY_FACTOR
+                if actuals[actual] < PRUNE_THRESHOLD:
+                    to_delete_inner.append(actual)
+            for actual in to_delete_inner:
+                del actuals[actual]
+            if not actuals:
+                to_delete_outer.append(pred)
+        for pred in to_delete_outer:
+            del self.confusion[pred]
+
+    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+        for r in batch_results:
+            raw_q = r.get("raw_question", r["input"])
+            ex: dict[str, Any] = {
+                "input": r["input"],
+                "target": r["ground_truth"],
+                "tokens": _tokenize_adaptive(raw_q),
+            }
+            if "raw_question" in r:
+                ex["raw_question"] = r["raw_question"]
+            # Append to per-label bounded deque — evicts oldest automatically
+            self.pool[r["ground_truth"]].append(ex)
+
+            if not r.get("was_correct", True):
+                pred = _normalize_prediction(r.get("prediction", ""))
+                gt = r["ground_truth"]
+                if pred and pred != gt:
+                    self.confusion[pred][gt] += 1.0
+
+        self._decay_confusion()
+
+    def get_state(self) -> str:
+        pool_serial = {
+            lbl: [
+                {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+                for ex in dq
+            ]
+            for lbl, dq in self.pool.items()
+        }
+        confusion_plain = {k: dict(v) for k, v in self.confusion.items()}
+        return json.dumps({"pool": pool_serial, "confusion": confusion_plain}, indent=2)
+
+    def set_state(self, state: str) -> None:
+        data = json.loads(state)
+        self.pool = defaultdict(lambda: deque(maxlen=_PER_LABEL_K))
+        for lbl, exs in data.get("pool", {}).items():
+            for ex in exs:
+                restored = dict(ex)
+                if "tokens" in restored and isinstance(restored["tokens"], list):
+                    restored["tokens"] = frozenset(restored["tokens"])
+                else:
+                    raw_q = restored.get("raw_question", restored.get("input", ""))
+                    restored["tokens"] = _tokenize_adaptive(raw_q)
+                self.pool[lbl].append(restored)
+        self.confusion = defaultdict(lambda: defaultdict(float))
+        for pred, actuals in data.get("confusion", {}).items():
+            for actual, cnt in actuals.items():
+                self.confusion[pred][actual] = float(cnt)
+
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\multi_window_retrieval_memory.py has been updated successfully.

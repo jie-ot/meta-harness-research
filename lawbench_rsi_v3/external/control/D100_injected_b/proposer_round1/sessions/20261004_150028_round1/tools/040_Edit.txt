@@ -1,0 +1,19 @@
+Edit: agents\label_lexicon_snap_memory.py
+
+replace_all: False
+old_string:
+        for score, idx, ex in ranked[:_RETRIEVE_K]:
+            if not chosen:
+                pass
+            elif score < _ANNEX_MARGIN * ranked[0][0]:
+                break
+
+new_string:
+        for score, idx, ex in ranked[:_RETRIEVE_K]:
+            # The top hit is always kept; others must stay within the margin.
+            if chosen and score < _ANNEX_MARGIN * ranked[0][0]:
+                break
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\agents\label_lexicon_snap_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

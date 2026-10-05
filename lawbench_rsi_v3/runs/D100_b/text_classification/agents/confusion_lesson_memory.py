@@ -1,0 +1,288 @@
+"""Confusion Lesson Memory — LLM-generated corrective lessons (axis F: LLM usage in learning).
+
+Build on label_glossary_memory (frontier, 46/100).
+
+Diagnosis of remaining failures in the frontier:
+  - Fine-grained charge confusion: model picks a closely related but wrong charge
+    (e.g. predicts 非国家工作人员受贿 when the actor is the *giver*, correct = 行贿).
+  - Multi-label omissions: model outputs one charge when facts support two or three.
+  - The glossary anchors surface forms but cannot explain *why* two similar charges
+    differ — raw examples alone don't encode that distinction as an explicit rule.
+
+New mechanism (axis F):
+  After every wrong prediction, call the LLM once to distill a short corrective
+  lesson ("when you see X prefer Y over Z because …"). Lessons are stored with
+  their source-example token fingerprint so retrieval can find them by similarity.
+  At predict time, the top-k most similar lessons are injected as a
+  "Common mistakes to avoid" advisory section *before* the examples, giving the
+  LLM an explicit corrective rule it cannot infer from raw Q/A pairs alone.
+
+Self-critique: predict() and learn_from_batch() both change fundamentally —
+  learn_from_batch now calls the LLM for wrong items (not done in any prior system)
+  and predict injects a new lesson section.  This is axis F, not tried before.
+"""
+
+import json
+import re
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+# ---------------------------------------------------------------------------
+# Prompts
+# ---------------------------------------------------------------------------
+
+LESSON_PROMPT = """A classification model made the following error.
+Predicted: {prediction}
+Correct answer: {ground_truth}
+
+Write a single concise lesson (one sentence, under 60 words) that would help \
+avoid this mistake in future.  Focus on what distinguishes the correct answer \
+from the wrong one.  Do NOT mention specific names, dates, or amounts.
+Respond in JSON: {{"lesson": "<lesson text>"}}"""
+
+PROMPT_WITH_LESSONS_AND_GLOSSARY = """Solve the problem below based on the examples provided.
+
+{examples_section}
+
+**Common mistakes to avoid:**
+{lessons_section}
+
+**Problem:**
+{input}
+
+**Canonical charge labels seen in training (use exact text from this list):**
+{glossary}
+
+**Instructions:**
+- Analyse the facts and identify the charge(s)
+- Your final_answer MUST use exact label text from the list above
+- For multiple charges use semicolons: Label1;Label2
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[exact label(s) from list]"}}"""
+
+PROMPT_WITH_GLOSSARY_NO_LESSONS = """Solve the problem below based on the examples provided.
+
+{examples_section}
+
+**Problem:**
+{input}
+
+**Canonical charge labels seen in training (use exact text from this list):**
+{glossary}
+
+**Instructions:**
+- Analyse the facts and identify the charge(s)
+- Your final_answer MUST use exact label text from the list above
+- For multiple charges use semicolons: Label1;Label2
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[exact label(s) from list]"}}"""
+
+PROMPT_NO_GLOSSARY = """Solve the problem below based on the examples provided.
+
+{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Follow the patterns shown in the examples above
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+_EXAMPLE_BUDGET = 20000   # chars reserved for examples
+_LESSON_BUDGET = 2000     # chars reserved for lessons section
+_TOP_K_LESSONS = 4        # max lessons to inject per query
+
+
+def _tokenize(text: str) -> frozenset:
+    """CJK character bigrams plus ASCII tokens."""
+    cjk_chars = re.findall(r'[一-鿿㐀-䶿]', text)
+    bigrams = frozenset(
+        cjk_chars[i] + cjk_chars[i + 1] for i in range(len(cjk_chars) - 1)
+    )
+    ascii_toks = frozenset(re.findall(r'[A-Za-z0-9]+', text.lower()))
+    return bigrams | ascii_toks
+
+
+def _jaccard(a: frozenset, b: frozenset) -> float:
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+class ConfusionLessonMemory(MemorySystem):
+    """Retrieval + glossary + LLM-generated corrective lessons for wrong predictions."""
+
+    def __init__(self, llm: LLMCallable):
+        super().__init__(llm)
+        self.examples: list[dict[str, Any]] = []
+        self.label_glossary: list[str] = []
+        # Each lesson: {tokens: frozenset, lesson_text: str}
+        self.lessons: list[dict[str, Any]] = []
+
+    # ------------------------------------------------------------------
+    # Glossary management
+    # ------------------------------------------------------------------
+
+    def _add_labels(self, ground_truth: str) -> None:
+        for lbl in ground_truth.split(';'):
+            lbl = lbl.strip()
+            if lbl and lbl not in self.label_glossary:
+                self.label_glossary.append(lbl)
+
+    def _build_glossary_str(self) -> str:
+        return '\n'.join(f'- {lbl}' for lbl in sorted(self.label_glossary))
+
+    # ------------------------------------------------------------------
+    # Lesson retrieval
+    # ------------------------------------------------------------------
+
+    def _top_lessons(self, query_toks: frozenset) -> list[str]:
+        """Return the top-k lesson texts most similar to the query."""
+        if not self.lessons:
+            return []
+        ranked = sorted(
+            self.lessons,
+            key=lambda l: _jaccard(query_toks, l['tokens']),
+            reverse=True,
+        )
+        selected: list[str] = []
+        total = 0
+        for entry in ranked[:_TOP_K_LESSONS]:
+            txt = entry['lesson_text']
+            if total + len(txt) + 4 > _LESSON_BUDGET:
+                break
+            selected.append(txt)
+            total += len(txt) + 4
+        return selected
+
+    # ------------------------------------------------------------------
+    # Example retrieval
+    # ------------------------------------------------------------------
+
+    def _build_parts(self, query: str) -> list[str]:
+        if not self.examples:
+            return []
+        q_tok = _tokenize(query)
+        ranked = sorted(
+            [(_jaccard(q_tok, ex['tokens']), idx, ex)
+             for idx, ex in enumerate(self.examples)],
+            reverse=True,
+            key=lambda x: (x[0], x[1])
+        )
+        parts: list[str] = []
+        total = 0
+        for _, _, ex in ranked:
+            q = ex.get('raw_question', ex['input'])
+            part = f"Q: {q}\nA: {ex['target']}"
+            if total + len(part) + 2 > _EXAMPLE_BUDGET:
+                break
+            parts.append(part)
+            total += len(part) + 2
+        return parts
+
+    # ------------------------------------------------------------------
+    # MemorySystem interface
+    # ------------------------------------------------------------------
+
+    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+        q_tok = _tokenize(input)
+        parts = self._build_parts(input)
+        examples_section = '\n\n'.join(parts)
+        lesson_texts = self._top_lessons(q_tok)
+
+        if self.label_glossary and lesson_texts:
+            lessons_section = '\n'.join(f'- {t}' for t in lesson_texts)
+            glossary_str = self._build_glossary_str()
+            prompt = PROMPT_WITH_LESSONS_AND_GLOSSARY.format(
+                examples_section=examples_section,
+                lessons_section=lessons_section,
+                input=input,
+                glossary=glossary_str,
+            )
+        elif self.label_glossary:
+            glossary_str = self._build_glossary_str()
+            prompt = PROMPT_WITH_GLOSSARY_NO_LESSONS.format(
+                examples_section=examples_section,
+                input=input,
+                glossary=glossary_str,
+            )
+        else:
+            prompt = PROMPT_NO_GLOSSARY.format(
+                examples_section=examples_section,
+                input=input,
+            )
+
+        response = self.call_llm(prompt)
+        answer = extract_json_field(response, 'final_answer')
+        return answer, {
+            'full_response': response,
+            'num_examples': len(self.examples),
+            'num_selected': len(parts),
+            'num_glossary_labels': len(self.label_glossary),
+            'num_lessons_injected': len(lesson_texts),
+        }
+
+    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+        for r in batch_results:
+            raw_q = r.get('raw_question', r['input'])
+            toks = _tokenize(raw_q)
+            ex: dict[str, Any] = {
+                'input': r['input'],
+                'target': r['ground_truth'],
+                'tokens': toks,
+            }
+            if 'raw_question' in r:
+                ex['raw_question'] = r['raw_question']
+            self.examples.append(ex)
+            self._add_labels(r['ground_truth'])
+
+            # For wrong predictions, distill a corrective lesson via LLM
+            if not r['was_correct']:
+                lesson_prompt = LESSON_PROMPT.format(
+                    prediction=r['prediction'],
+                    ground_truth=r['ground_truth'],
+                )
+                resp = self.call_llm(lesson_prompt)
+                lesson_text = extract_json_field(resp, 'lesson')
+                if lesson_text:
+                    self.lessons.append({
+                        'tokens': toks,
+                        'lesson_text': lesson_text,
+                    })
+
+    def get_state(self) -> str:
+        serialisable_examples = [
+            {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+            for ex in self.examples
+        ]
+        serialisable_lessons = [
+            {'tokens': sorted(l['tokens']), 'lesson_text': l['lesson_text']}
+            for l in self.lessons
+        ]
+        return json.dumps({
+            'examples': serialisable_examples,
+            'label_glossary': self.label_glossary,
+            'lessons': serialisable_lessons,
+        }, indent=2)
+
+    def set_state(self, state: str) -> None:
+        data = json.loads(state)
+        self.examples = []
+        for ex in data.get('examples', []):
+            restored = dict(ex)
+            raw_q = restored.get('raw_question', restored.get('input', ''))
+            restored['tokens'] = _tokenize(raw_q)
+            self.examples.append(restored)
+        self.label_glossary = data.get('label_glossary', [])
+        self.lessons = []
+        for entry in data.get('lessons', []):
+            self.lessons.append({
+                'tokens': frozenset(entry['tokens']),
+                'lesson_text': entry['lesson_text'],
+            })

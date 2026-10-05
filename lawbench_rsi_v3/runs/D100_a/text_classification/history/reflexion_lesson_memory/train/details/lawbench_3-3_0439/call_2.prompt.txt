@@ -1,0 +1,22 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:葫芦岛市连山区人民检察院指控，被告人林X于2015年7月至9月间，冒充XX部队海军军官，通过微信与被害人于X相识，并称单身，在葫芦岛市连山区于X租房处多次与于X发生性关系。案发后，被告人林某赔偿被害人于X损失人民币35000.00元，被害人于X对被告人林某的行为表示谅解，不再追究被告人林X的刑事及民事责任。
+
+
+Wrong prediction: [罪名]诈骗<eoa>
+Correct answer: 冒充军人招摇撞骗
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

@@ -1,0 +1,21 @@
+Edit: .prototypes\label_lexicon_snap_memory.py
+
+replace_all: False
+old_string:
+ans2, meta2 = m.predict("事实:被告人盗窃路灯电缆线，破坏电力设备。")
+print("post-learn predict ->", repr(ans2), "| repaired:", meta2["repaired"],
+      "| lexicon:", meta2["lexicon_size"])
+assert ans2 == "盗窃;破坏电力设备", ans2
+
+new_string:
+ans2, meta2 = m.predict("事实:被告人盗窃路灯电缆线，破坏电力设备。")
+print("post-learn predict ->", repr(ans2), "| repaired:", meta2["repaired"],
+      "| lexicon:", meta2["lexicon_size"])
+# The fake model emitted ONE unit; candidate A repairs wording only and must
+# NOT invent a second charge. Cardinality is candidate B's job.
+assert ans2 == "破坏电力设备", ans2
+assert meta2["repaired"] is True, meta2
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\.prototypes\label_lexicon_snap_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

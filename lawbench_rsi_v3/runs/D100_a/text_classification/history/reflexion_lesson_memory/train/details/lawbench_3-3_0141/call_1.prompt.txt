@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+- If the facts describe a person in a managerial or official position receiving money or valuables in exchange for using their职务便利, classify the crime simply as "受贿" unless the source explicitly states 
+- When the facts describe cutting or felling forest trees without a logging permit, the correct statutory charge is the specific offense “滥伐林木”, not a generic term like “非法采伐森林木材”.
+- When the factual description involves the cultivation of a plant that is a raw material for a controlled drug, classify the offense using the statutory term “非法种植毒品原植物” rather than a generic descripti
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:江油市人民检察院指控：2013年11月22日凌晨，被告人张某某与被告人曹某某、肖某某、何某某、肖某某（均已判刑）预谋后，采用挖掘的方式，盗走位于江油市东安乡马鞍村的四川桂花种植有限公司种植园中的7棵桂花树，后将这些树栽种在肖某某的包产地里等待销赃。经鉴定，被盗桂花树价值5400元。案发后，桂花树已被追回并发还被害单位。2015年11月2日，张某某主动到公安机关投案。
+公诉机关称上述事实有被告人供述、被害人陈述、证人证言、书证、勘验笔录、检查笔录、辨认笔录、鉴定意见等证据证实。公诉机关认为，被告人张某某以非法占有为目的，秘密窃取他人财物，数额较大，应当以××追究其刑事责任。张某某系自首，可以从轻处罚。张某某在××考验期限内犯新罪，应当撤销××，数罪并罚。提请本院依照《中华人民共和国刑法》××、××、××之规定，对被告人张某某予以惩处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

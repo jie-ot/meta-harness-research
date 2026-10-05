@@ -1,0 +1,217 @@
+Read: agents\bigram_confusion_memory.py
+
+
+--- output ---
+1	"""Bigram Confusion Disambiguation Memory.
+2	
+3	Identical mechanism to confusion_disambiguation_memory but replaces the
+4	ASCII-only tokenizer with Chinese character bigrams + ASCII words.
+5	
+6	Root cause addressed: the base system's tokenizer captures only years and
+7	numbers from Chinese legal text (e.g. "2016", "50600"), making all similarity
+8	scores 0.000 — retrieval is essentially random. Bigram tokenization extracts
+9	overlapping two-character CJK windows that encode legal terminology, crime
+10	type vocabulary, and case structure. For a query about "合同诈骗", bigrams like
+11	"签订", "履行", "合同", "诈骗" now score highly against stored examples with
+12	the same charge, allowing the confusion disambiguation phase to also operate
+13	on meaningful signal rather than noise.
+14	
+15	No other mechanism changes: confusion matrix, disambiguation injection,
+16	similarity fill, prompt template, and cold-start behavior are unchanged.
+17	This is axis-C (selection algorithm) exploitation on top of the base system.
+18	"""
+19	
+20	import json
+21	import re
+22	from collections import defaultdict
+23	from typing import Any
+24	
+25	from ..llm import LLMCallable
+26	from ..memory_system import MemorySystem, extract_json_field
+27	
+28	PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+29	
+30	{examples_section}
+31	
+32	**Problem:**
+33	{input}
+34	
+35	**Instructions:**
+36	- Follow the patterns shown in the examples above
+37	- Respond in JSON format
+38	
+39	{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+40	
+41	MAX_CHARS = 30000
+42	_TOP_CANDIDATE_LABELS = 3
+43	_DISAMBIG_PER_CONFUSION = 2
+44	
+45	
+46	def _tokenize(text: str) -> frozenset[str]:
+47	    """Chinese character bigrams + ASCII words.
+48	
+49	    For CJK-dominant text the bigram window encodes legal terminology far
+50	    better than ASCII-only extraction, which only captures dates and amounts.
+51	    """
+52	    tokens: set[str] = set()
+53	    # ASCII words (years, amounts, case numbers)
+54	    tokens.update(re.findall(r"[A-Za-z0-9]+", text.lower()))
+55	    # Overlapping CJK bigrams
+56	    cjk_chars = re.findall(r"[一-鿿]", text)
+57	    for i in range(len(cjk_chars) - 1):
+58	        tokens.add(cjk_chars[i] + cjk_chars[i + 1])
+59	    return frozenset(tokens)
+60	
+61	
+62	def _jaccard(a: frozenset[str], b: frozenset[str]) -> float:
+63	    if not a and not b:
+64	        return 0.0
+65	    return len(a & b) / len(a | b)
+66	
+67	
+68	class BigramConfusionMemory(MemorySystem):
+69	    """Confusion-matrix disambiguation with Chinese bigram similarity."""
+70	
+71	    def __init__(self, llm: LLMCallable):
+72	        super().__init__(llm)
+73	        self.examples: list[dict[str, Any]] = []
+74	        # confusion[predicted][actual] = count
+75	        self.confusion: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+76	
+77	    # ------------------------------------------------------------------
+78	    # Core retrieval helpers
+79	    # ------------------------------------------------------------------
+80	
+81	    def _scored(self, query: str) -> list[tuple[float, int, dict]]:
+82	        q_tok = _tokenize(query)
+83	        result = [
+84	            (_jaccard(q_tok, ex["tokens"]), idx, ex)
+85	            for idx, ex in enumerate(self.examples)
+86	        ]
+87	        result.sort(key=lambda x: (x[0], x[1]), reverse=True)
+88	        return result
+89	
+90	    def _confusion_targets_for(self, labels: list[str]) -> list[str]:
+91	        label_set = set(labels)
+92	        counts: dict[str, int] = defaultdict(int)
+93	        for lbl in labels:
+94	            row = self.confusion.get(lbl, {})
+95	            for actual, cnt in row.items():
+96	                if actual not in label_set:
+97	                    counts[actual] += cnt
+98	        return [lbl for lbl, _ in sorted(counts.items(), key=lambda x: (-x[1], x[0]))]
+99	
+100	    def _build_parts(self, query: str) -> list[str]:
+101	        if not self.examples:
+102	            return []
+103	
+104	        ranked = self._scored(query)
+105	
+106	        top_labels = [ex["target"] for _, _, ex in ranked[:_TOP_CANDIDATE_LABELS]]
+107	        confused_with = self._confusion_targets_for(top_labels)
+108	
+109	        parts: list[str] = []
+110	        used_indices: set[int] = set()
+111	        total_chars = 0
+112	
+113	        def try_add(idx: int, ex: dict) -> bool:
+114	            nonlocal total_chars
+115	            if idx in used_indices:
+116	                return False
+117	            q = ex.get("raw_question", ex["input"])
+118	            part = f"Q: {q}\nA: {ex['target']}"
+119	            if total_chars + len(part) + 2 > MAX_CHARS:
+120	                return False
+121	            parts.append(part)
+122	            used_indices.add(idx)
+123	            total_chars += len(part) + 2
+124	            return True
+125	
+126	        if confused_with:
+127	            disambig_labels_needed = set(confused_with[:_TOP_CANDIDATE_LABELS])
+128	            per_label_disambig: dict[str, list[tuple[float, int, dict]]] = defaultdict(list)
+129	            for score, idx, ex in ranked:
+130	                if ex["target"] in disambig_labels_needed:
+131	                    per_label_disambig[ex["target"]].append((score, idx, ex))
+132	
+133	            for _round in range(_DISAMBIG_PER_CONFUSION):
+134	                for lbl in confused_with[:_TOP_CANDIDATE_LABELS]:
+135	                    pool = per_label_disambig.get(lbl, [])
+136	                    for score, idx, ex in pool:
+137	                        if idx not in used_indices:
+138	                            try_add(idx, ex)
+139	                            break
+140	
+141	        for _, idx, ex in ranked:
+142	            if total_chars >= MAX_CHARS:
+143	                break
+144	            try_add(idx, ex)
+145	
+146	        return parts
+147	
+148	    # ------------------------------------------------------------------
+149	    # MemorySystem interface
+150	    # ------------------------------------------------------------------
+151	
+152	    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+153	        parts = self._build_parts(input)
+154	        examples_section = "\n\n".join(parts)
+155	        prompt = PROMPT_TEMPLATE.format(
+156	            examples_section=examples_section,
+157	            input=input,
+158	        )
+159	        response = self.call_llm(prompt)
+160	        answer = extract_json_field(response, "final_answer")
+161	        return answer, {
+162	            "full_response": response,
+163	            "num_examples": len(self.examples),
+164	            "num_selected": len(parts),
+165	            "num_confusion_pairs": sum(len(v) for v in self.confusion.values()),
+166	        }
+167	
+168	    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+169	        for r in batch_results:
+170	            raw_q = r.get("raw_question", r["input"])
+171	            ex: dict[str, Any] = {
+172	                "input": r["input"],
+173	                "target": r["ground_truth"],
+174	                "tokens": _tokenize(raw_q),
+175	            }
+176	            if "raw_question" in r:
+177	                ex["raw_question"] = r["raw_question"]
+178	            self.examples.append(ex)
+179	
+180	            if not r.get("was_correct", True):
+181	                pred = r.get("prediction", "")
+182	                gt = r["ground_truth"]
+183	                if pred and pred != gt:
+184	                    self.confusion[pred][gt] += 1
+185	
+186	    def get_state(self) -> str:
+187	        serialisable = [
+188	            {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+189	            for ex in self.examples
+190	        ]
+191	        confusion_plain = {k: dict(v) for k, v in self.confusion.items()}
+192	        return json.dumps({
+193	            "examples": serialisable,
+194	            "confusion": confusion_plain,
+195	        }, indent=2)
+196	
+197	    def set_state(self, state: str) -> None:
+198	        data = json.loads(state)
+199	        self.examples = []
+200	        for ex in data.get("examples", []):
+201	            restored = dict(ex)
+202	            if "tokens" in restored and isinstance(restored["tokens"], list):
+203	                restored["tokens"] = frozenset(restored["tokens"])
+204	            else:
+205	                raw_q = restored.get("raw_question", restored.get("input", ""))
+206	                restored["tokens"] = _tokenize(raw_q)
+207	            self.examples.append(restored)
+208	
+209	        self.confusion = defaultdict(lambda: defaultdict(int))
+210	        for pred, actuals in data.get("confusion", {}).items():
+211	            for actual, cnt in actuals.items():
+212	                self.confusion[pred][actual] = cnt
+213	

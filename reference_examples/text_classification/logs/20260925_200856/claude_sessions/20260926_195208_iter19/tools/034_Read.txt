@@ -1,0 +1,56 @@
+Read: agents\symmetric_confusion_memory.py
+
+limit: 50
+offset: 155
+
+--- output ---
+155	
+156	        for _, idx, ex in ranked:
+157	            if total_chars >= MAX_CHARS:
+158	                break
+159	            try_add(idx, ex)
+160	
+161	        return parts
+162	
+163	    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+164	        parts = self._build_parts(input)
+165	        examples_section = "\n\n".join(parts)
+166	        prompt = PROMPT_TEMPLATE.format(
+167	            examples_section=examples_section,
+168	            input=input,
+169	        )
+170	        response = self.call_llm(prompt)
+171	        answer = extract_json_field(response, "final_answer")
+172	        return answer, {
+173	            "full_response": response,
+174	            "num_examples": len(self.examples),
+175	            "num_selected": len(parts),
+176	            "num_confusion_pairs": sum(len(v) for v in self.confusion.values()),
+177	        }
+178	
+179	    def _decay_confusion(self) -> None:
+180	        """Multiply all confusion counts by DECAY_FACTOR and prune near-zero entries."""
+181	        to_delete_outer = []
+182	        for pred, actuals in self.confusion.items():
+183	            to_delete_inner = []
+184	            for actual in actuals:
+185	                actuals[actual] *= DECAY_FACTOR
+186	                if actuals[actual] < PRUNE_THRESHOLD:
+187	                    to_delete_inner.append(actual)
+188	            for actual in to_delete_inner:
+189	                del actuals[actual]
+190	            if not actuals:
+191	                to_delete_outer.append(pred)
+192	        for pred in to_delete_outer:
+193	            del self.confusion[pred]
+194	
+195	    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+196	        for r in batch_results:
+197	            raw_q = r.get("raw_question", r["input"])
+198	            ex: dict[str, Any] = {
+199	                "input": r["input"],
+200	                "target": r["ground_truth"],
+201	                "tokens": _tokenize_adaptive(raw_q),
+202	            }
+203	            if "raw_question" in r:
+204	                ex["raw_question"] = r["raw_question"]

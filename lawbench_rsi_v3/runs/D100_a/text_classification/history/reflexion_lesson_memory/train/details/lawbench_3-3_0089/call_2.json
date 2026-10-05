@@ -1,0 +1,72 @@
+{
+  "call_id": "6ad1899fa4524c3a8970fb06e25e8776",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791018605-OvfxE2CJqfUqOWmjEcca",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the facts describe the manufacturing or sale of food, health products, or supplements that contain prohibited or harmful substances (e.g., prescription‑drug ingredients), classify the offense as “生产、销售有毒、有害食品” rather than a generic “非法经营罪”.\",\n  \"keywords\": [\n    \"有毒\",\n    \"有害食品\",\n    \"西地那非\",\n    \"保健品\",\n    \"非法销售\",\n    \"生产、销售有毒、有害食品\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with a rule to prevent misclassifying the crime. The error: AI predicted \"非法经营罪\" but correct is \"生产、销售有毒、有害食品\". So rule: ensure that when facts involve illegal sale of toxic/harmful food or health products containing prescription drug ingredients, the appropriate charge is \"生产、销售有毒、有害食品\" rather than generic \"非法经营罪\". So rule: If the case mentions sale of prohibited or harmful food/medicine, especially containing prescription drug ingredients, classify under specific offense of producing/selling toxic/harmful food. Keywords: \"有毒\", \"有害食品\", \"西地那非\", \"保健品\", \"非法销售\", \"生产、销售有毒、有害食品\". Provide JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with a rule to prevent misclassifying the crime. The error: AI predicted \"非法经营罪\" but correct is \"生产、销售有毒、有害食品\". So rule: ensure that when facts involve illegal sale of toxic/harmful food or health products containing prescription drug ingredients, the appropriate charge is \"生产、销售有毒、有害食品\" rather than generic \"非法经营罪\". So rule: If the case mentions sale of prohibited or harmful food/medicine, especially containing prescription drug ingredients, classify under specific offense of producing/selling toxic/harmful food. Keywords: \"有毒\", \"有害食品\", \"西地那非\", \"保健品\", \"非法销售\", \"生产、销售有毒、有害食品\". Provide JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with a rule to prevent misclassifying the crime. The error: AI predicted \"非法经营罪\" but correct is \"生产、销售有毒、有害食品\". So rule: ensure that when facts involve illegal sale of toxic/harmful food or health products containing prescription drug ingredients, the appropriate charge is \"生产、销售有毒、有害食品\" rather than generic \"非法经营罪\". So rule: If the case mentions sale of prohibited or harmful food/medicine, especially containing prescription drug ingredients, classify under specific offense of producing/selling toxic/harmful food. Keywords: \"有毒\", \"有害食品\", \"西地那非\", \"保健品\", \"非法销售\", \"生产、销售有毒、有害食品\". Provide JSON.",
+            "reasoning_content": "We need to produce a JSON with a rule to prevent misclassifying the crime. The error: AI predicted \"非法经营罪\" but correct is \"生产、销售有毒、有害食品\". So rule: ensure that when facts involve illegal sale of toxic/harmful food or health products containing prescription drug ingredients, the appropriate charge is \"生产、销售有毒、有害食品\" rather than generic \"非法经营罪\". So rule: If the case mentions sale of prohibited or harmful food/medicine, especially containing prescription drug ingredients, classify under specific offense of producing/selling toxic/harmful food. Keywords: \"有毒\", \"有害食品\", \"西地那非\", \"保健品\", \"非法销售\", \"生产、销售有毒、有害食品\". Provide JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 280,
+      "prompt_tokens": 535,
+      "total_tokens": 815,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 167,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 6.365e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 6.365e-05,
+        "upstream_inference_prompt_cost": 1.605e-05,
+        "upstream_inference_completions_cost": 4.76e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

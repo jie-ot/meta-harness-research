@@ -1,0 +1,164 @@
+Bash
+
+command:
+cat > /tmp/proto_error_pool.py << 'PROTO'
+"""
+Prototype: input-similar error retrieval.
+Separate pool of (query_tokens, wrong_pred, correct_answer) triples.
+At predict time: score error pool by jaccard(query, error.query_tokens),
+inject the top-K error pool correct answers first, then fill with normal examples.
+Hypothesis: similar inputs tend to trigger the same error pattern; surfacing
+the correct answer from topically identical past mistakes is stronger signal
+than surfacing a general similarity match.
+"""
+import json, re
+from collections import defaultdict
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+_WRAPPER_RE = re.compile(r'^\s*\[[^\]]*\]|<eoa>\s*$|\[[^\]]*\]\s*$', re.IGNORECASE)
+
+def _has_cjk(text):
+    return bool(_CJK_RE.search(text))
+
+def _tokenize_adaptive(text):
+    if _has_cjk(text):
+        t = re.sub(r'\s+', ' ', text.strip())
+        return frozenset(t[i:i+2] for i in range(len(t)-1)) if len(t) >= 2 else frozenset()
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+def _jaccard(a, b):
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+def _normalize(pred):
+    if not pred: return pred
+    cleaned = _WRAPPER_RE.sub('', pred).strip()
+    return cleaned if cleaned else pred
+
+# Load LawBench
+mem_path = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/LawBench/decayed_confusion_memory/gpt-oss-120b/memory.json'
+mem = json.load(open(mem_path, encoding='utf-8'))
+log_path = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/LawBench/decayed_confusion_memory/gpt-oss-120b/log.jsonl'
+steps = [json.loads(l) for l in open(log_path, encoding='utf-8') if json.loads(l).get('type')=='step']
+
+# Build error pool from training steps (those that happened before val)
+# Simulate: replay in order. Training is first 200 steps, val is last 50
+training_steps = steps[:200]
+val_steps = steps[200:] if len(steps) > 200 else steps
+
+print(f"Training steps: {len(training_steps)}, Val steps: {len(val_steps)}")
+
+# Build error pool
+error_pool = []  # list of {tokens, correct_answer}
+all_examples = []  # standard pool
+
+for s in training_steps:
+    q = s.get('input_preview', '')
+    tgt = s.get('tgt', '')
+    pred = _normalize(s.get('pred', ''))
+    tok = _tokenize_adaptive(q)
+    all_examples.append({'tokens': tok, 'target': tgt})
+    if not s.get('ok') and pred and pred != tgt:
+        error_pool.append({'tokens': tok, 'correct_answer': tgt, 'wrong_pred': pred})
+
+print(f"Error pool size: {len(error_pool)}, Normal pool: {len(all_examples)}")
+
+def get_top_k_normal(query_tok, pool, k=8):
+    scored = [(_jaccard(query_tok, ex['tokens']), i, ex) for i, ex in enumerate(pool)]
+    scored.sort(key=lambda x: (x[0], x[1]), reverse=True)
+    return [ex for _, _, ex in scored[:k]]
+
+def get_mixed_error_first(query_tok, error_pool, normal_pool, k=8, error_slots=2):
+    # Score error pool
+    error_scored = sorted(
+        [(_jaccard(query_tok, ep['tokens']), i, ep) for i, ep in enumerate(error_pool)],
+        key=lambda x: (-x[0], x[1])
+    )
+    # Take top error_slots from error pool (if similarity > threshold)
+    selected_labels = set()
+    selected = []
+    for score, _, ep in error_scored[:error_slots]:
+        if score > 0.0 and ep['correct_answer'] not in selected_labels:
+            # Find the example in normal pool with this label
+            for ex in normal_pool:
+                if ex['target'] == ep['correct_answer']:
+                    selected.append(ex)
+                    selected_labels.add(ep['correct_answer'])
+                    break
+    # Fill with normal similarity
+    normal_scored = sorted(
+        [(_jaccard(query_tok, ex['tokens']), i, ex) for i, ex in enumerate(normal_pool)],
+        key=lambda x: (-x[0], x[1])
+    )
+    for _, _, ex in normal_scored:
+        if len(selected) >= k:
+            break
+        if ex['target'] not in selected_labels:
+            selected.append(ex)
+            selected_labels.add(ex['target'])
+    return selected
+
+# Evaluate on val steps
+if val_steps:
+    normal_hits = 0
+    mixed_hits = 0
+    for s in val_steps:
+        q = s.get('input_preview', '')
+        tgt = s.get('tgt', '')
+        q_tok = _tokenize_adaptive(q)
+        
+        top_k_n = get_top_k_normal(q_tok, all_examples, k=8)
+        top_k_m = get_mixed_error_first(q_tok, error_pool, all_examples, k=8, error_slots=3)
+        
+        if tgt in [ex['target'] for ex in top_k_n]:
+            normal_hits += 1
+        if tgt in [ex['target'] for ex in top_k_m]:
+            mixed_hits += 1
+    
+    print(f"\nVal top-8 hit rate:")
+    print(f"  Normal similarity: {normal_hits}/{len(val_steps)} = {normal_hits/len(val_steps)*100:.1f}%")
+    print(f"  Mixed error-first: {mixed_hits}/{len(val_steps)} = {mixed_hits/len(val_steps)*100:.1f}%")
+
+# Also test error slots=2 vs 3 vs 4
+print("\nVariant sweep (error_slots):")
+for slots in [1, 2, 3, 4, 5]:
+    hits = 0
+    for s in (val_steps or training_steps[-50:]):
+        q_tok = _tokenize_adaptive(s.get('input_preview', ''))
+        tgt = s.get('tgt', '')
+        top_k_m = get_mixed_error_first(q_tok, error_pool, all_examples, k=8, error_slots=slots)
+        if tgt in [ex['target'] for ex in top_k_m]:
+            hits += 1
+    n = len(val_steps or training_steps[-50:])
+    print(f"  error_slots={slots}: {hits}/{n} = {hits/n*100:.1f}%")
+
+# Check: how often does a similar-error example exist?
+sim_error_present = 0
+for s in (val_steps or training_steps[-50:]):
+    q_tok = _tokenize_adaptive(s.get('input_preview', ''))
+    best = max((_jaccard(q_tok, ep['tokens']) for ep in error_pool), default=0.0)
+    if best > 0.05:
+        sim_error_present += 1
+n = len(val_steps or training_steps[-50:])
+print(f"\nVal queries with similar error in pool (sim>0.05): {sim_error_present}/{n}")
+PROTO
+python /tmp/proto_error_pool.py
+
+description: Prototype error-pool input-similar retrieval on LawBench
+
+--- output ---
+Training steps: 200, Val steps: 200
+Error pool size: 142, Normal pool: 200
+
+Val top-8 hit rate:
+  Normal similarity: 200/200 = 100.0%
+  Mixed error-first: 200/200 = 100.0%
+
+Variant sweep (error_slots):
+  error_slots=1: 200/200 = 100.0%
+  error_slots=2: 200/200 = 100.0%
+  error_slots=3: 200/200 = 100.0%
+  error_slots=4: 200/200 = 100.0%
+  error_slots=5: 200/200 = 100.0%
+
+Val queries with similar error in pool (sim>0.05): 200/200

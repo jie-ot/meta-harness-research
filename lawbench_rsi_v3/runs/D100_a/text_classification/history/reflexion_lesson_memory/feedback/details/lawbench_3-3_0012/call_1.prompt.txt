@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the factual description contains multiple distinct criminal acts (e.g., a traffic offense and a separate economic crime), the model must list every applicable charge, separating them with semicol
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual scenario involves a defendant biting or otherwise assaulting a police officer while resisting law‑enforcement duties, charge only 妨害公务 (obstruction of official duties) unless there is
+- If the factual scenario describes fraud that is carried out through the creation, signing, or performance of a contract (e.g., false representation of a business role, fictitious project, or fabricate
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:成都高新技术产业开发区人民检察院指控，2015年3月29日23时许，被告人刘某某饮酒后驾驶川A＊＊＊84北京现代牌小型轿车，从成都市桐梓林附近出发上人民南路出城，当车行驶至成都高新区天府大道与府城大道交叉路口处时，被设卡检查酒驾的执勤交警挡获。交警发现刘某某身上有酒味，经现场呼吸式酒精测试仪检测，酒精浓度为92mg／100ml。尔后，警察将刘某某带至成都市第一人民医院提取血样。成都市公安局物证鉴定所对该血样的血液酒精浓度进行了检测，刘某某的血液酒精浓度为109mg／100ml。
+公诉机关认为，被告人刘某某在道路上醉酒驾驶机动车，危害公共安全，其行为应当以××追究其刑事责任。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,38 @@
+Bash
+
+command:
+cd "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification" && uv run python proto_iter12d.py 2>&1
+
+description: Run prototype v4
+
+--- output ---
+Building memories (train_n=150)...
+
+LawBench frontier pool: 150 examples
+LawBench anchor pool: 116 labels, recency: 80 examples
+LawBench confusion pairs: 106
+
+S2D anchor pool: 22 labels, recency: 80 examples
+
+=== LawBench (test 150-200) ===
+  frontier (fixed 2-round)                      found=22/50  avg_pos= 46.7  avg_unique_labels=107.1  avg_ctx_size=137.4
+  budget-prop frac=0.20                         found=22/50  avg_pos= 46.9  avg_unique_labels=107.1  avg_ctx_size=137.4
+  budget-prop frac=0.25                         found=22/50  avg_pos= 46.9  avg_unique_labels=107.1  avg_ctx_size=137.4
+  budget-prop frac=0.35                         found=22/50  avg_pos= 46.9  avg_unique_labels=107.1  avg_ctx_size=137.4
+  anchor-recency w=80                           found=22/50  avg_pos= 44.6  avg_unique_labels=116.0  avg_ctx_size=127.0
+
+--- Anchor-recency pool composition ---
+  anchors: 116 unique labels
+  recency last 10 labels: ['非法行医;非法进行节育手术', '污染环境', '盗窃;伪造、变造居民身份证', '危险驾驶;妨害公务', '非法占用农用地', '危险驾驶;私分国有资产', '破坏交通工具', '非法持有、私藏枪支、弹药;盗窃', '窝藏、包庇;包庇毒品犯罪分子', '票据诈骗;信用卡诈骗;合同诈骗']
+
+--- Confusion phase firing check ---
+  Confusion phase fires for 27/50 test queries
+  Total confusion keys: 106
+  Sample confusion keys: ['伪造国家机关证件罪', '敲诈勒索罪', '拐卖妇女', '受贿', '诈骗']
+
+=== S2D (test 150-200) ===
+  frontier (fixed 2-round)                      found=50/50  avg_pos= 21.0  avg_unique_labels=22.0  avg_ctx_size=135.0
+  budget-prop frac=0.25                         found=50/50  avg_pos= 21.0  avg_unique_labels=22.0  avg_ctx_size=135.0
+  anchor-recency w=80                           found=50/50  avg_pos= 21.8  avg_unique_labels=22.0  avg_ctx_size=80.0
+
+Done.

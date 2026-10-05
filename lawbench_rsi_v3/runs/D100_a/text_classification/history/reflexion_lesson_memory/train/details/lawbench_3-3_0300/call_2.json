@@ -1,0 +1,72 @@
+{
+  "call_id": "b4d41b813611448ab1b1b790f8d611e2",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017500-af13KG3hiN89cEOfR1rT",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"Only assign the charge of 故意伤害 when the defendant’s intentional act results in actual bodily injury (e.g., bruises, cuts, fractures) that meets the statutory injury threshold; if no injury or only a superficial impact without medical evidence of harm occurred, charge only 故意毁坏财物.\",\n  \"keywords\": [\n    \"未造成伤害\",\n    \"仅打了一下\",\n    \"无医疗鉴定\",\n    \"仅损坏财物\",\n    \"未致人受伤\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a correction rule to avoid classifying both intentional injury and property damage when only property damage is appropriate. The error: AI added \"故意伤害\" because there was a blow to head with axe, but perhaps that act didn't cause injury? Actually the fact says \"斧子朝王某乙头部打了一下\" (hit head) but maybe no injury, so not \"故意伤害\". The correct is only \"故意毁坏财物\". So rule: Only include \"故意伤害\" if the act caused actual bodily injury meeting statutory thresholds; mere threat or superficial blow without injury is insufficient. Keywords: \"打了一下\", \"未造成伤害\", \"未致人受伤\", \"仅损坏财物\", \"自首\". Provide JSON.\n\n",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a correction rule to avoid classifying both intentional injury and property damage when only property damage is appropriate. The error: AI added \"故意伤害\" because there was a blow to head with axe, but perhaps that act didn't cause injury? Actually the fact says \"斧子朝王某乙头部打了一下\" (hit head) but maybe no injury, so not \"故意伤害\". The correct is only \"故意毁坏财物\". So rule: Only include \"故意伤害\" if the act caused actual bodily injury meeting statutory thresholds; mere threat or superficial blow without injury is insufficient. Keywords: \"打了一下\", \"未造成伤害\", \"未致人受伤\", \"仅损坏财物\", \"自首\". Provide JSON.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a correction rule to avoid classifying both intentional injury and property damage when only property damage is appropriate. The error: AI added \"故意伤害\" because there was a blow to head with axe, but perhaps that act didn't cause injury? Actually the fact says \"斧子朝王某乙头部打了一下\" (hit head) but maybe no injury, so not \"故意伤害\". The correct is only \"故意毁坏财物\". So rule: Only include \"故意伤害\" if the act caused actual bodily injury meeting statutory thresholds; mere threat or superficial blow without injury is insufficient. Keywords: \"打了一下\", \"未造成伤害\", \"未致人受伤\", \"仅损坏财物\", \"自首\". Provide JSON.\n\n",
+            "reasoning_content": "We need to produce a correction rule to avoid classifying both intentional injury and property damage when only property damage is appropriate. The error: AI added \"故意伤害\" because there was a blow to head with axe, but perhaps that act didn't cause injury? Actually the fact says \"斧子朝王某乙头部打了一下\" (hit head) but maybe no injury, so not \"故意伤害\". The correct is only \"故意毁坏财物\". So rule: Only include \"故意伤害\" if the act caused actual bodily injury meeting statutory thresholds; mere threat or superficial blow without injury is insufficient. Keywords: \"打了一下\", \"未造成伤害\", \"未致人受伤\", \"仅损坏财物\", \"自首\". Provide JSON.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 291,
+      "prompt_tokens": 617,
+      "total_tokens": 908,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 172,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 6.798e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 6.798e-05,
+        "upstream_inference_prompt_cost": 1.851e-05,
+        "upstream_inference_completions_cost": 4.947e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

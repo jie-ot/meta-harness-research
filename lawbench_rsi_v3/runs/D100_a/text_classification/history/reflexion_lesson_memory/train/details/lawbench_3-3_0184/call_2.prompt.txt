@@ -1,0 +1,22 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控：2013年6月29日，被告人卢某在其位于郑州市郑东新区祭城镇畅和街与心怡路交叉口祭城东六安置小区建筑工地西门口开的早餐店，将一袋淡黄色颗粒物质误当作是白糖倒入糖盆内。6月30日早上，被害人刘某某、董某某等13人在卢某经营的小吃店吃了加过盆内“白糖”的早餐后，均出现头晕、呕吐等现象，后经医院诊断被害人刘某某、董某某等13人属于亚硝酸盐中毒，其中刘某经抢救无效死亡。经鉴定，被害人刘某某系亚硝酸盐中毒死亡，饭店桌上“白糖”检出亚硝酸根成分，被害人刘某某呕吐物中检出亚硝酸根成分。
+
+
+Wrong prediction: [罪名]过失致人死亡;生产、销售有毒有害食品<eoa>
+Correct answer: 过失投放危险物质
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

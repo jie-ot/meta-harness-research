@@ -1,0 +1,29 @@
+Write: logs\20260925_200856\pending_eval.json
+
+content:
+{
+  "iteration": 13,
+  "candidates": [
+    {
+      "name": "unified_confusion_retrieval_memory",
+      "file": "agents/unified_confusion_retrieval_memory.py",
+      "hypothesis": "Replacing the two-phase confusion-slot injection with a single unified ranking that scores each example as jaccard(query, ex) + alpha*log(1+confusion_affinity(ex.label)) will outperform adaptive_tokenizer_confusion_memory, because confusion examples are only surfaced when they are also topically similar to the query, ending the pattern where fixed confusion slots displace more-relevant similarity examples from the context budget.",
+      "axis": "exploitation",
+      "base_system": "adaptive_tokenizer_confusion_memory",
+      "components": ["unified_scoring", "confusion_affinity_bonus", "log_scaled_bonus", "adaptive_tokenizer", "prediction_normalization", "selection_algorithm_axis"]
+    },
+    {
+      "name": "decayed_confusion_memory",
+      "file": "agents/decayed_confusion_memory.py",
+      "hypothesis": "Multiplying all confusion counts by a decay factor (0.95) after each learn_from_batch call will outperform adaptive_tokenizer_confusion_memory by making the confusion matrix reflect the model's current error patterns rather than its full accumulated history, so label pairs that were confused early but later corrected no longer dominate disambiguation slot selection.",
+      "axis": "exploration",
+      "base_system": "adaptive_tokenizer_confusion_memory",
+      "components": ["exponential_decay", "float_confusion_counts", "count_pruning", "adaptive_tokenizer", "prediction_normalization", "learning_trigger_axis"]
+    }
+  ]
+}
+
+
+
+--- output ---
+File created successfully at: D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/pending_eval.json (file state is current in your context — no need to Read it back)

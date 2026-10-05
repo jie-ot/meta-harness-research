@@ -1,0 +1,232 @@
+Write: .prototypes\bigram_confusion_memory.py
+
+content:
+"""Validation prototype for bigram_confusion_memory.py.
+
+Tests imports, cold-start predict, learn_from_batch, and state round-trip
+with a fake LLM. No file/network I/O.
+"""
+
+import sys
+import re
+import json
+from collections import defaultdict
+from typing import Any
+
+
+# ── inline the module under test (avoids relative import issues in prototype) ─
+
+def _tokenize(text: str) -> frozenset:
+    tokens: set = set()
+    tokens.update(re.findall(r"[A-Za-z0-9]+", text.lower()))
+    cjk_chars = re.findall(r"[一-鿿]", text)
+    for i in range(len(cjk_chars) - 1):
+        tokens.add(cjk_chars[i] + cjk_chars[i + 1])
+    return frozenset(tokens)
+
+
+def _jaccard(a: frozenset, b: frozenset) -> float:
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+# Fake LLM
+def fake_llm(prompt: str) -> str:
+    return '{"reasoning": "test", "final_answer": "故意伤害"}'
+
+
+# Minimal stubs matching framework interfaces
+class FakeMemorySystem:
+    def __init__(self, llm):
+        self._llm = llm
+        self.examples: list = []
+        self.confusion: dict = defaultdict(lambda: defaultdict(int))
+
+    def call_llm(self, prompt: str) -> str:
+        return self._llm(prompt)
+
+
+def extract_json_field(response: str, field: str) -> str:
+    try:
+        data = json.loads(response)
+        return data.get(field, "")
+    except Exception:
+        return ""
+
+
+# ── paste in the core logic from bigram_confusion_memory ─────────────────────
+
+_TOP_CANDIDATE_LABELS = 3
+_DISAMBIG_PER_CONFUSION = 2
+MAX_CHARS = 30000
+
+PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+
+{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Follow the patterns shown in the examples above
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+
+class BigramConfusionMemoryTest(FakeMemorySystem):
+    def _scored(self, query):
+        q_tok = _tokenize(query)
+        result = [(_jaccard(q_tok, ex["tokens"]), idx, ex) for idx, ex in enumerate(self.examples)]
+        result.sort(key=lambda x: (x[0], x[1]), reverse=True)
+        return result
+
+    def _confusion_targets_for(self, labels):
+        label_set = set(labels)
+        counts: dict = defaultdict(int)
+        for lbl in labels:
+            row = self.confusion.get(lbl, {})
+            for actual, cnt in row.items():
+                if actual not in label_set:
+                    counts[actual] += cnt
+        return [lbl for lbl, _ in sorted(counts.items(), key=lambda x: (-x[1], x[0]))]
+
+    def _build_parts(self, query):
+        if not self.examples:
+            return []
+        ranked = self._scored(query)
+        top_labels = [ex["target"] for _, _, ex in ranked[:_TOP_CANDIDATE_LABELS]]
+        confused_with = self._confusion_targets_for(top_labels)
+        parts, used_indices, total_chars = [], set(), 0
+
+        def try_add(idx, ex):
+            nonlocal total_chars
+            if idx in used_indices:
+                return False
+            q = ex.get("raw_question", ex["input"])
+            part = f"Q: {q}\nA: {ex['target']}"
+            if total_chars + len(part) + 2 > MAX_CHARS:
+                return False
+            parts.append(part)
+            used_indices.add(idx)
+            total_chars += len(part) + 2
+            return True
+
+        if confused_with:
+            disambig_labels_needed = set(confused_with[:_TOP_CANDIDATE_LABELS])
+            per_label_disambig: dict = defaultdict(list)
+            for score, idx, ex in ranked:
+                if ex["target"] in disambig_labels_needed:
+                    per_label_disambig[ex["target"]].append((score, idx, ex))
+            for _round in range(_DISAMBIG_PER_CONFUSION):
+                for lbl in confused_with[:_TOP_CANDIDATE_LABELS]:
+                    pool = per_label_disambig.get(lbl, [])
+                    for score, idx, ex in pool:
+                        if idx not in used_indices:
+                            try_add(idx, ex)
+                            break
+
+        for _, idx, ex in ranked:
+            if total_chars >= MAX_CHARS:
+                break
+            try_add(idx, ex)
+        return parts
+
+    def predict(self, input_text):
+        parts = self._build_parts(input_text)
+        examples_section = "\n\n".join(parts)
+        prompt = PROMPT_TEMPLATE.format(examples_section=examples_section, input=input_text)
+        response = self.call_llm(prompt)
+        answer = extract_json_field(response, "final_answer")
+        return answer, {"num_examples": len(self.examples), "num_selected": len(parts)}
+
+    def learn_from_batch(self, batch_results):
+        for r in batch_results:
+            raw_q = r.get("raw_question", r["input"])
+            ex = {"input": r["input"], "target": r["ground_truth"], "tokens": _tokenize(raw_q)}
+            if "raw_question" in r:
+                ex["raw_question"] = r["raw_question"]
+            self.examples.append(ex)
+            if not r.get("was_correct", True):
+                pred = r.get("prediction", "")
+                gt = r["ground_truth"]
+                if pred and pred != gt:
+                    self.confusion[pred][gt] += 1
+
+    def get_state(self):
+        ser = [{k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()} for ex in self.examples]
+        conf = {k: dict(v) for k, v in self.confusion.items()}
+        return json.dumps({"examples": ser, "confusion": conf})
+
+    def set_state(self, state):
+        data = json.loads(state)
+        self.examples = []
+        for ex in data.get("examples", []):
+            restored = dict(ex)
+            if "tokens" in restored and isinstance(restored["tokens"], list):
+                restored["tokens"] = frozenset(restored["tokens"])
+            else:
+                raw_q = restored.get("raw_question", restored.get("input", ""))
+                restored["tokens"] = _tokenize(raw_q)
+            self.examples.append(restored)
+        self.confusion = defaultdict(lambda: defaultdict(int))
+        for pred, actuals in data.get("confusion", {}).items():
+            for actual, cnt in actuals.items():
+                self.confusion[pred][actual] = cnt
+
+
+# ── test sequence ─────────────────────────────────────────────────────────────
+
+mem = BigramConfusionMemoryTest(fake_llm)
+
+# 1. Cold start — must not crash
+answer, meta = mem.predict("被告人因借款纠纷，伪造了房产证，交还给被害人。")
+assert answer == "故意伤害", f"Expected '故意伤害', got '{answer}'"
+assert meta["num_selected"] == 0
+print("PASS: cold start returns answer, 0 examples selected")
+
+# 2. learn_from_batch — real examples from history
+batch = [
+    {"input": "被告人伪造房产证抵押骗款。", "ground_truth": "伪造、变造、买卖国家机关公文、证件、印章",
+     "prediction": "伪造国家机关证件罪", "was_correct": False},
+    {"input": "被告人何某与张某1因琐事争执，将张某1打成轻伤二级。",
+     "ground_truth": "故意伤害", "prediction": "故意伤害", "was_correct": True},
+    {"input": "被告人在合同签订过程中虚构事实，骗取他人50600元。",
+     "ground_truth": "合同诈骗", "prediction": "诈骗", "was_correct": False},
+]
+mem.learn_from_batch(batch)
+assert len(mem.examples) == 3
+assert "伪造国家机关证件罪" in mem.confusion
+print(f"PASS: learned {len(mem.examples)} examples, confusion keys={list(mem.confusion.keys())}")
+
+# 3. predict with memory — check bigram similarity drives retrieval
+answer2, meta2 = mem.predict("被告人在签订履行合同过程中隐瞒事实，骗取押金30000元。")
+assert meta2["num_selected"] > 0
+print(f"PASS: predict selected {meta2['num_selected']} examples after learning")
+
+# 4. state round-trip
+state = mem.get_state()
+mem2 = BigramConfusionMemoryTest(fake_llm)
+mem2.set_state(state)
+assert len(mem2.examples) == 3
+assert all(isinstance(ex["tokens"], frozenset) for ex in mem2.examples)
+answer3, _ = mem2.predict("被告人在合同中虚构事实骗取资金。")
+assert answer3 == "故意伤害"
+print("PASS: state round-trip restores examples and frozenset tokens")
+
+# 5. verify bigram retrieval quality
+q = "被告人在签订履行合同过程中虚构事实骗取财物。"
+q_tok = _tokenize(q)
+sims = [(_jaccard(q_tok, ex["tokens"]), ex["target"]) for ex in mem2.examples]
+sims.sort(reverse=True)
+print(f"Retrieval ranking: {[(f'{s:.3f}', t) for s, t in sims]}")
+assert sims[0][1] == "合同诈骗", f"Expected '合同诈骗' as top hit, got '{sims[0][1]}'"
+print("PASS: bigram similarity ranks '合同诈骗' highest for matching query")
+
+print("\nAll bigram_confusion_memory validation checks passed.")
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D0_b\text_classification\.prototypes\bigram_confusion_memory.py (file state is current in your context — no need to Read it back)

@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the factual description indicates that the offender used their official position or entrusted authority to appropriate property for personal gain, rather than physically taking or stealthily removi
+- If the facts describe the misappropriation of money belonging to a private company or other non‑government entity (e.g., company funds, client payments) rather than state or public treasury funds, the
+- If the conduct described involves a public official or person in a position of authority misusing their official power to divert public funds, assets, or benefits for personal or relatives' gain, the 
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:安陆市人民检察院指控，2011年12月至2012年6月，被告人胡1某利用担任安陆市雷公邮政支局局长职务上的便利，挪用邮政储蓄金库资金及挪用报刊征订款共计266112.40元归个人使用。案发后，被告人胡1某的哥哥胡2某于2012年10月5日代为退还10万元，单位核定被告人胡1某在雷公任职期间经营亏损62999元，单位应核发被告人胡1某2012年9月份费用15235.80元，余款由胡2某按约定期限退还。
+安陆市人民检察院认为，被告人胡1某无视国法，身为在国有企业中从事公务的人员，利用职务之便，挪用公款数额巨大，超过三个月未还，其行为已触犯了《中华人民共和国刑法》××××之规定，应当以××追究其刑事责任，建议对其在××至七年之间量刑，与此之前的判决合并执行不超过××。
+为支持其指控，公诉机关提供了相应的证据。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

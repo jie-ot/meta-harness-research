@@ -1,0 +1,105 @@
+Bash
+
+command:
+python -c "
+# Prototype 1: anchor-at-end positioning
+# Core idea: reserve last K slots for anchor examples (one per top candidate label),
+# fill the rest with similarity-ranked examples from the top of the context budget.
+
+import re
+from collections import defaultdict
+
+MAX_CHARS = 500
+
+def tokenize(text):
+    return frozenset(re.findall(r'[A-Za-z0-9]+', text.lower()))
+
+def jaccard(a, b):
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+# Simulate a pool of examples with 5 labels
+labels = ['alpha','beta','gamma','delta','epsilon']
+examples = []
+for i in range(30):
+    lbl = labels[i % len(labels)]
+    text = f'{lbl} specific term{i} common filler'
+    examples.append({'input': text, 'target': lbl, 'tokens': tokenize(text)})
+
+# Query leans toward alpha and beta vocabulary
+query = 'alpha term3 beta term8 common filler extra'
+q_tok = tokenize(query)
+
+# Rank all examples by similarity
+ranked = sorted(enumerate(examples), key=lambda x: jaccard(q_tok, x[1]['tokens']), reverse=True)
+
+# Top-3 candidate labels from ranked examples
+seen = set()
+top_labels = []
+for idx, ex in ranked:
+    if ex['target'] not in seen:
+        top_labels.append(ex['target'])
+        seen.add(ex['target'])
+    if len(top_labels) == 3: break
+
+print('Top candidate labels:', top_labels)
+
+def build_anchor_last(ranked, top_labels, max_chars):
+    '''Fill similarity examples first, then append anchors at end.'''
+    # First pass: pick best anchor for each top label
+    anchors = {}
+    for _, ex in ranked:
+        if ex['target'] in top_labels and ex['target'] not in anchors:
+            anchors[ex['target']] = ex
+        if len(anchors) == len(top_labels):
+            break
+    
+    anchor_examples = [anchors[lbl] for lbl in top_labels if lbl in anchors]
+    anchor_set = {id(ex) for ex in anchor_examples}
+    
+    # estimate anchor chars
+    anchor_chars = sum(len(f'Q: {ex[\"input\"]}\nA: {ex[\"target\"]}') + 2 for ex in anchor_examples)
+    fill_budget = max_chars - anchor_chars
+    
+    # fill non-anchor examples
+    fill_parts = []
+    total = 0
+    for _, ex in ranked:
+        if id(ex) in anchor_set: continue
+        p = f'Q: {ex[\"input\"]}\nA: {ex[\"target\"]}'
+        if total + len(p) + 2 > fill_budget: break
+        fill_parts.append(p); total += len(p) + 2
+    
+    # anchors go last
+    anchor_parts = [f'Q: {ex[\"input\"]}\nA: {ex[\"target\"]}' for ex in anchor_examples]
+    return fill_parts + anchor_parts
+
+def build_standard(ranked, top_labels, max_chars):
+    '''Standard: pure similarity ranking, no anchors.'''
+    parts = []
+    total = 0
+    for _, ex in ranked:
+        p = f'Q: {ex[\"input\"]}\nA: {ex[\"target\"]}'
+        if total + len(p) + 2 > max_chars: break
+        parts.append(p); total += len(p) + 2
+    return parts
+
+parts_anchor = build_anchor_last(ranked, top_labels, MAX_CHARS)
+parts_std = build_standard(ranked, top_labels, MAX_CHARS)
+
+print(f'Anchor-last: {len(parts_anchor)} parts | last 3 labels: {[p.split(chr(10))[1].replace(\"A: \",\"\") for p in parts_anchor[-3:]]}')
+print(f'Standard:    {len(parts_std)} parts   | last 3 labels: {[p.split(chr(10))[1].replace(\"A: \",\"\") for p in parts_std[-3:]]}')
+
+# Verify: for anchor-last, each top_label appears at the end
+anchor_tails = [p.split(chr(10))[1].replace('A: ','') for p in parts_anchor[-len(top_labels):]]
+print(f'Anchor tail matches top_labels {top_labels}: {set(anchor_tails) == set(top_labels)}')
+"
+
+
+description: Prototype 1: anchor-at-end positioning logic
+
+--- output ---
+Top candidate labels: ['alpha', 'beta', 'delta']
+Anchor-last: 10 parts | last 3 labels: ['alpha', 'beta', 'delta']
+Standard:    10 parts   | last 3 labels: ['beta', 'alpha', 'beta']
+Anchor tail matches top_labels ['alpha', 'beta', 'delta']: True

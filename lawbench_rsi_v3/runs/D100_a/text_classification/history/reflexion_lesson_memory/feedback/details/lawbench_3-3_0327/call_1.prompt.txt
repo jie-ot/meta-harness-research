@@ -1,0 +1,30 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the facts describe a person performing any medical diagnosis, treatment, or related procedure without a valid medical license, classify the conduct under the statutory offense of “非法行医” rather th
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the factual description contains distinct elements that satisfy the legal criteria of more than one separate criminal offense, list every applicable offense, separating them with semicolons.
+- When the facts describe the acquisition, processing, and sale of animal-derived products that are unsafe or of unknown origin, classify the offense under food safety statutes (e.g., 生产、销售不符合安全标准的食品) r
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:
+	经审理查明，原审认定刘某非法行医的事实有被害人顾某1陈述，证人王某、陈某等的证言，证据先行登记保存决定书及物品清单，诸暨市卫生和计划生育局行政处罚决定书，证明，医疗执业注册联网管理系统查询，辨认笔录和身份信息，绍兴市市场监督管理局认定书，绍兴市医学会医学鉴定书，现场检查笔录及现场照片，行政罚款单据，谅解书，抓获经过及被告人刘某供述、人口信息等证据所证实，本院予以确认。
+	关于上诉理由及检察意见，本院评析如下：
+	一、关于刘某是否构成自首的认定问题，经查：110案件信息流程图能够证实被害人家属报案时间系案发当天，刘某在报警现场，未自行离开的事实。证人顾某2的证言、刘某的供述证实了报案过程，刘某等人随警察至派出所说明相关事实。而后在诸暨市卫生和计划生育局对其所作的询问笔录中亦能证实刘某已将涉案的相关事实如实陈述。立案决定书、传唤证、拘留证等证据能够证实本案系2016年10月9日进行立案侦查，刘某系在未被采取强制措施的情况下，经电话通知到公安机关接受调查。综合上述证据足以认定刘某的到案行为符合自动投案的情形，应当认定为自首。故对刘某提出其构成自首的上诉意见本院予以采纳。
+	二、关于刘某提出对被害人的经济赔偿是由其和李某慧共同作出的上诉意见，经查：收录在案的谅解书能够证实李某慧对顾某1作了经济赔偿，并进行道歉，顾某1亦对李某慧予以谅解的事实。而刘某提出经济赔偿是共同作出的意见仅有其单方供述，未有其他证据予以印证，且至今刘某也未获得被害人的谅解。综上，刘某就此提出的上诉意见，本院不予采纳。
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

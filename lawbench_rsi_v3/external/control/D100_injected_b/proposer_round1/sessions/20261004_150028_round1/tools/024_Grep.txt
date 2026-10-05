@@ -1,0 +1,30 @@
+Grep
+
+-C: 4
+head_limit: 70
+output_mode: content
+path:
+D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/lawbench_rsi_v3/runs/D100_injected_b/text_classification/inner_loop.py
+
+pattern: raw_question
+
+--- output ---
+151-                    "prediction": ex["target"],  # Ground truth visible
+152-                    "ground_truth": ex["target"],
+153-                    "was_correct": True,
+154-                }
+155:                # Forward extra fields (e.g. raw_question) for memory systems
+156-                for k, v in ex.items():
+157-                    if k not in ("input", "target") and k not in r:
+158-                        r[k] = v
+159-                batch_results.append(r)
+--
+364-                "metadata": meta,
+365-            }
+366-            if metrics:
+367-                result["metrics"] = metrics
+368:            # Forward extra fields (e.g. raw_question) for memory systems
+369-            for k, v in ex.items():
+370-                if k not in ("input", "target") and k not in result:
+371-                    result[k] = v
+372-            batch_results.append(result)

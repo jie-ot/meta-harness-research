@@ -1,0 +1,30 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- When the factual description involves possession of controlled substances (e.g., heroin, cocaine) and cites violation of drug control laws, always label the offense as “非法持有毒品” rather than the generic
+- If the facts only describe forging, altering, or selling state‑issued documents or certificates and do not contain any separate act of deceiving another party for financial gain, assign only the forge
+- If the facts describe a public official who, while performing administrative duties, deliberately fails to transfer a case that must be prosecuted criminally (e.g., to achieve personal or unit economi
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:宁德市蕉城区人民检察院指控：
+2010年10月至2014年3月，被告人郑某甲以民间互助会的形式发起1000元标低会二场，500元标高会一场，吸收钟某某、郑某乙、游某某等会员共计263人次入会。2015年1月份，因被告人郑某甲无力承担会款导致互助会无法继续。经福建德润会计师事务所司法鉴定，被告人郑某甲非法吸收公众存款数额共计人民币9129130元（币种，下同），造成报案会员直接经济损失426971元。
+2015年9月22日，被告人郑某甲被宁德市公安局蕉城分局传唤到案。同年10月20日，被告人郑某甲与报案会员达成调解协议，并偿还各会员经济损失共计100150元，取得报案会员的谅解。
+针对上述指控的事实，公诉机关出示了相关证据予以证实，并认为被告人郑某甲违反金融管理法规，扰乱金融秩序，以民间互助会方式非法吸收公众存款共计9129130元，其行为已触犯《中华人民共和国刑法》××××之规定，应以××追究其刑事责任。提请本院依法惩处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,60 @@
+Read: agents\contrastive_boundary_memory.py
+
+offset: 209
+
+--- output ---
+209	
+210	    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+211	        prompt, num_disambig, num_regular = self._build_prompt(input)
+212	        response = self.call_llm(prompt)
+213	        answer = extract_json_field(response, "final_answer")
+214	        return answer, {
+215	            "full_response": response,
+216	            "num_examples": len(self.examples),
+217	            "num_disambig": num_disambig,
+218	            "num_regular": num_regular,
+219	            "num_confusion_pairs": sum(len(v) for v in self.confusion.values()),
+220	        }
+221	
+222	    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+223	        for r in batch_results:
+224	            raw_q = r.get("raw_question", r["input"])
+225	            ex: dict[str, Any] = {
+226	                "input": r["input"],
+227	                "target": r["ground_truth"],
+228	                "tokens": _tokenize_adaptive(raw_q),
+229	            }
+230	            if "raw_question" in r:
+231	                ex["raw_question"] = r["raw_question"]
+232	            self.examples.append(ex)
+233	
+234	            if not r.get("was_correct", True):
+235	                pred = r.get("prediction", "")
+236	                gt = r["ground_truth"]
+237	                if pred and pred != gt:
+238	                    self.confusion[pred][gt] += 1
+239	
+240	    def get_state(self) -> str:
+241	        serialisable = [
+242	            {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+243	            for ex in self.examples
+244	        ]
+245	        confusion_plain = {k: dict(v) for k, v in self.confusion.items()}
+246	        return json.dumps({"examples": serialisable, "confusion": confusion_plain}, indent=2)
+247	
+248	    def set_state(self, state: str) -> None:
+249	        data = json.loads(state)
+250	        self.examples = []
+251	        for ex in data.get("examples", []):
+252	            restored = dict(ex)
+253	            if "tokens" in restored and isinstance(restored["tokens"], list):
+254	                restored["tokens"] = frozenset(restored["tokens"])
+255	            else:
+256	                raw_q = restored.get("raw_question", restored.get("input", ""))
+257	                restored["tokens"] = _tokenize_adaptive(raw_q)
+258	            self.examples.append(restored)
+259	        self.confusion = defaultdict(lambda: defaultdict(int))
+260	        for pred, actuals in data.get("confusion", {}).items():
+261	            for actual, cnt in actuals.items():
+262	                self.confusion[pred][actual] = cnt
+263	

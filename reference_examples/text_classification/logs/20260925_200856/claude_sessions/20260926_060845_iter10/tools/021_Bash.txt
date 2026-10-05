@@ -1,0 +1,103 @@
+Bash
+
+command:
+python -c "
+# Prototype 2: Utility-weighted retrieval
+# Each stored example gets a utility score: +1 when it was in context and prediction was correct, -1 when wrong
+# predict() stores retrieved indices in metadata -> learn_from_batch() updates those examples' utilities
+# Retrieval score = jaccard * (1 + alpha * sigmoid(utility))
+
+import re, math
+from collections import defaultdict
+
+def tokenize(text):
+    return frozenset(re.findall(r'[A-Za-z0-9]+', text.lower()))
+
+def jaccard(a, b):
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+def sigmoid(x):
+    return 1.0 / (1.0 + math.exp(-x))
+
+# Storage structure
+examples = []
+# Simulate some examples accumulating utility scores
+labels = ['alpha', 'beta', 'gamma']
+for i in range(15):
+    lbl = labels[i % len(labels)]
+    ex = {
+        'input': f'{lbl} term{i} shared',
+        'target': lbl,
+        'tokens': tokenize(f'{lbl} term{i} shared'),
+        'utility': 0.0,   # NEW: utility score
+        'utility_n': 0,   # how many times retrieved
+    }
+    examples.append(ex)
+
+# Simulate: examples 0, 3, 6 (all 'alpha') have been retrieved many times and often led to correct preds
+# examples 1, 4, 7 ('beta') retrieved less and often wrong
+for i in [0, 3, 6]:
+    examples[i]['utility'] = 3.0   # consistently correct
+    examples[i]['utility_n'] = 4
+for i in [1, 4, 7]:
+    examples[i]['utility'] = -2.0  # often wrong
+    examples[i]['utility_n'] = 3
+for i in [2, 5, 8]:
+    examples[i]['utility'] = 0.5   # slightly positive
+    examples[i]['utility_n'] = 2
+
+ALPHA = 2.0
+
+def score_example(ex, q_tok):
+    sim = jaccard(q_tok, ex['tokens'])
+    # utility modifier: sigmoid maps utility to (0,1), shift to (-0.5, 0.5), scale by alpha
+    util_modifier = 1.0 + ALPHA * (sigmoid(ex['utility']) - 0.5)
+    return sim * util_modifier
+
+query = 'alpha term0 shared common'
+q_tok = tokenize(query)
+
+plain_ranked = sorted(range(len(examples)), key=lambda i: jaccard(q_tok, examples[i]['tokens']), reverse=True)
+utility_ranked = sorted(range(len(examples)), key=lambda i: score_example(examples[i], q_tok), reverse=True)
+
+print('Plain top-5:', [(examples[i]['target'], round(jaccard(q_tok, examples[i]['tokens']),3)) for i in plain_ranked[:5]])
+print('Utility top-5:', [(examples[i]['target'], round(score_example(examples[i], q_tok),3)) for i in utility_ranked[:5]])
+print()
+
+# Verify utility update mechanism
+def update_utilities(examples, retrieved_indices, was_correct):
+    delta = 1.0 if was_correct else -1.0
+    for idx in retrieved_indices:
+        examples[idx]['utility'] += delta
+        examples[idx]['utility_n'] += 1
+
+# Simulate a batch: prediction using examples [0,1,2] was correct
+retrieved_in_batch = [0, 1, 2]
+update_utilities(examples, retrieved_in_batch, was_correct=True)
+print('After correct prediction - utilities for [0,1,2]:',
+      [round(examples[i]['utility'],1) for i in [0,1,2]])
+
+# Simulate another: prediction using [1,4,7] was wrong
+retrieved_in_batch = [1, 4, 7]
+update_utilities(examples, retrieved_in_batch, was_correct=False)
+print('After wrong prediction - utilities for [1,4,7]:',
+      [round(examples[i]['utility'],1) for i in [1,4,7]])
+
+# Check that high-utility examples float up in ranking
+utility_ranked2 = sorted(range(len(examples)), key=lambda i: score_example(examples[i], q_tok), reverse=True)
+print('Updated utility top-5:', [(examples[i]['target'], round(score_example(examples[i], q_tok),3)) for i in utility_ranked2[:5]])
+print('High-utility examples (idx 0,3,6) still rank highly:', all(i in utility_ranked2[:6] for i in [0,3,6]))
+"
+
+
+description: Prototype 2: utility-weighted retrieval with per-example feedback
+
+--- output ---
+Plain top-5: [('alpha', 0.75), ('alpha', 0.4), ('alpha', 0.4), ('alpha', 0.4), ('alpha', 0.4)]
+Utility top-5: [('alpha', 1.429), ('alpha', 0.762), ('alpha', 0.762), ('alpha', 0.4), ('alpha', 0.4)]
+
+After correct prediction - utilities for [0,1,2]: [4.0, -1.0, 1.5]
+After wrong prediction - utilities for [1,4,7]: [-2.0, -3.0, -3.0]
+Updated utility top-5: [('alpha', 1.473), ('alpha', 0.762), ('alpha', 0.762), ('alpha', 0.4), ('alpha', 0.4)]
+High-utility examples (idx 0,3,6) still rank highly: True

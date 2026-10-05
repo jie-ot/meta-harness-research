@@ -1,0 +1,46 @@
+Bash
+
+command: python .prototypes/label_lexicon_snap_memory.py
+description: Run prototype A v2 mechanism check
+
+--- output ---
+=== Variant comparison: guard settings ===
+min_run=3 cover=0.5: 0/16 cases differ from expectation
+min_run=4 cover=0.6: 0/16 cases differ from expectation
+min_run=4 cover=0.8: 0/16 cases differ from expectation
+min_run=5 cover=0.6: 0/16 cases differ from expectation
+
+=== Chosen variant: min_run=4, cover=0.6 ===
+PASS  [罪名]破坏电力设施<eoa>                              -> 破坏电力设备   (share 破坏电力 (4) -> snap)
+PASS  [罪名]非法种植罂粟<eoa>                              -> 非法种植毒品原植物   (share 非法种植 (4) -> snap)
+PASS  [罪名]盗窃;破坏电力设施<eoa>                           -> 盗窃;破坏电力设备   (mixed: one safe, one snapped)
+PASS  [罪名]拐骗儿童罪<eoa>                               -> 拐骗儿童   (G4 spurious 罪 suffix)
+PASS  [罪名]盗窃<eoa>                                  -> 盗窃   (exact, must NOT snap)
+PASS  [罪名]失火<eoa>                                  -> 失火   (exact short, must NOT snap)
+PASS  [罪名]诈骗<eoa>                                  -> 诈骗   (exact short, must NOT be pulled to 合同诈骗)
+PASS  [罪名]行贿<eoa>                                  -> 行贿   (exact, must NOT be pulled to 单位行贿)
+PASS  [罪名]故意伤害<eoa>                                -> 故意伤害   (exact, must NOT snap)
+PASS  [罪名]受贿<eoa>                                  -> 受贿   (exact, must NOT be pulled to 非国家工作人员受贿)
+PASS  [罪名]盗窃;诈骗<eoa>                               -> 盗窃;诈骗   (both exact)
+PASS  [罪名]侵犯注册商标专用权<eoa>                           -> 侵犯注册商标专用权   (G2 blocks: run 4 < 0.6*9)
+PASS  [罪名]非法采矿<eoa>                                -> 非法采矿   (exact, plausible standalone)
+PASS  [罪名]掩饰、隐瞒犯罪所得<eoa>                           -> 掩饰、隐瞒犯罪所得、犯罪所得收益   (whole-unit repair across '、')
+PASS  [罪名]掩饰、隐瞒犯罪所得、犯罪所得收益<eoa>                    -> 掩饰、隐瞒犯罪所得、犯罪所得收益   (exact multi-'、' label, must NOT snap)
+PASS  [罪名]非法持有、私藏枪支、弹药<eoa>                        -> 非法持有、私藏枪支、弹药   (exact multi-'、')
+
+=== Scored-fragment equivalence (what the evaluator actually compares) ===
+PASS  [罪名]掩饰、隐瞒犯罪所得<eoa>                   vs 掩饰、隐瞒犯罪所得、犯罪所得收益                   -> correct=True (expected True)
+PASS  [罪名]盗窃<eoa>                          vs 盗窃                                 -> correct=True (expected True)
+PASS  [罪名]破坏电力设施<eoa>                      vs 破坏电力设备                             -> correct=True (expected True)
+PASS  [罪名]故意伤害<eoa>                        vs 非法持有、私藏枪支、弹药;故意伤害;聚众斗殴             -> correct=False (expected False)
+
+=== Retrieval signal: degenerate ASCII tokens vs Chinese bigrams ===
+old tokenizer on Chinese query -> []
+  related   old_jaccard=0.0000   bigram_dice=0.3529
+  unrelated old_jaccard=0.0000   bigram_dice=0.1200
+
+=== End-to-end predict/learn with fake LLM ===
+predicted: 盗窃;破坏电力设备 | meta: {'num_selected': 3, 'lexicon_size': 3}
+matches expectation: True
+
+PROTOTYPE A OK: guarded snap is safe on all 16 cases and repairs real near-misses

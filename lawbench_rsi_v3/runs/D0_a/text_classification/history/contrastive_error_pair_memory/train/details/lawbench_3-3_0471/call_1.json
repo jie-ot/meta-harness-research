@@ -1,0 +1,72 @@
+{
+  "call_id": "dcb031c4fb5f43f5889c2913f6dcea18",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791027940-rQsDVT7D7KONnPZaAnxi",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"赵1某作为福泰兴酒业有限公司的法定代表人，向赵2某（政府官员）行贿30万元，以获取并维持政府采购酒类的指定供应资格。根据《刑法》规定，向国家工作人员行贿的行为构成行贿罪；若行为人以单位名义实施，则构成单位行贿罪。案件中既涉及单位福泰兴酒业的行贿行为，也涉及其法定代表人赵1某的个人行贿行为，故应当以“单位行贿”和“行贿”两罪并罚。\",\n  \"final_answer\": \"[罪名]单位行贿;行贿<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate criminal charge(s) for this case.\n\nFacts: Zhao1 is legal representative of a company. Zhao2 is former mayor. Zhao2 instructed government procurement office to purchase white wine from Zhao1's company, value 1.2 million yuan, for government reception. Later Zhao1 gave Zhao2 300,000 yuan in cash in Zhao2's office, as a bribe to thank for procurement and to continue being designated supplier. Zhao2 accepted.\n\nThus, this is a case of bribery: the company (unit) and its legal representative gave bribe to a state functionary (public official) to obtain procurement. The appropriate charge: \"单位行贿\" (unit bribery) and \"行贿\" (bribe). Since the defendant is a legal representative of a company, the company is a unit, so the charge is \"单位行贿\". The individual also may be charged with \"行贿\". In Chinese criminal law, the legal representative can be charged with \"单位行贿罪\" (unit bribery) and also \"行贿罪\" (bribery) if personal. Usually the unit is charged, and the legal representative may be charged as \"行贿罪\". The prompt says: \"被告单位肇东市福泰兴酒业有限公司、被告人赵1某的行为已构成××\". So both unit and person. So we need to output both charges: \"单位行贿;行贿\". However need to check typical labeling used in examples. In earlier examples, they used \"行贿\" for individuals and \"单位受贿\" for unit receiving bribe. For giving bribe, they used \"行贿\". For unit giving bribe, they used \"单位行贿\". Example: earlier case with unit and person: \"危害公共安全\" etc? Let's search memory: In examples, they had \"行贿\" for individuals, \"单位受贿\" for unit receiving. For unit giving, they used \"单位行贿\". In the earlier example about \"行贿\" they had: \"行贿\" as answer for a case where a person gave bribe. For unit and person they gave \"行贿\". Not sure.\n\nLet's see earlier example: The case about \"威海经济技术开发区...单位受贿;危险驾驶\". They had both unit and individual. They used \"单位受贿\" for unit receiving bribe, and \"危险驾驶\" for individual. So they differentiate.\n\nThus here we have unit giving bribe and individual giving bribe. So answer: \"单位行贿;行贿\". Ensure correct order? Not important.\n\nThus final answer JSON with reasoning and final answer.\n\n",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to determine appropriate criminal charge(s) for this case.\n\nFacts: Zhao1 is legal representative of a company. Zhao2 is former mayor. Zhao2 instructed government procurement office to purchase white wine from Zhao1's company, value 1.2 million yuan, for government reception. Later Zhao1 gave Zhao2 300,000 yuan in cash in Zhao2's office, as a bribe to thank for procurement and to continue being designated supplier. Zhao2 accepted.\n\nThus, this is a case of bribery: the company (unit) and its legal representative gave bribe to a state functionary (public official) to obtain procurement. The appropriate charge: \"单位行贿\" (unit bribery) and \"行贿\" (bribe). Since the defendant is a legal representative of a company, the company is a unit, so the charge is \"单位行贿\". The individual also may be charged with \"行贿\". In Chinese criminal law, the legal representative can be charged with \"单位行贿罪\" (unit bribery) and also \"行贿罪\" (bribery) if personal. Usually the unit is charged, and the legal representative may be charged as \"行贿罪\". The prompt says: \"被告单位肇东市福泰兴酒业有限公司、被告人赵1某的行为已构成××\". So both unit and person. So we need to output both charges: \"单位行贿;行贿\". However need to check typical labeling used in examples. In earlier examples, they used \"行贿\" for individuals and \"单位受贿\" for unit receiving bribe. For giving bribe, they used \"行贿\". For unit giving bribe, they used \"单位行贿\". Example: earlier case with unit and person: \"危害公共安全\" etc? Let's search memory: In examples, they had \"行贿\" for individuals, \"单位受贿\" for unit receiving. For unit giving, they used \"单位行贿\". In the earlier example about \"行贿\" they had: \"行贿\" as answer for a case where a person gave bribe. For unit and person they gave \"行贿\". Not sure.\n\nLet's see earlier example: The case about \"威海经济技术开发区...单位受贿;危险驾驶\". They had both unit and individual. They used \"单位受贿\" for unit receiving bribe, and \"危险驾驶\" for individual. So they differentiate.\n\nThus here we have unit giving bribe and individual giving bribe. So answer: \"单位行贿;行贿\". Ensure correct order? Not important.\n\nThus final answer JSON with reasoning and final answer.\n\n",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate criminal charge(s) for this case.\n\nFacts: Zhao1 is legal representative of a company. Zhao2 is former mayor. Zhao2 instructed government procurement office to purchase white wine from Zhao1's company, value 1.2 million yuan, for government reception. Later Zhao1 gave Zhao2 300,000 yuan in cash in Zhao2's office, as a bribe to thank for procurement and to continue being designated supplier. Zhao2 accepted.\n\nThus, this is a case of bribery: the company (unit) and its legal representative gave bribe to a state functionary (public official) to obtain procurement. The appropriate charge: \"单位行贿\" (unit bribery) and \"行贿\" (bribe). Since the defendant is a legal representative of a company, the company is a unit, so the charge is \"单位行贿\". The individual also may be charged with \"行贿\". In Chinese criminal law, the legal representative can be charged with \"单位行贿罪\" (unit bribery) and also \"行贿罪\" (bribery) if personal. Usually the unit is charged, and the legal representative may be charged as \"行贿罪\". The prompt says: \"被告单位肇东市福泰兴酒业有限公司、被告人赵1某的行为已构成××\". So both unit and person. So we need to output both charges: \"单位行贿;行贿\". However need to check typical labeling used in examples. In earlier examples, they used \"行贿\" for individuals and \"单位受贿\" for unit receiving bribe. For giving bribe, they used \"行贿\". For unit giving bribe, they used \"单位行贿\". Example: earlier case with unit and person: \"危害公共安全\" etc? Let's search memory: In examples, they had \"行贿\" for individuals, \"单位受贿\" for unit receiving. For unit giving, they used \"单位行贿\". In the earlier example about \"行贿\" they had: \"行贿\" as answer for a case where a person gave bribe. For unit and person they gave \"行贿\". Not sure.\n\nLet's see earlier example: The case about \"威海经济技术开发区...单位受贿;危险驾驶\". They had both unit and individual. They used \"单位受贿\" for unit receiving bribe, and \"危险驾驶\" for individual. So they differentiate.\n\nThus here we have unit giving bribe and individual giving bribe. So answer: \"单位行贿;行贿\". Ensure correct order? Not important.\n\nThus final answer JSON with reasoning and final answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to determine appropriate criminal charge(s) for this case.\n\nFacts: Zhao1 is legal representative of a company. Zhao2 is former mayor. Zhao2 instructed government procurement office to purchase white wine from Zhao1's company, value 1.2 million yuan, for government reception. Later Zhao1 gave Zhao2 300,000 yuan in cash in Zhao2's office, as a bribe to thank for procurement and to continue being designated supplier. Zhao2 accepted.\n\nThus, this is a case of bribery: the company (unit) and its legal representative gave bribe to a state functionary (public official) to obtain procurement. The appropriate charge: \"单位行贿\" (unit bribery) and \"行贿\" (bribe). Since the defendant is a legal representative of a company, the company is a unit, so the charge is \"单位行贿\". The individual also may be charged with \"行贿\". In Chinese criminal law, the legal representative can be charged with \"单位行贿罪\" (unit bribery) and also \"行贿罪\" (bribery) if personal. Usually the unit is charged, and the legal representative may be charged as \"行贿罪\". The prompt says: \"被告单位肇东市福泰兴酒业有限公司、被告人赵1某的行为已构成××\". So both unit and person. So we need to output both charges: \"单位行贿;行贿\". However need to check typical labeling used in examples. In earlier examples, they used \"行贿\" for individuals and \"单位受贿\" for unit receiving bribe. For giving bribe, they used \"行贿\". For unit giving bribe, they used \"单位行贿\". Example: earlier case with unit and person: \"危害公共安全\" etc? Let's search memory: In examples, they had \"行贿\" for individuals, \"单位受贿\" for unit receiving. For unit giving, they used \"单位行贿\". In the earlier example about \"行贿\" they had: \"行贿\" as answer for a case where a person gave bribe. For unit and person they gave \"行贿\". Not sure.\n\nLet's see earlier example: The case about \"威海经济技术开发区...单位受贿;危险驾驶\". They had both unit and individual. They used \"单位受贿\" for unit receiving bribe, and \"危险驾驶\" for individual. So they differentiate.\n\nThus here we have unit giving bribe and individual giving bribe. So answer: \"单位行贿;行贿\". Ensure correct order? Not important.\n\nThus final answer JSON with reasoning and final answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 749,
+      "prompt_tokens": 23943,
+      "total_tokens": 24692,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 616,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0012825,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0012825,
+        "upstream_inference_prompt_cost": 0.0010766710462751575,
+        "upstream_inference_completions_cost": 0.00020582895372484242
+      }
+    }
+  },
+  "raw_response_missing": false
+}

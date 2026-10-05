@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description involves the theft or misappropriation of a species that is designated as a nationally protected plant or animal, the classification must include both the theft charge and t
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- When the facts describe a person performing any medical diagnosis, treatment, or related procedure without a valid medical license, classify the conduct under the statutory offense of “非法行医” rather th
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:德宏州人民检察院指控：2016年7月28日，被告人李1某准备将其在瑞丽购得的罂粟壳及罂粟籽运输至昆明，同日11时25分被告人李1某驾驶载有罂粟壳及罂粟籽（车牌为云L650DM）小货车途经龙瑞高速公路芒市服务区时被德宏州公安边防木康边境检查站执勤人员抓获，当场从其驾驶的车内查获罂粟壳680.08千克，罂粟籽1185.1千克。针对上述指控，德宏州人民检察院出示并宣读书证、物证、证人证言、被告人的供述和辩解、鉴定意见等证据，并据此认为，被告人李1某的行为已构成运输毒品罪、非法运输毒品原植物种子罪，提请本院依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

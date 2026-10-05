@@ -1,0 +1,16 @@
+Bash [ERROR]
+
+command:
+cd "D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification" && uv run python -c "import sys; sys.path.insert(0,'.'); from agents.rrf_confusion_memory import *; print('OK')"
+
+description: Validate rrf_confusion_memory with correct module path
+
+--- output ---
+Exit code 1
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\__init__.py", line 3, in <module>
+    from .fewshot_all import FewShotAll
+  File "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\fewshot_all.py", line 3, in <module>
+    from ..llm import LLMCallable
+ImportError: attempted relative import beyond top-level package

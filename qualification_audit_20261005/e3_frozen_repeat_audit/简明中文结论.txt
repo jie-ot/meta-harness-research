@@ -1,0 +1,18 @@
+E3：冻结复测的有界离线资格审计（汇总级完成，逐题资格未完成）
+1. 目的：描述既有冻结harness两次评价是否一致；不能替代优化器/候选生成方差实验。
+2. 设计：R4B/R7A/R12B×score/audit×2重复，严格12原stage；原文件只读，新增实验模型调用0。历史模型均为openrouter/openai/gpt-oss-120b，temperature=0，max_tokens=16384，system_prompt=Reasoning: medium；不能称为SolMax结果。当前模型/effort无可独立确认元数据。
+3. 结果（pp为百分点，每次100题，n=2）：
+R4B score: 25→29，Δ=+4pp，范围[25,29]。
+R4B audit: 29→26，Δ=-3pp，范围[26,29]。
+R7A score: 39→36，Δ=-3pp，范围[36,39]。
+R7A audit: 34→35，Δ=+1pp，范围[34,35]。
+R12B score: 39→40，Δ=+1pp，范围[39,40]。
+R12B audit: 44→45，Δ=+1pp，范围[44,45]。
+六组recorded signature匹配：代码、框架、初始memory声明hash、manifest/题目顺序、模型参数、cache off/null；12个result哈希与complete、start签名、usage及原summary一致。实际执行payload/逐题输入和展开prompt未完成核验。
+全部cache_hits=0、persistent_prediction_state_changed=false；不能因此证明服务端无缓存、统计IID或瞬时状态不变。R4B score有历史402后恢复：18/17次非计费拒绝，logical/API=118/117，成功评价仍各100题；其余10个stage各100请求。summary retry=0，incomplete=[]；原API调用日志未核对。
+旧noise_summary声明audit的WC/CW依次3/6、5/4、3/2；仅与净准确率差值算术相容，未独立逐题复核，不能当作新核验。规范化标签翻转、CC/CW/WC/WW逐题表和实际prompt一致数均missing/unknown。
+H0去重：baseline_cache_recovery来源为own completed H0 measurements，D0_a/b各100条score缓存，D100_a为200条；恢复缓存不增样本。injected两组复用D0_a/b各自score并共用D100_a feedback，new_model_calls=0，不另算重复；副本payload未重读。
+4. 结论：六组均归“不匹配或资料不全”，具体是本次逐题资格证据不全，未发现冻结声明配置不匹配。仅支持历史汇总差异描述，不能称固定prompt纯输出噪声或统计独立复测。audit为已暴露old test；不按audit重选，不报告排名翻转、方差、区间、显著性或改善概率。
+阻塞：独立解析脚本两次字段错误；第二次发生在8份轨迹读取后，结果未保存。重读会超本步累计预算，故按用户允许的汇总/未知协议结束，不追查独立性。
+累计原始读取上界165,744,018/167,772,160字节；已计入两次中止及前后小型读取预留。只做stat复核，不重读大文件。
+5. 下一步影响：E2 prefix回放仍是历史离线描述；本审计不调整delta/patience，不证实候选生成稳定性，不提供SolMax成绩。最小新增实验调用=0（本步已结束）；任何后续付费实验需另获明确授权，不因本结果自行启动。

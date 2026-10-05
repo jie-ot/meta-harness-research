@@ -1,0 +1,41 @@
+{
+  "protocol": "official Codex CLI app-server stdio using existing ChatGPT login",
+  "client_info": {
+    "name": "meta_harness_e4_live_repeat",
+    "title": "Meta-Harness E4 frozen repeat",
+    "version": "1.0.0"
+  },
+  "thread_start": {
+    "model": "gpt-6.1-sol",
+    "modelProvider": null,
+    "baseInstructions": "Reasoning: medium",
+    "developerInstructions": "",
+    "ephemeral": true,
+    "cwd": "D:\\我的文件\\华中科技大学\\李老师课题组研究工作\\meta-harness\\qualification_audit_20261005\\e4_live_repeat_6_1\\isolated_cwd",
+    "approvalPolicy": "never",
+    "sandbox": "read-only",
+    "personality": "none",
+    "config": {
+      "web_search": "disabled",
+      "model_reasoning_effort": "max",
+      "model_reasoning_summary": "none"
+    }
+  },
+  "turn_start": {
+    "model": "gpt-6.1-sol",
+    "effort": "max",
+    "summary": "none",
+    "approvalPolicy": "never",
+    "personality": "none",
+    "sandboxPolicy": {
+      "type": "readOnly",
+      "networkAccess": false
+    },
+    "input_rule": "one text item whose text bytes equal locked prompt; no wrapper",
+    "output_schema": null
+  },
+  "per_observation_reset": "new ephemeral thread per item; frozen memory is rendered outside model; no conversation carryover",
+  "client_result_cache": "old harness cache bypassed; app-server exposes no response-cache switch; server-side reuse remains unknown",
+  "tool_policy": "web search disabled, read-only sandbox, no approval; any tool item invalidates observation and stops run",
+  "semantic_difference": "E4-6.1 uses official Codex CLI 0.160.0, gpt-6.1-sol/max and the fixed Codex wrapper. It does not claim raw-completion equivalence to the historical temperature=0/max_tokens=16384 transport. The historical base instruction Reasoning: medium is retained as prompt text; the actual requested reasoning effort is max."
+}

@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the facts describe illegal capture or killing of protected wildlife using hunting methods and there is no element of illegal trade (purchase, sale, transport, or brokerage), assign the specific c
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- When the case facts explicitly describe separate actions of selling, buying, or transporting counterfeit currency, label each distinct offense (e.g., 出售假币, 购买假币, 运输假币) rather than using a generic term
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:汶川县人民检察院指控，被告人唐某和范某（另案处理）经人介绍认识收购药材和野生动物的杨某（另案处理）后，二人在汶川县威州镇“一茗茶楼”商量到汶川县克枯乡八卦山梁子挖药的同时套取野生动物谋利。随后，被告人唐某和范某在汶川县威州镇双河市场较场街一杂货店购买用于制作猎套的扎丝和细尼龙绳。2014年5月，被告人唐某和范某到汶川县克枯乡八卦山梁子挖药，并分别在山梁子上安放好用于猎捕野生动物的猎套。同年8月，二人再次到八卦山梁子挖药，发现之前安放的猎套套住了4只疑似金丝猴的野生动物，被告人唐某和范某将猎捕的4只野生动物背下山，并与杨某取得联系，以总计12000元人民币的价格将4只野生动物卖给杨某，二人各分得人民币6000元。经鉴定，4只野生动物的样本对应物种为金丝猴。
+公诉机关就指控的上述事实当庭举示了相关物证、书证、证人证言、被告人供述、现场勘验笔录、鉴定意见等证据。公诉机关认为，被告人唐某伙同他人非法猎捕珍贵、濒危野生动物，其行为已触犯《中华人民共和国刑法》××之规定，犯罪事实清楚，证据确实、充分，应当以非法猎捕珍贵、濒危野生动物罪追究其刑事责任，应当处十年以上××，提请本院依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,32 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the factual narrative describes more than one distinct illegal act that maps to separate statutory offenses, list every applicable charge (separated by semicolons) rather than selecting only the 
+- When the facts describe a production‑safety accident in which the defendant’s failure to implement required safety measures directly caused a death, the correct charge is the crime of ‘重大责任事故’ rather 
+- When classifying crimes, match each factual element to the precise legal definition: use "绑架" only if the act involves illegal deprivation of a person's liberty, use "寻衅滋事" for violent disturbances of
+- If the factual description explicitly states that the perpetrator seized the victim's property by force, threat, or taking advantage of the victim’s unpreparedness (e.g., using the term “抢夺” or descri
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控：
+（一）××
+2015年7月18日晚上11点左右，被告人李某在仙桃城区喝酒后到朵以服饰公司保安部上班，为了拿一块垫布休息窜至公司西北角一仓库，因家庭琐事李某心里感觉非常烦，想点火把仓库烧了算了，就用打火机点燃包装袋的绳子拿出垫布，让燃烧的绳子继续燃烧后离开，导致该仓库起火燃烧，造成该公司经济损失约50万元。
+（二）××
+2007年3月11日下午5时左右，被告人李某与仙桃市通海口镇青年刘某某在通海口镇搭乘苗某某的出租车，中途刘某某下车后，李某叫苗某某将车开到通海口镇熊庙村四组边洪堤上，后用刀逼住苗某某，威胁其交出身上的钱财，抢走苗某某现金137元，后逃离现场。
+为证明上述事实，公诉机关向法庭提供了被害人陈述、证人证言、火灾现场勘验笔录、辨认笔录、被告人供述与辩解等证据。公诉机关认为：被告人李某以放火的方法，危害公共安全，造成公司财产重大损失，且以非法占有为目的，采取暴力方法抢劫他人财物，其行为分别触犯了《中华人民共和国刑法》××××、××的规定，应当××、××追究被告人李某的刑事责任，提请本院依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

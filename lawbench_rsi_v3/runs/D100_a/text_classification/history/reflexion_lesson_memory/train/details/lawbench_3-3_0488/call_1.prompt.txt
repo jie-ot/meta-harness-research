@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the factual description states that the perpetrator directly seized the victim’s property by force, threat, or while the victim was caught off‑guard (e.g., “抢走”, “趁…不备”), the offense should be clas
+- When the conduct involves unauthorized tampering or manipulation of computer system data (e.g., modifying transaction packets) that causes the system to erroneously process false transactions and resu
+- When the case facts describe multiple distinct criminal conduct or explicitly mention additional offenses (e.g., “数罪并罚”, “其他罪”, “并且…”， “同时” etc.), output every applicable charge separated by semicolon
+- When extracting charges, match the charge name to the specific subject described in the facts (e.g., use “单位受贿” for a unit’s bribery and “受贿” for an individual) and list the charges in the order they 
+- If the conduct described involves the creation of a fire (e.g., by welding, ignition of combustible material) that leads to extensive property loss, the appropriate charge is 失火罪 rather than 过失毁坏财物.
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，2014年11月16日10时许，被告人罗某酒后窜至当阳市河溶镇关庙街郑某乙（女）家后院，对患有精神病的郑某乙进行威胁后，要其脱掉裤子，并从后面抱住郑某乙抚摸其胸部、阴部。经鉴定，郑某乙患有精神分裂症，具有部分性自我防卫能力。
+同时查明，案发次日，被告人罗某主动到公安机关投案，如实供述了其犯罪事实。审理期间被告人罗某与被害人郑某乙的亲属已自行协商赔偿了经济损失1000元，被害人亲属对罗某表示了谅解。
+上述事实，被告人罗某在开庭审理过程中无异议，且有当阳市公安局关于罗某主动投案的说明，现场照片、现场图，张某对罗某照片的辨认笔录，郑某乙的检查病历、精神叁级残疾人证，被害人亲属的赔偿说明及收条，宜市精鉴所（2014）精鉴字第117号法医精神病司法鉴定意见书，证人张某、郑某甲的证言，被害人郑某乙的陈述，被告人罗某的供述等证据证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,40 @@
+Bash
+
+command:
+python -c "
+import json, os
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+# Read confusion matrix state from decayed_confusion on LawBench — see what keys look like
+mem = os.path.join(base, 'LawBench', 'decayed_confusion_memory', 'gpt-oss-120b', 'memory.json')
+with open(mem) as f:
+    data = json.load(f)
+conf = data.get('confusion', {})
+# Top 10 confusion pairs by count
+pairs = []
+for pred, actuals in conf.items():
+    for actual, cnt in actuals.items():
+        pairs.append((cnt, pred[:30], actual[:30]))
+pairs.sort(reverse=True)
+print('Top confusion pairs (LawBench):')
+for cnt, p, a in pairs[:10]:
+    print(f'  {cnt:.2f}  [{p}] -> [{a}]')
+print(f'Total labels in confusion matrix: {len(conf)}')
+print(f'Total examples in pool: {len(data.get(\"examples\", []))}')
+" 2>&1
+
+description: Inspect confusion matrix state on LawBench
+
+--- output ---
+Top confusion pairs (LawBench):
+  0.95  [受贿;滥用职权] -> [受贿]
+  0.86  [盗窃] -> [职务侵占]
+  0.81  [故意伤害] -> [虐待被监管人]
+  0.77  [虚开增值税专用发票罪;逃税罪] -> [虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;逃税]
+  0.74  [故意伤害] -> [故意伤害;窝藏、包庇]
+  0.70  [盗窃;抢劫] -> [劫持船只、汽车;抢劫;盗窃]
+  0.66  [故意伤害;伪证] -> [故意伤害;妨害作证]
+  0.63  [销售不符合安全标准的食品] -> [生产、销售不符合安全标准的食品]
+  0.60  [掩饰、隐瞒犯罪所得] -> [掩饰、隐瞒犯罪所得、犯罪所得收益]
+  0.54  [行贿] -> [单位行贿]
+Total labels in confusion matrix: 34
+Total examples in pool: 200

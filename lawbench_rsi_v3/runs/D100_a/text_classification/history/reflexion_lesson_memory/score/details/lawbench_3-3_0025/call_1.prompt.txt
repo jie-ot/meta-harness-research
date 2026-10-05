@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the facts describe the use of a false or deceptive contract (e.g., a sale, lease, transfer agreement) to obtain money or property, classify the offense as “合同诈骗” rather than the generic “诈骗”.
+- If the factual description indicates that the offender used their official position or entrusted authority to appropriate property for personal gain, rather than physically taking or stealthily removi
+- If the factual scenario describes fraud that is carried out through the creation, signing, or performance of a contract (e.g., false representation of a business role, fictitious project, or fabricate
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:吉林省榆树市人民检察院指控，2015年11月15日，被告人何某与车牌号为×××出租车车主郭某某签署了一份租车协议，协议约定月租金人民币3900.00元，按月付款。2016年1月19日，被告人何某在郭某某不知情的情况下，隐瞒事实真相，谎称出租车车主是自己，与被害人马某某签署了一份租车协议书，月租金3800.00元，租期一年，收取马某某一年的租金及车辆抵押金共计50600.00元。2016年2月26日，该出租车被车主郭某某从被害人马某某手中取回，被害人马某某多次向被告人何某索要租金及押金，被告人何某拒不归还。
+公诉机关针对上述指控，提供了被告人供述、被害人陈述、证人证言、书证等证据，并认为被告人何某以非法占有为目的，在签订、履行合同过程中，采取虚构事实、隐瞒真相的手段，骗取他人财物，数额较大，其行为触犯了《中华人民共和国刑法》××之规定，应当以××追究其刑事责任。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

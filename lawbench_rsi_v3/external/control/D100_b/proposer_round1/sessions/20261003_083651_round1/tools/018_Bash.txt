@@ -1,0 +1,25 @@
+Bash
+
+command: python .prototypes/cjk_bigram_confusion_memory.py
+description: Run candidate A prototype
+
+--- output ---
+=== QUERY~EX2 ===
+  ASCII (base)        : top=0.0000 → EX2 (故意毁坏财物) [故意毁坏财物]
+  CJK bigram          : top=0.1056 → EX2 (故意毁坏财物) [故意毁坏财物]
+  CJK unigram         : top=0.2182 → EX2 (故意毁坏财物) [故意毁坏财物]
+
+=== QUERY~EX1 ===
+  ASCII (base)        : top=0.0909 → EX2 (故意毁坏财物) [故意毁坏财物]
+  CJK bigram          : top=0.1062 → EX1 (破坏计算机) [破坏计算机信息系统]
+  CJK unigram         : top=0.1729 → EX1 (破坏计算机) [破坏计算机信息系统]
+
+=== Discrimination check ===
+  EX0 (伪造证件): ascii=0.0000  bigram=0.0361  label=伪造、变造、买卖国家机关公文、证件、印章
+  EX1 (破坏计算机): ascii=0.0000  bigram=0.0231  label=破坏计算机信息系统
+  EX2 (故意毁坏财物): ascii=0.0000  bigram=0.1056  label=故意毁坏财物
+
+Top-2 labels (bigram): ['故意毁坏财物', '伪造、变造、买卖国家机关公文、证件、印章']
+Disambiguation targets: []
+
+PROTOTYPE PASSED: CJK bigrams give discriminating similarity scores.

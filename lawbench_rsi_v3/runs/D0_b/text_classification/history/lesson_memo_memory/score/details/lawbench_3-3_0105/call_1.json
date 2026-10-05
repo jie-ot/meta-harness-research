@@ -1,0 +1,72 @@
+{
+  "call_id": "45b17ddd06f14ea8bcb6ff2d33ab2401",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791028685-6BKkFdIp9FBjmO4JuA02",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"事实中明确列出两项指控：一是‘诈骗犯罪’，二是‘伪造金融票证犯罪’。根据规则，需要直接使用事实中出现的罪名表述，不添加或省略词汇。因此应列出‘诈骗’和‘伪造金融票证’两项罪名，用分号分隔。\",\n  \"final_answer\": \"[罪名]诈骗;伪造金融票证<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to extract crimes from facts. The facts mention two crimes: (一) 诈骗犯罪 (fraud) and (二) 伪造金融票证犯罪 (forgery of financial ticket). Need to output the exact crime names as they appear? According to rules: use the exact wording from the fact. For fraud, the term used is \"诈骗犯罪\". Should we output \"诈骗\"? In examples, they output \"诈骗罪\". In earlier examples, they output \"诈骗\". The instruction: output \"[罪名]诈骗<eoa>\"? In examples: they gave \"诈骗\" as part of answer? Let's see earlier examples: Example 1: they gave \"合同诈骗\". That is specific. Example 2: they gave \"违法发放贷款\". That's not standard crime name but they used phrase. Example 3: \"抢夺\". Example 4: \"挪用公款\". Example 5: \"伪造、变造、买卖国家机关公文、证件、印章\". Example 6: \"信用卡诈骗\". Example 7: \"抢夺\". Example 8: \"容留他人吸毒\". Example 9: \"伪造公司、企业、事业单位、人民团体印章\". Example 10: \"非法吸收公众存款\". Example 11: \"集资诈骗\". Example 12: \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯\". Example 13: \"强制猥亵、侮辱妇女\". Example 14: \"诈骗;非法行医\". Example 15: \"掩饰、隐瞒犯罪所得、犯罪所得收益\". So they use the phrase as appears, but sometimes they adjust to standard crime name. For fraud, they used \"诈骗\". For forgery of financial ticket, they used \"伪造金融票证\". In example 5 they used \"伪造、变造、买卖国家机关公文、证件、印章\". So we should output two crimes separated by semicolon: \"诈骗;伪造金融票证\". Ensure no spaces. Format: [罪名]诈骗;伪造金融票证<eoa>\n\nCheck if need \"诈骗罪\"? In example 14 they used \"诈骗\". So use \"诈骗\". For forgery, \"伪造金融票证\". That matches fact phrase \"伪造金融票证犯罪\". So use \"伪造金融票证\". Output JSON with reasoning and final_answer.\n\n",
+          "provider_specific_fields": {
+            "reasoning": "We need to extract crimes from facts. The facts mention two crimes: (一) 诈骗犯罪 (fraud) and (二) 伪造金融票证犯罪 (forgery of financial ticket). Need to output the exact crime names as they appear? According to rules: use the exact wording from the fact. For fraud, the term used is \"诈骗犯罪\". Should we output \"诈骗\"? In examples, they output \"诈骗罪\". In earlier examples, they output \"诈骗\". The instruction: output \"[罪名]诈骗<eoa>\"? In examples: they gave \"诈骗\" as part of answer? Let's see earlier examples: Example 1: they gave \"合同诈骗\". That is specific. Example 2: they gave \"违法发放贷款\". That's not standard crime name but they used phrase. Example 3: \"抢夺\". Example 4: \"挪用公款\". Example 5: \"伪造、变造、买卖国家机关公文、证件、印章\". Example 6: \"信用卡诈骗\". Example 7: \"抢夺\". Example 8: \"容留他人吸毒\". Example 9: \"伪造公司、企业、事业单位、人民团体印章\". Example 10: \"非法吸收公众存款\". Example 11: \"集资诈骗\". Example 12: \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯\". Example 13: \"强制猥亵、侮辱妇女\". Example 14: \"诈骗;非法行医\". Example 15: \"掩饰、隐瞒犯罪所得、犯罪所得收益\". So they use the phrase as appears, but sometimes they adjust to standard crime name. For fraud, they used \"诈骗\". For forgery of financial ticket, they used \"伪造金融票证\". In example 5 they used \"伪造、变造、买卖国家机关公文、证件、印章\". So we should output two crimes separated by semicolon: \"诈骗;伪造金融票证\". Ensure no spaces. Format: [罪名]诈骗;伪造金融票证<eoa>\n\nCheck if need \"诈骗罪\"? In example 14 they used \"诈骗\". So use \"诈骗\". For forgery, \"伪造金融票证\". That matches fact phrase \"伪造金融票证犯罪\". So use \"伪造金融票证\". Output JSON with reasoning and final_answer.\n\n",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to extract crimes from facts. The facts mention two crimes: (一) 诈骗犯罪 (fraud) and (二) 伪造金融票证犯罪 (forgery of financial ticket). Need to output the exact crime names as they appear? According to rules: use the exact wording from the fact. For fraud, the term used is \"诈骗犯罪\". Should we output \"诈骗\"? In examples, they output \"诈骗罪\". In earlier examples, they output \"诈骗\". The instruction: output \"[罪名]诈骗<eoa>\"? In examples: they gave \"诈骗\" as part of answer? Let's see earlier examples: Example 1: they gave \"合同诈骗\". That is specific. Example 2: they gave \"违法发放贷款\". That's not standard crime name but they used phrase. Example 3: \"抢夺\". Example 4: \"挪用公款\". Example 5: \"伪造、变造、买卖国家机关公文、证件、印章\". Example 6: \"信用卡诈骗\". Example 7: \"抢夺\". Example 8: \"容留他人吸毒\". Example 9: \"伪造公司、企业、事业单位、人民团体印章\". Example 10: \"非法吸收公众存款\". Example 11: \"集资诈骗\". Example 12: \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯\". Example 13: \"强制猥亵、侮辱妇女\". Example 14: \"诈骗;非法行医\". Example 15: \"掩饰、隐瞒犯罪所得、犯罪所得收益\". So they use the phrase as appears, but sometimes they adjust to standard crime name. For fraud, they used \"诈骗\". For forgery of financial ticket, they used \"伪造金融票证\". In example 5 they used \"伪造、变造、买卖国家机关公文、证件、印章\". So we should output two crimes separated by semicolon: \"诈骗;伪造金融票证\". Ensure no spaces. Format: [罪名]诈骗;伪造金融票证<eoa>\n\nCheck if need \"诈骗罪\"? In example 14 they used \"诈骗\". So use \"诈骗\". For forgery, \"伪造金融票证\". That matches fact phrase \"伪造金融票证犯罪\". So use \"伪造金融票证\". Output JSON with reasoning and final_answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": "We need to extract crimes from facts. The facts mention two crimes: (一) 诈骗犯罪 (fraud) and (二) 伪造金融票证犯罪 (forgery of financial ticket). Need to output the exact crime names as they appear? According to rules: use the exact wording from the fact. For fraud, the term used is \"诈骗犯罪\". Should we output \"诈骗\"? In examples, they output \"诈骗罪\". In earlier examples, they output \"诈骗\". The instruction: output \"[罪名]诈骗<eoa>\"? In examples: they gave \"诈骗\" as part of answer? Let's see earlier examples: Example 1: they gave \"合同诈骗\". That is specific. Example 2: they gave \"违法发放贷款\". That's not standard crime name but they used phrase. Example 3: \"抢夺\". Example 4: \"挪用公款\". Example 5: \"伪造、变造、买卖国家机关公文、证件、印章\". Example 6: \"信用卡诈骗\". Example 7: \"抢夺\". Example 8: \"容留他人吸毒\". Example 9: \"伪造公司、企业、事业单位、人民团体印章\". Example 10: \"非法吸收公众存款\". Example 11: \"集资诈骗\". Example 12: \"虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯\". Example 13: \"强制猥亵、侮辱妇女\". Example 14: \"诈骗;非法行医\". Example 15: \"掩饰、隐瞒犯罪所得、犯罪所得收益\". So they use the phrase as appears, but sometimes they adjust to standard crime name. For fraud, they used \"诈骗\". For forgery of financial ticket, they used \"伪造金融票证\". In example 5 they used \"伪造、变造、买卖国家机关公文、证件、印章\". So we should output two crimes separated by semicolon: \"诈骗;伪造金融票证\". Ensure no spaces. Format: [罪名]诈骗;伪造金融票证<eoa>\n\nCheck if need \"诈骗罪\"? In example 14 they used \"诈骗\". So use \"诈骗\". For forgery, \"伪造金融票证\". That matches fact phrase \"伪造金融票证犯罪\". So use \"伪造金融票证\". Output JSON with reasoning and final_answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 654,
+      "prompt_tokens": 5336,
+      "total_tokens": 5990,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 549,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000308612,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000308612,
+        "upstream_inference_prompt_cost": 0.000197432,
+        "upstream_inference_completions_cost": 0.00011118
+      }
+    }
+  },
+  "raw_response_missing": false
+}

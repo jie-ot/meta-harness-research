@@ -1,0 +1,22 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:吉林省永吉县人民检察院指控：2012年春季，被告人吴某为种植农作物玉米开垦林地，在永吉县双河镇黄狼沟三社獾子洞山上集体林地内，非法采伐国家一级珍贵树种黄檗（黄某）11株，核立木蓄积0.6857立方米。被告人吴某在永吉县黄狼沟三社开垦林地11769.00平方米，核17.66市亩，种植玉米，喷洒农药，致使林地原有植被和林业种植条件遭到严重毁坏。被告人吴某经传唤到案。并认为，被告人吴某的行为构成非法占用农用地、××，应依法惩处。
+
+
+Wrong prediction: [罪名]滥伐林木;非法占用农用地<eoa>
+Correct answer: 非法采伐、毁坏国家重点保护植物;非法占用农用地
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

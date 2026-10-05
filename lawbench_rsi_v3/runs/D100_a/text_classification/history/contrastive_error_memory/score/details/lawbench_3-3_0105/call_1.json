@@ -1,0 +1,72 @@
+{
+  "call_id": "c7cd138a40144890918ffbc631b04e6d",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791079847-xiQq4NvjUhQoMMTYyxKG",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The facts describe two distinct criminal conduct: (1) the defendant Lan repeatedly deceived multiple victims by promising loan services and obtained money and goods, which constitutes fraud (诈骗) with a large amount. (2) The defendant also forged a bank deposit certificate, which is the crime of forging a financial ticket (伪造金融票证). Both crimes are charged, so the appropriate combined charge is fraud and forgery of a financial ticket.\",\n  \"final_answer\": \"[罪名]诈骗;伪造金融票证<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate crime labels based on the facts. The examples show mapping:\n\n- Contract fraud => 合同诈骗\n- Illegal loan issuance => 违法发放贷款\n- Robbery/抢夺 => 抢夺\n- Embezzlement of public funds => 挪用公款\n- Forgery of state documents => 伪造、变造、买卖国家机关公文、证件、印章\n- Credit card fraud => 信用卡诈骗\n- Fraud (general) => 诈骗; but sometimes they want specific like 诈骗;非法行医 etc. In examples, they used \"诈骗\" for general fraud, but also \"诈骗;非法行医\" when both. For this case, we have two crimes: fraud (诈骗) and forgery of financial ticket (伪造金融票证). Need correct label for forgery of financial ticket. In examples, they used \"伪造金融票证罪\" maybe just \"伪造金融票证\". The pattern: In the problem statement, they say \"伪造金融票证罪\". The answer format likely \"诈骗;伪造金融票证\". Check similar example: The first example: \"合同诈骗\". That's a specific type. For forgery of financial ticket, maybe \"伪造金融票证\". Let's see if any example includes that. Not in given examples. But they have \"伪造、变造、买卖国家机关公文、证件、印章\". That's for state documents. For financial tickets, it's a different crime: \"伪造金融票证罪\". So answer should be \"诈骗;伪造金融票证\". Ensure no extra spaces. Use semicolon.\n\nThus final answer JSON with reasoning and final answer.\n\n",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to determine appropriate crime labels based on the facts. The examples show mapping:\n\n- Contract fraud => 合同诈骗\n- Illegal loan issuance => 违法发放贷款\n- Robbery/抢夺 => 抢夺\n- Embezzlement of public funds => 挪用公款\n- Forgery of state documents => 伪造、变造、买卖国家机关公文、证件、印章\n- Credit card fraud => 信用卡诈骗\n- Fraud (general) => 诈骗; but sometimes they want specific like 诈骗;非法行医 etc. In examples, they used \"诈骗\" for general fraud, but also \"诈骗;非法行医\" when both. For this case, we have two crimes: fraud (诈骗) and forgery of financial ticket (伪造金融票证). Need correct label for forgery of financial ticket. In examples, they used \"伪造金融票证罪\" maybe just \"伪造金融票证\". The pattern: In the problem statement, they say \"伪造金融票证罪\". The answer format likely \"诈骗;伪造金融票证\". Check similar example: The first example: \"合同诈骗\". That's a specific type. For forgery of financial ticket, maybe \"伪造金融票证\". Let's see if any example includes that. Not in given examples. But they have \"伪造、变造、买卖国家机关公文、证件、印章\". That's for state documents. For financial tickets, it's a different crime: \"伪造金融票证罪\". So answer should be \"诈骗;伪造金融票证\". Ensure no extra spaces. Use semicolon.\n\nThus final answer JSON with reasoning and final answer.\n\n",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate crime labels based on the facts. The examples show mapping:\n\n- Contract fraud => 合同诈骗\n- Illegal loan issuance => 违法发放贷款\n- Robbery/抢夺 => 抢夺\n- Embezzlement of public funds => 挪用公款\n- Forgery of state documents => 伪造、变造、买卖国家机关公文、证件、印章\n- Credit card fraud => 信用卡诈骗\n- Fraud (general) => 诈骗; but sometimes they want specific like 诈骗;非法行医 etc. In examples, they used \"诈骗\" for general fraud, but also \"诈骗;非法行医\" when both. For this case, we have two crimes: fraud (诈骗) and forgery of financial ticket (伪造金融票证). Need correct label for forgery of financial ticket. In examples, they used \"伪造金融票证罪\" maybe just \"伪造金融票证\". The pattern: In the problem statement, they say \"伪造金融票证罪\". The answer format likely \"诈骗;伪造金融票证\". Check similar example: The first example: \"合同诈骗\". That's a specific type. For forgery of financial ticket, maybe \"伪造金融票证\". Let's see if any example includes that. Not in given examples. But they have \"伪造、变造、买卖国家机关公文、证件、印章\". That's for state documents. For financial tickets, it's a different crime: \"伪造金融票证罪\". So answer should be \"诈骗;伪造金融票证\". Ensure no extra spaces. Use semicolon.\n\nThus final answer JSON with reasoning and final answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to determine appropriate crime labels based on the facts. The examples show mapping:\n\n- Contract fraud => 合同诈骗\n- Illegal loan issuance => 违法发放贷款\n- Robbery/抢夺 => 抢夺\n- Embezzlement of public funds => 挪用公款\n- Forgery of state documents => 伪造、变造、买卖国家机关公文、证件、印章\n- Credit card fraud => 信用卡诈骗\n- Fraud (general) => 诈骗; but sometimes they want specific like 诈骗;非法行医 etc. In examples, they used \"诈骗\" for general fraud, but also \"诈骗;非法行医\" when both. For this case, we have two crimes: fraud (诈骗) and forgery of financial ticket (伪造金融票证). Need correct label for forgery of financial ticket. In examples, they used \"伪造金融票证罪\" maybe just \"伪造金融票证\". The pattern: In the problem statement, they say \"伪造金融票证罪\". The answer format likely \"诈骗;伪造金融票证\". Check similar example: The first example: \"合同诈骗\". That's a specific type. For forgery of financial ticket, maybe \"伪造金融票证\". Let's see if any example includes that. Not in given examples. But they have \"伪造、变造、买卖国家机关公文、证件、印章\". That's for state documents. For financial tickets, it's a different crime: \"伪造金融票证罪\". So answer should be \"诈骗;伪造金融票证\". Ensure no extra spaces. Use semicolon.\n\nThus final answer JSON with reasoning and final answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 495,
+      "prompt_tokens": 21947,
+      "total_tokens": 22442,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 403,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000904604,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000904604,
+        "upstream_inference_prompt_cost": 0.000812039,
+        "upstream_inference_completions_cost": 9.2565e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

@@ -1,0 +1,248 @@
+Write: agents\contrastive_correction_memory.py
+
+content:
+"""Contrastive Correction Memory.
+
+Prior systems show the model WHAT the right answer looks like. This system
+also shows it WHAT NOT TO DO: before the examples, it injects a
+"Mistakes to avoid" section built from stored wrong-prediction records.
+
+Mechanism:
+1. learn_from_batch stores all examples in a retrieval pool (as usual), but
+   also stores wrong predictions as correction records:
+       (input_tokens, wrong_prediction, correct_label)
+
+2. At predict time:
+   a. Retrieve top-k similar corrections by bigram Jaccard similarity.
+   b. Format them into a "Mistakes to avoid" block placed BEFORE the examples.
+   c. Fill the remaining context budget with standard similarity-ranked examples.
+
+Why this helps: the model already "knows" Chinese criminal law from pretraining.
+What it gets wrong is fine-grained label disambiguation — predicting "诈骗" when
+the correct answer is "合同诈骗", or "行贿" when it is "单位行贿". Surfacing
+the exact wrong→right mappings from semantically similar cases directly
+addresses those boundary errors without relying on the confusion matrix
+(which requires multiple errors on the same pair to accumulate signal).
+
+This changes both the memory content (B) and the prompt architecture (A),
+making it a genuine dual-axis exploration candidate.
+"""
+
+import json
+import re
+from collections import defaultdict
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+# ── prompt template ──────────────────────────────────────────────────────────
+
+PROMPT_TEMPLATE = """Solve the problem below based on the examples and correction guidance provided.
+
+{corrections_section}{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Follow the patterns shown in the examples above
+- Pay attention to the mistakes listed above — avoid the same errors for similar cases
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+CORRECTIONS_HEADER = """**Mistakes to avoid** (from similar cases in memory):
+{correction_lines}
+
+"""
+
+MAX_CHARS = 30000
+# Maximum corrections to inject (each is short, so budget is mainly examples)
+_MAX_CORRECTIONS = 4
+# Minimum similarity for a correction to be considered relevant
+_MIN_CORRECTION_SIM = 0.02
+# Examples to fill after corrections
+_MAX_EXAMPLES = 20
+
+
+# ── tokenizer (Chinese bigrams + ASCII) ──────────────────────────────────────
+
+def _tokenize(text: str) -> frozenset[str]:
+    tokens: set[str] = set()
+    tokens.update(re.findall(r"[A-Za-z0-9]+", text.lower()))
+    cjk_chars = re.findall(r"[一-鿿]", text)
+    for i in range(len(cjk_chars) - 1):
+        tokens.add(cjk_chars[i] + cjk_chars[i + 1])
+    return frozenset(tokens)
+
+
+def _jaccard(a: frozenset[str], b: frozenset[str]) -> float:
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+# ── memory system ─────────────────────────────────────────────────────────────
+
+class ContrastiveCorrectionMemory(MemorySystem):
+    """Error-contrastive memory: injects wrong→right pairs as negative guidance."""
+
+    def __init__(self, llm: LLMCallable):
+        super().__init__(llm)
+        # Standard example pool for retrieval
+        self.examples: list[dict[str, Any]] = []
+        # Correction records: {tokens, wrong, right, input_preview}
+        self.corrections: list[dict[str, Any]] = []
+
+    # ------------------------------------------------------------------
+    # Retrieval helpers
+    # ------------------------------------------------------------------
+
+    def _top_corrections(self, q_tok: frozenset[str]) -> list[dict[str, Any]]:
+        scored = [
+            (c, _jaccard(q_tok, c["tokens"]))
+            for c in self.corrections
+        ]
+        # Filter by minimum relevance, then sort descending
+        relevant = [(c, s) for c, s in scored if s >= _MIN_CORRECTION_SIM]
+        relevant.sort(key=lambda x: x[1], reverse=True)
+        return [c for c, _ in relevant[:_MAX_CORRECTIONS]]
+
+    def _top_examples(self, q_tok: frozenset[str]) -> list[tuple[float, int, dict]]:
+        scored = [
+            (_jaccard(q_tok, ex["tokens"]), idx, ex)
+            for idx, ex in enumerate(self.examples)
+        ]
+        scored.sort(key=lambda x: (x[0], x[1]), reverse=True)
+        return scored
+
+    # ------------------------------------------------------------------
+    # Prompt assembly
+    # ------------------------------------------------------------------
+
+    def _build_prompt(self, input_text: str) -> tuple[str, dict[str, Any]]:
+        q_tok = _tokenize(input_text)
+        total_chars = 0
+
+        # --- Corrections block ---
+        corrections = self._top_corrections(q_tok)
+        corr_lines: list[str] = []
+        for c in corrections:
+            line = f"- For cases like: \"{c['preview']}\" — predicted \"{c['wrong']}\", correct answer is \"{c['right']}\""
+            corr_lines.append(line)
+            total_chars += len(line) + 1
+
+        if corr_lines:
+            corrections_section = CORRECTIONS_HEADER.format(
+                correction_lines="\n".join(corr_lines)
+            )
+        else:
+            corrections_section = ""
+
+        # --- Examples block ---
+        ranked = self._top_examples(q_tok)
+        parts: list[str] = []
+        used: set[int] = set()
+
+        for _, idx, ex in ranked:
+            if idx in used:
+                continue
+            q = ex.get("raw_question", ex["input"])
+            part = f"Q: {q}\nA: {ex['target']}"
+            if total_chars + len(part) + 2 > MAX_CHARS:
+                break
+            parts.append(part)
+            used.add(idx)
+            total_chars += len(part) + 2
+            if len(parts) >= _MAX_EXAMPLES:
+                break
+
+        examples_section = "\n\n".join(parts)
+        if parts:
+            examples_section = "**Examples:**\n" + examples_section + "\n\n"
+
+        return corrections_section, examples_section, len(parts), len(corrections)
+
+    # ------------------------------------------------------------------
+    # MemorySystem interface
+    # ------------------------------------------------------------------
+
+    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+        corrections_section, examples_section, n_examples, n_corrections = self._build_prompt(input)
+        prompt = PROMPT_TEMPLATE.format(
+            corrections_section=corrections_section,
+            examples_section=examples_section,
+            input=input,
+        )
+        response = self.call_llm(prompt)
+        answer = extract_json_field(response, "final_answer")
+        return answer, {
+            "full_response": response,
+            "num_examples": len(self.examples),
+            "num_selected": n_examples,
+            "num_corrections": n_corrections,
+            "num_correction_pool": len(self.corrections),
+        }
+
+    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+        for r in batch_results:
+            raw_q = r.get("raw_question", r["input"])
+            tok = _tokenize(raw_q)
+            ex: dict[str, Any] = {
+                "input": r["input"],
+                "target": r["ground_truth"],
+                "tokens": tok,
+            }
+            if "raw_question" in r:
+                ex["raw_question"] = r["raw_question"]
+            self.examples.append(ex)
+
+            # Store correction records for wrong predictions
+            if not r.get("was_correct", True):
+                pred = r.get("prediction", "")
+                gt = r["ground_truth"]
+                if pred and pred != gt:
+                    # Truncate preview to ~60 chars for prompt compactness
+                    preview = raw_q[:60].replace("\n", " ").replace("\r", "")
+                    self.corrections.append({
+                        "tokens": tok,
+                        "wrong": pred,
+                        "right": gt,
+                        "preview": preview,
+                    })
+
+    def get_state(self) -> str:
+        ex_serial = [
+            {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+            for ex in self.examples
+        ]
+        corr_serial = [
+            {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in c.items()}
+            for c in self.corrections
+        ]
+        return json.dumps({"examples": ex_serial, "corrections": corr_serial}, indent=2)
+
+    def set_state(self, state: str) -> None:
+        data = json.loads(state)
+        self.examples = []
+        for ex in data.get("examples", []):
+            restored = dict(ex)
+            if "tokens" in restored and isinstance(restored["tokens"], list):
+                restored["tokens"] = frozenset(restored["tokens"])
+            else:
+                raw_q = restored.get("raw_question", restored.get("input", ""))
+                restored["tokens"] = _tokenize(raw_q)
+            self.examples.append(restored)
+
+        self.corrections = []
+        for c in data.get("corrections", []):
+            restored = dict(c)
+            if "tokens" in restored and isinstance(restored["tokens"], list):
+                restored["tokens"] = frozenset(restored["tokens"])
+            self.corrections.append(restored)
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D0_b\text_classification\agents\contrastive_correction_memory.py (file state is current in your context — no need to Read it back)

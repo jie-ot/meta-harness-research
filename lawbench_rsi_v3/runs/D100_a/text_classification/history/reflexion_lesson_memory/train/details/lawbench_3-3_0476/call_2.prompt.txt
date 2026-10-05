@@ -1,0 +1,27 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，被告人梅某于2017年1月至2月期间，在安徽省宣城市开发区飞彩办事处莲花塘社区创业路金瑞中心城1幢3305室住所的个人电脑上，通过从互联网购买的苹果设备账户信息及密码，远程锁定他人的苹果设备，将他人苹果设备设置为“丢失模式”或“抹除模式”，使他人苹果设备无法使用，并以此向被害人索要解锁费用。被告人梅某通过上述手段，锁定被害人宋某、周某等人的苹果设备共计23台，违法所得人民币1150元。
+1.2017年1月1日，被告人梅某将吕某一部Iphone6s、一部Ipadmini的ID密码锁住，致上述设备不能正常使用。
+2.2017年1月10日，被告人梅某将胡某一部Iphone6的ID密码锁住，致上述设备不能正常使用。
+3.2017年1月10日，被告人梅某将童某一部Iphone6s的ID密码锁住，致上述设备不能正常使用。
+4.2017年1月21日，被告人梅某将周某一部Iphone6的ID密码锁住，致上述设备不能正常使用，违法所得现金200元。
+5.2017年1月21日，被告人梅某将汤某一部Iphone6的ID密码锁住，致上述设备不能正常使用。
+6.2
+
+Wrong prediction: [罪名]敲诈勒索罪;非法控制计算机信息系统罪<eoa>
+Correct answer: 破坏计算机信息系统
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

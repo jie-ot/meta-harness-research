@@ -1,0 +1,308 @@
+Write: .prototypes\label_lexicon_snap_memory.py
+
+content:
+"""Prototype A v2: guarded lexicon snapping + Chinese bigram retrieval.
+
+No file/network I/O. All examples are literals copied from visible traces.
+
+Key correction found by v1: '、' is an EVALUATOR separator, so labels like
+"掩饰、隐瞒犯罪所得、犯罪所得收益" fragmentise into 3 pieces on BOTH sides of the
+comparison. Snapping must therefore happen at CHARGE-UNIT level (split only on
+the strong separators ; ； , ，) so that a whole unit can be repaired into a
+whole multi-'、' label. The evaluator's own split then applies to both sides.
+
+Core claim to falsify:
+  A guarded longest-common-substring snap against the observed label lexicon
+  repairs near-miss labels WITHOUT damaging already-correct short labels.
+"""
+
+import json
+import re
+
+STRONG_SEPS = [";", "；", ",", "，"]
+WEAK_SEPS = ["、"]  # evaluator also splits on this, but only if no strong sep
+
+
+def split_strong(text):
+    """Split a charge string into charge units on strong separators only."""
+    for sep in STRONG_SEPS:
+        if sep in text:
+            return [p.strip() for p in text.split(sep) if p.strip()]
+    return [text.strip()] if text.strip() else []
+
+
+def eval_fragments(text):
+    """Reproduce the evaluator's own split (strong separators, then '、')."""
+    for sep in STRONG_SEPS + WEAK_SEPS:
+        if sep in text:
+            return {p.strip() for p in text.split(sep) if p.strip()}
+    return {text.strip()} if text.strip() else set()
+
+
+# ----------------------------------------------------------------------------
+# Literal lexicon: full target strings seen in the visible traces.
+# ----------------------------------------------------------------------------
+TARGETS = [
+    "单位行贿",
+    "销售假冒注册商标的商品",
+    "非法持有、私藏枪支、弹药;故意伤害;聚众斗殴",
+    "破坏电力设备",
+    "非法种植毒品原植物",
+    "失火",
+    "盗窃",
+    "诈骗",
+    "行贿",
+    "故意伤害",
+    "拐骗儿童",
+    "盗伐林木",
+    "滥伐林木",
+    "挪用公款",
+    "挪用资金",
+    "受贿",
+    "非国家工作人员受贿",
+    "开设赌场",
+    "赌博",
+    "合同诈骗",
+    "保险诈骗",
+    "假冒注册商标",
+    "非法采矿",
+    "掩饰、隐瞒犯罪所得、犯罪所得收益",
+    "聚众斗殴",
+    "破坏计算机信息系统",
+    "非法占用农用地",
+    "污染环境",
+]
+
+
+def build_lexicon(targets):
+    lex = set()
+    for t in targets:
+        for unit in split_strong(t):
+            if unit:
+                lex.add(unit)
+    return lex
+
+
+def lcs_len(a, b):
+    if not a or not b:
+        return 0
+    prev = [0] * (len(b) + 1)
+    best = 0
+    for i in range(1, len(a) + 1):
+        cur = [0] * (len(b) + 1)
+        ai = a[i - 1]
+        for j in range(1, len(b) + 1):
+            if ai == b[j - 1]:
+                cur[j] = prev[j - 1] + 1
+                if cur[j] > best:
+                    best = cur[j]
+        prev = cur
+    return best
+
+
+def snap(cand, lex, min_run=4, cover=0.6):
+    cand = cand.strip()
+    if not cand:
+        return cand
+    if cand in lex:
+        return cand
+    # G4: spurious trailing '罪' is the single most common near-miss
+    if len(cand) > 1 and cand.endswith("罪") and cand[:-1] in lex:
+        return cand[:-1]
+    if len(cand) < min_run:
+        return cand
+    best_run = 0
+    winners = []
+    for entry in lex:
+        run = lcs_len(cand, entry)
+        if run > best_run:
+            best_run, winners = run, [entry]
+        elif run == best_run and run > 0:
+            winners.append(entry)
+    if best_run < min_run:            # G1
+        return cand
+    if best_run < cover * len(cand):  # G2
+        return cand
+    if len(winners) != 1:             # G3
+        return cand
+    return winners[0]
+
+
+def bigrams(text):
+    text = "".join(text.split())
+    if len(text) < 2:
+        return frozenset({text}) if text else frozenset()
+    return frozenset(text[i:i + 2] for i in range(len(text) - 1))
+
+
+def dice(a, b):
+    if not a or not b:
+        return 0.0
+    return 2 * len(a & b) / (len(a) + len(b))
+
+
+class FakeLLM:
+    """Deterministic stand-in for the injected model."""
+    def __init__(self, rules):
+        self.rules = rules
+        self.calls = 0
+
+    def __call__(self, prompt):
+        self.calls += 1
+        for key, val in self.rules:
+            if key in prompt:
+                return val
+        return '{"reasoning": "n/a", "final_answer": "[罪名]失火<eoa>"}'
+
+
+def extract_final_answer(response):
+    try:
+        return json.loads(response).get("final_answer", "")
+    except Exception:
+        m = re.search(r'"final_answer"\s*:\s*"([^"]*)"', response)
+        return m.group(1) if m else ""
+
+
+def strip_wrappers(pred):
+    p = pred.strip()
+    if "[罪名]" in p:
+        p = p.split("[罪名]", 1)[1]
+    for marker in ("<eoa>", "\n"):
+        if marker in p:
+            p = p.split(marker, 1)[0]
+    return p.strip()
+
+
+def canonicalize(pred, lex):
+    """Return the canonical prediction string (units snapped, rejoined with ';')."""
+    units = split_strong(strip_wrappers(pred))
+    return ";".join(snap(u, lex) for u in units)
+
+
+def scored_fragments(pred, lex):
+    return eval_fragments(canonicalize(pred, lex))
+
+
+LEX = build_lexicon(TARGETS)
+
+# (raw model output, expected canonical string, why)
+CASES = [
+    ("[罪名]破坏电力设施<eoa>", "破坏电力设备", "share 破坏电力 (4) -> snap"),
+    ("[罪名]非法种植罂粟<eoa>", "非法种植毒品原植物", "share 非法种植 (4) -> snap"),
+    ("[罪名]盗窃;破坏电力设施<eoa>", "盗窃;破坏电力设备", "mixed: one safe, one snapped"),
+    ("[罪名]拐骗儿童罪<eoa>", "拐骗儿童", "G4 spurious 罪 suffix"),
+    ("[罪名]盗窃<eoa>", "盗窃", "exact, must NOT snap"),
+    ("[罪名]失火<eoa>", "失火", "exact short, must NOT snap"),
+    ("[罪名]诈骗<eoa>", "诈骗", "exact short, must NOT be pulled to 合同诈骗"),
+    ("[罪名]行贿<eoa>", "行贿", "exact, must NOT be pulled to 单位行贿"),
+    ("[罪名]故意伤害<eoa>", "故意伤害", "exact, must NOT snap"),
+    ("[罪名]受贿<eoa>", "受贿", "exact, must NOT be pulled to 非国家工作人员受贿"),
+    ("[罪名]盗窃;诈骗<eoa>", "盗窃;诈骗", "both exact"),
+    ("[罪名]侵犯注册商标专用权<eoa>", "侵犯注册商标专用权", "G2 blocks: run 4 < 0.6*9"),
+    ("[罪名]非法采矿<eoa>", "非法采矿", "exact, plausible standalone"),
+    ("[罪名]掩饰、隐瞒犯罪所得<eoa>", "掩饰、隐瞒犯罪所得、犯罪所得收益",
+     "whole-unit repair across '、'"),
+    ("[罪名]掩饰、隐瞒犯罪所得、犯罪所得收益<eoa>", "掩饰、隐瞒犯罪所得、犯罪所得收益",
+     "exact multi-'、' label, must NOT snap"),
+    ("[罪名]非法持有、私藏枪支、弹药<eoa>", "非法持有、私藏枪支、弹药", "exact multi-'、'"),
+]
+
+print("=== Variant comparison: guard settings ===")
+for min_run, cover in [(3, 0.5), (4, 0.6), (4, 0.8), (5, 0.6)]:
+    bad = sum(1 for raw, exp, _ in CASES if canonicalize(raw, LEX) != exp)
+    print(f"min_run={min_run} cover={cover}: {bad}/{len(CASES)} cases differ from expectation")
+
+print()
+print("=== Chosen variant: min_run=4, cover=0.6 ===")
+fails = 0
+for raw, exp, why in CASES:
+    got = canonicalize(raw, LEX)
+    ok = got == exp
+    fails += 0 if ok else 1
+    print(f"{'PASS' if ok else 'FAIL'}  {raw:44s} -> {got}   ({why})")
+
+print()
+print("=== Scored-fragment equivalence (what the evaluator actually compares) ===")
+pairs = [
+    ("[罪名]掩饰、隐瞒犯罪所得<eoa>", "掩饰、隐瞒犯罪所得、犯罪所得收益", True),
+    ("[罪名]盗窃<eoa>", "盗窃", True),
+    ("[罪名]破坏电力设施<eoa>", "破坏电力设备", True),
+    ("[罪名]故意伤害<eoa>", "非法持有、私藏枪支、弹药;故意伤害;聚众斗殴", False),
+]
+for raw, truth, exp in pairs:
+    got = scored_fragments(raw, LEX) == eval_fragments(truth)
+    print(f"{'PASS' if got == exp else 'FAIL'}  {raw:36s} vs {truth:34s} -> correct={got} (expected {exp})")
+
+print()
+print("=== Retrieval signal: degenerate ASCII tokens vs Chinese bigrams ===")
+q = "公诉机关指控，被告人李某甲盗窃路灯电缆线，破坏电力设备"
+stored_a = "被告人盗窃正在使用中的公共照明电线，构成破坏电力设备"
+stored_b = "被告人叶某甲非法种植罂粟782株，构成非法种植毒品原植物"
+old_tokens = lambda t: frozenset(re.findall(r"[A-Za-z0-9]+", t.lower()))
+print("old tokenizer on Chinese query ->", sorted(old_tokens(q)))
+for name, s in [("related", stored_a), ("unrelated", stored_b)]:
+    oa, ob = old_tokens(q), old_tokens(s)
+    oj = len(oa & ob) / max(1, len(oa | ob))
+    print(f"  {name:9s} old_jaccard={oj:.4f}   bigram_dice={dice(bigrams(q), bigrams(s)):.4f}")
+
+print()
+print("=== End-to-end predict/learn with fake LLM ===")
+
+
+class ProtoA:
+    def __init__(self, llm):
+        self.llm = llm
+        self.examples = []
+        self.lexicon = set()
+
+    def learn_from_batch(self, batch_results):
+        for r in batch_results:
+            self.examples.append({
+                "input": r["input"],
+                "target": r["ground_truth"],
+                "raw": r.get("raw_question", r["input"]),
+            })
+            for unit in split_strong(r["ground_truth"]):
+                self.lexicon.add(unit)
+
+    def predict(self, input):
+        ranked = sorted(
+            self.examples,
+            key=lambda ex: (-dice(bigrams(input), bigrams(ex["raw"])), ex["target"]),
+        )[:3]
+        body = "\n\n".join(f"Q: {ex['input']}\nA: {ex['target']}" for ex in ranked)
+        prompt = (
+            f"{body}\n\n**Problem:**\n{input}\n\n"
+            "**Instructions:** respond in JSON\n"
+            '{"reasoning": "...", "final_answer": "..."}'
+        )
+        response = self.llm(prompt)
+        raw = extract_final_answer(response)
+        return canonicalize(raw, self.lexicon) or raw, {
+            "num_selected": len(ranked),
+            "lexicon_size": len(self.lexicon),
+        }
+
+
+fake = FakeLLM([("事实:", '{"reasoning": "x", "final_answer": "[罪名]盗窃;破坏电力设施<eoa>"}')])
+m = ProtoA(fake)
+m.learn_from_batch([
+    {"input": "Q1", "ground_truth": "破坏电力设备", "raw_question": "被告人盗割公共照明电线"},
+    {"input": "Q2", "ground_truth": "非法种植毒品原植物", "raw_question": "被告人种植罂粟782株"},
+    {"input": "Q3", "ground_truth": "盗窃", "raw_question": "被告人盗窃他人财物"},
+])
+got, meta = m.predict("事实: 被告人盗窃路灯电缆线，破坏电力设备")
+expect = "盗窃;破坏电力设备"
+print("predicted:", got, "| meta:", meta)
+print("matches expectation:", got == expect)
+
+print()
+if fails == 0 and got == expect and fake.calls == 1:
+    print("PROTOTYPE A OK: guarded snap is safe on all 16 cases and repairs real near-misses")
+else:
+    print(f"PROTOTYPE A REVIEW: {fails} snap case(s) differ; e2e={'pass' if got == expect else 'fail'}")
+
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\.prototypes\label_lexicon_snap_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

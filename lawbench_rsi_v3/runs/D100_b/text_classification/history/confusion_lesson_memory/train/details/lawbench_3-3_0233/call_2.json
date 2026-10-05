@@ -1,0 +1,72 @@
+{
+  "call_id": "a9de7c1a7c464aab9d54d8a14ceba58c",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791040505-nhlb4zj0gPvAeKlINuun",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"lesson\": \"Assign \\\"滥用职权\\\" only when the facts explicitly describe misuse of official authority beyond accepting bribes; if the case involves solely bribery without clear authority abuse, label it solely as \\\"受贿\\\".\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce JSON with lesson. The error: predicted two labels \"受贿;滥用职权\" but correct answer only \"受贿\". So the model over-predicted an extra label \"滥用职权\". Need to teach to distinguish when only bribery (受贿) is present vs when also abuse of power (滥用职权). So lesson: ensure that evidence shows explicit abuse of authority beyond bribery; if not, assign only bribery. Provide concise lesson under 60 words.",
+          "provider_specific_fields": {
+            "reasoning": "We need to produce JSON with lesson. The error: predicted two labels \"受贿;滥用职权\" but correct answer only \"受贿\". So the model over-predicted an extra label \"滥用职权\". Need to teach to distinguish when only bribery (受贿) is present vs when also abuse of power (滥用职权). So lesson: ensure that evidence shows explicit abuse of authority beyond bribery; if not, assign only bribery. Provide concise lesson under 60 words.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce JSON with lesson. The error: predicted two labels \"受贿;滥用职权\" but correct answer only \"受贿\". So the model over-predicted an extra label \"滥用职权\". Need to teach to distinguish when only bribery (受贿) is present vs when also abuse of power (滥用职权). So lesson: ensure that evidence shows explicit abuse of authority beyond bribery; if not, assign only bribery. Provide concise lesson under 60 words.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": "We need to produce JSON with lesson. The error: predicted two labels \"受贿;滥用职权\" but correct answer only \"受贿\". So the model over-predicted an extra label \"滥用职权\". Need to teach to distinguish when only bribery (受贿) is present vs when also abuse of power (滥用职权). So lesson: ensure that evidence shows explicit abuse of authority beyond bribery; if not, assign only bribery. Provide concise lesson under 60 words."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 176,
+      "prompt_tokens": 167,
+      "total_tokens": 343,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 116,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00013065,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00013065,
+        "upstream_inference_prompt_cost": 2.505e-05,
+        "upstream_inference_completions_cost": 0.0001056
+      }
+    }
+  },
+  "raw_response_missing": false
+}

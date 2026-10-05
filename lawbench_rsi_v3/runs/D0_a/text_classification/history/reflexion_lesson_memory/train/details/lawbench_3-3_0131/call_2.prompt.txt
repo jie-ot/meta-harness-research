@@ -1,0 +1,25 @@
+An AI classifier made an error on this case. Generate a compact correction lesson.
+
+**Correct label:** 劫持船只、汽车;抢劫;盗窃
+**Wrong prediction:** [罪名]盗窃;抢劫<eoa>
+**Case facts (excerpt):**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:北京市大兴区人民检察院指控：
+一、被告人张1某于2014年1月下旬的一天夜里，在北京市大兴区×镇×小区×楼×单元×室被害人郝×的家中，盗窃郝×现金人民币300元、三星牌手机一部（价值人民币2160元），并将郝×母亲李×停放在楼下的一辆帕某轿车（车牌号：×××××，价值人民币68000元）盗走，销赃给周×7（另案处理）。
+二、被告人张1某于2014年2月21日晚，在北京市丰台区王佐乡三路庄户村附近，持刀拦截被害人董×1驾驶的货车，强行上车后控制该货车，当车行至丰台区云岗翠满楼饭店附近时，张1某持刀抢劫董×1人民币100元，后逃走。
+
+
+Write a lesson that:
+1. States the KEY distinguishing feature that determines the correct label
+2. Explains what makes this different from "[罪名]盗窃;抢劫<eoa>"
+3. Gives a brief rule a classifier can apply to future cases
+
+Respond only in JSON:
+{"lesson": "<one to three sentences, in the same language as the case facts>", "final_answer": "劫持船只、汽车;抢劫;盗窃"}

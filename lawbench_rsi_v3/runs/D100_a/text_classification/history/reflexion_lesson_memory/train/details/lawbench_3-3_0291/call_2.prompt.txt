@@ -1,0 +1,24 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:安徽省砀山县人民检察院指控：被告人刁2某于1998年至2005年在砀山县程庄信用社工作期间，采取冒用段某1、宋某1等人身份并编造虚假身份信息的手段，从程庄信用社办理并发放贷款计1970390元。给信用社造成重大损失。
+2014年10月15日，被告人刁2某在常州市被民警抓获归案。
+为证明上述事实，公诉人当庭宣读、出示了相关证据。公诉机关认为，被告人刁2某身为银行工作人员，利用职务便利，违反规定冒用他人身份、采用虚假身份发放贷款，数额巨大，其行为触犯《中华人民共和国刑法》××××的规定，犯罪事实清楚，证据确实、充分，应当以××追究其刑事责任。
+
+
+Wrong prediction: [罪名]贷款诈骗<eoa>
+Correct answer: 违法发放贷款
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

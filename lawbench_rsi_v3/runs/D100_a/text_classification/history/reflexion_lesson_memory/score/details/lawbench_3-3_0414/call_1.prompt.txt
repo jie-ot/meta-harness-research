@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the facts state that the defendant knowingly acquired or dealt with property known to be stolen and thereby obtained or handled the proceeds of the crime, list both the concealment/cover‑up offense
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description indicates that the offender used their official position or entrusted authority to appropriate property for personal gain, rather than physically taking or stealthily removi
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:平陆县人民检察院指控，2013年9月21日17时30分左右，被告人令狐某某去平陆县某渡口玩耍途中，路经圣人涧镇某村时，发现失主贺某某停放在路边的电动车钥匙未拔，便趁机将该车盗走并藏匿于某大路边柿树林附近，次日早9时许，被告人令狐某某将车骑至平陆县被告人蒋某某的修理铺，经协商蒋以600元的低价将该车收购。经平陆县价格认证中心鉴定：该被盗电动车价值为2300元。
+公诉机关认为，被告人令狐某某无视国法，盗窃他人财物数额较大，其行为已触犯《中华人民共和国刑法》××之规定，构成××。被告人蒋某某明知是犯罪所得赃物而予以收购，其行为已触犯《中华人民共和国刑法》××之规定，构成掩饰、隐瞒犯罪所得罪。鉴于被告人蒋某某协助公安机关抓获被告人令狐某某，系立功，对其可从轻或减轻处罚。建议对被告人令狐某某在××至六个月内量刑并处罚金，同时适用××；对被告人蒋某某判处单处罚金。并当庭向法庭出示和宣读了二被告人在侦查机关的供述和辩解、被害人贺某某的陈述及报案材料、现场勘查笔录、辨认笔录、扣押、发还物品清单、户籍证明等证据予以佐证。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

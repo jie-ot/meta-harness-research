@@ -1,0 +1,21 @@
+Bash
+
+command:
+python -c "
+import os
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+for root, dirs, files in os.walk(base):
+    for f in files:
+        if f == 'log.jsonl' and ('reasoning_trace' in root or 'error_summary' in root):
+            print(os.path.join(root, f))
+" 2>&1
+
+description: Find iter-18 system log files
+
+--- output ---
+D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\LawBench\error_summary_memory\gpt-oss-120b\log.jsonl
+D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\LawBench\reasoning_trace_memory\gpt-oss-120b\log.jsonl
+D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\Symptom2Disease\error_summary_memory\gpt-oss-120b\log.jsonl
+D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\Symptom2Disease\reasoning_trace_memory\gpt-oss-120b\log.jsonl
+D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\USPTO\error_summary_memory\gpt-oss-120b\log.jsonl
+D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\USPTO\reasoning_trace_memory\gpt-oss-120b\log.jsonl

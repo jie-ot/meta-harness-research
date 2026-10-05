@@ -1,0 +1,72 @@
+{
+  "call_id": "a87ac0a425764ca38cc70ce7e63a3ef5",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017639-0gWYehZsbbqVd4IXewQ0",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"If the case facts describe intentional burning, explosion, or other destructive acts against equipment that is classified as flammable or explosive (e.g., oil tanks, pipelines, transformers, electric meters, wiring) in the course of the illegal conduct, the charge of 破坏易燃易爆设备 must be added alongside any other applicable offenses such as theft.\",\n  \"keywords\": [\n    \"燃烧\",\n    \"烧毁\",\n    \"火灾\",\n    \"易燃易爆设备\",\n    \"破坏\",\n    \"油罐\",\n    \"变压器\",\n    \"电表\",\n    \"电线\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a rule to prevent misclassifying when multiple crimes like \"破坏易燃易爆设备\" (damage to flammable explosive equipment) and theft both present. The error was only giving theft. So rule: when facts include intentional damage/destruction of equipment that is flammable/explosive, include crime of \"破坏易燃易爆设备\". Also need to detect multiple crimes. So rule: If the factual description mentions arson, burning, explosion, or damage to equipment that is classified as dangerous (e.g., oil pipelines, transformers, electric meters) used in the commission of theft, then add the crime of \"破坏易燃易爆设备\" in addition to theft. Keywords: \"燃烧\", \"烧毁\", \"火灾\", \"易燃易爆设备\", \"破坏\", \"油罐\", \"变压器\", \"电表\", \"电线\". Provide JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a rule to prevent misclassifying when multiple crimes like \"破坏易燃易爆设备\" (damage to flammable explosive equipment) and theft both present. The error was only giving theft. So rule: when facts include intentional damage/destruction of equipment that is flammable/explosive, include crime of \"破坏易燃易爆设备\". Also need to detect multiple crimes. So rule: If the factual description mentions arson, burning, explosion, or damage to equipment that is classified as dangerous (e.g., oil pipelines, transformers, electric meters) used in the commission of theft, then add the crime of \"破坏易燃易爆设备\" in addition to theft. Keywords: \"燃烧\", \"烧毁\", \"火灾\", \"易燃易爆设备\", \"破坏\", \"油罐\", \"变压器\", \"电表\", \"电线\". Provide JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a rule to prevent misclassifying when multiple crimes like \"破坏易燃易爆设备\" (damage to flammable explosive equipment) and theft both present. The error was only giving theft. So rule: when facts include intentional damage/destruction of equipment that is flammable/explosive, include crime of \"破坏易燃易爆设备\". Also need to detect multiple crimes. So rule: If the factual description mentions arson, burning, explosion, or damage to equipment that is classified as dangerous (e.g., oil pipelines, transformers, electric meters) used in the commission of theft, then add the crime of \"破坏易燃易爆设备\" in addition to theft. Keywords: \"燃烧\", \"烧毁\", \"火灾\", \"易燃易爆设备\", \"破坏\", \"油罐\", \"变压器\", \"电表\", \"电线\". Provide JSON.",
+            "reasoning_content": "We need to produce a rule to prevent misclassifying when multiple crimes like \"破坏易燃易爆设备\" (damage to flammable explosive equipment) and theft both present. The error was only giving theft. So rule: when facts include intentional damage/destruction of equipment that is flammable/explosive, include crime of \"破坏易燃易爆设备\". Also need to detect multiple crimes. So rule: If the factual description mentions arson, burning, explosion, or damage to equipment that is classified as dangerous (e.g., oil pipelines, transformers, electric meters) used in the commission of theft, then add the crime of \"破坏易燃易爆设备\" in addition to theft. Keywords: \"燃烧\", \"烧毁\", \"火灾\", \"易燃易爆设备\", \"破坏\", \"油罐\", \"变压器\", \"电表\", \"电线\". Provide JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 336,
+      "prompt_tokens": 702,
+      "total_tokens": 1038,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 212,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0001191,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0001191,
+        "upstream_inference_prompt_cost": 3.51e-05,
+        "upstream_inference_completions_cost": 8.4e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

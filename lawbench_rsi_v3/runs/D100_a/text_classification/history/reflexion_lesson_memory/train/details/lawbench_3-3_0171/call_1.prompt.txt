@@ -1,0 +1,31 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- If the facts describe a person in a managerial or official position receiving money or valuables in exchange for using their职务便利, classify the crime simply as "受贿" unless the source explicitly states 
+- When the factual description involves the perpetrator fabricating or falsifying events (e.g., traffic accidents) to obtain money from an insurance company, the crime should be labeled specifically as 
+- When the factual description shows the defendant giving money or kickbacks to another party (e.g., “给予…回扣”, “支付…贿赂款” etc.), the correct charge is 行贿 (bribery by the giver); only classify as 受贿 when th
+- If the facts only describe forging, altering, or selling state‑issued documents or certificates and do not contain any separate act of deceiving another party for financial gain, assign only the forge
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:威海经济技术开发区人民检察院指控，一、单位受贿事实
+被告单位教研中心是教育局下属的全额拨款的事业单位，负责辖区内中小学教师的培训、各学科的教研及教材教辅的审核、征订、发放工作。被告人岳某自2005年4月25日至2014年8月15日期间担任该单位主任、法定代表人。2007年至2013年期间，被告单位经手向威海市文教图书有限公司（以下简称图书公司）征订了价值4108778.73元的图书，该公司按照10%的比例向教研中心支付了410877元回扣款。被告人岳某擅自指使会计将上述款项存放于帐外小金库，用于非正常开支。
+二、危险驾驶事实
+2014年4月14日15时许，被告人岳某酒后驾驶鲁K×××××号小型轿车，在威海经济技术开发区杨家滩花园南门处与吕某驾驶的黑F×××××号小型轿车刮擦。民警到现场处理事故时发现岳某有酒后驾驶机动车辆的嫌疑，遂将其带至经区医院抽血送检。经检验，岳某静脉血液中乙醇成分含量为266.64毫克／毫升。
+公诉机关认为，被告单位教研中心在经济往来中帐外收受回扣款，其行为构成××，被告人岳某作为该单位负责人，也构成××。被告人岳某又违反交通法规，醉酒驾驶机动车，其行为又构成××。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

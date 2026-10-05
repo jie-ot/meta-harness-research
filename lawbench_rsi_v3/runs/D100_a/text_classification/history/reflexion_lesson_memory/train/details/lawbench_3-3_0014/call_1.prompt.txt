@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the facts show that the defendant only provided shelter, assistance, or concealment for drug offenders and did not personally produce, possess, or traffic the narcotics, classify the offense as 窝
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- When the factual scenario describes a person (especially a public officer) concealing, sheltering, or destroying illicit drugs or related evidence for a drug trafficker, the appropriate charge is the 
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控：2015年8月3日至9月27日，被告人孙1某伙同孙某1、符寿徵、李某2京（后三人已判刑）等人形成一个专门帮助诈骗犯罪分子（以下简称上线）取款的团伙，孙1某安排孙某1、符寿徵、李某2京负责在海南地区取款。上线诈骗他人将钱某进指定的银行账户后就会通知孙1某，孙1某就将该银行卡提供给孙某1、符寿徵、李某2京到相应的银行将钱取出来后交回给孙1某；孙1某有时则将诈骗到钱的银行卡给孙某1，由孙某1安排符寿徵、李某2京去银行取款，符寿徵、李某2京取款后将银行卡及取到的钱一起交回给孙某1，再由孙某1交回孙1某，共诈骗作案十三次，诈骗被害人吴某、冯某1、李某1、谢某1、郑某1之、韩某1、赵某、谢某2、陈某、汤某、邵某、杨某、梁某等人共人民币186384.11元。对上述指控事实，公诉机关向法庭提供了相应的证据予以证实，认为被告人孙1某的行为已构成××，提请依照《中华人民共和国刑法》××之规定处罚。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

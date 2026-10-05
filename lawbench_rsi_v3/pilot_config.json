@@ -1,0 +1,82 @@
+{
+  "schema_version": 3,
+  "budget_usd": 80.0,
+  "budget_confirmed": true,
+  "budget_basis": "provider-reported USD where available, otherwise explicitly labeled log estimates; not a cash invoice",
+  "solver": "openrouter/openai/gpt-oss-120b",
+  "temperature": 0.0,
+  "max_tokens": 16384,
+  "system_prompt": "Reasoning: medium",
+  "proposer": "claude-opus-5-5-code",
+  "proposer_effort": "high",
+  "proposer_timeout_seconds": 2400,
+  "training_mode": "online",
+  "training_batch_size": 1,
+  "training_seed": 42,
+  "split_seed": 20261003,
+  "candidates_per_round": 2,
+  "rounds": 2,
+  "evaluation_workers": 16,
+  "concurrent_trajectories": 2,
+  "max_api_retries": 3,
+  "runs": {
+    "D0_a": 0,
+    "D0_b": 0,
+    "D100_a": 100,
+    "D100_b": 100,
+    "D50_c": 50,
+    "D100_injected_a": 100,
+    "D100_injected_b": 100
+  },
+  "manifest": "external/prepared_data_v3/manifest_v3.json",
+  "source_archive": "../reference_examples/text_classification/text_classificition.zip",
+  "credentials_file": "../.env",
+  "old_run": "../reference_examples/text_classification/logs/20260925_200856",
+  "isolation_level": "tool allowlist and separated directories; not an OS security boundary",
+  "plot_python": "D:/DevEnvs/Python/Python310/python.exe",
+  "enabled_experiments": [
+    1,
+    2,
+    3
+  ],
+  "deferred_experiments": [
+    4
+  ],
+  "budget_confirmed_at_utc": "2026-10-03T03:58:13.663433+00:00",
+  "authorization_note": "User confirmed USD 80 log-estimate cap and experiments 1,2,3 only; experiment 4 deferred.",
+  "allow_task_format_hints": true,
+  "task_format_hints_authorized_at_utc": "2026-10-03T09:44:45.853406+00:00",
+  "task_format_hints_authorization": "User explicitly replied: 这个问题先不管了，跳过他，就当问题不存在. Do not reject candidates for this task-format hint concern. Budget, data, models, k/T/D, test isolation and actual interface checks unchanged.",
+  "injected": {
+    "runs": [
+      "D100_injected_a",
+      "D100_injected_b"
+    ],
+    "rounds": 1,
+    "proposer_budget_usd": 30.0,
+    "report_thresholds_usd": [
+      10.0,
+      15.0,
+      30.0
+    ],
+    "authorization": "User raised all supplementary Claude Code spending, including prior failed attempts and arm a, to USD30 as a notice-and-ask threshold; do not immediately terminate at the threshold. Solver cost is tracked separately.",
+    "inline_internal_reasoning": false,
+    "body_only_authorized_at_utc": "2026-10-04T12:27:20.120340+00:00",
+    "format_authorization": "User replied 可以，继续完成 after approving full 100 feedback bodies inline with additional internal reasoning in readable detail files.",
+    "generation_concurrency": 1,
+    "conversation_recovery": "Continue each arm from its own artifacts. Native Claude Code compaction and output allowance unchanged; complete 100 feedback bodies injected in initial prompt only.",
+    "proposer_budget_mode": "notify_and_ask_no_immediate_termination",
+    "workflow_alignment": "Original Meta-Harness analysis, 2-3 prototype variants, implementation, self-critique, validation and pending_eval submission. No controller-authored candidates or acceptance relaxation.",
+    "budget_allocation_plan": {
+      "a_remaining_work": "Finish original prototype/import checks and submission for its existing pair; no new pair or iteration",
+      "b_remaining_work": "Reuse its own prior analysis and generate its original A/B pair",
+      "remaining_at_plan_usd": 13.933672
+    },
+    "authorization_updated_at_utc": "2026-10-04T14:11:56.799054+00:00",
+    "training_candidate_concurrency": 4,
+    "parallel_training_authorization": {
+      "at_utc": "2026-10-04T15:15:03.893053+00:00",
+      "user_choice": "Four candidates train concurrently; each keeps sequential online batch_size=1, same code, data order, solver parameters, score and audit workflow."
+    }
+  }
+}

@@ -1,0 +1,51 @@
+Read: inner_loop.py
+
+limit: 45
+offset: 315
+
+--- output ---
+315	            batch_size=batch_size,
+316	            max_workers=max_workers,
+317	            logger=logger,
+318	            step_offset=step_offset,
+319	            collect_trajectory=collect_trajectory,
+320	            val_examples=val_examples,
+321	            skip_train_eval=skip_train_eval,
+322	        )
+323	    # Online mode (default): predict batch → learn from batch
+324	    correct = 0
+325	    trajectory = [] if collect_trajectory else None
+326	
+327	    def predict_one(idx: int, ex: dict[str, Any]) -> tuple:
+328	        t0 = time.time()
+329	        memory.clear_last_prompt_info()
+330	        pred, meta = memory.predict(ex["input"])
+331	        prompt_info = memory.get_last_prompt_info()
+332	        return idx, ex, pred, meta, prompt_info, time.time() - t0
+333	
+334	    for batch_start in range(0, len(examples), batch_size):
+335	        batch = examples[batch_start : batch_start + batch_size]
+336	
+337	        # PHASE 1: PREDICT (parallel within batch)
+338	        if batch_size == 1:
+339	            pred_results = [predict_one(0, batch[0])]
+340	        else:
+341	            pred_results = []
+342	            with ThreadPoolExecutor(max_workers=min(max_workers, len(batch))) as exe:
+343	                futures = {
+344	                    exe.submit(predict_one, i, ex): i for i, ex in enumerate(batch)
+345	                }
+346	                for future in as_completed(futures):
+347	                    pred_results.append(future.result())
+348	            pred_results.sort(key=lambda x: x[0])
+349	
+350	        # Build batch_results for learn_from_batch
+351	        batch_results = []
+352	        for idx, ex, pred, meta, prompt_info, _predict_s in pred_results:
+353	            global_idx = step_offset + batch_start + idx
+354	            inp, tgt = ex["input"], ex["target"]
+355	            raw = check_answer(pred, tgt, **_get_eval_kwargs(ex))
+356	            ok, metrics = _unpack_eval_result(raw)
+357	            correct += int(ok)
+358	
+359	            result = {

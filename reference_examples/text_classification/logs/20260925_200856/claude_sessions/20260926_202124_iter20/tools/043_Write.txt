@@ -1,0 +1,29 @@
+Write: logs\20260925_200856\pending_eval.json
+
+content:
+{
+  "iteration": 20,
+  "candidates": [
+    {
+      "name": "verbatim_label_memory",
+      "file": "agents/verbatim_label_memory.py",
+      "hypothesis": "Adding two verbatim-copy instructions to the prompt — (a) copy answer labels character-for-character from the examples, do not paraphrase or add suffixes; (b) include every semicolon-separated label when the answer is multi-label — will outperform symmetric_confusion_memory on tasks with structured label spaces, because trace analysis shows roughly a third of all errors are pure format violations: label-suffix inflation (model appends categorical suffixes not present in training labels) and partial multi-label output (model predicts only the most salient component). Both error classes persist even when the correct label appears in context, so they are prompt-addressable without any change to retrieval.",
+      "axis": "exploitation",
+      "base_system": "symmetric_confusion_memory",
+      "components": ["verbatim_copy_instruction", "multi_label_completeness_instruction", "prompt_template_axis", "format_error_reduction", "symmetric_confusion_edges", "decay", "adaptive_tokenizer", "prediction_normalization"]
+    },
+    {
+      "name": "notation_adaptive_memory",
+      "file": "agents/notation_adaptive_memory.py",
+      "hypothesis": "Extending the tokenizer routing to a three-way strategy — CJK text uses bigrams, ASCII text with >35% non-alphanumeric characters (structured notation such as SMILES, chemical formulae, accession codes) also uses bigrams, and natural-language ASCII uses word tokens — will outperform symmetric_confusion_memory on tasks whose inputs are structured notations, because the existing binary router (CJK→bigram, else→word) extracts only short alphabetic fragments from SMILES strings and loses all structural information encoded in parentheses, brackets, stereo-bond markers, ring closure digits, and bond symbols that distinguish one compound from another.",
+      "axis": "exploration",
+      "base_system": "symmetric_confusion_memory",
+      "components": ["three_way_tokenizer", "notation_detection", "non_alnum_ratio_threshold", "bigram_structured_notation", "selection_algorithm_axis", "symmetric_confusion_edges", "decay", "prediction_normalization"]
+    }
+  ]
+}
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\pending_eval.json (file state is current in your context — no need to Read it back)

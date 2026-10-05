@@ -1,0 +1,43 @@
+Bash
+
+command:
+python -c "
+import os, json
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+# Read the last ~20 error steps from LawBench trace to understand patterns
+log_path = os.path.join(base, 'LawBench', 'symmetric_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+lines = open(log_path, encoding='utf-8').readlines()
+steps = [json.loads(l) for l in lines if json.loads(l).get('type') == 'step']
+errors = [s for s in steps if not s.get('ok')]
+print(f'Steps: {len(steps)}, Errors: {len(errors)}, Accuracy: {(len(steps)-len(errors))/len(steps):.1%}')
+# Categorize error types
+suffix_罪 = [e for e in errors if e['pred'].rstrip('<eoa>').rstrip().endswith('罪') and not e['tgt'].endswith('罪')]
+partial = [e for e in errors if e['tgt'].startswith(e['pred'].replace('[罪名]','').replace('<eoa>','').strip())]
+print(f'Suffix-罪 errors: {len(suffix_罪)}')
+print(f'Partial label errors (pred is prefix of gt): {len(partial)}')
+# Show some errors
+for e in errors[:12]:
+    p = e['pred'].replace('[罪名]','').replace('<eoa>','').strip()
+    g = e['tgt']
+    print(f'  step={e[\"step\"]:3d} pred={repr(p[:40])} gt={repr(g[:50])}')
+"
+
+
+description: Analyze LawBench error patterns
+
+--- output ---
+Steps: 200, Errors: 149, Accuracy: 25.5%
+Suffix-罪 errors: 25
+Partial label errors (pred is prefix of gt): 22
+  step=  0 pred='伪造国家机关证件罪' gt='伪造、变造、买卖国家机关公文、证件、印章'
+  step=  1 pred='敲诈勒索罪' gt='破坏计算机信息系统'
+  step=  4 pred='拐卖妇女' gt='拐卖妇女、儿童'
+  step=  5 pred='受贿' gt='非国家工作人员受贿'
+  step=  7 pred='诈骗' gt='诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫'
+  step=  8 pred='故意伤害罪;故意毁坏财物罪' gt='故意伤害;故意毁坏财物'
+  step=  9 pred='非法获取公民个人信息罪' gt='非法获取公民个人信息'
+  step= 10 pred='诈骗' gt='信用卡诈骗'
+  step= 11 pred='非法使用爆炸物罪;过失致人死亡罪' gt='危险物品肇事'
+  step= 12 pred='徇私舞弊罪;受贿罪' gt='受贿;滥用职权'
+  step= 13 pred='组织、强迫、引诱他人进行有偿献血罪' gt='非法组织卖血'
+  step= 14 pred='盗窃' gt='盗窃;掩饰、隐瞒犯罪所得、犯罪所得收益'

@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the factual description indicates that the offender used their official position or entrusted authority to appropriate property for personal gain, rather than physically taking or stealthily removi
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- If the factual scenario describes fraud that is carried out through the creation, signing, or performance of a contract (e.g., false representation of a business role, fictitious project, or fabricate
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:黑龙江省红兴隆农垦区人民检察院指控，2013年12月至2014年4月，被告人冯某在担任八五二分公司第六管理区第×作业站综合助理员期间，谎称能为农户承租作业站机动地为由，骗取被害人马×现金55200元、马×1现金18400元、马×2现金18400元、郭××现金68200元、胡××现金18400元，合计诈骗178600元。案发后，赃款被挥霍。被告人冯某于2014年5月16日被公安机关在黑龙江省八五二农场场部抓获。公诉机关就指控的犯罪事实提供了相关证据。公诉机关认为，被告人冯某以非法占有为目的，虚构事实，骗取私人财物数额巨大的行为，已构成××，被告人冯某犯数罪，如实供述犯罪事实，应依照《中华人民共和国刑法》××、××××、××××、××的规定判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,72 @@
+{
+  "call_id": "a61b80826dd44c789bfea989eb0cf451",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791126712-93HlCWdJPbNDjeKHC9ED",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant intentionally punched the victim, causing a nasal bone fracture that constitutes a light injury. This matches the statutory offense of intentional injury (故意伤害). No other listed offenses are applicable.\",\n  \"final_answer\": \"[罪名]故意伤害<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate charge(s) from the lexicon for the fact.\n\nFact: In prison, inmate Shi (史某) and inmate Zou (邹某) have conflict. Shi throws a small plastic clip at Zou, lies on Zou's bed, then after being told to leave, Shi stays, then they argue, and Shi punches Zou in the face, causing a nasal bone fracture, which is a light injury (轻伤). So the act is intentional injury causing light injury. The lexicon includes \"故意伤害\". That matches. Also maybe \"故意毁坏财物\"? No, not property. \"聚众斗殴\"? Not a group. \"聚众扰乱公共场所秩序\"? No. So the charge is \"故意伤害\". Also maybe \"非法持有毒品\"? No. So single charge.\n\nThus answer: [罪名]故意伤害<eoa>\n\nWe need to include reasoning in JSON? The instruction says output format: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"}? Actually the example says format: - Single: [罪名]盗窃<eoa>. But the user also gave a JSON wrapper? At the end they wrote:\n\n{\n\"reasoning\": \"[brief reasoning]\",\n\"final_answer\": \"[罪名]<charge(s)><eoa>\"\n}\n\nThus we should output JSON with those fields. Provide brief reasoning and final answer.\n\nLet's produce:\n\n{\n\"reasoning\": \"The defendant intentionally struck the victim causing a nasal bone fracture classified as light injury, which fits the statutory offense of intentional injury (故意伤害). No other listed offenses apply.\",\n\"final_answer\": \"[罪名]故意伤害<eoa>\"\n}\n\nMake sure JSON format correct.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate charge(s) from the lexicon for the fact.\n\nFact: In prison, inmate Shi (史某) and inmate Zou (邹某) have conflict. Shi throws a small plastic clip at Zou, lies on Zou's bed, then after being told to leave, Shi stays, then they argue, and Shi punches Zou in the face, causing a nasal bone fracture, which is a light injury (轻伤). So the act is intentional injury causing light injury. The lexicon includes \"故意伤害\". That matches. Also maybe \"故意毁坏财物\"? No, not property. \"聚众斗殴\"? Not a group. \"聚众扰乱公共场所秩序\"? No. So the charge is \"故意伤害\". Also maybe \"非法持有毒品\"? No. So single charge.\n\nThus answer: [罪名]故意伤害<eoa>\n\nWe need to include reasoning in JSON? The instruction says output format: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"}? Actually the example says format: - Single: [罪名]盗窃<eoa>. But the user also gave a JSON wrapper? At the end they wrote:\n\n{\n\"reasoning\": \"[brief reasoning]\",\n\"final_answer\": \"[罪名]<charge(s)><eoa>\"\n}\n\nThus we should output JSON with those fields. Provide brief reasoning and final answer.\n\nLet's produce:\n\n{\n\"reasoning\": \"The defendant intentionally struck the victim causing a nasal bone fracture classified as light injury, which fits the statutory offense of intentional injury (故意伤害). No other listed offenses apply.\",\n\"final_answer\": \"[罪名]故意伤害<eoa>\"\n}\n\nMake sure JSON format correct.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine appropriate charge(s) from the lexicon for the fact.\n\nFact: In prison, inmate Shi (史某) and inmate Zou (邹某) have conflict. Shi throws a small plastic clip at Zou, lies on Zou's bed, then after being told to leave, Shi stays, then they argue, and Shi punches Zou in the face, causing a nasal bone fracture, which is a light injury (轻伤). So the act is intentional injury causing light injury. The lexicon includes \"故意伤害\". That matches. Also maybe \"故意毁坏财物\"? No, not property. \"聚众斗殴\"? Not a group. \"聚众扰乱公共场所秩序\"? No. So the charge is \"故意伤害\". Also maybe \"非法持有毒品\"? No. So single charge.\n\nThus answer: [罪名]故意伤害<eoa>\n\nWe need to include reasoning in JSON? The instruction says output format: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"}? Actually the example says format: - Single: [罪名]盗窃<eoa>. But the user also gave a JSON wrapper? At the end they wrote:\n\n{\n\"reasoning\": \"[brief reasoning]\",\n\"final_answer\": \"[罪名]<charge(s)><eoa>\"\n}\n\nThus we should output JSON with those fields. Provide brief reasoning and final answer.\n\nLet's produce:\n\n{\n\"reasoning\": \"The defendant intentionally struck the victim causing a nasal bone fracture classified as light injury, which fits the statutory offense of intentional injury (故意伤害). No other listed offenses apply.\",\n\"final_answer\": \"[罪名]故意伤害<eoa>\"\n}\n\nMake sure JSON format correct.",
+            "refusal": null,
+            "reasoning_content": "We need to determine appropriate charge(s) from the lexicon for the fact.\n\nFact: In prison, inmate Shi (史某) and inmate Zou (邹某) have conflict. Shi throws a small plastic clip at Zou, lies on Zou's bed, then after being told to leave, Shi stays, then they argue, and Shi punches Zou in the face, causing a nasal bone fracture, which is a light injury (轻伤). So the act is intentional injury causing light injury. The lexicon includes \"故意伤害\". That matches. Also maybe \"故意毁坏财物\"? No, not property. \"聚众斗殴\"? Not a group. \"聚众扰乱公共场所秩序\"? No. So the charge is \"故意伤害\". Also maybe \"非法持有毒品\"? No. So single charge.\n\nThus answer: [罪名]故意伤害<eoa>\n\nWe need to include reasoning in JSON? The instruction says output format: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"}? Actually the example says format: - Single: [罪名]盗窃<eoa>. But the user also gave a JSON wrapper? At the end they wrote:\n\n{\n\"reasoning\": \"[brief reasoning]\",\n\"final_answer\": \"[罪名]<charge(s)><eoa>\"\n}\n\nThus we should output JSON with those fields. Provide brief reasoning and final answer.\n\nLet's produce:\n\n{\n\"reasoning\": \"The defendant intentionally struck the victim causing a nasal bone fracture classified as light injury, which fits the statutory offense of intentional injury (故意伤害). No other listed offenses apply.\",\n\"final_answer\": \"[罪名]故意伤害<eoa>\"\n}\n\nMake sure JSON format correct."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 450,
+      "prompt_tokens": 1769,
+      "total_tokens": 2219,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000149603,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000149603,
+        "upstream_inference_prompt_cost": 6.5453e-05,
+        "upstream_inference_completions_cost": 8.415e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

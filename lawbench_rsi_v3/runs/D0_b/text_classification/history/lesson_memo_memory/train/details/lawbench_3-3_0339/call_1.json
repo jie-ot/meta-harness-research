@@ -1,0 +1,72 @@
+{
+  "call_id": "f11df6614cc94cc0a538f117a1e299e4",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791028274-9dIJE8YHCf6JHG1raRRG",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"事实中包含两项犯罪行为。第一，李某在公司仓库点燃包装袋导致仓库起火，造成约50万元损失，构成放火（危害公共安全罪）。第二，李某在出租车上用刀威胁并抢走现金137元，属于以暴力或威胁手段抢劫他人财物，构成抢劫罪。两罪应分别列出并用分号分隔。\",\n  \"final_answer\": \"[罪名]放火;抢劫<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to extract crimes from facts.\n\nTwo separate incidents involving same defendant Li.\n\nFirst: arson (放火) causing property loss 50万元. Crime: arson (非法放火) maybe \"放火罪\" which is under \"危害公共安全罪\" (arson). So crime: \"放火罪\" or \"非法放火\". According to Chinese law, \"放火罪\" is a crime. So we list \"放火罪\". Could also be \"危害公共安全罪\" but they want specific crime name. In examples, they used \"非法狩猎\" for illegal hunting, \"开设赌场\" for operating casino, \"抢夺\" for robbery by force? Actually \"抢夺\" is theft by snatching. For arson they used \"失火\" earlier for accidental fire? That example: \"失火\" for negligent fire? But they used \"失火\" as crime? Actually \"失火\" is not a crime; maybe they used \"失火\" as \"放火罪\"? In example: \"失火\" they gave as answer for a case where person caused fire due to welding. That is likely \"放火罪\". But they wrote \"失火\". So we need to follow pattern: they used \"失火\". However the rule says list crime names as per keywords. The keyword \"放火\" appears. So we should output \"放火\". But examples: they used \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\" for illegal manufacturing of explosives. So they list full phrase.\n\nThus for arson: \"放火罪\" maybe \"放火\". Let's see earlier example: \"失火\" they used. That case: person welded causing fire, they output \"失火\". So they used \"失火\". So maybe they map to \"放火罪\" but they wrote \"失火\". So we need to decide.\n\nSecond incident: robbery with threat using knife, taking cash 137 yuan. That's \"抢劫罪\" (robbery) because uses violence or threat to obtain property. In Chinese law, \"抢劫\" is robbery. So crime: \"抢劫\". In examples, they used \"抢夺\" for snatching. For threat with knife, it's robbery. So we output \"抢劫\". They may also include \"非法占有\" but that's part of robbery.\n\nThus final answer should list two crimes separated by semicolon: \"放火罪;抢劫罪\" or \"放火;抢劫\". Based on examples: they used \"抢夺\" not \"抢夺罪\". They used \"强制猥亵、侮辱妇女\". So they list without \"罪\". For arson they used \"失火\". So maybe we should use \"放火\" or \"失火\". The fact says \"放火\". So use \"放火\". So final: [罪名]放火;抢劫<eoa>\n\nReturn JSON with reasoning and final_answer.\n\n",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to extract crimes from facts.\n\nTwo separate incidents involving same defendant Li.\n\nFirst: arson (放火) causing property loss 50万元. Crime: arson (非法放火) maybe \"放火罪\" which is under \"危害公共安全罪\" (arson). So crime: \"放火罪\" or \"非法放火\". According to Chinese law, \"放火罪\" is a crime. So we list \"放火罪\". Could also be \"危害公共安全罪\" but they want specific crime name. In examples, they used \"非法狩猎\" for illegal hunting, \"开设赌场\" for operating casino, \"抢夺\" for robbery by force? Actually \"抢夺\" is theft by snatching. For arson they used \"失火\" earlier for accidental fire? That example: \"失火\" for negligent fire? But they used \"失火\" as crime? Actually \"失火\" is not a crime; maybe they used \"失火\" as \"放火罪\"? In example: \"失火\" they gave as answer for a case where person caused fire due to welding. That is likely \"放火罪\". But they wrote \"失火\". So we need to follow pattern: they used \"失火\". However the rule says list crime names as per keywords. The keyword \"放火\" appears. So we should output \"放火\". But examples: they used \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\" for illegal manufacturing of explosives. So they list full phrase.\n\nThus for arson: \"放火罪\" maybe \"放火\". Let's see earlier example: \"失火\" they used. That case: person welded causing fire, they output \"失火\". So they used \"失火\". So maybe they map to \"放火罪\" but they wrote \"失火\". So we need to decide.\n\nSecond incident: robbery with threat using knife, taking cash 137 yuan. That's \"抢劫罪\" (robbery) because uses violence or threat to obtain property. In Chinese law, \"抢劫\" is robbery. So crime: \"抢劫\". In examples, they used \"抢夺\" for snatching. For threat with knife, it's robbery. So we output \"抢劫\". They may also include \"非法占有\" but that's part of robbery.\n\nThus final answer should list two crimes separated by semicolon: \"放火罪;抢劫罪\" or \"放火;抢劫\". Based on examples: they used \"抢夺\" not \"抢夺罪\". They used \"强制猥亵、侮辱妇女\". So they list without \"罪\". For arson they used \"失火\". So maybe we should use \"放火\" or \"失火\". The fact says \"放火\". So use \"放火\". So final: [罪名]放火;抢劫<eoa>\n\nReturn JSON with reasoning and final_answer.\n\n",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to extract crimes from facts.\n\nTwo separate incidents involving same defendant Li.\n\nFirst: arson (放火) causing property loss 50万元. Crime: arson (非法放火) maybe \"放火罪\" which is under \"危害公共安全罪\" (arson). So crime: \"放火罪\" or \"非法放火\". According to Chinese law, \"放火罪\" is a crime. So we list \"放火罪\". Could also be \"危害公共安全罪\" but they want specific crime name. In examples, they used \"非法狩猎\" for illegal hunting, \"开设赌场\" for operating casino, \"抢夺\" for robbery by force? Actually \"抢夺\" is theft by snatching. For arson they used \"失火\" earlier for accidental fire? That example: \"失火\" for negligent fire? But they used \"失火\" as crime? Actually \"失火\" is not a crime; maybe they used \"失火\" as \"放火罪\"? In example: \"失火\" they gave as answer for a case where person caused fire due to welding. That is likely \"放火罪\". But they wrote \"失火\". So we need to follow pattern: they used \"失火\". However the rule says list crime names as per keywords. The keyword \"放火\" appears. So we should output \"放火\". But examples: they used \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\" for illegal manufacturing of explosives. So they list full phrase.\n\nThus for arson: \"放火罪\" maybe \"放火\". Let's see earlier example: \"失火\" they used. That case: person welded causing fire, they output \"失火\". So they used \"失火\". So maybe they map to \"放火罪\" but they wrote \"失火\". So we need to decide.\n\nSecond incident: robbery with threat using knife, taking cash 137 yuan. That's \"抢劫罪\" (robbery) because uses violence or threat to obtain property. In Chinese law, \"抢劫\" is robbery. So crime: \"抢劫\". In examples, they used \"抢夺\" for snatching. For threat with knife, it's robbery. So we output \"抢劫\". They may also include \"非法占有\" but that's part of robbery.\n\nThus final answer should list two crimes separated by semicolon: \"放火罪;抢劫罪\" or \"放火;抢劫\". Based on examples: they used \"抢夺\" not \"抢夺罪\". They used \"强制猥亵、侮辱妇女\". So they list without \"罪\". For arson they used \"失火\". So maybe we should use \"放火\" or \"失火\". The fact says \"放火\". So use \"放火\". So final: [罪名]放火;抢劫<eoa>\n\nReturn JSON with reasoning and final_answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to extract crimes from facts.\n\nTwo separate incidents involving same defendant Li.\n\nFirst: arson (放火) causing property loss 50万元. Crime: arson (非法放火) maybe \"放火罪\" which is under \"危害公共安全罪\" (arson). So crime: \"放火罪\" or \"非法放火\". According to Chinese law, \"放火罪\" is a crime. So we list \"放火罪\". Could also be \"危害公共安全罪\" but they want specific crime name. In examples, they used \"非法狩猎\" for illegal hunting, \"开设赌场\" for operating casino, \"抢夺\" for robbery by force? Actually \"抢夺\" is theft by snatching. For arson they used \"失火\" earlier for accidental fire? That example: \"失火\" for negligent fire? But they used \"失火\" as crime? Actually \"失火\" is not a crime; maybe they used \"失火\" as \"放火罪\"? In example: \"失火\" they gave as answer for a case where person caused fire due to welding. That is likely \"放火罪\". But they wrote \"失火\". So we need to follow pattern: they used \"失火\". However the rule says list crime names as per keywords. The keyword \"放火\" appears. So we should output \"放火\". But examples: they used \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\" for illegal manufacturing of explosives. So they list full phrase.\n\nThus for arson: \"放火罪\" maybe \"放火\". Let's see earlier example: \"失火\" they used. That case: person welded causing fire, they output \"失火\". So they used \"失火\". So maybe they map to \"放火罪\" but they wrote \"失火\". So we need to decide.\n\nSecond incident: robbery with threat using knife, taking cash 137 yuan. That's \"抢劫罪\" (robbery) because uses violence or threat to obtain property. In Chinese law, \"抢劫\" is robbery. So crime: \"抢劫\". In examples, they used \"抢夺\" for snatching. For threat with knife, it's robbery. So we output \"抢劫\". They may also include \"非法占有\" but that's part of robbery.\n\nThus final answer should list two crimes separated by semicolon: \"放火罪;抢劫罪\" or \"放火;抢劫\". Based on examples: they used \"抢夺\" not \"抢夺罪\". They used \"强制猥亵、侮辱妇女\". So they list without \"罪\". For arson they used \"失火\". So maybe we should use \"放火\" or \"失火\". The fact says \"放火\". So use \"放火\". So final: [罪名]放火;抢劫<eoa>\n\nReturn JSON with reasoning and final_answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 773,
+      "prompt_tokens": 5236,
+      "total_tokens": 6009,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 702,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00029622,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00029622,
+        "upstream_inference_prompt_cost": 0.00015708,
+        "upstream_inference_completions_cost": 0.00013914
+      }
+    }
+  },
+  "raw_response_missing": false
+}

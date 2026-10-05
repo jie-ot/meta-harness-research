@@ -1,0 +1,61 @@
+Edit: agents\rrf_confusion_memory.py
+
+replace_all: False
+old_string:
+"""Temporally-Decayed Confusion Memory.
+
+Extends adaptive_tokenizer_confusion_memory with one structural change to the
+learning strategy (axis E): confusion counts decay exponentially after each
+training step, so the confusion matrix reflects the model's *current* error
+patterns rather than its entire accumulated history.
+
+Problem with the baseline: confusion counts are monotonically increasing integers.
+A label pair confused heavily early in training (when the model had few examples)
+accumulates a large count that permanently dominates disambiguation slot selection,
+even after the model has seen dozens of corrective examples and stopped making
+that mistake. The disambiguation phase keeps injecting examples for a boundary
+the model no longer needs.
+
+Fix: after each learn_from_batch call, multiply every existing confusion count by
+DECAY_FACTOR (< 1). New error events are added with weight 1.0. Counts that decay
+below a threshold are pruned to keep the matrix sparse. This gives recent errors
+higher relative weight without requiring explicit timestamps.
+
+Retrieval algorithm is identical to adaptive_tokenizer_confusion_memory (two-phase:
+confusion slots then similarity fill) so any delta is attributable purely to the
+decay mechanism. Also includes the prediction-normalization fix.
+"""
+
+new_string:
+"""Reciprocal Rank Fusion Confusion Memory.
+
+Replaces the two-phase confusion-slot/similarity-fill retrieval in
+decayed_confusion_memory with a single parameter-free RRF pass.
+
+Problem with the two-phase design: confusion slots are reserved unconditionally
+for the top confusion targets regardless of whether those examples are also
+topically relevant to the current query.  When the confusion targets happen to
+be unrelated to the query, they consume context budget with low-utility examples
+and displace higher-utility similarity hits.  unified_confusion_retrieval_memory
+attempted a linear bonus (alpha * log(1 + affinity)) but required a tuned alpha
+and still regressed.
+
+Fix: compute two independent ranked lists —
+  (1) examples ranked by adaptive Jaccard similarity to the query,
+  (2) examples ranked by the column affinity of their label in the confusion
+      matrix (i.e. how often that label is the *true* label when the model is
+      wrong), so examples of frequently-missed labels rank higher.
+
+Fuse with Reciprocal Rank Fusion (k=60): score_i = 1/(k + sim_rank_i) + 1/(k + aff_rank_i).
+Select greedily by descending RRF score until the context budget is full.  No
+alpha to tune; the two signals contribute symmetrically.
+
+At cold start (empty confusion matrix) all column affinities are zero, so
+aff_rank is arbitrary-but-stable and the fused order degrades gracefully to
+pure similarity order.  Decay and prediction normalisation are inherited
+unchanged from decayed_confusion_memory.
+"""
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\rrf_confusion_memory.py has been updated successfully.

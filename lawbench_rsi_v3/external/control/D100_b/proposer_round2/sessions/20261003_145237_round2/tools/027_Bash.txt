@@ -1,0 +1,31 @@
+Bash
+
+command: python .prototypes/mmr_diversity_memory.py
+description: Run mmr_diversity_memory prototype
+
+--- output ---
+=== MMR Diversity Memory Prototype ===
+
+Loaded 8 examples, 7 labels
+
+Query: assault + property damage
+
+Pure Jaccard top-6 labels:  ['故意伤害', '故意伤害', '故意伤害;聚众扰乱社会秩序', '交通肇事', '诈骗', '行贿']
+MMR lam=0.6 labels:          ['故意伤害', '故意伤害;聚众扰乱社会秩序', '行贿', '侵犯著作权', '故意伤害', '故意伤害;故意毁坏财物']
+MMR lam=0.4 labels:          ['故意伤害', '故意伤害;聚众扰乱社会秩序', '侵犯著作权', '行贿', '故意伤害;故意毁坏财物', '诈骗']
+
+Examples unique to MMR (not in Jaccard top-6): 2
+
+Multi-label examples in Jaccard top-6: 1/2
+Multi-label examples in MMR top-6:     2/2
+
+Charge types covered — Jaccard: 5, MMR: 5
+
+[cold start] output: '
+
+[glossary: 0 labels]'
+
+✓ All assertions passed
+
+Conclusion: lam=0.6 is the best balance — more charge diversity than
+pure Jaccard while still retrieving relevant examples. Use lam=0.6.

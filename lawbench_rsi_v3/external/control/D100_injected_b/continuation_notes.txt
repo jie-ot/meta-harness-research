@@ -1,0 +1,88 @@
+Prior assistant progress statements:
+I'll start by reading the run state files.
+Now let me inspect the training and score traces in small chunks.
+Still reading the framework — tracking down the exact-match scorer so my candidates target it correctly.
+Now let me check the label vocabulary in the training and score traces.
+Now I have the empirical picture. Let me probe what the prototype environment allows.
+Tail of this same assistant's prior analysis (excerpt, not a truncation of the 100 feedback records):
+The user is asking me to inspect the directory structure of the base system and its modules.
+The user asks me to run iteration 1 of the LawBench v3 pilot: read the base agent at agents/confusion_disambiguation_memory.py, analyze the H0 feedback, write a diagnosis in reports/, and produce 2 candidates under the
+Let me read the first 5 rows of train/log.jsonl and score/diagnostics.jsonl to understand the label
+The user is asking me to work through a charge-prediction problem: given a Chinese criminal indictment with the charge name blanked out as a mask, predict the statutory charge label. Let me set up the quantities. The base solver scores 27/100. The target labels are the full statutory charge names as they appear in the blanked positions. I need to identify the error modes from the feedback and then design two candidate mechanisms, one exploitation and one exploration.
+
+Let me tally the error modes. Error mode 1 is non-statutory or colloquial naming: the model produces a plausible paraphrase that is not the statutory string. Examples: 0445 outputs "破坏森林资源" against the target 非法占用农用地; 0486 outputs "伪造发票罪" against 虚开发票; 0279 outputs "徇私舞弊" against 贪污; 0049 and 0079 output "非法采伐林木" against 盗伐林木 and 滥伐林木 respectively. The single largest systematic class is abbreviation of long enumerated labels, the selective-charge pattern. For firearms and ammunition the statute enumerates modes, and the model outputs a shortened variant, for instance 0302 outputs "非法持有枪支" where the target is 非法持有、私藏枪支、弹药.
+
+Error mode 2 is multi-charge count error in both directions. Under-generation: 0138 and 0040 predict empty strings against 故意伤害;聚众哄抢 and 故意伤害;赌博; 0073 predicts 盗窃 against 盗窃;帮助犯罪分子逃避处罚. Over-generation: 0346 predicts three charges against the single target 非法拘禁; 0205 predicts 受贿;挪用资金 against 受贿.
+
+Error mode 3 is near-neighbor statutory disambiguation: 挪用公款 against 挪用资金, 赌博 against 开设赌场, 盗伐林木 against 滥伐林木.
+
+Now the counts. The mask placeholder count in the indictment is a strong structural signal. In 0108 the text carries two masks and the target is two charges, 盗窃;非法占用农用地. In 0346 a single mask yields 非法拘禁. This is a general redaction feature, not dataset knowledge.
+
+Candidate A exploits the memory-content axis. The store becomes two tiers: a canonical label lexicon mined from training ground truth, each entry carrying the exact statutory string and evidence snippets; and the example pairs. At prediction, a post-hoc canonicalization matches each shortened prediction against the lexicon. A prediction p snaps to a unique entry E when p is character-contained in E with order preserved and exactly one entry attains that maximum. Testing: "非法持有枪支" is fully contained in 非法持有、私藏枪支、弹药, so it snaps. "盗伐林木" is contained in 盗伐林木 but 滥伐林木 lacks the character 盗, so the score is 0.75. Ambiguity blocks the snap: "盗窃" sits inside many entries, so no snap occurs and the exact match wins.
+
+Candidate B exploits a new axis, slot-count planning. Parse the query for runs of mask characters, estimate the expected charge count, then select exactly that many candidates from the catalogue.
+
+So the plan is: A gives conservative lexicon snapping plus evidence-grounded memory; B gives count planning with catalogue-constrained output. Both remove the largest error modes without hardcoding any dataset identity.
+The user is asking me to check how correctness is computed in inner_loop.py around line 262.
+The user is asking about how `ok` is computed, so I search for the evaluation function used.
+I trace check_answer's definition in the eval module or its top-level import.
+The user is asking me to locate where check_answer is defined among the imports in inner_loop.py.
+The user is asking me to check the prediction and target pairs in the score diagnostics, where an f1
+The user is asking whether the diagnostics compare prediction and target sets as exact string
+The user is asking me to numerically characterize the failure modes across the 100 H0 feedback items. I count 27 correct and 73 wrong, then I sort the 73 errors into buckets. The empty-response failures are 0138 and 0040, just 2 items. Charge-count mismatches run about 25 items: under-generation at 0101, 0015, 0073, 0083, 0057, 0172, 0463, 0081, 0136, 0125, 0047, 0117, 0016, 0112, 0301; over-generation at 0346, 0205, 0427, 0367, 0134, 0216, 0046. The largest bucket is label-name mismatch, where the prediction names a real, related offense but not the exact statutory string: truncation at 0349, 0219, 0478, 0302, 0255, 0494; invented or colloquial names at 0234, 0309, 0433, 0110, 0189, 0108, 0377, 0482, 0232, 0087; sibling confusion at 0022 against 0492 (挪用公款/挪用资金), the 盗伐/滥伐/非法采伐 group at 0049, 0079, 0329, the 赌博/开设赌场 pair at 0282 and 0287, and 0051, 0036, 0299, 0386, 0373, 0496, 0015, 0137, 0135, 0028.
+
+For the first approach I keep the confusion-retrieval base and change what memory holds: a catalogue of exact statutory charge strings from training ground truth. At predict time each predicted charge is split on the semicolon, normalized by stripping 、 and ，, and compared against single-charge catalogue entries. A component snaps to an entry when the normalized component is an ordered subsequence of the normalized entry, the component length is at least 4, the length ratio is at least 0.5, and exactly one entry qualifies. So 非法持有枪支 snaps to the full enumerated statute, 掩饰、隐瞒犯罪所得 snaps to its longer form with 犯罪所得收益, while 盗窃 and 诈骗 stay untouched because they are too short and too ambiguous. The threshold rejects 非法制造枪支 against the 18-character enumeration at ratio 0.33.
+
+For the second approach I build a charge co-occurrence graph from training targets: nodes are single charges, edges carry co-occurrence counts. At predict time I retrieve the top similar past cases, take their charge sets as seeds, walk one hop to graph neighbors with positive counts, and form a candidate subset. A single arbitration call then selects the final list, and any component still unmatched to the catalogue is snapped by the same rule. This targets under-generation directly and changes both the memory structure and the selection algorithm rather than any parameter.
+The user is asking me to check the feedback result.json to see how the score is computed.
+The user is asking me to work through an evaluation analysis for a legal charge-prediction system. Let me carry out the reasoning myself.
+
+I start from the baseline numbers: feedback accuracy is 20/100 with avg_f1 0.385, and score val was 27/100. Micro_f1 reads 0.3875, so scoring counts exact-match correct answers for ranking while still reporting f1. The feedback set is a different split, with H0 frozen.
+
+I tally the 100 item outcomes one by one, marking each true (T) or false (F). Working through the ordered ids, the T entries land at positions 2, 7, 11, 15, 29, 31, 36, 41, 43, 53, 54, 55, 62, 67, 73, 80, 83, 87, 91, and 99. That count is exactly 20, matching the stated 0.2 accuracy. So the tally is consistent.
+
+Now I examine why the other 80 miss. The dominant bucket is label-string mismatch: the right crime concept with the wrong statutory string. Examples: 非法持有枪支 against the enumerated 非法持有、私藏枪支、弹药; 走私固体废物 against the renamed 走私废物; 强制猥亵妇女 against 强制猥亵、侮辱妇女; 非法种植罂粟 against 非法种植毒品原植物; and the near-miss 生产、销售不符合食品安全标准的食品 against 生产、销售不符合安全标准的食品. The system invents umbrella or truncated labels and never constrains its output to an accepted vocabulary.
+
+The second pattern is charge-set completeness. Targets frequently list 2 charges separated by a semicolon; the model outputs 1 (under-charging) or 3 (over-charging). Because scoring is exact set match, both directions cost equally.
+
+The third pattern is confusable-pair confusion: 挪用公款 against 挪用资金, 盗伐林木 against 滥伐林木, 开设赌场 against 赌博, 故意伤害 against 过失致人重伤, 诈骗 against 保险诈骗.
+
+I then inspect the similarity function. Tokenization matches only `[A-Za-z0-9]+`, so for Chinese case text it extracts almost nothing, Jaccard returns 0.0, and the ranked sort degenerates to stored index order. Retrieval is effectively arbitrary. This is the core lever.
+
+I sketch two candidates. One induces a canonical label inventory from training targets and snaps model output onto it via containment or character-overlap matching. The other builds a charge co-occurrence graph, retrieves precedents using Chinese character n-gram similarity, and selects a subset with a count prior. Both need the n-gram repair to make retrieval meaningful at all.
+The user is asking me to work through the discovery that the base retrieval is effectively broken, and to check how similar the retrieved examples actually are.
+
+Let me start with the tokenizer. It only captures `[A-Za-z0-9]+`, so for Chinese text it extracts almost nothing. The token set for a Chinese case is nearly empty, holding only Latin or digit fragments like "xx", "2014", "12". Jaccard similarity is then either 0 or trivially 1.0, and the ranking degenerates to stored order. The sort key is `(x[0], x[1])` with `reverse=True`, so ties break by descending index, meaning the highest idx comes first. The "most similar" examples are just the last-stored ones. That is a mechanism bug, and it matches the prompt: the first examples shown are 盗窃;开设赌场, 赌博, which are the most recently added training examples.
+
+So retrieval for Chinese is arbitrary. Two candidates follow.
+
+Candidate A: label-space canonicalization plus contrastive boundary memory. The axis is memory content and prompt architecture. The mechanism mines the label vocabulary from training targets, the exact statutory strings. At predict time it retrieves by Chinese bigram similarity and builds a label menu listing the exact statutory strings for close labels, with the distinguishing statutory elements. The model chooses from the menu verbatim. This attacks the dominant error mode of near-miss names, such as 非法持有枪支 against 非法持有、私藏枪支、弹药, 破坏森林资源 against 非法占用农用地, and 容留他人卖淫 against 引诱、容留、介绍卖淫. I also learn an alias-to-canonical mapping from the confusion matrix through substring analysis, then apply it as a deterministic post-processor.
+
+Candidate B: multi-charge cardinality planning plus candidate-set pruning. The axis is memory structure and learning strategy. Many errors are multi-label set mismatches, predicting 1 of 2, 3 of 2, or an extra. The mechanism learns a co-occurrence graph over labels and a cardinality prior conditioned on textual cues. At predict time it retrieves similar examples, looks at their label sets, and shows typical sets rather than individual labels, so {受贿, 滥用职权} travel together while {盗窃} alone is common.
+
+Both need Chinese text similarity. To keep them distinct: A handles the name-string dimension, which exact string; B handles the set dimension, how many and which combination. Two items, 0138 and 0040, produced empty predictions, and the prompt is 30000 chars with num_examples at 56, so a much sharper and smaller context matters.
+The user is asking me to figure out the correct relative import path for the LLM callable within the
+The user is asking how the harness loads the agent files to find the correct import path.
+The user is asking me to work through the agent import question. The base trains on 200 examples, then scores 100 items, giving 20 correct; the score set yields 27 correct. Agents load as `agents/<name>.py` with `from ..memory_system import`, so `agents` sits inside an importable package. I need that package name for the prototypes.
+The user is asking me to work through the diagnosis, candidate selection, and falsification logic.
+
+I look at what `check_answer` does: it is exact-string match against the target after normalization of punctuation and whitespace. So partial credit does not exist. Every near-miss is worth zero.
+
+I count the dominant failure mode: the model predicts a plausible but non-canonical charge name. I see `破坏森林资源` against `非法占用农用地`, `伪造发票罪` against `虚开发票`, `徇私舞弊` against `贪污`, `非法采伐林木` against `盗伐林木`, `强制猥亵妇女罪` against `强制猥亵、侮辱妇女`, `容留他人卖淫` against `引诱、容留、介绍卖淫`, `走私固体废物罪` against `走私废物`, `非法持有枪支` against `非法持有、私藏枪支、弹药`, `非法种植罂粟` against `非法种植毒品原植物`, `组织、领导赌博活动` against `赌博`. In each case the concept is right and the string form is wrong.
+
+The second dominant failure mode is cardinality error in multi-charge cases: predictions carry 3 charges where the target has 1 or 2, and there is under-prediction as well.
+
+Then I check `_tokenize`. Its pattern is `[A-Za-z0-9]+`, which on Chinese facts yields only a handful of digits and Latin fragments. Jaccard between two such sets is near 0, so the sort by (score, idx) descending collapses to the tie-break, meaning the last 56 training examples are shown regardless of the query. This explains why 0445's prompt opens with an unrelated case. The confusion block inherits the same degeneracy.
+
+For the two candidates I keep them genuinely distinct. The first is a verbatim charge-label inventory: learning accumulates the exact target strings split on the semicolon into a lexicon with counts; prediction is projected onto that lexicon only when the raw string is not already a label and exactly one candidate shares a long substring, with length 4 or more guarding short generic names like 盗窃 and 诈骗. The second is a charge co-occurrence graph: memory stores per-target label sets and edge counts, and a second call decides add/drop from the union of observed labels. The first targets the string-form failures; the second targets cardinality. Both fix retrieval with character-level similarity as shared infrastructure, since the raw signal is otherwise noise.
+
+I reach the result: two falsifiable mechanisms, one against near-miss labels and one against charge count.
+The user is asking me to work through a diagnosis of charge-name prediction errors and to develop two candidate fixes. The targets use a fixed statutory vocabulary drawn from the 两高 罪名规定, and many are long enumerated strings, with multi-charge targets separated by ";". The score diagnostics show the target labels, and the model's predictions often differ only in surface form.
+
+The first dominant error mode is the near-miss statutory name, where the model outputs a semantically right but non-canonical charge string. Examples: 0445 gives 破坏森林资源 against 非法占用农用地; 0486 gives 伪造发票罪 against 虚开发票; 0279 gives 徇私舞弊 against 贪污; 0049 and 0079 both give 非法采伐林木, the first against 盗伐林木 and the second against 滥伐林木; 0309 gives 非法种植罂粟 against 非法种植毒品原植物; 0494 gives 强制猥亵妇女罪 against 强制猥亵、侮辱妇女; 0349 gives 非法制造枪支 against 非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物; 0302 gives 非法持有枪支 against 非法持有、私藏枪支、弹药; 0232 gives 容留他人卖淫 against 引诱、容留、介绍卖淫; 0174 gives 走私固体废物罪 against 走私废物; 0482, 0377 and 0234 give 侵犯注册商标专用权 against 销售假冒注册商标的商品 or 假冒注册商标; 0022 gives 挪用公款 against 挪用资金; 0492 gives 职务侵占 against 挪用资金; 0282 gives 赌博 against 开设赌场; 0287 gives 开设赌场 against 赌博; 0255 gives 非法持有弹药罪 against 非法持有、私藏枪支、弹药; 0181 gives 非法买卖发票 against 非法出售发票; 0110 gives 买卖假币 against 出售、购买、运输假币.
+
+The second mode is missing or extra charges in multi-charge cases: 0346 has 3 predicted against 1 target; 0073 has 1 against 2; 0205 has 2 against 1; 0136 has 1 against 2; 0108 has 2 against 2 but wrong; 0087 has 2 against 2 in wrong forms; and 0081, 0016, 0015, 0101, 0083, 0057, 0135, 0137, 0172, 0047, 0125, 0463, 0117, 0216, 0301, 0051, 0036, 0373, 0496 and 0386 also mismatch. The third mode is empty responses at 0138 and 0040.
+
+So two mechanisms stand out. Candidate A targets the near-miss mode with a label lexicon plus nearest-neighbor canonicalization: memory stores a derived inventory of statutory charge names harvested from the training targets, and each proposed label snaps to the closest canonical entry by character-level similarity, replacing the degenerate Latin-token Jaccard. Candidate B targets the count and co-occurrence mode: memory holds a graph over labels with within-target co-occurrence counts and a cardinality prior, and prediction builds a candidate set, then prunes or expands it against that graph.
+
+The two candidates sit on different axes. A exploits the memory-content axis, changing what memory stores and adding a post-hoc normalization stage. B explores the selection-algorithm axis, adding structure learning over label combinations plus a per-label verification step. Both also need the tokenizer fixed, since ASCII-only tokenization makes retrieval degenerate for Chinese, but that is shared infrastructure rather than the distinguishing mechanism.

@@ -1,0 +1,21 @@
+最后一次本机运行能力元数据核对：已完成并停止。
+
+本机官方CLI：@openai/codex，codex-cli 0.149.1；help与initialize版本一致。
+正常已有登录：ChatGPT类型，account/read(refreshToken=false)成功；订阅额度查询成功。个人标识与完整账户响应未保存。
+
+额度查询时间：2026-10-05 06:25:48 UTC（响应06:25:50 UTC）。
+仅返回一个bucket：map key=codex，limitId=codex，亦为兼容默认视图。
+primary.windowDurationMins=10080，即7天周窗；usedPercent=88，推导remaining=12%。
+resetsAt=1791599640，即2026-10-10 02:34:00 UTC。secondary=null；没有另一个短窗可报告。
+模型关联依据：此为通用Codex bucket；model/list schema没有bucket映射，无法单独证明gpt-6.1-sol对应它。
+
+模型目录：includeHidden=true，返回6项且nextCursor为空，精确id/model匹配未发现gpt-6.1-sol。
+因此本机正常CLI目录未确认该目标可用，Max支持亦未知；没有替换成其他模型或发起测试请求。
+catalog仅证明本机客户端当前列出的可用配置，不能认证先前会话的实际后端身份。
+标准schema没有gateway readiness方法，本次没有猜测或启用其他接口。
+
+仅一次stdio连接；操作为initialize、initialized、account/read(refreshToken=false)、account/rateLimits/read、model/list。
+协议纠错0，推理操作0。没有登录/登出、额度重置、购买、安装升级、设置修改或认证token提取。
+本次helper关闭stdio后正常退出，没有处理用户既有Codex进程。成功读取快照不建立精确百分比hardcap能力。
+
+可核查非敏感字段：metadata.json。

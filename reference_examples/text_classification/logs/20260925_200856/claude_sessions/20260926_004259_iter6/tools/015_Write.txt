@@ -1,0 +1,129 @@
+Write: C:\tmp\test_grouped_prompt.py
+
+content:
+"""Prototype: label-grouped prompt architecture.
+
+Instead of a flat Q/A list, retrieved examples are grouped by their answer
+label. Each group gets a section header. Hypothesis: structured boundaries
+help the model distinguish between similar-looking inputs that map to
+different labels.
+
+Test with real Symptom2Disease examples where disambiguation matters most.
+"""
+import re, json
+
+LOG = r"D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\Symptom2Disease\confusion_disambiguation_memory\gpt-oss-120b\log.jsonl"
+
+# Load first 30 steps for a realistic pool
+steps = []
+with open(LOG, encoding="utf-8") as f:
+    for line in f:
+        rec = json.loads(line)
+        if rec.get("type") == "step":
+            steps.append(rec)
+        if len(steps) >= 30:
+            break
+
+# Simulate a memory pool from those steps (input -> ground_truth)
+pool = []
+for s in steps:
+    pool.append({
+        "input": s["input_preview"],
+        "target": s["tgt"],
+    })
+
+# -- bigram tokenizer --
+def tok_bigram(text, n=2):
+    t = re.sub(r'\s+', ' ', text.strip())
+    if len(t) < n:
+        return frozenset([t]) if t else frozenset()
+    return frozenset(t[i:i+n] for i in range(len(t) - n + 1))
+
+def jaccard(a, b):
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+def retrieve_top_k(query, pool, k=8):
+    q_tok = tok_bigram(query)
+    scored = [(jaccard(q_tok, tok_bigram(ex["input"])), ex) for ex in pool]
+    scored.sort(key=lambda x: -x[0])
+    return [ex for _, ex in scored[:k]]
+
+# --- Variant A: flat prompt (current baseline style) ---
+def build_flat(query, examples):
+    parts = [f"Q: {ex['input'][:120]}...\nA: {ex['target']}" for ex in examples]
+    return "Examples:\n\n" + "\n\n".join(parts) + f"\n\nQuestion: {query[:120]}..."
+
+# --- Variant B: label-grouped prompt ---
+def build_grouped(query, examples):
+    from collections import defaultdict
+    groups = defaultdict(list)
+    for ex in examples:
+        groups[ex["target"]].append(ex["input"])
+
+    sections = []
+    for label, inputs in sorted(groups.items()):
+        section_examples = "\n".join(f"  - {inp[:100]}..." for inp in inputs[:3])
+        sections.append(f"### When the answer is: {label}\n{section_examples}")
+
+    return "Examples grouped by answer:\n\n" + "\n\n".join(sections) + f"\n\nQuestion: {query[:120]}..."
+
+# Test on first 5 queries from pool as mock queries
+test_queries = [s["input_preview"] for s in steps[15:20]]
+
+print("=== Variant A: flat prompt (token count proxy = char count) ===")
+for q in test_queries[:3]:
+    egs = retrieve_top_k(q, pool[:15], k=6)
+    prompt = build_flat(q, egs)
+    print(f"  chars={len(prompt)}, labels shown={len(set(e['target'] for e in egs))}/{len(egs)} unique labels")
+
+print("\n=== Variant B: label-grouped prompt ===")
+for q in test_queries[:3]:
+    egs = retrieve_top_k(q, pool[:15], k=6)
+    prompt = build_grouped(q, egs)
+    groups = {}
+    for e in egs:
+        groups.setdefault(e["target"], 0)
+        groups[e["target"]] += 1
+    print(f"  chars={len(prompt)}, label groups={len(groups)}: {list(groups.keys())[:4]}")
+
+print("\n=== Variant C: grouped with frequency ordering (most-confused label first) ===")
+# For this variant, we track error counts per label and sort groups by error_count desc
+mock_error_counts = {"Migraine": 5, "Psoriasis": 3, "Allergy": 2, "Acne": 1}
+
+def build_grouped_error_sorted(query, examples, error_counts):
+    from collections import defaultdict
+    groups = defaultdict(list)
+    for ex in examples:
+        groups[ex["target"]].append(ex["input"])
+
+    # Sort groups: highest error count first, then alphabetical
+    def sort_key(label):
+        return (-error_counts.get(label, 0), label)
+
+    sections = []
+    for label in sorted(groups.keys(), key=sort_key):
+        inputs = groups[label]
+        section_examples = "\n".join(f"  - {inp[:100]}..." for inp in inputs[:2])
+        err = error_counts.get(label, 0)
+        tag = f" [frequently confused, {err} past errors]" if err > 0 else ""
+        sections.append(f"### Answer: {label}{tag}\n{section_examples}")
+
+    return "Examples by answer category:\n\n" + "\n\n".join(sections) + f"\n\nQuestion: {query[:120]}..."
+
+for q in test_queries[:3]:
+    egs = retrieve_top_k(q, pool[:15], k=8)
+    prompt = build_grouped_error_sorted(q, egs, mock_error_counts)
+    print(f"  chars={len(prompt)}, sections={len(set(e['target'] for e in egs))}")
+
+# Decision: Variant B (clean grouping) is the core mechanism.
+# Adding error-sort tags (Variant C) may be too noisy for the LLM.
+# Going with Variant B as the implementation.
+print("\n=== Decision: Variant B (grouped, no error annotation) ===")
+print("Rationale: clean label sections provide structure without extra noise from error tags.")
+print("The grouping itself is the disambiguation signal.")
+
+
+
+--- output ---
+File created successfully at: C:\tmp\test_grouped_prompt.py (file state is current in your context — no need to Read it back)

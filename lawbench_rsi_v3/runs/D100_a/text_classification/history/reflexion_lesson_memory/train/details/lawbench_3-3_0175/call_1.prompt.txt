@@ -1,0 +1,33 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- If the facts describe a person in a managerial or official position receiving money or valuables in exchange for using their职务便利, classify the crime simply as "受贿" unless the source explicitly states 
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+- When the case facts describe multiple distinct criminal conduct or explicitly mention additional offenses (e.g., “数罪并罚”, “其他罪”, “并且…”， “同时” etc.), output every applicable charge separated by semicolon
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控，
+一、2009年5月，被告人邓某为提高药品“力可多”在成都市中西医结合医院（北区）（以下简称“北区医院”）的销量，找到该院当收费员的刘某（另处）帮忙联系医生在处方用药时多用该药。邓某告知刘某，医生在处方使用“力可多”后可获得相应的利益，并同时承诺刘某从中也可获得相应利益。刘某随后通过该院针灸（呼吸）内科副主任路某（另处）落实此事，并不定期地将从邓某处收到的钱款直接以现金形式交给路某，由路某再进行分配处理。其后，该院针灸（呼吸）内科分为两个科室，原科室副主任路某、向某（另处）分别担任新成立的神经内科和呼吸内科负责人。刘某也相应的以现金方式将从邓某处收到的钱款分别交由神经内科副主任路某和呼吸内科主任向某进行再分配处理。
+2009年5月至2013年2月，邓某根据“力可多”在该院的用量，以银行转账方式向刘某共计支付116万余元，刘某在扣除自己的非法所得后，将其中98万余元分别送给路某、向某。
+二、2010年，被告人邓某为提高药品“百草妇炎某”在成都市中西医结合医院（南区）（以下简称“南区医院”）的销量，找到该院药剂科主管药师杨某（另处）帮忙联系医生在处方用药时多用该药。邓某告知杨某，医生在处方使用“百草妇炎某”后可获得相应的利益，并同时承诺杨某从中也可获得相应利益。杨某随后找到该院多名妇产科医生，请医生在处方用药时多使用“百草妇炎某”并同时承诺会有相应好处。
+2010年9月至2013年5月，邓某根据“百草妇炎某”在该医院的用量，将相应钱款以银行转账方式支付给杨某，杨某在扣除自己的非法所得后，将其中24万余元分别送给自己请托使用“百草妇炎某”的相关医生。
+2012年11月28日，高新区检察院反贪局接到医院人员举报的受贿线索，2013年6月18日凌晨邓某被传唤接受调查，当日检察院立案。邓某到案后陆续交待了其伙同刘某、杨某的犯罪事实。
+公诉机关认为，被告人邓某为谋取不正当利益，伙同刘某、杨某给予医疗机构中的医务人员财物，数额巨大，应以××追究其刑事责任。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

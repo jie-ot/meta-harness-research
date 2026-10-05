@@ -1,0 +1,31 @@
+Bash
+
+command:
+python -c "
+import json, collections
+
+log = open('D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/USPTO/adaptive_tokenizer_confusion_memory/gpt-oss-120b/log.jsonl')
+steps = [json.loads(l) for l in log if json.loads(l).get('type')=='step']
+print('USPTO total steps:', len(steps))
+print('Correct:', sum(s['ok'] for s in steps))
+print('Wrong:', sum(not s['ok'] for s in steps))
+# Check similarity distribution - look at prompt_len distribution
+lens = [s['prompt_len'] for s in steps]
+lens.sort()
+print('Prompt len min/median/max:', lens[0], lens[len(lens)//2], lens[-1])
+# Late vs early accuracy
+early = steps[:25]; late = steps[25:]
+print('Early acc:', sum(s['ok'] for s in early)/len(early) if early else 0)
+print('Late acc:', sum(s['ok'] for s in late)/len(late) if late else 0)
+"
+
+
+description: Analyze USPTO accuracy distribution for adaptive_tokenizer_confusion_memory
+
+--- output ---
+USPTO total steps: 50
+Correct: 5
+Wrong: 45
+Prompt len min/median/max: 1640 5709 10126
+Early acc: 0.16
+Late acc: 0.04

@@ -1,0 +1,72 @@
+{
+  "call_id": "1fe55424dca64626ba688aa4d62539cc",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791028089-eVW5juBVe4ZpwhejTpE9",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"lesson\": \"- 只依据事实片段中出现的明确犯罪行为关键词匹配法定罪名，避免使用同义或概念相近的表述。\\n- 当事实描述不完整或被截断时，只依据已出现的关键词判断，不要推测未出现的罪名。\\n- 多罪名情形下，严格列出事实中提到的每一项罪名，禁止添加事实未涉及的额外罪名。\\n- 使用官方刑法条文中的标准罪名表述（如“污染环境罪”而非“非法排放污染物罪”），保持名称一致性。\\n- 输出必须严格遵守格式：在[罪名]与<eoa>之间写出罪名，多个罪名用分号分隔，且不出现多余空格或字符。\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model often misinterprets truncated facts, picks wrong charge, adds extra charges, misreads \"非法排放污染物罪\" vs \"污染环境\". Issues: need to map factual keywords to correct legal terms, handle incomplete text, avoid over-prediction, ensure charge list matches facts exactly, not add extra. Also need to handle Chinese legal naming conventions: use standard charge names, not synonyms. Also need to parse \"正确答案\" style: sometimes multiple charges separated by semicolon, need to match order? Also need to avoid hallucinating extra charges when not present.\n\nThus rules:\n\n1. Identify explicit criminal conduct keywords in fact snippet; map to exact statutory charge name; avoid synonyms.\n\n2. When fact snippet is truncated, rely only on visible keywords; do not infer missing charges.\n\n3. For multiple charges, list exactly those mentioned; do not add extra charges not present.\n\n4. Use correct charge naming: e.g., \"污染环境罪\" vs \"非法排放污染物罪\" – choose the term used in official charge list.\n\n5. Ensure output format: [罪名]...<eoa> with semicolons for multiple, no extra spaces.\n\nLet's craft JSON.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model often misinterprets truncated facts, picks wrong charge, adds extra charges, misreads \"非法排放污染物罪\" vs \"污染环境\". Issues: need to map factual keywords to correct legal terms, handle incomplete text, avoid over-prediction, ensure charge list matches facts exactly, not add extra. Also need to handle Chinese legal naming conventions: use standard charge names, not synonyms. Also need to parse \"正确答案\" style: sometimes multiple charges separated by semicolon, need to match order? Also need to avoid hallucinating extra charges when not present.\n\nThus rules:\n\n1. Identify explicit criminal conduct keywords in fact snippet; map to exact statutory charge name; avoid synonyms.\n\n2. When fact snippet is truncated, rely only on visible keywords; do not infer missing charges.\n\n3. For multiple charges, list exactly those mentioned; do not add extra charges not present.\n\n4. Use correct charge naming: e.g., \"污染环境罪\" vs \"非法排放污染物罪\" – choose the term used in official charge list.\n\n5. Ensure output format: [罪名]...<eoa> with semicolons for multiple, no extra spaces.\n\nLet's craft JSON.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model often misinterprets truncated facts, picks wrong charge, adds extra charges, misreads \"非法排放污染物罪\" vs \"污染环境\". Issues: need to map factual keywords to correct legal terms, handle incomplete text, avoid over-prediction, ensure charge list matches facts exactly, not add extra. Also need to handle Chinese legal naming conventions: use standard charge names, not synonyms. Also need to parse \"正确答案\" style: sometimes multiple charges separated by semicolon, need to match order? Also need to avoid hallucinating extra charges when not present.\n\nThus rules:\n\n1. Identify explicit criminal conduct keywords in fact snippet; map to exact statutory charge name; avoid synonyms.\n\n2. When fact snippet is truncated, rely only on visible keywords; do not infer missing charges.\n\n3. For multiple charges, list exactly those mentioned; do not add extra charges not present.\n\n4. Use correct charge naming: e.g., \"污染环境罪\" vs \"非法排放污染物罪\" – choose the term used in official charge list.\n\n5. Ensure output format: [罪名]...<eoa> with semicolons for multiple, no extra spaces.\n\nLet's craft JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model often misinterprets truncated facts, picks wrong charge, adds extra charges, misreads \"非法排放污染物罪\" vs \"污染环境\". Issues: need to map factual keywords to correct legal terms, handle incomplete text, avoid over-prediction, ensure charge list matches facts exactly, not add extra. Also need to handle Chinese legal naming conventions: use standard charge names, not synonyms. Also need to parse \"正确答案\" style: sometimes multiple charges separated by semicolon, need to match order? Also need to avoid hallucinating extra charges when not present.\n\nThus rules:\n\n1. Identify explicit criminal conduct keywords in fact snippet; map to exact statutory charge name; avoid synonyms.\n\n2. When fact snippet is truncated, rely only on visible keywords; do not infer missing charges.\n\n3. For multiple charges, list exactly those mentioned; do not add extra charges not present.\n\n4. Use correct charge naming: e.g., \"污染环境罪\" vs \"非法排放污染物罪\" – choose the term used in official charge list.\n\n5. Ensure output format: [罪名]...<eoa> with semicolons for multiple, no extra spaces.\n\nLet's craft JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 458,
+      "prompt_tokens": 954,
+      "total_tokens": 1412,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000120944,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000120944,
+        "upstream_inference_prompt_cost": 3.5298e-05,
+        "upstream_inference_completions_cost": 8.5646e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

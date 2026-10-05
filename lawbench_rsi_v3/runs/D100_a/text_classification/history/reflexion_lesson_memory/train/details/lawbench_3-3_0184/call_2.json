@@ -1,0 +1,72 @@
+{
+  "call_id": "11c81415311e4708aeef765852bce9ba",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791018521-KnxZnIaDh2PY7u1mtuWm",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the defendant unintentionally introduces a hazardous or toxic substance into food or drink, resulting in poisoning or death, the appropriate charge is ‘过失投放危险物质’, not charges related to manufacturing, selling toxic food or generic negligent homicide.\",\n  \"keywords\": [\n    \"误当作白糖\",\n    \"投放危险物质\",\n    \"亚硝酸盐中毒\",\n    \"误投有毒物质\",\n    \"食品中混入有害物质\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with rule and keywords. The error: AI predicted \"过失致人死亡;生产、销售有毒有害食品\" but correct answer is \"过失投放危险物质\". So the classification error is mislabeling the crime. The rule should ensure that when the act is \"misplacing dangerous substance leading to poisoning\" the correct charge is \"过失投放危险物质\" not \"过失致人死亡\" or \"生产、销售有毒有害食品\". So rule: If the conduct involves unintentionally placing a hazardous material into food causing poisoning, the appropriate charge is \"过失投放危险物质\". Keywords: \"误当作白糖\", \"投放危险物质\", \"亚硝酸盐中毒\", \"误投\", \"食品中混入有毒物质\", \"过失投放\". Provide JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with rule and keywords. The error: AI predicted \"过失致人死亡;生产、销售有毒有害食品\" but correct answer is \"过失投放危险物质\". So the classification error is mislabeling the crime. The rule should ensure that when the act is \"misplacing dangerous substance leading to poisoning\" the correct charge is \"过失投放危险物质\" not \"过失致人死亡\" or \"生产、销售有毒有害食品\". So rule: If the conduct involves unintentionally placing a hazardous material into food causing poisoning, the appropriate charge is \"过失投放危险物质\". Keywords: \"误当作白糖\", \"投放危险物质\", \"亚硝酸盐中毒\", \"误投\", \"食品中混入有毒物质\", \"过失投放\". Provide JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with rule and keywords. The error: AI predicted \"过失致人死亡;生产、销售有毒有害食品\" but correct answer is \"过失投放危险物质\". So the classification error is mislabeling the crime. The rule should ensure that when the act is \"misplacing dangerous substance leading to poisoning\" the correct charge is \"过失投放危险物质\" not \"过失致人死亡\" or \"生产、销售有毒有害食品\". So rule: If the conduct involves unintentionally placing a hazardous material into food causing poisoning, the appropriate charge is \"过失投放危险物质\". Keywords: \"误当作白糖\", \"投放危险物质\", \"亚硝酸盐中毒\", \"误投\", \"食品中混入有毒物质\", \"过失投放\". Provide JSON.",
+            "reasoning_content": "We need to produce a JSON with rule and keywords. The error: AI predicted \"过失致人死亡;生产、销售有毒有害食品\" but correct answer is \"过失投放危险物质\". So the classification error is mislabeling the crime. The rule should ensure that when the act is \"misplacing dangerous substance leading to poisoning\" the correct charge is \"过失投放危险物质\" not \"过失致人死亡\" or \"生产、销售有毒有害食品\". So rule: If the conduct involves unintentionally placing a hazardous material into food causing poisoning, the appropriate charge is \"过失投放危险物质\". Keywords: \"误当作白糖\", \"投放危险物质\", \"亚硝酸盐中毒\", \"误投\", \"食品中混入有毒物质\", \"过失投放\". Provide JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 305,
+      "prompt_tokens": 502,
+      "total_tokens": 807,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 210,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000105,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000105,
+        "upstream_inference_prompt_cost": 2.2279152773211855e-05,
+        "upstream_inference_completions_cost": 8.272084722678815e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

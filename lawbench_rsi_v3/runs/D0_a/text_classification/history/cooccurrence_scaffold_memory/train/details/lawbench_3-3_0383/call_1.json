@@ -1,0 +1,72 @@
+{
+  "call_id": "8ecec5da8f20428390e94d3de84c2c47",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791036259-uGeIGwDL6MdW9svwyOx5",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant deliberately set fire to the room, causing property damage. This matches the crime of arson (放火). There is no indication of robbery (抢劫) or any other listed companion offenses in the facts.\",\n  \"final_answer\": \"[罪名]放火<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine charges based on facts. Primary charge likely 放火 (arson). Companion charge list includes 抢劫 (robbery) co-occurred 1x. Does facts support robbery? The facts: defendant set fire, not robbery. No theft. So only 放火. Also maybe 失火? But primary is 放火. The instruction: \"Companion charge check — the primary charge is likely [放火]. These charges frequently co-occur with it in training; include each ONLY if the case facts support it: - 抢劫 (co-occurred 1x)\". So we only add 抢劫 if facts support robbery. They don't. So answer just 放火.\n\nReturn JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine charges based on facts. Primary charge likely 放火 (arson). Companion charge list includes 抢劫 (robbery) co-occurred 1x. Does facts support robbery? The facts: defendant set fire, not robbery. No theft. So only 放火. Also maybe 失火? But primary is 放火. The instruction: \"Companion charge check — the primary charge is likely [放火]. These charges frequently co-occur with it in training; include each ONLY if the case facts support it: - 抢劫 (co-occurred 1x)\". So we only add 抢劫 if facts support robbery. They don't. So answer just 放火.\n\nReturn JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine charges based on facts. Primary charge likely 放火 (arson). Companion charge list includes 抢劫 (robbery) co-occurred 1x. Does facts support robbery? The facts: defendant set fire, not robbery. No theft. So only 放火. Also maybe 失火? But primary is 放火. The instruction: \"Companion charge check — the primary charge is likely [放火]. These charges frequently co-occur with it in training; include each ONLY if the case facts support it: - 抢劫 (co-occurred 1x)\". So we only add 抢劫 if facts support robbery. They don't. So answer just 放火.\n\nReturn JSON with reasoning and final answer.",
+            "refusal": null,
+            "reasoning_content": "We need to determine charges based on facts. Primary charge likely 放火 (arson). Companion charge list includes 抢劫 (robbery) co-occurred 1x. Does facts support robbery? The facts: defendant set fire, not robbery. No theft. So only 放火. Also maybe 失火? But primary is 放火. The instruction: \"Companion charge check — the primary charge is likely [放火]. These charges frequently co-occur with it in training; include each ONLY if the case facts support it: - 抢劫 (co-occurred 1x)\". So we only add 抢劫 if facts support robbery. They don't. So answer just 放火.\n\nReturn JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 238,
+      "prompt_tokens": 24758,
+      "total_tokens": 24996,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 163,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000956506,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000956506,
+        "upstream_inference_prompt_cost": 0.000916046,
+        "upstream_inference_completions_cost": 4.046e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

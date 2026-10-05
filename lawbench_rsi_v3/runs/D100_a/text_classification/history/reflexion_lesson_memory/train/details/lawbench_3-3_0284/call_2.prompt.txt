@@ -1,0 +1,23 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明：2015年1月16日11时许，永州市公安局治安支队民警和零陵分局治安大队民警在永州市零陵区石山脚乡工作中发现被告人蒋某某非法持有鸟铳和猎枪各一支。经对被告人蒋某某及其家人进行了教育和劝导，被告人蒋某某于2015年1月16日主动到公安机关投案，并将一支鸟铳及铁砂150克和一支猎枪及子弹壳1颗上交到公安机关。经永州市公安司法鉴定中心鉴定，被告人蒋某某持有的一支鸟铳和一支猎枪，是以火药为发射动力的枪支。
+上述事实，有经庭审质证属实的物证照片、扣押物品清单、鉴定意见通知书、到案经过、户籍证明等书证、被告人蒋某某的供述、永州市公安司法鉴定中心物证检验意见书予以证实，足以认定。
+
+
+Wrong prediction: [罪名]非法持有枪支、弹药<eoa>
+Correct answer: 非法持有、私藏枪支、弹药
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

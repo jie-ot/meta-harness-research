@@ -1,0 +1,22 @@
+Read: logs\20260925_200856\reports\iter_14.md
+
+
+--- output ---
+1	# Iteration 14 Report
+2	
+3	## What changed
+4	- **missed_component_memory**: split compound labels on semicolons, tracked per-atomic-component miss counts, added a log-scaled component-overlap bonus to Jaccard scoring.
+5	- **recent_error_hint_memory**: compact rolling window of the last 10 distinct wrong-to-correct pairs prepended as a "Recent corrections" section above retrieved examples.
+6	
+7	## Results
+8	| System | Avg val | Delta |
+9	|--------|---------|-------|
+10	| missed_component_memory | 46.9% | -5.3 |
+11	| recent_error_hint_memory | 45.6% | -6.6 |
+12	
+13	## Why
+14	Compound label splitting treated semicolons as delimiters across all datasets: on USPTO (SMILES uses semicolons as formula separators) and LawBench (single-string labels), splitting produces nonsensical sub-components. Recent error hints put wrong-answer strings directly in the prompt; the model anchors on those tokens rather than treating them as corrections.
+15	
+16	## Takeaway
+17	Dataset-specific assumptions must be validated as general before inclusion. Explicit error history in the prompt context is harmful; raw Q/A examples are more reliable than meta-commentary about past failures.
+18	

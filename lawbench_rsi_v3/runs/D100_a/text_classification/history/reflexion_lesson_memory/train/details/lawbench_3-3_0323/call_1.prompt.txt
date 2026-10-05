@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- If the facts describe a person in a managerial or official position receiving money or valuables in exchange for using their职务便利, classify the crime simply as "受贿" unless the source explicitly states 
+- When extracting charges, match the charge name to the specific subject described in the facts (e.g., use “单位受贿” for a unit’s bribery and “受贿” for an individual) and list the charges in the order they 
+- When the conduct involves unauthorized tampering or manipulation of computer system data (e.g., modifying transaction packets) that causes the system to erroneously process false transactions and resu
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:广元市荣山地区人民检察院指控，2016年5月10日上午9时许，四川省广元监狱二监区A管区服刑罪犯谭某因在2016年5月9日主动要求反省未完成劳动任务一事，与该监区副监区长杨某1、民警杨某2在A管区操场上隔着防护网发生争执。被告人李某闻声过来进行制止，罪犯谭某不听制止，仍然争辩。随后，杨某1绕过二监区A管区会议室进入操场，用手抓住谭某将其拉向会议室，被告人李某跟随其后，两人将谭某带进A管区会议室。因谭某仍然争辩，被告人李某用左手抓住罪犯谭某的领口，将其推拉至阳台，两次用右拳打向谭某脸部，被其躲开，谭某继续退后躲避并挣脱被告人的左手，被告人李某顺势挥左拳打中谭某鼻部，致其鼻骨骨折，鼻中隔偏曲。经法医鉴定，谭某的人体损伤程度系轻伤二级。被告人李某主动向广元监狱纪律检查委员会和驻狱监察室报告情况，归案后如实供述自己的犯罪事实。案发后被告人李某向被害人谭某赔偿了经济损失，并取得被害人的书面谅解。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

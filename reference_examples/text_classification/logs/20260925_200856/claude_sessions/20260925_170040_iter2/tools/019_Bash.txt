@@ -1,0 +1,27 @@
+Bash
+
+command:
+for ds in USPTO Symptom2Disease LawBench; do
+  for sys in contrastive_error_memory reflexion_memory no_memory fewshot_all; do
+    f="D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/$ds/$sys/gpt-oss-120b/val.json"
+    if [ -f "$f" ]; then
+      echo "$ds/$sys: $(python3 -c "import json,sys; d=json.load(open('$f')); print(d.get('accuracy','?'))")"
+    fi
+  done
+done
+
+description: Read per-dataset val accuracy for all systems
+
+--- output ---
+USPTO/contrastive_error_memory: 
+USPTO/reflexion_memory: 
+USPTO/no_memory: 
+USPTO/fewshot_all: 
+Symptom2Disease/contrastive_error_memory: 
+Symptom2Disease/reflexion_memory: 
+Symptom2Disease/no_memory: 
+Symptom2Disease/fewshot_all: 
+LawBench/contrastive_error_memory: 
+LawBench/reflexion_memory: 
+LawBench/no_memory: 
+LawBench/fewshot_all:

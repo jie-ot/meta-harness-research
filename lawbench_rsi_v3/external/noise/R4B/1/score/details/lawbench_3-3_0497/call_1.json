@@ -1,0 +1,72 @@
+{
+  "call_id": "6cf65c9ae0ff4d91a57861249bd27843",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791004888-ooX3gTWM1jRjyQaItPdm",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"被告人郑某某未经林业主管部门批准，擅自砍伐属于国家二级重点保护植物的水曲柳，并将其用于烧柴。该行为构成《中华人民共和国刑法》规定的非法采伐、毁坏国家重点保护植物罪，属于单一罪名。\",\n  \"final_answer\": \"[罪名]非法采伐、毁坏国家重点保护植物<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the crime(s) based on facts. The case: illegal cutting of protected trees (national second-level protected plant). The crime likely is \"非法采伐、毁坏国家重点保护植物\" which under Chinese criminal law is \"非法采伐、毁坏国家重点保护植物罪\". The typical label in dataset: maybe \"非法采伐、毁坏国家重点保护植物\". Look at examples: we have many labels like \"拐骗儿童\", \"放火\", \"重大责任事故;诈骗\", \"生产、销售有毒、有害食品\", \"合同诈骗\", \"拐卖妇女、儿童\", \"掩饰、隐瞒犯罪所得、犯罪所得收益\", \"倒卖车票、船票\", \"窝藏、包庇;包庇毒品犯罪分子\", \"票据诈骗;信用卡诈骗;合同诈骗\", \"走私国家禁止进出口的货物、物品\", \"爆炸\", \"强制猥亵、侮辱妇女\", \"生产、销售不符合安全标准的食品\", \"受贿\", \"非法种植毒品原植物\", \"污染环境\", \"抢夺\", \"故意伤害;绑架;寻衅滋事\", \"组织、领导传销活动\", \"虐待被监管人\", \"非法持有毒品\", \"容留他人吸毒\", \"强制猥亵\", \"盗窃;伪造、变造居民身份证\", etc.\n\nWe need to see label for illegal cutting of protected plants. Not present in examples. But likely \"非法采伐、毁坏国家重点保护植物\". Could be \"非法采伐国家重点保护植物\". Let's search memory: Chinese criminal law article 338? Actually article 338: \"非法采伐、毁坏国家重点保护植物罪\". So label maybe \"非法采伐、毁坏国家重点保护植物\". Use that.\n\nThus answer: single crime.\n\nReturn JSON with reasoning and final answer.\n\n",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the crime(s) based on facts. The case: illegal cutting of protected trees (national second-level protected plant). The crime likely is \"非法采伐、毁坏国家重点保护植物\" which under Chinese criminal law is \"非法采伐、毁坏国家重点保护植物罪\". The typical label in dataset: maybe \"非法采伐、毁坏国家重点保护植物\". Look at examples: we have many labels like \"拐骗儿童\", \"放火\", \"重大责任事故;诈骗\", \"生产、销售有毒、有害食品\", \"合同诈骗\", \"拐卖妇女、儿童\", \"掩饰、隐瞒犯罪所得、犯罪所得收益\", \"倒卖车票、船票\", \"窝藏、包庇;包庇毒品犯罪分子\", \"票据诈骗;信用卡诈骗;合同诈骗\", \"走私国家禁止进出口的货物、物品\", \"爆炸\", \"强制猥亵、侮辱妇女\", \"生产、销售不符合安全标准的食品\", \"受贿\", \"非法种植毒品原植物\", \"污染环境\", \"抢夺\", \"故意伤害;绑架;寻衅滋事\", \"组织、领导传销活动\", \"虐待被监管人\", \"非法持有毒品\", \"容留他人吸毒\", \"强制猥亵\", \"盗窃;伪造、变造居民身份证\", etc.\n\nWe need to see label for illegal cutting of protected plants. Not present in examples. But likely \"非法采伐、毁坏国家重点保护植物\". Could be \"非法采伐国家重点保护植物\". Let's search memory: Chinese criminal law article 338? Actually article 338: \"非法采伐、毁坏国家重点保护植物罪\". So label maybe \"非法采伐、毁坏国家重点保护植物\". Use that.\n\nThus answer: single crime.\n\nReturn JSON with reasoning and final answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine the crime(s) based on facts. The case: illegal cutting of protected trees (national second-level protected plant). The crime likely is \"非法采伐、毁坏国家重点保护植物\" which under Chinese criminal law is \"非法采伐、毁坏国家重点保护植物罪\". The typical label in dataset: maybe \"非法采伐、毁坏国家重点保护植物\". Look at examples: we have many labels like \"拐骗儿童\", \"放火\", \"重大责任事故;诈骗\", \"生产、销售有毒、有害食品\", \"合同诈骗\", \"拐卖妇女、儿童\", \"掩饰、隐瞒犯罪所得、犯罪所得收益\", \"倒卖车票、船票\", \"窝藏、包庇;包庇毒品犯罪分子\", \"票据诈骗;信用卡诈骗;合同诈骗\", \"走私国家禁止进出口的货物、物品\", \"爆炸\", \"强制猥亵、侮辱妇女\", \"生产、销售不符合安全标准的食品\", \"受贿\", \"非法种植毒品原植物\", \"污染环境\", \"抢夺\", \"故意伤害;绑架;寻衅滋事\", \"组织、领导传销活动\", \"虐待被监管人\", \"非法持有毒品\", \"容留他人吸毒\", \"强制猥亵\", \"盗窃;伪造、变造居民身份证\", etc.\n\nWe need to see label for illegal cutting of protected plants. Not present in examples. But likely \"非法采伐、毁坏国家重点保护植物\". Could be \"非法采伐国家重点保护植物\". Let's search memory: Chinese criminal law article 338? Actually article 338: \"非法采伐、毁坏国家重点保护植物罪\". So label maybe \"非法采伐、毁坏国家重点保护植物\". Use that.\n\nThus answer: single crime.\n\nReturn JSON with reasoning and final answer.\n\n",
+            "reasoning_content": "We need to determine the crime(s) based on facts. The case: illegal cutting of protected trees (national second-level protected plant). The crime likely is \"非法采伐、毁坏国家重点保护植物\" which under Chinese criminal law is \"非法采伐、毁坏国家重点保护植物罪\". The typical label in dataset: maybe \"非法采伐、毁坏国家重点保护植物\". Look at examples: we have many labels like \"拐骗儿童\", \"放火\", \"重大责任事故;诈骗\", \"生产、销售有毒、有害食品\", \"合同诈骗\", \"拐卖妇女、儿童\", \"掩饰、隐瞒犯罪所得、犯罪所得收益\", \"倒卖车票、船票\", \"窝藏、包庇;包庇毒品犯罪分子\", \"票据诈骗;信用卡诈骗;合同诈骗\", \"走私国家禁止进出口的货物、物品\", \"爆炸\", \"强制猥亵、侮辱妇女\", \"生产、销售不符合安全标准的食品\", \"受贿\", \"非法种植毒品原植物\", \"污染环境\", \"抢夺\", \"故意伤害;绑架;寻衅滋事\", \"组织、领导传销活动\", \"虐待被监管人\", \"非法持有毒品\", \"容留他人吸毒\", \"强制猥亵\", \"盗窃;伪造、变造居民身份证\", etc.\n\nWe need to see label for illegal cutting of protected plants. Not present in examples. But likely \"非法采伐、毁坏国家重点保护植物\". Could be \"非法采伐国家重点保护植物\". Let's search memory: Chinese criminal law article 338? Actually article 338: \"非法采伐、毁坏国家重点保护植物罪\". So label maybe \"非法采伐、毁坏国家重点保护植物\". Use that.\n\nThus answer: single crime.\n\nReturn JSON with reasoning and final answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 537,
+      "prompt_tokens": 25265,
+      "total_tokens": 25802,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 477,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0013975,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0013975,
+        "upstream_inference_prompt_cost": 0.00126325,
+        "upstream_inference_completions_cost": 0.00013425
+      }
+    }
+  },
+  "raw_response_missing": false
+}

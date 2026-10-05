@@ -1,0 +1,24 @@
+Bash
+
+command:
+cd "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples" && uv run python C:/tmp/proto_multiview.py 2>&1
+
+description: Run multi-view Jaccard prototype
+
+--- output ---
+Loaded 80 steps
+Avg top-5 label diversity:
+  full jaccard:  5.00
+  variant A (max thirds): 5.00
+  variant B (max halves): 5.00
+  variant C (0.5*full + 0.5*max_third): 5.00
+Top-1 agreement (A vs full): 0/20 = 0%
+
+Sample comparison (query vs top retrieved):
+  Query 0: full top sim=0.531 target='故意伤害;编造、故意传播虚假恐怖信息'
+          A    top sim=1.000 target='伪造、变造、买卖国家机关公文、证件、印章'
+  Query 1: full top sim=0.463 target='容留他人吸毒'
+          A    top sim=1.000 target='伪造、变造、买卖国家机关公文、证件、印章'
+  Query 2: full top sim=0.440 target='提供侵入、非法控制计算机信息系统程序、工具'
+          A    top sim=1.000 target='伪造、变造、买卖国家机关公文、证件、印章'
+Shell cwd was reset to D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification

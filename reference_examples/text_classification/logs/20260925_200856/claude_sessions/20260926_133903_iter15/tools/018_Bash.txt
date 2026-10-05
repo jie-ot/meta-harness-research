@@ -1,0 +1,47 @@
+Bash
+
+command:
+python -c "
+import json
+# Check prompt_len distribution - are we filling context?
+log = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/USPTO/decayed_confusion_memory/gpt-oss-120b/log.jsonl'
+lines = open(log, encoding='utf-8').readlines()
+steps = [json.loads(l) for l in lines if json.loads(l).get('type')=='step']
+lens = [s['prompt_len'] for s in steps if 'prompt_len' in s]
+if lens:
+    print(f'USPTO prompt_len: min={min(lens)}, max={max(lens)}, avg={sum(lens)/len(lens):.0f}')
+    # Distribution
+    buckets = [0]*5
+    for l in lens:
+        if l < 2000: buckets[0]+=1
+        elif l < 5000: buckets[1]+=1
+        elif l < 10000: buckets[2]+=1
+        elif l < 20000: buckets[3]+=1
+        else: buckets[4]+=1
+    print(f'  <2k: {buckets[0]}, 2-5k: {buckets[1]}, 5-10k: {buckets[2]}, 10-20k: {buckets[3]}, >20k: {buckets[4]}')
+" && python -c "
+import json
+log = 'D:/我的文件/华中科技大学\李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/LawBench/decayed_confusion_memory/gpt-oss-120b/log.jsonl'
+lines = open(log, encoding='utf-8').readlines()
+steps = [json.loads(l) for l in lines if json.loads(l).get('type')=='step']
+lens = [s['prompt_len'] for s in steps if 'prompt_len' in s]
+if lens:
+    print(f'LawBench prompt_len: min={min(lens)}, max={max(lens)}, avg={sum(lens)/len(lens):.0f}')
+    buckets = [0]*5
+    for l in lens:
+        if l < 2000: buckets[0]+=1
+        elif l < 5000: buckets[1]+=1
+        elif l < 10000: buckets[2]+=1
+        elif l < 20000: buckets[3]+=1
+        else: buckets[4]+=1
+    print(f'  <2k: {buckets[0]}, 2-5k: {buckets[1]}, 5-10k: {buckets[2]}, 10-20k: {buckets[3]}, >20k: {buckets[4]}')
+"
+
+
+description: Check prompt length distributions for USPTO and LawBench
+
+--- output ---
+USPTO prompt_len: min=1640, max=10126, avg=5791
+  <2k: 3, 2-5k: 18, 5-10k: 28, 10-20k: 1, >20k: 0
+LawBench prompt_len: min=684, max=40118, avg=25834
+  <2k: 1, 2-5k: 9, 5-10k: 11, 10-20k: 23, >20k: 156

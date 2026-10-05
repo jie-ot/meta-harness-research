@@ -1,0 +1,95 @@
+Bash [ERROR]
+
+command:
+cat > /tmp/proto_rrf.py << 'EOF'
+"""Prototype: Reciprocal Rank Fusion of similarity + confusion-affinity rankings."""
+from collections import defaultdict
+import re
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+
+def _has_cjk(text):
+    return bool(_CJK_RE.search(text))
+
+def _tokenize_word(text):
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+def _tokenize_bigram(text):
+    t = re.sub(r'\s+', ' ', text.strip())
+    if len(t) < 2:
+        return frozenset([t]) if t else frozenset()
+    return frozenset(t[i:i+2] for i in range(len(t)-1))
+
+def _tokenize_adaptive(text):
+    return _tokenize_bigram(text) if _has_cjk(text) else _tokenize_word(text)
+
+def _jaccard(a, b):
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+# Simulate stored examples and confusion matrix
+examples = [
+    {"input": "aspirin acetylsalicylic acid synthesis", "target": "organic_chem", "tokens": _tokenize_adaptive("aspirin acetylsalicylic acid synthesis")},
+    {"input": "legal liability contract breach", "target": "contract_law", "tokens": _tokenize_adaptive("legal liability contract breach")},
+    {"input": "aspirin pain relief mechanism", "target": "pharmacology", "tokens": _tokenize_adaptive("aspirin pain relief mechanism")},
+    {"input": "acid base reaction chemistry", "target": "inorganic_chem", "tokens": _tokenize_adaptive("acid base reaction chemistry")},
+    {"input": "contract damages remedy", "target": "tort_law", "tokens": _tokenize_adaptive("contract damages remedy")},
+    {"input": "acetyl group chemistry", "target": "organic_chem", "tokens": _tokenize_adaptive("acetyl group chemistry")},
+]
+
+# Simulate confusion: pharmacology was often confused as organic_chem, contract_law confused as tort_law
+confusion = defaultdict(lambda: defaultdict(float))
+confusion["organic_chem"]["pharmacology"] = 4.0   # predicted organic_chem, actually pharmacology
+confusion["tort_law"]["contract_law"] = 3.0        # predicted tort_law, actually contract_law
+confusion["inorganic_chem"]["pharmacology"] = 2.0  # predicted inorganic, actually pharmacology
+
+# Compute confusion affinity (column sums = "how often is this label a confusion target")
+def conf_affinity(confusion):
+    aff = defaultdict(float)
+    for pred, actuals in confusion.items():
+        for actual, cnt in actuals.items():
+            aff[actual] += cnt
+    return aff
+
+aff = conf_affinity(confusion)
+print("Confusion affinity:", dict(aff))
+# pharmacology: 6.0, contract_law: 3.0
+
+query = "aspirin acetyl compound"
+q_tok = _tokenize_adaptive(query)
+
+# Rank 1: by similarity
+sim_scores = [(i, _jaccard(q_tok, ex["tokens"]), ex) for i, ex in enumerate(examples)]
+sim_scores.sort(key=lambda x: -x[1])
+sim_rank = {idx: r for r, (idx, _, _) in enumerate(sim_scores)}
+print("\nSimilarity ranking:")
+for r, (i, s, ex) in enumerate(sim_scores):
+    print(f"  rank {r}: {ex['target']} (sim={s:.3f})")
+
+# Rank 2: by confusion affinity of label (descending = highest affinity ranks first)
+conf_scores = [(i, aff.get(ex["target"], 0.0), ex) for i, ex in enumerate(examples)]
+conf_scores.sort(key=lambda x: (-x[1], -x[0]))
+conf_rank = {idx: r for r, (idx, _, _) in enumerate(conf_scores)}
+print("\nConfusion affinity ranking:")
+for r, (i, s, ex) in enumerate(conf_scores):
+    print(f"  rank {r}: {ex['target']} (aff={s:.1f})")
+
+# RRF fusion
+K = 60
+rrf = [(1.0/(K+sim_rank[i]) + 1.0/(K+conf_rank[i]), i, ex) for i, ex in enumerate(examples)]
+rrf.sort(key=lambda x: (-x[0], -x[1]))
+print("\nRRF ranking:")
+for score, i, ex in rrf:
+    print(f"  rrf={score:.5f}: {ex['target']} (sim_rank={sim_rank[i]}, conf_rank={conf_rank[i]})")
+
+# Key check: does pharmacology surface higher than pure-similarity would rank it?
+print(f"\npharmacology: sim_rank={sim_rank[2]}, conf_rank={conf_rank[2]}")
+print(f"organic_chem(1): sim_rank={sim_rank[0]}, conf_rank={conf_rank[0]}")
+EOF
+python3 /tmp/proto_rrf.py
+
+description: Prototype RRF mechanism: verify confusion-target labels get boosted in ranking
+
+--- output ---
+Exit code 49

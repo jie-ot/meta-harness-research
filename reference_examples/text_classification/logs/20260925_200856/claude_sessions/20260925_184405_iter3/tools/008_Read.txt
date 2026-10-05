@@ -1,0 +1,41 @@
+Read: logs\20260925_200856\reports\iter1_report.md
+
+
+--- output ---
+1	# Iteration 1 Report
+2	
+3	## What changed
+4	Two new selection mechanisms were added over the fewshot_all baseline:
+5	- **contrastive_error_memory**: Stores errors separately and formats them with ✗ Wrong / ✓ Correct pairs. Caps context at 15 errors + 8 successes (23 total examples, ~6.3k chars).
+6	- **reflexion_memory**: LLM synthesizes error batches into lessons. Uses only 8 raw examples + up to 15 lesson strings (~2.3k chars total).
+7	
+8	## Results
+9	
+10	| system | avg_val | delta |
+11	|--------|---------|-------|
+12	| fewshot_all (frontier) | 43.8% | — |
+13	| contrastive_error_memory | 36.0% | -7.8 |
+14	| reflexion_memory | 29.3% | -14.5 |
+15	
+16	Both candidates regressed on all three datasets.
+17	
+18	## Why they regressed
+19	The root cause is coverage loss. fewshot_all fills ~22.7k chars with up to 200 examples
+20	covering all training labels. Both iteration 1 systems reduced example count sharply to
+21	provide "higher quality" examples — but the accuracy cost of missing labels outweighed any
+22	gain from contrastive formatting or synthesized lessons.
+23	
+24	Contrastive formatting added overhead per example (three lines instead of two), further
+25	reducing the number of examples that fit. Reflexion's LLM synthesis calls also introduced
+26	noise: generic lessons don't capture the fine-grained distinctions needed for 22-class or
+27	chemistry tasks.
+28	
+29	## Takeaways for future iterations
+30	1. Never reduce total context size vs fewshot_all without compensating with a mechanism
+31	   that provably improves per-example utility.
+32	2. Coverage across labels matters more than example quality at this context scale.
+33	3. Selection algorithm (axis C) is the right axis to exploit: keep the full pool, but choose
+34	   *which* examples to surface more intelligently.
+35	4. LLM synthesis in learn_from_batch (axis F) is expensive and didn't help here — avoid
+36	   until coverage is solved.
+37	

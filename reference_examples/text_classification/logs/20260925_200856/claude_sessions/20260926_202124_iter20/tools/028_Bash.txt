@@ -1,0 +1,87 @@
+Bash
+
+command:
+python -c "
+import os, json, re
+from collections import defaultdict
+
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+log_path = os.path.join(base, 'LawBench', 'symmetric_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+lines = open(log_path, encoding='utf-8').readlines()
+steps = [json.loads(l) for l in lines if json.loads(l).get('type') == 'step']
+
+_CJK_RE = re.compile(r'[\u4e00-\u9fff\u3040-\u30ff\uff00-\uffef]')
+def _has_cjk(t): return bool(_CJK_RE.search(t))
+def _tok_bigram(t):
+    t2 = re.sub(r'\s+', ' ', t.strip())
+    return frozenset(t2[i:i+2] for i in range(len(t2)-1)) if len(t2)>=2 else frozenset()
+def _tok_word(t): return frozenset(re.findall(r'[A-Za-z0-9]+', t.lower()))
+def _tok(t): return _tok_bigram(t) if _has_cjk(t) else _tok_word(t)
+def _jaccard(a,b):
+    if not a and not b: return 0.0
+    return len(a&b)/len(a|b)
+
+# Build co-occurrence table from ground truths
+cooccur = defaultdict(lambda: defaultdict(int))  # cooccur[A][B] = times A and B appear together in GT
+
+pool = []
+correct_baseline = 0
+correct_cooccur = 0
+
+for s in steps:
+    q = s.get('input_preview','')
+    gt = s['tgt']
+    ok = s.get('ok', False)
+    
+    if pool and not ok:
+        q_tok = _tok(q)
+        scored = sorted(pool, key=lambda ex: -_jaccard(q_tok, ex['tok']))
+        top_label = scored[0]['target'] if scored else None
+        
+        # Baseline: does top-1 similar example's label appear in GT?
+        if top_label and top_label in gt:
+            correct_baseline += 1
+        
+        # Co-occurrence strategy: does any cooccur partner of top_label appear in GT?
+        if top_label:
+            gt_parts = [p.strip() for p in gt.split(';') if p.strip()]
+            cooccur_labels = sorted(cooccur[top_label], key=lambda l: -cooccur[top_label][l])[:5]
+            if any(gp in gt_parts for gp in cooccur_labels):
+                correct_cooccur += 1
+            
+    # Learn co-occurrences from this step's GT
+    gt_parts = [p.strip() for p in gt.split(';') if p.strip()]
+    for i, a in enumerate(gt_parts):
+        for b in gt_parts[i+1:]:
+            cooccur[a][b] += 1
+            cooccur[b][a] += 1
+    
+    pool.append({'input': q, 'target': gt, 'tok': _tok(q)})
+
+total_errors = sum(1 for s in steps if not s.get('ok'))
+print(f'Total errors: {total_errors}')
+print(f'Top-1 label in GT (baseline): {correct_baseline}/{total_errors}')
+print(f'Co-occur partner in GT parts: {correct_cooccur}/{total_errors}')
+print()
+# Show a few co-occurrence entries
+print('Sample co-occurrences:')
+for k in ['盗窃', '诈骗', '故意伤害']:
+    if k in cooccur:
+        top = sorted(cooccur[k].items(), key=lambda x:-x[1])[:4]
+        print(f'  {repr(k)}: {top}')
+"
+
+
+description:
+Prototype candidate 1: label co-occurrence guided retrieval coverage on LawBench errors
+
+
+--- output ---
+Total errors: 149
+Top-1 label in GT (baseline): 0/149
+Co-occur partner in GT parts: 1/149
+
+Sample co-occurrences:
+  '盗窃': [('掩饰、隐瞒犯罪所得、犯罪所得收益', 2), ('走私普通货物、物品', 1), ('非法持有毒品', 1), ('破坏广播电视设施、公用电信设施', 1)]
+  '诈骗': [('组织、强迫、引诱、容留、介绍卖淫', 1), ('引诱、容留、介绍卖淫', 1), ('聚众扰乱公共场所秩序、交通秩序', 1), ('重大责任事故', 1)]
+  '故意伤害': [('故意毁坏财物', 1), ('聚众扰乱社会秩序', 1), ('编造、故意传播虚假恐怖信息', 1), ('组织、强迫、引诱、容留、介绍卖淫', 1)]

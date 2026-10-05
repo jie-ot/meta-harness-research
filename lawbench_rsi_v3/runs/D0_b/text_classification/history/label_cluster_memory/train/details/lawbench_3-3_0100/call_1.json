@@ -1,0 +1,72 @@
+{
+  "call_id": "29ed24c186174d229a703e680b031733",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791036954-8TT3x0sgECf7cAl3PCCr",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The facts state that the original trial found the defendant 柏某 guilty of fraud (诈骗) and the re‑trial confirmed this finding. No other criminal conduct is described. Therefore the appropriate charge is 诈骗.\",\n  \"final_answer\": \"[罪名]诈骗<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine charge label(s) based on facts. The case: Re-trial confirms that original trial found defendant Bai (柏) guilty of fraud (诈骗). Also mentions \"因犯××\" unspecified, but the charge label list includes many possible: \"诈骗\", \"拒不执行判决、裁定\", \"诬告陷害\", \"盗窃\", etc. The facts only mention fraud. So answer should be \"诈骗\". Use exact label \"诈骗\". Provide JSON with reasoning and final answer.\n\nCheck format: final answer should be between [罪名] and <eoa>. But they ask to output JSON with fields \"reasoning\" and \"final_answer\". In examples they didn't show JSON, but instruction says respond in JSON format. So we output JSON with those fields. final_answer should be like \"[罪名]诈骗<eoa>\"? The instruction: \"Use the exact charge label strings shown in the section headers as your answer\". The answer likely expects just the charge label(s) separated by ';' without brackets. But they also said \"write in [罪名] and <eoa> between\". However final output is JSON with final_answer field containing that string? In previous tasks, they output JSON with final_answer containing the string with brackets. Let's assume final_answer should be \"[罪名]诈骗<eoa>\". Provide reasoning.\n\n",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine charge label(s) based on facts. The case: Re-trial confirms that original trial found defendant Bai (柏) guilty of fraud (诈骗). Also mentions \"因犯××\" unspecified, but the charge label list includes many possible: \"诈骗\", \"拒不执行判决、裁定\", \"诬告陷害\", \"盗窃\", etc. The facts only mention fraud. So answer should be \"诈骗\". Use exact label \"诈骗\". Provide JSON with reasoning and final answer.\n\nCheck format: final answer should be between [罪名] and <eoa>. But they ask to output JSON with fields \"reasoning\" and \"final_answer\". In examples they didn't show JSON, but instruction says respond in JSON format. So we output JSON with those fields. final_answer should be like \"[罪名]诈骗<eoa>\"? The instruction: \"Use the exact charge label strings shown in the section headers as your answer\". The answer likely expects just the charge label(s) separated by ';' without brackets. But they also said \"write in [罪名] and <eoa> between\". However final output is JSON with final_answer field containing that string? In previous tasks, they output JSON with final_answer containing the string with brackets. Let's assume final_answer should be \"[罪名]诈骗<eoa>\". Provide reasoning.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine charge label(s) based on facts. The case: Re-trial confirms that original trial found defendant Bai (柏) guilty of fraud (诈骗). Also mentions \"因犯××\" unspecified, but the charge label list includes many possible: \"诈骗\", \"拒不执行判决、裁定\", \"诬告陷害\", \"盗窃\", etc. The facts only mention fraud. So answer should be \"诈骗\". Use exact label \"诈骗\". Provide JSON with reasoning and final answer.\n\nCheck format: final answer should be between [罪名] and <eoa>. But they ask to output JSON with fields \"reasoning\" and \"final_answer\". In examples they didn't show JSON, but instruction says respond in JSON format. So we output JSON with those fields. final_answer should be like \"[罪名]诈骗<eoa>\"? The instruction: \"Use the exact charge label strings shown in the section headers as your answer\". The answer likely expects just the charge label(s) separated by ';' without brackets. But they also said \"write in [罪名] and <eoa> between\". However final output is JSON with final_answer field containing that string? In previous tasks, they output JSON with final_answer containing the string with brackets. Let's assume final_answer should be \"[罪名]诈骗<eoa>\". Provide reasoning.\n\n",
+            "refusal": null,
+            "reasoning_content": "We need to determine charge label(s) based on facts. The case: Re-trial confirms that original trial found defendant Bai (柏) guilty of fraud (诈骗). Also mentions \"因犯××\" unspecified, but the charge label list includes many possible: \"诈骗\", \"拒不执行判决、裁定\", \"诬告陷害\", \"盗窃\", etc. The facts only mention fraud. So answer should be \"诈骗\". Use exact label \"诈骗\". Provide JSON with reasoning and final answer.\n\nCheck format: final answer should be between [罪名] and <eoa>. But they ask to output JSON with fields \"reasoning\" and \"final_answer\". In examples they didn't show JSON, but instruction says respond in JSON format. So we output JSON with those fields. final_answer should be like \"[罪名]诈骗<eoa>\"? The instruction: \"Use the exact charge label strings shown in the section headers as your answer\". The answer likely expects just the charge label(s) separated by ';' without brackets. But they also said \"write in [罪名] and <eoa> between\". However final output is JSON with final_answer field containing that string? In previous tasks, they output JSON with final_answer containing the string with brackets. Let's assume final_answer should be \"[罪名]诈骗<eoa>\". Provide reasoning.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 354,
+      "prompt_tokens": 4598,
+      "total_tokens": 4952,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 286,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00019812,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00019812,
+        "upstream_inference_prompt_cost": 0.00013794,
+        "upstream_inference_completions_cost": 6.018e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

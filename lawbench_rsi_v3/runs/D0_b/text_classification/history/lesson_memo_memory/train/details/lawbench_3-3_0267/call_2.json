@@ -1,0 +1,72 @@
+{
+  "call_id": "240a28c6bebb413390c7ddc8fca374d2",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791026145-jZQQCpTxdcW3jOLKKJgT",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"lesson\": \"- 读取事实时，严格依据案情中出现的法定罪名表述，不要自行添加未在事实中出现的罪名或概念。\\n- 注意事实中的关键动词和名词（如“伪造、变造、买卖”“破坏”“拐骗”“拐卖”），它们直接指向具体罪名，避免把相近但不同的罪名混淆。\\n- 当事实涉及多类受害对象或多种行为时，必须在罪名中全部列出对应的类别（如同时出现“妇女、儿童”时应写“拐卖妇女、儿童”。）\\n- 对于技术类犯罪，区分行为本质：如“非法控制计算机信息系统”与“破坏计算机信息系统”是不同罪名，必须依据事实描述的具体行为选择正确罪名。\\n- 采用检察院或公诉机关的起诉用语作为参考，保持罪名的官方表述形式，避免自行概括或替换为常用但不完全对应的名称（如“受贿”应细化为“非国家工作人员受贿”。）\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce up to 5 concise rules to avoid similar errors. Based on examples, errors include: predicting extra crimes not in fact, missing nuance (e.g., \"伪造国家机关证件罪;诈骗罪\" vs correct \"伪造、变造、买卖国家机关公文、证件、印章\"), predicting wrong crime (illegal control computer vs破坏计算机信息系统), predicting generic vs specific, missing multiple victims (拐卖妇女 vs 拐卖妇女、儿童), misreading \"绑架\" vs \"拐骗儿童\". So rules: 1) Align predicted crimes exactly with statutory terms present in fact description; avoid adding crimes not explicitly supported. 2) Pay attention to key verbs/nouns indicating specific offense (e.g., \"伪造、变造、买卖\" vs just \"伪造\"). 3) When fact mentions multiple categories (e.g., victims), include all relevant categories. 4) Distinguish similar but distinct crimes by context (e.g., \"非法控制计算机信息系统\" vs \"破坏计算机信息系统\"). 5) Use the prosecution's charge language; avoid inferring additional charges like \"诈骗\" unless fact mentions fraud.\n\nFormulate in Chinese.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce up to 5 concise rules to avoid similar errors. Based on examples, errors include: predicting extra crimes not in fact, missing nuance (e.g., \"伪造国家机关证件罪;诈骗罪\" vs correct \"伪造、变造、买卖国家机关公文、证件、印章\"), predicting wrong crime (illegal control computer vs破坏计算机信息系统), predicting generic vs specific, missing multiple victims (拐卖妇女 vs 拐卖妇女、儿童), misreading \"绑架\" vs \"拐骗儿童\". So rules: 1) Align predicted crimes exactly with statutory terms present in fact description; avoid adding crimes not explicitly supported. 2) Pay attention to key verbs/nouns indicating specific offense (e.g., \"伪造、变造、买卖\" vs just \"伪造\"). 3) When fact mentions multiple categories (e.g., victims), include all relevant categories. 4) Distinguish similar but distinct crimes by context (e.g., \"非法控制计算机信息系统\" vs \"破坏计算机信息系统\"). 5) Use the prosecution's charge language; avoid inferring additional charges like \"诈骗\" unless fact mentions fraud.\n\nFormulate in Chinese.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce up to 5 concise rules to avoid similar errors. Based on examples, errors include: predicting extra crimes not in fact, missing nuance (e.g., \"伪造国家机关证件罪;诈骗罪\" vs correct \"伪造、变造、买卖国家机关公文、证件、印章\"), predicting wrong crime (illegal control computer vs破坏计算机信息系统), predicting generic vs specific, missing multiple victims (拐卖妇女 vs 拐卖妇女、儿童), misreading \"绑架\" vs \"拐骗儿童\". So rules: 1) Align predicted crimes exactly with statutory terms present in fact description; avoid adding crimes not explicitly supported. 2) Pay attention to key verbs/nouns indicating specific offense (e.g., \"伪造、变造、买卖\" vs just \"伪造\"). 3) When fact mentions multiple categories (e.g., victims), include all relevant categories. 4) Distinguish similar but distinct crimes by context (e.g., \"非法控制计算机信息系统\" vs \"破坏计算机信息系统\"). 5) Use the prosecution's charge language; avoid inferring additional charges like \"诈骗\" unless fact mentions fraud.\n\nFormulate in Chinese.",
+            "reasoning_content": "We need to produce up to 5 concise rules to avoid similar errors. Based on examples, errors include: predicting extra crimes not in fact, missing nuance (e.g., \"伪造国家机关证件罪;诈骗罪\" vs correct \"伪造、变造、买卖国家机关公文、证件、印章\"), predicting wrong crime (illegal control computer vs破坏计算机信息系统), predicting generic vs specific, missing multiple victims (拐卖妇女 vs 拐卖妇女、儿童), misreading \"绑架\" vs \"拐骗儿童\". So rules: 1) Align predicted crimes exactly with statutory terms present in fact description; avoid adding crimes not explicitly supported. 2) Pay attention to key verbs/nouns indicating specific offense (e.g., \"伪造、变造、买卖\" vs just \"伪造\"). 3) When fact mentions multiple categories (e.g., victims), include all relevant categories. 4) Distinguish similar but distinct crimes by context (e.g., \"非法控制计算机信息系统\" vs \"破坏计算机信息系统\"). 5) Use the prosecution's charge language; avoid inferring additional charges like \"诈骗\" unless fact mentions fraud.\n\nFormulate in Chinese."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 537,
+      "prompt_tokens": 938,
+      "total_tokens": 1475,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000135125,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000135125,
+        "upstream_inference_prompt_cost": 3.4706e-05,
+        "upstream_inference_completions_cost": 0.000100419
+      }
+    }
+  },
+  "raw_response_missing": false
+}

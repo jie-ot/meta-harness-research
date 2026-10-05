@@ -1,0 +1,35 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the alleged offender is not a public official (i.e., not a state functionary) but the conduct involves accepting or soliciting a bribe, the correct charge is '非国家工作人员受贿' rather than the generic '
+- When extracting the crime name, output the exact statutory offense term (e.g., “行贿”) without adding descriptive prefixes or qualifiers such as “对国家工作人员”。
+- When the facts describe bribery directed at persons who are not state officials or at a legal entity (unit), the charge must be specified as “对非国家工作人员行贿” and/or “对单位行贿” rather than the generic “行贿”.
+- When the factual scenario involves a defendant biting or otherwise assaulting a police officer while resisting law‑enforcement duties, charge only 妨害公务 (obstruction of official duties) unless there is
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明：一、故意伤害的事实
+被告人许某系平邑县仲村镇南乐里村村主任。村民许某某因对被告人许某处理其宅基地事宜不满，而数次辱骂许某。2013年11月6日12时许，许某某再次辱骂被告人许某，二人发生争吵、厮打。许某某之妻王某某听到打仗声音后，从村民曹某某家出来并辱骂被告人许某，许某持许某某的拐杖殴打王某某，致王某某右手受伤。经鉴定，王某某外伤致右手第五掌骨完全性骨折，构成轻伤。
+被告人许某归案后如实供述该罪行；庭审时对公诉机关的该指控没有异议，并自愿认罪。
+2013年12月1日，被告人许某与被害人王某某达成赔偿协议，由许某赔偿王某某各项经济损失八万元；王某某对许某予以谅解。
+二、非国家工作人员受贿的事实
+2012年3月，孔某、董某以20万元的价款承包了平邑县仲村镇南乐里村村东的一处山场，2013年9月又转包给仲村镇牛家庄的牛某某。牛某某为了以后在经营山场过程中取得被告人许某的帮助，于2013年10月的一天送给许某现金10000元。后牛某某得知该山场与他人存在纠纷，多次找南乐里村委会予以协调。为了请托许某帮助解决该纠纷，牛某某于2014年1月，再次送给许某现金10000元。
+被告人许某归案后如实供述该罪行；庭审时对公诉机关的该指控没有异议，并自愿认罪。
+案发后，被告人许某将其受贿所得赃款20000元，退缴至侦查机关。
+上述事实，有经过庭审举证、质证的被害人王某某的陈述，证人许某某、曹某、臧某某、牛某某、牛某甲、孔某等人的证言，和解协议书、法医学人体损伤程度鉴定书、抓获经过、户籍信息、荒山承包合同、收款票据、荒山转包合同、收到条、记账凭证，被告人许某在侦查机关的供述等证据予以证实，被告人许某在开庭审理过程中亦无异议，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

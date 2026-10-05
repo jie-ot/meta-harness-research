@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+- If the facts only describe forging, altering, or selling state‑issued documents or certificates and do not contain any separate act of deceiving another party for financial gain, assign only the forge
+- When a fact pattern involves encouraging or inducing another person to use drugs, classify the offense using the precise statutory term "引诱、教唆、欺骗他人吸毒" instead of the generic phrase "教唆他人吸毒".
+- When the factual description contains multiple distinct illegal actions (e.g., fraud and any form of prostitution‑related conduct), list every applicable crime separated by semicolons rather than sele
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:北京市西城区人民检察院指控，被告人刘×于2014年11月14日，在未办理采伐许可证的情况下，指使他人砍伐并收购北京市顺义区大孙各庄镇小塘村北顺平南线北侧董x（刘×之夫，已去世）承包地内的杨树，当伐倒第113株时被森林公安民警制止。经鉴定，涉案113株杨树折合立木蓄积17.357立方米。2015年6月3日，被告人刘×经民警电话传唤后自行到案。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

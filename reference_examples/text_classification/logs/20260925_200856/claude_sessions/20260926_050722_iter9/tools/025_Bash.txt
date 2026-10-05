@@ -1,0 +1,33 @@
+Bash
+
+command:
+powershell -Command "cd 'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification'; uv run python C:/tmp/proto_idf.py"
+
+description: Run IDF-weighted Jaccard prototype
+
+--- output ---
+Query: CC(C)(C)OC(=O)NC1CCCCC1C(=O)OC...
+Query tokens (8): ['c', 'cc', 'nc1ccccc1c', 'o', 'oc']...
+
+=== Plain Jaccard top-5 ===
+  1.000  [Protections]  CC(C)(C)OC(=O)NC1CCCCC1C(=O)O
+  0.667  [Deprotections]  CC(C)(C)OC(=O)NC1CCCCC1
+  0.500  [Protections]  CC(C)(C)OC(=O)N1CCC(NC(=O)OC(C)(C)C)CC1
+  0.400  [Deprotections]  NC1CCCCC1C(=O)O
+  0.375  [Protections]  COC(=O)C(NC(=O)OC(C)(C)C)c1ccccc1C
+
+=== IDF-weighted Jaccard top-5 ===
+  1.000  [Protections]  CC(C)(C)OC(=O)NC1CCCCC1C(=O)O
+  0.563  [Deprotections]  CC(C)(C)OC(=O)NC1CCCCC1
+  0.415  [Protections]  CC(C)(C)OC(=O)N1CCC(NC(=O)OC(C)(C)C)CC1
+  0.410  [Deprotections]  NC1CCCCC1C(=O)O
+  0.281  [Protections]  COC(=O)C(NC(=O)OC(C)(C)C)c1ccccc1C
+
+=== Sample IDF values (lower = more common) ===
+Most common (low IDF): [('o', '1.55'), ('c', '1.64'), ('cc1', '2.15'), ('n', '2.15'), ('oc', '2.34'), ('cc', '2.34'), ('nc', '2.85'), ('coc', '2.85')]
+Most rare (high IDF): [('c1ccccc1c', '3.25'), ('n1ccc', '3.25'), ('nc1ccccc1', '3.25'), ('c1ccccc1', '3.25'), ('c2', '3.25'), ('occ12cc3cc', '3.25'), ('oc1cc2cc1cc2', '3.25'), ('occ1ccccc1', '3.25')]
+
+CJK IDF-weighted ranking:
+  plain=0.073 idf=0.053  [诈骗]
+  plain=0.089 idf=0.069  [故意毁坏财物]
+  plain=0.214 idf=0.226  [伪造国家机关证件]

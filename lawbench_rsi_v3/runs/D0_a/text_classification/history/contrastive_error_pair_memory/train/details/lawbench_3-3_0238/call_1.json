@@ -1,0 +1,72 @@
+{
+  "call_id": "f6eb8045baa4429ea09a2d60ebf560b2",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791025910-NfAf09VIl2UgCCaLidCY",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"郭某某在没有专业电焊技能的情况下进行电焊作业，导致火星引燃大棚内草帘子，火势蔓延并烧毁32个大棚及农作物，造成巨额财产损失。其行为属于因过失使用明火导致重大财产损失，符合《中华人民共和国刑法》关于放火罪（过失放火）的规定，应以放火罪追究刑事责任。\",\n  \"final_answer\": \"[罪名]放火<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": " need to determine appropriate criminal charge(s) for the case: a person (郭某某) performed welding in a greenhouse (大棚) without professional skill, causing fire that burned 32 greenhouses and crops, loss 682,260 yuan. Family compensated and got victim's forgiveness. The prosecution says his behavior violates Criminal Law, should be prosecuted.\n\nWhat crime? Likely \"放火罪\" (arson). In Chinese criminal law, arson is defined as intentionally setting fire to property, causing damage. Here, he used welding, causing fire unintentionally? He may have been negligent. Could be \"过失放火罪\" (negligent arson) or \"过失毁坏财物罪\"? Let's recall: Chinese Criminal Law article 115: \"放火罪\" includes intentionally setting fire, but also \"过失放火\" is under article 117? Actually article 117 is \"过失毁坏财物罪\". For fire caused by negligence, there is \"过失放火罪\" under article 115? Let's check: In Chinese law, article 115: \"放火罪\" includes: (1) intentionally setting fire to public or private property; (2) using flammable means to cause fire; (3) etc. It also includes \"过失放火\" as a separate offense? I think there is \"过失放火罪\" under article 115 as well, with lower penalty. So the appropriate charge is \"放火罪\". The examples earlier: For a case where someone set fire with a lighter, they gave answer \"放火\". So we should output \"放火\". The format: [罪名]放火<eoa>. The JSON expects \"final_answer\": \"[罪名]放火<eoa>\"? Actually they want JSON with fields \"reasoning\" and \"final_answer\". The final answer should be the string with the format. So final_answer: \"[罪名]放火<eoa>\".\n\nNow reasoning: He negligently caused fire by welding, leading to large loss. This is arson (放火罪). Possibly \"过失放火罪\". But the label likely just \"放火\". In earlier example: \"杭州市余杭区人民检察院指控：...使用打火机点燃其家中三楼...构成××，提请本院依照《中华人民共和国刑法》一百一十四条之规定处罚。\" The answer given: \"放火\". So we follow that.\n\nThus output JSON.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": " need to determine appropriate criminal charge(s) for the case: a person (郭某某) performed welding in a greenhouse (大棚) without professional skill, causing fire that burned 32 greenhouses and crops, loss 682,260 yuan. Family compensated and got victim's forgiveness. The prosecution says his behavior violates Criminal Law, should be prosecuted.\n\nWhat crime? Likely \"放火罪\" (arson). In Chinese criminal law, arson is defined as intentionally setting fire to property, causing damage. Here, he used welding, causing fire unintentionally? He may have been negligent. Could be \"过失放火罪\" (negligent arson) or \"过失毁坏财物罪\"? Let's recall: Chinese Criminal Law article 115: \"放火罪\" includes intentionally setting fire, but also \"过失放火\" is under article 117? Actually article 117 is \"过失毁坏财物罪\". For fire caused by negligence, there is \"过失放火罪\" under article 115? Let's check: In Chinese law, article 115: \"放火罪\" includes: (1) intentionally setting fire to public or private property; (2) using flammable means to cause fire; (3) etc. It also includes \"过失放火\" as a separate offense? I think there is \"过失放火罪\" under article 115 as well, with lower penalty. So the appropriate charge is \"放火罪\". The examples earlier: For a case where someone set fire with a lighter, they gave answer \"放火\". So we should output \"放火\". The format: [罪名]放火<eoa>. The JSON expects \"final_answer\": \"[罪名]放火<eoa>\"? Actually they want JSON with fields \"reasoning\" and \"final_answer\". The final answer should be the string with the format. So final_answer: \"[罪名]放火<eoa>\".\n\nNow reasoning: He negligently caused fire by welding, leading to large loss. This is arson (放火罪). Possibly \"过失放火罪\". But the label likely just \"放火\". In earlier example: \"杭州市余杭区人民检察院指控：...使用打火机点燃其家中三楼...构成××，提请本院依照《中华人民共和国刑法》一百一十四条之规定处罚。\" The answer given: \"放火\". So we follow that.\n\nThus output JSON.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": " need to determine appropriate criminal charge(s) for the case: a person (郭某某) performed welding in a greenhouse (大棚) without professional skill, causing fire that burned 32 greenhouses and crops, loss 682,260 yuan. Family compensated and got victim's forgiveness. The prosecution says his behavior violates Criminal Law, should be prosecuted.\n\nWhat crime? Likely \"放火罪\" (arson). In Chinese criminal law, arson is defined as intentionally setting fire to property, causing damage. Here, he used welding, causing fire unintentionally? He may have been negligent. Could be \"过失放火罪\" (negligent arson) or \"过失毁坏财物罪\"? Let's recall: Chinese Criminal Law article 115: \"放火罪\" includes intentionally setting fire, but also \"过失放火\" is under article 117? Actually article 117 is \"过失毁坏财物罪\". For fire caused by negligence, there is \"过失放火罪\" under article 115? Let's check: In Chinese law, article 115: \"放火罪\" includes: (1) intentionally setting fire to public or private property; (2) using flammable means to cause fire; (3) etc. It also includes \"过失放火\" as a separate offense? I think there is \"过失放火罪\" under article 115 as well, with lower penalty. So the appropriate charge is \"放火罪\". The examples earlier: For a case where someone set fire with a lighter, they gave answer \"放火\". So we should output \"放火\". The format: [罪名]放火<eoa>. The JSON expects \"final_answer\": \"[罪名]放火<eoa>\"? Actually they want JSON with fields \"reasoning\" and \"final_answer\". The final answer should be the string with the format. So final_answer: \"[罪名]放火<eoa>\".\n\nNow reasoning: He negligently caused fire by welding, leading to large loss. This is arson (放火罪). Possibly \"过失放火罪\". But the label likely just \"放火\". In earlier example: \"杭州市余杭区人民检察院指控：...使用打火机点燃其家中三楼...构成××，提请本院依照《中华人民共和国刑法》一百一十四条之规定处罚。\" The answer given: \"放火\". So we follow that.\n\nThus output JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": " need to determine appropriate criminal charge(s) for the case: a person (郭某某) performed welding in a greenhouse (大棚) without professional skill, causing fire that burned 32 greenhouses and crops, loss 682,260 yuan. Family compensated and got victim's forgiveness. The prosecution says his behavior violates Criminal Law, should be prosecuted.\n\nWhat crime? Likely \"放火罪\" (arson). In Chinese criminal law, arson is defined as intentionally setting fire to property, causing damage. Here, he used welding, causing fire unintentionally? He may have been negligent. Could be \"过失放火罪\" (negligent arson) or \"过失毁坏财物罪\"? Let's recall: Chinese Criminal Law article 115: \"放火罪\" includes intentionally setting fire, but also \"过失放火\" is under article 117? Actually article 117 is \"过失毁坏财物罪\". For fire caused by negligence, there is \"过失放火罪\" under article 115? Let's check: In Chinese law, article 115: \"放火罪\" includes: (1) intentionally setting fire to public or private property; (2) using flammable means to cause fire; (3) etc. It also includes \"过失放火\" as a separate offense? I think there is \"过失放火罪\" under article 115 as well, with lower penalty. So the appropriate charge is \"放火罪\". The examples earlier: For a case where someone set fire with a lighter, they gave answer \"放火\". So we should output \"放火\". The format: [罪名]放火<eoa>. The JSON expects \"final_answer\": \"[罪名]放火<eoa>\"? Actually they want JSON with fields \"reasoning\" and \"final_answer\". The final answer should be the string with the format. So final_answer: \"[罪名]放火<eoa>\".\n\nNow reasoning: He negligently caused fire by welding, leading to large loss. This is arson (放火罪). Possibly \"过失放火罪\". But the label likely just \"放火\". In earlier example: \"杭州市余杭区人民检察院指控：...使用打火机点燃其家中三楼...构成××，提请本院依照《中华人民共和国刑法》一百一十四条之规定处罚。\" The answer given: \"放火\". So we follow that.\n\nThus output JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 654,
+      "prompt_tokens": 23025,
+      "total_tokens": 23679,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 96,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0026295,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0026295,
+        "upstream_inference_prompt_cost": 0.0023025,
+        "upstream_inference_completions_cost": 0.000327
+      }
+    }
+  },
+  "raw_response_missing": false
+}

@@ -1,0 +1,26 @@
+Bash
+
+command:
+cd "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification" && uv run python C:/tmp/test_grouped_prompt.py 2>&1
+
+description: Run label-grouped prompt prototype
+
+--- output ---
+=== Variant A: flat prompt (token count proxy = char count) ===
+  chars=991, labels shown=5/6 unique labels
+  chars=991, labels shown=5/6 unique labels
+  chars=991, labels shown=5/6 unique labels
+
+=== Variant B: label-grouped prompt ===
+  chars=986, label groups=5: ['typhoid', 'psoriasis', 'fungal infection', 'dengue']
+  chars=986, label groups=5: ['typhoid', 'psoriasis', 'fungal infection', 'dengue']
+  chars=986, label groups=5: ['typhoid', 'psoriasis', 'fungal infection', 'dengue']
+
+=== Variant C: grouped with frequency ordering (most-confused label first) ===
+  chars=1143, sections=5
+  chars=1143, sections=5
+  chars=1143, sections=5
+
+=== Decision: Variant B (grouped, no error annotation) ===
+Rationale: clean label sections provide structure without extra noise from error tags.
+The grouping itself is the disambiguation signal.

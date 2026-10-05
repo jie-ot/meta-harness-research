@@ -1,0 +1,72 @@
+{
+  "call_id": "a71b7800ff5d4196984dba176a106f2f",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791018872-ECgAZw4q3rVEbnD8J297",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When labeling the crime, use the exact statutory offense name as defined in Chinese criminal law; for offenses involving illegal excavation of cultural heritage, the correct term is \\\"盗掘古文化遗址、古墓葬罪\\\" rather than a shortened or partial phrase.\",\n  \"keywords\": [\n    \"盗掘古墓\",\n    \"古文化遗址\",\n    \"古墓葬\",\n    \"文物犯罪\",\n    \"盗掘古文化遗址、古墓葬罪\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with a rule to prevent the error: the AI predicted \"盗掘古墓\" but correct answer is \"盗掘古文化遗址、古墓葬\". So the error is using an incomplete or inaccurate charge term. The rule: ensure that the charge term matches the statutory offense name, using the full legal term \"盗掘古文化遗址、古墓葬\" rather than a shortened form. Also include that the term must reflect the specific crime defined in Chinese criminal law (e.g., \"盗掘古文化遗址、古墓葬罪\").\n\nKeywords: \"盗掘古墓\", \"古文化遗址\", \"古墓葬\", \"文物犯罪\", \"刑法第XXX条\", \"盗掘古文化遗址、古墓葬罪\".\n\nWe need 1-2 sentences rule. Provide JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with a rule to prevent the error: the AI predicted \"盗掘古墓\" but correct answer is \"盗掘古文化遗址、古墓葬\". So the error is using an incomplete or inaccurate charge term. The rule: ensure that the charge term matches the statutory offense name, using the full legal term \"盗掘古文化遗址、古墓葬\" rather than a shortened form. Also include that the term must reflect the specific crime defined in Chinese criminal law (e.g., \"盗掘古文化遗址、古墓葬罪\").\n\nKeywords: \"盗掘古墓\", \"古文化遗址\", \"古墓葬\", \"文物犯罪\", \"刑法第XXX条\", \"盗掘古文化遗址、古墓葬罪\".\n\nWe need 1-2 sentences rule. Provide JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with a rule to prevent the error: the AI predicted \"盗掘古墓\" but correct answer is \"盗掘古文化遗址、古墓葬\". So the error is using an incomplete or inaccurate charge term. The rule: ensure that the charge term matches the statutory offense name, using the full legal term \"盗掘古文化遗址、古墓葬\" rather than a shortened form. Also include that the term must reflect the specific crime defined in Chinese criminal law (e.g., \"盗掘古文化遗址、古墓葬罪\").\n\nKeywords: \"盗掘古墓\", \"古文化遗址\", \"古墓葬\", \"文物犯罪\", \"刑法第XXX条\", \"盗掘古文化遗址、古墓葬罪\".\n\nWe need 1-2 sentences rule. Provide JSON.",
+            "reasoning_content": "We need to produce a JSON with a rule to prevent the error: the AI predicted \"盗掘古墓\" but correct answer is \"盗掘古文化遗址、古墓葬\". So the error is using an incomplete or inaccurate charge term. The rule: ensure that the charge term matches the statutory offense name, using the full legal term \"盗掘古文化遗址、古墓葬\" rather than a shortened form. Also include that the term must reflect the specific crime defined in Chinese criminal law (e.g., \"盗掘古文化遗址、古墓葬罪\").\n\nKeywords: \"盗掘古墓\", \"古文化遗址\", \"古墓葬\", \"文物犯罪\", \"刑法第XXX条\", \"盗掘古文化遗址、古墓葬罪\".\n\nWe need 1-2 sentences rule. Provide JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 309,
+      "prompt_tokens": 714,
+      "total_tokens": 1023,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 234,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 7.704e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 7.704e-05,
+        "upstream_inference_prompt_cost": 2.142e-05,
+        "upstream_inference_completions_cost": 5.562e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

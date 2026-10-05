@@ -1,0 +1,72 @@
+{
+  "call_id": "e29332f1b1aa48859fcc3f953f579242",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017362-dRieG1i2UFzcvp1XfzUo",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the facts describe providing a gambling platform, recruiting participants, handling bets, or acting as a bookmaker, the correct charges are \\\"赌博罪\\\" and, if a venue or organized operation is involved, \\\"开设赌场罪\\\"; do not use the non‑statutory label \\\"组织赌博\\\".\",\n  \"keywords\": [\n    \"提供…赌博网站\",\n    \"组织…网络赌博\",\n    \"坐庄揽注\",\n    \"招募…代理\",\n    \"赌资累计\",\n    \"香港六合彩\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with rule and keywords. The error: AI gave \"开设赌场;组织赌博\" but correct answer is \"赌博;开设赌场\". So the classification error is ordering? Actually they gave two charges: \"开设赌场;组织赌博\". Correct is \"赌博;开设赌场\". So they missed \"赌博\" as a separate charge and used \"组织赌博\" which is not the correct term. The rule: ensure to include the specific statutory offense \"赌博罪\" when facts involve participation in gambling activities, and differentiate from \"组织赌博\" which is not a separate charge; use \"开设赌场罪\" and \"赌博罪\" as appropriate. So rule: When the factual description includes providing gambling platforms, recruiting participants, and handling bets, classify as \"赌博罪\" and \"开设赌场罪\" rather than \"组织赌博\". Keywords: \"提供…赌博网站\", \"组织…网络赌博\", \"坐庄揽注\", \"赌资累计\", \"招募…代理\", \"香港六合彩\", \"世界杯足球比赛\". Provide JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with rule and keywords. The error: AI gave \"开设赌场;组织赌博\" but correct answer is \"赌博;开设赌场\". So the classification error is ordering? Actually they gave two charges: \"开设赌场;组织赌博\". Correct is \"赌博;开设赌场\". So they missed \"赌博\" as a separate charge and used \"组织赌博\" which is not the correct term. The rule: ensure to include the specific statutory offense \"赌博罪\" when facts involve participation in gambling activities, and differentiate from \"组织赌博\" which is not a separate charge; use \"开设赌场罪\" and \"赌博罪\" as appropriate. So rule: When the factual description includes providing gambling platforms, recruiting participants, and handling bets, classify as \"赌博罪\" and \"开设赌场罪\" rather than \"组织赌博\". Keywords: \"提供…赌博网站\", \"组织…网络赌博\", \"坐庄揽注\", \"赌资累计\", \"招募…代理\", \"香港六合彩\", \"世界杯足球比赛\". Provide JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with rule and keywords. The error: AI gave \"开设赌场;组织赌博\" but correct answer is \"赌博;开设赌场\". So the classification error is ordering? Actually they gave two charges: \"开设赌场;组织赌博\". Correct is \"赌博;开设赌场\". So they missed \"赌博\" as a separate charge and used \"组织赌博\" which is not the correct term. The rule: ensure to include the specific statutory offense \"赌博罪\" when facts involve participation in gambling activities, and differentiate from \"组织赌博\" which is not a separate charge; use \"开设赌场罪\" and \"赌博罪\" as appropriate. So rule: When the factual description includes providing gambling platforms, recruiting participants, and handling bets, classify as \"赌博罪\" and \"开设赌场罪\" rather than \"组织赌博\". Keywords: \"提供…赌博网站\", \"组织…网络赌博\", \"坐庄揽注\", \"赌资累计\", \"招募…代理\", \"香港六合彩\", \"世界杯足球比赛\". Provide JSON.",
+            "reasoning_content": "We need to produce a JSON with rule and keywords. The error: AI gave \"开设赌场;组织赌博\" but correct answer is \"赌博;开设赌场\". So the classification error is ordering? Actually they gave two charges: \"开设赌场;组织赌博\". Correct is \"赌博;开设赌场\". So they missed \"赌博\" as a separate charge and used \"组织赌博\" which is not the correct term. The rule: ensure to include the specific statutory offense \"赌博罪\" when facts involve participation in gambling activities, and differentiate from \"组织赌博\" which is not a separate charge; use \"开设赌场罪\" and \"赌博罪\" as appropriate. So rule: When the factual description includes providing gambling platforms, recruiting participants, and handling bets, classify as \"赌博罪\" and \"开设赌场罪\" rather than \"组织赌博\". Keywords: \"提供…赌博网站\", \"组织…网络赌博\", \"坐庄揽注\", \"赌资累计\", \"招募…代理\", \"香港六合彩\", \"世界杯足球比赛\". Provide JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 347,
+      "prompt_tokens": 629,
+      "total_tokens": 976,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 227,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 7.786e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 7.786e-05,
+        "upstream_inference_prompt_cost": 1.887e-05,
+        "upstream_inference_completions_cost": 5.899e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

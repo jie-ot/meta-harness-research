@@ -1,0 +1,72 @@
+{
+  "call_id": "6a63c083c46a4c85916a197d839975aa",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017956-oCYBbwCWVi3CnFgVrOeD",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"If the facts describe any combination of manufacturing, buying, selling, transporting, mailing, or storing prohibited weapons, ammunition, or explosives, list all applicable offenses (e.g., illegal manufacturing, illegal sale, illegal transport, illegal storage, etc.) rather than only the manufacturing charge.\",\n  \"keywords\": [\n    \"非法制造\",\n    \"买卖\",\n    \"运输\",\n    \"邮寄\",\n    \"储存\",\n    \"枪支\",\n    \"弹药\",\n    \"爆炸物\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with a rule to prevent the error: The AI gave only \"非法制造爆炸物\" but correct answer includes multiple offenses: \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\". So the error is incomplete charge list; need to include all applicable crimes when facts involve multiple illegal activities (manufacture, sale, transport, storage). Rule: When the factual description includes actions beyond manufacturing (e.g., buying, selling, transporting, storing, mailing) of prohibited items, list all relevant offenses per law. Keywords: \"买卖\", \"运输\", \"邮寄\", \"储存\", \"枪支\", \"弹药\", \"爆炸物\", \"非法制造\". Provide JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with a rule to prevent the error: The AI gave only \"非法制造爆炸物\" but correct answer includes multiple offenses: \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\". So the error is incomplete charge list; need to include all applicable crimes when facts involve multiple illegal activities (manufacture, sale, transport, storage). Rule: When the factual description includes actions beyond manufacturing (e.g., buying, selling, transporting, storing, mailing) of prohibited items, list all relevant offenses per law. Keywords: \"买卖\", \"运输\", \"邮寄\", \"储存\", \"枪支\", \"弹药\", \"爆炸物\", \"非法制造\". Provide JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with a rule to prevent the error: The AI gave only \"非法制造爆炸物\" but correct answer includes multiple offenses: \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\". So the error is incomplete charge list; need to include all applicable crimes when facts involve multiple illegal activities (manufacture, sale, transport, storage). Rule: When the factual description includes actions beyond manufacturing (e.g., buying, selling, transporting, storing, mailing) of prohibited items, list all relevant offenses per law. Keywords: \"买卖\", \"运输\", \"邮寄\", \"储存\", \"枪支\", \"弹药\", \"爆炸物\", \"非法制造\". Provide JSON.",
+            "reasoning_content": "We need to produce a JSON with a rule to prevent the error: The AI gave only \"非法制造爆炸物\" but correct answer includes multiple offenses: \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\". So the error is incomplete charge list; need to include all applicable crimes when facts involve multiple illegal activities (manufacture, sale, transport, storage). Rule: When the factual description includes actions beyond manufacturing (e.g., buying, selling, transporting, storing, mailing) of prohibited items, list all relevant offenses per law. Keywords: \"买卖\", \"运输\", \"邮寄\", \"储存\", \"枪支\", \"弹药\", \"爆炸物\", \"非法制造\". Provide JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 278,
+      "prompt_tokens": 562,
+      "total_tokens": 840,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 189,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 6.69e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 6.69e-05,
+        "upstream_inference_prompt_cost": 1.686e-05,
+        "upstream_inference_completions_cost": 5.004e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

@@ -1,0 +1,24 @@
+An AI classifier made an error on this case. Generate a compact correction lesson.
+
+**Correct label:** 重大责任事故;诈骗
+**Wrong prediction:** [罪名]诈骗<eoa>
+**Case facts (excerpt):**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控，2015年7月，被告人吕3某在无偿还能力的情况下，编造承包工程缺部分保证金等借口，先后两次骗取被害人谢某4共计人民币42000元。公诉人当庭出示了被害人谢某4的陈述，证人孙某1、王某、侯某2、程某、张某勇、吴某等人的证言，银行卡交易明细清单、借条等书证，被告人吕3某在侦查阶段的供述和辩解，以证明指控事实的成立，并认为，被告人吕3某的行为触犯了《中华人民共和国刑法》××之规定，构成××，且系累犯，要求依法追究其刑事责任，并依法对其从重处罚。此外，被告人吕3某在判决宣告后，刑罚执行完毕前发现其在判决宣告前还有其他罪没有判决，要求依法对其数罪并罚。
+被告人吕3某提出，起诉书指控的事实不真实，不成立，其没有诈骗谢某4，是向谢某4借款，且借款全部用于发放工人生活费。
+
+
+Write a lesson that:
+1. States the KEY distinguishing feature that determines the correct label
+2. Explains what makes this different from "[罪名]诈骗<eoa>"
+3. Gives a brief rule a classifier can apply to future cases
+
+Respond only in JSON:
+{"lesson": "<one to three sentences, in the same language as the case facts>", "final_answer": "重大责任事故;诈骗"}

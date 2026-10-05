@@ -1,0 +1,31 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- If the factual scenario describes fraud that is carried out through the creation, signing, or performance of a contract (e.g., false representation of a business role, fictitious project, or fabricate
+- If the facts describe the defendant selling seeds under false variety names or misrepresenting the seed type, and the issue is that the seeds are counterfeit or substandard rather than the illegal tra
+- When multiple descriptors (e.g., illegal possession and concealment) refer to the same statutory offense concerning firearms or ammunition, merge them into a single combined charge phrase instead of l
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明：
+2016年8月19日凌晨，被告人赵某在泰州市高港区永安洲镇东夹江路，采用剪彩钢板掏洞的方式进入被害人靳某(女，38岁)经营的悦然超市，用砖头将玻璃柜台砸开，窃得OPPO（A33型）白色手机l部(串号为868486024213755)、OPPO（A31型）白色手机l部(串号为867663022138892)、国米牌仿苹果I6白色手机l部(串号为355622064199019)、4G特供牌白色手机l部(串号为857823551920233)、COOLPAD牌白色手机l部(串号为865136021874188)，香烟柜台内的苏烟(五星红杉树)1包、黄鹤楼(软蓝)1包、黄鹤楼(硬金砂)2包、利群(新版)1包、555(金某)3包、白沙(精品二代)2包、黄金叶(硬红旗渠)l包、红塔山(软经典1956)3包、红南京3包、南京(精品)2包、娇子(绿时代阳光)1包、红双喜(硬8mg)2包、红双喜(硬)2包、南京(紫某)1包、泰山(红将军)2包、哈德门(精品)2包、红旗渠(银河之光)1包，合计30包香烟及硬币人民币138.5元。经鉴定，上述5部手机及30包香烟合计价值人民币2845元。
+被告人赵某将其中的OPPO（A33型）白色手机l部、OPPO（A31型）白色手机l部、红双喜(硬8mg)香烟2包、红双喜(硬)2包、娇子(绿时代阳光)1包、红旗渠(银河之光)1包、泰山(红将军)2包、哈德门(精品)2包、红塔山(软经典1956)3包、黄金叶(硬红旗渠)1包、南京(紫某)1包、555(金某)2包销售给陈某，得款人民币300元。
+被告人赵某被抓获归案，如实供述自己的罪行。公安机关依法从被告人赵某处扣押手机3部、人民币47元及部分香烟，从陈某处扣押手机2部及部分香烟，上述物品均已发还给被害人。
+上述事实，被告人赵某在庭审过程中亦无异议，且有泰州市公安局高港分局调取的常住人口登记表、刑事判决书、释放证明等书证，证人陈某、吴某、熊某的证言，被害人靳某的陈述，泰州市高港区物价局价格认定分局出具的价格认定结论书等鉴定意见等证据证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

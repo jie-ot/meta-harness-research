@@ -1,0 +1,21 @@
+{
+  "iteration": 1,
+  "candidates": [
+    {
+      "name": "cjk_bigram_confusion_memory",
+      "file": "agents/cjk_bigram_confusion_memory.py",
+      "hypothesis": "Replacing the ASCII-only tokenizer ([A-Za-z0-9]+) with CJK character bigrams gives non-degenerate similarity scores over Chinese legal text, restoring the confusion disambiguation retrieval mechanism so it surfaces genuinely relevant examples instead of random ones.",
+      "axis": "exploitation",
+      "base_system": "confusion_disambiguation_memory",
+      "components": ["cjk_bigram_tokenizer", "confusion_matrix", "disambiguation_injection", "jaccard_similarity"]
+    },
+    {
+      "name": "label_glossary_memory",
+      "file": "agents/label_glossary_memory.py",
+      "hypothesis": "Accumulating canonical ground-truth label strings during training and injecting them as a reference glossary section in the prompt anchors the LLM to exact label forms, reducing surface-form near-miss and specificity errors that account for a large share of the base system's wrong predictions.",
+      "axis": "exploration",
+      "base_system": "confusion_disambiguation_memory",
+      "components": ["label_glossary", "cjk_bigram_tokenizer", "jaccard_similarity", "prompt_glossary_section", "cold_start_fallback"]
+    }
+  ]
+}

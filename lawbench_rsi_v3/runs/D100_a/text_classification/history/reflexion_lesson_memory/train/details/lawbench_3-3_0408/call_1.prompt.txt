@@ -1,0 +1,34 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+- When the facts describe unauthorized possession of firearms or ammunition, always list both “非法持有” and “私藏” as separate elements of the charge (e.g., “非法持有、私藏枪支、弹药”).
+- When multiple descriptors (e.g., illegal possession and concealment) refer to the same statutory offense concerning firearms or ammunition, merge them into a single combined charge phrase instead of l
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明：
+盗窃
+2016年10月20日12时许，被告人陈某在益阳市资阳区沙头镇海南塘社区彭某某开设的娱乐室中，将被害人彭某某放置在娱乐室大厅餐桌上挎包内的现金2100元盗走。
+2016年12月13日，被告人陈某的家属代为退还了2100元赃款，取得了被害人彭某某的谅解。
+非法持有枪支
+2015年3月左右，被告人陈某在吉首市一男子手中购得铁质仿64式手枪1把，后将该手枪藏匿于其父母位于益阳市赫山区的租房内。经益阳市公安局物证鉴定所鉴定：该手枪系以火药为动力发射64式6.72mm制式子弹的仿制式枪支，认定为枪支。
+另查明，2016年12月1日被告人陈某因涉嫌犯××在福建省龙岩市强制隔离戒毒所被益阳市公安局资阳分局抓获归案，同时其向公安机关主动供述了上述非法持有枪支的犯罪事实。
+上述事实，被告人陈某在开庭审理过程中亦无异议，且有书证户籍信息、到案经过、扣押决定书、自首证明、收条、谅解书等；被害人彭某某的陈述；证人陈某某、王某某、王某的证言；现场勘验笔录及照片、搜查笔录、检查笔录；鉴定意见；被告人陈某的供述与辩解等证据予以证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

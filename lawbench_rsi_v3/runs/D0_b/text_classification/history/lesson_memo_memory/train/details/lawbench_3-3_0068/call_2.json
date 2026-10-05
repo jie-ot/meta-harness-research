@@ -1,0 +1,72 @@
+{
+  "call_id": "3d68b5f8c6014141a5201b5206d4ebe7",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791026342-FjqYGrzmlmtQlZ9Xi4zd",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"lesson\": \"- 先从事实中抽取关键行为要素（如“放火”“提供侵入工具”“合同签订”等），不要仅凭地点或案号等无关信息判断罪名。\\n- 当事实中出现具体限定词（如“合同”“保险”“金融凭证”）时，必须匹配对应的细分罪名，而不是统一归为“诈骗”。\\n- 对技术类描述（如“提供侵入、非法控制计算机信息系统程序、工具”）应对应信息系统犯罪或非法获取数据等专门罪名，避免误判为普通诈骗。\\n- 只列出事实明确指向的罪名，若文本未提及教唆、诱导等行为，不要自行添加类似“教唆他人吸食毒品”。\\n- 多罪名时严格依据事实中的并列或分句结构分割，每一项罪名必须有对应的事实依据，防止出现不匹配或遗漏的罪名。\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model often predicts generic crime like \"诈骗\" when facts mention location only, missing specific crime type. Also misclassifies based on incomplete fact snippet; maybe over-reliance on location names. Also confusion between similar categories (e.g., \"诈骗\" vs \"合同诈骗\", \"保险诈骗\", \"金融凭证诈骗\"). Also misreading \"提供侵入、非法控制计算机信息系统程序、工具\" as \"诈骗\". Also adding extra crimes not in fact (e.g., \"教唆他人吸食毒品\" vs \"引诱、教唆、欺骗他人吸毒\").\n\nThus rules: 1) Identify key factual elements (object, act, target) rather than just location. 2) Distinguish subcategories of crimes by specific descriptors (e.g., \"合同\", \"保险\", \"金融凭证\") present in text. 3) When fact mentions technical terms (e.g., \"提供侵入、非法控制计算机信息系统程序、工具\") map to appropriate offense (e.g., \"非法获取计算机信息系统数据罪\") not generic fraud. 4) Avoid adding extra charges not explicitly described; only list crimes directly supported by facts. 5) Pay attention to conjunctions and punctuation to separate multiple offenses correctly; ensure each listed matches distinct factual element.\n\nMake concise.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model often predicts generic crime like \"诈骗\" when facts mention location only, missing specific crime type. Also misclassifies based on incomplete fact snippet; maybe over-reliance on location names. Also confusion between similar categories (e.g., \"诈骗\" vs \"合同诈骗\", \"保险诈骗\", \"金融凭证诈骗\"). Also misreading \"提供侵入、非法控制计算机信息系统程序、工具\" as \"诈骗\". Also adding extra crimes not in fact (e.g., \"教唆他人吸食毒品\" vs \"引诱、教唆、欺骗他人吸毒\").\n\nThus rules: 1) Identify key factual elements (object, act, target) rather than just location. 2) Distinguish subcategories of crimes by specific descriptors (e.g., \"合同\", \"保险\", \"金融凭证\") present in text. 3) When fact mentions technical terms (e.g., \"提供侵入、非法控制计算机信息系统程序、工具\") map to appropriate offense (e.g., \"非法获取计算机信息系统数据罪\") not generic fraud. 4) Avoid adding extra charges not explicitly described; only list crimes directly supported by facts. 5) Pay attention to conjunctions and punctuation to separate multiple offenses correctly; ensure each listed matches distinct factual element.\n\nMake concise.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model often predicts generic crime like \"诈骗\" when facts mention location only, missing specific crime type. Also misclassifies based on incomplete fact snippet; maybe over-reliance on location names. Also confusion between similar categories (e.g., \"诈骗\" vs \"合同诈骗\", \"保险诈骗\", \"金融凭证诈骗\"). Also misreading \"提供侵入、非法控制计算机信息系统程序、工具\" as \"诈骗\". Also adding extra crimes not in fact (e.g., \"教唆他人吸食毒品\" vs \"引诱、教唆、欺骗他人吸毒\").\n\nThus rules: 1) Identify key factual elements (object, act, target) rather than just location. 2) Distinguish subcategories of crimes by specific descriptors (e.g., \"合同\", \"保险\", \"金融凭证\") present in text. 3) When fact mentions technical terms (e.g., \"提供侵入、非法控制计算机信息系统程序、工具\") map to appropriate offense (e.g., \"非法获取计算机信息系统数据罪\") not generic fraud. 4) Avoid adding extra charges not explicitly described; only list crimes directly supported by facts. 5) Pay attention to conjunctions and punctuation to separate multiple offenses correctly; ensure each listed matches distinct factual element.\n\nMake concise.",
+            "reasoning_content": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model often predicts generic crime like \"诈骗\" when facts mention location only, missing specific crime type. Also misclassifies based on incomplete fact snippet; maybe over-reliance on location names. Also confusion between similar categories (e.g., \"诈骗\" vs \"合同诈骗\", \"保险诈骗\", \"金融凭证诈骗\"). Also misreading \"提供侵入、非法控制计算机信息系统程序、工具\" as \"诈骗\". Also adding extra crimes not in fact (e.g., \"教唆他人吸食毒品\" vs \"引诱、教唆、欺骗他人吸毒\").\n\nThus rules: 1) Identify key factual elements (object, act, target) rather than just location. 2) Distinguish subcategories of crimes by specific descriptors (e.g., \"合同\", \"保险\", \"金融凭证\") present in text. 3) When fact mentions technical terms (e.g., \"提供侵入、非法控制计算机信息系统程序、工具\") map to appropriate offense (e.g., \"非法获取计算机信息系统数据罪\") not generic fraud. 4) Avoid adding extra charges not explicitly described; only list crimes directly supported by facts. 5) Pay attention to conjunctions and punctuation to separate multiple offenses correctly; ensure each listed matches distinct factual element.\n\nMake concise."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 528,
+      "prompt_tokens": 911,
+      "total_tokens": 1439,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 301,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00011709,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00011709,
+        "upstream_inference_prompt_cost": 2.733e-05,
+        "upstream_inference_completions_cost": 8.976e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

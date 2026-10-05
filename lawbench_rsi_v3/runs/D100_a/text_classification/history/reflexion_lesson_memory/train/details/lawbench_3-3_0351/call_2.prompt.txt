@@ -1,0 +1,22 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:
+经审理查明：2013年3月至5月间，上诉人彭某某收购死因不明的狗重3400余斤，加工后委托上诉人王某运输10余次，并将死狗出售给鲁某某（另案处理），销售金额2万余元的事实，有户籍信息、到案经过及发破案经过、动物卫生监督所证明等书证、证人王某某、崔某某、张某某人等证言和上诉人彭某某、王某供述予以证明，足以认定。原判所列证据均经一、二审庭审举证、质证，证据来源合法，本院予以确认。
+
+Wrong prediction: [罪名]非法屠宰、收购、运输、出售病死动物<eoa>
+Correct answer: 生产、销售不符合安全标准的食品
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

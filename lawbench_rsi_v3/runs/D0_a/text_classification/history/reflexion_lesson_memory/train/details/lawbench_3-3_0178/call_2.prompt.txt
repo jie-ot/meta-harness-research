@@ -1,0 +1,24 @@
+An AI classifier made an error on this case. Generate a compact correction lesson.
+
+**Correct label:** 非法生产、买卖警用装备
+**Wrong prediction:** [罪名]非法买卖警用物品<eoa>
+**Case facts (excerpt):**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:北京市丰台区人民检察院指控：2013年6月至2014年6月，被告人于×伙同徐×、尤×（二人另案处理）在本市丰台区丹陛华小商品批发市场摊位内，非法买卖警服，后被民警查获，在其摊位及仓库中起获警便帽266顶，训练服142套，冬训练服11套。
+被告人于×于2014年6月4日被北京市公安局丰台分局大红门商城派出所抓获。
+
+
+Write a lesson that:
+1. States the KEY distinguishing feature that determines the correct label
+2. Explains what makes this different from "[罪名]非法买卖警用物品<eoa>"
+3. Gives a brief rule a classifier can apply to future cases
+
+Respond only in JSON:
+{"lesson": "<one to three sentences, in the same language as the case facts>", "final_answer": "非法生产、买卖警用装备"}

@@ -1,0 +1,72 @@
+{
+  "call_id": "ff1fe3d94fef47439a9073b89a6d7d03",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017854-644ObeVrzPsCmsbfCMqm",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"If the factual description and the prosecution’s charge reference only one specific criminal act, output exactly that single offense and do not add any additional charges that are not explicitly supported by the facts.\",\n  \"keywords\": [\n    \"仅涉及\",\n    \"单一罪名\",\n    \"未提及\",\n    \"仅...行为\",\n    \"未涉及其他罪\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a correction rule to avoid the AI giving multiple charges when only one is correct. The error: AI gave two charges \"非法获取国家秘密;非法提供国家秘密\" but correct is only \"非法获取国家秘密\". So rule: When the fact pattern indicates a single statutory offense, output only that offense, not multiple unless multiple distinct crimes are present. Also ensure not to infer additional crimes not supported by facts. Keywords: \"单一罪名\", \"仅涉及\", \"未涉及\", \"未提及\", \"仅...行为\", \"仅...罪\". Provide JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a correction rule to avoid the AI giving multiple charges when only one is correct. The error: AI gave two charges \"非法获取国家秘密;非法提供国家秘密\" but correct is only \"非法获取国家秘密\". So rule: When the fact pattern indicates a single statutory offense, output only that offense, not multiple unless multiple distinct crimes are present. Also ensure not to infer additional crimes not supported by facts. Keywords: \"单一罪名\", \"仅涉及\", \"未涉及\", \"未提及\", \"仅...行为\", \"仅...罪\". Provide JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a correction rule to avoid the AI giving multiple charges when only one is correct. The error: AI gave two charges \"非法获取国家秘密;非法提供国家秘密\" but correct is only \"非法获取国家秘密\". So rule: When the fact pattern indicates a single statutory offense, output only that offense, not multiple unless multiple distinct crimes are present. Also ensure not to infer additional crimes not supported by facts. Keywords: \"单一罪名\", \"仅涉及\", \"未涉及\", \"未提及\", \"仅...行为\", \"仅...罪\". Provide JSON.",
+            "reasoning_content": "We need to produce a correction rule to avoid the AI giving multiple charges when only one is correct. The error: AI gave two charges \"非法获取国家秘密;非法提供国家秘密\" but correct is only \"非法获取国家秘密\". So rule: When the fact pattern indicates a single statutory offense, output only that offense, not multiple unless multiple distinct crimes are present. Also ensure not to infer additional crimes not supported by facts. Keywords: \"单一罪名\", \"仅涉及\", \"未涉及\", \"未提及\", \"仅...行为\", \"仅...罪\". Provide JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 213,
+      "prompt_tokens": 557,
+      "total_tokens": 770,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 151,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 5.6819e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 5.6819e-05,
+        "upstream_inference_prompt_cost": 2.0609e-05,
+        "upstream_inference_completions_cost": 3.621e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

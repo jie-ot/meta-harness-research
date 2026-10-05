@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- When the statutory offense name in the facts contains multiple listed items separated by commas (e.g., “走私国家禁止进出口的货物、物品”), always output the complete official charge name including every listed item.
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:福建省莆田市荔城区人民检察院指控：2014年3月3日、6月18日，被告人岳某某分别向福建巨岸建设工程有限公司、宏峰集团有限公司承包了莆田市荔城区南郊壕浦片区改造安置房建设项目H2-H3栋及莆田顺天通汽配有限公司5＃、6＃、7＃厂房建设项目工程。其间，被告人岳某某陆续领取南郊壕浦安置房建设项目工程进度款人民币157.7万元，领取顺天通厂房建设项目工程进度款人民币90.9313万元。被告人岳某某领取上述工程款后拒不支付两个工地的工人工资，拖欠南郊壕浦安置房建设项目工人工资共计人民币575286元，拖欠顺天通厂房建设项目工人工资共计人民币332620元，合计人民币907906元。2015年1月19日，莆田市荔城区人力资源和社会保障局责令被告人岳某某限期足额支付拖欠工人工资，被告人岳某某逾期仍不支付。
+2015年1月23日，被告人岳某某在莆田学院附属医院内被民警抓获。
+指控上述事实，公诉机关提供了相应的证据。公诉机关认为，被告人岳某某的行为已触犯了《中华人民共和国刑法》××××的规定，应以××追究其刑事责任。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,187 @@
+Write: C:/tmp/proto_tfidf.py
+
+content:
+"""Prototype: TF-IDF inverted index retrieval vs plain Jaccard.
+
+Tests whether IDF-weighted scoring via an inverted index outperforms
+plain Jaccard on real training traces.
+"""
+import json, re, math
+from collections import defaultdict
+
+# --- tokenizer (same adaptive logic) ----------------------------------
+def _has_cjk(text):
+    return bool(re.search(r'[一-鿿぀-ゟ゠-ヿ＀-￯]', text))
+
+def _tokenize_word(text):
+    return list(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+def _tokenize_bigram(text):
+    t = re.sub(r'\s+', ' ', text.strip())
+    if len(t) < 2:
+        return [t] if t else []
+    return [t[i:i+2] for i in range(len(t)-1)]
+
+def _tok(text):
+    return _tokenize_bigram(text) if _has_cjk(text) else _tokenize_word(text)
+
+# --- load a larger checkpoint from a log to have real examples --------
+LOG = ("D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/"
+       "reference_examples/text_classification/logs/20260925_200856/"
+       "LawBench/adaptive_tokenizer_confusion_memory/gpt-oss-120b/log.jsonl")
+
+all_steps = []
+last_big_state = None
+with open(LOG) as f:
+    for line in f:
+        obj = json.loads(line)
+        if obj['type'] == 'checkpoint':
+            state = json.loads(obj['memory_state'])
+            if len(state['examples']) >= 30:
+                last_big_state = state
+        if obj['type'] == 'step':
+            all_steps.append(obj)
+
+if last_big_state is None:
+    # fallback: use final checkpoint via memory.json
+    import os
+    mem_path = ("D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/"
+                "reference_examples/text_classification/logs/20260925_200856/"
+                "LawBench/adaptive_tokenizer_confusion_memory/gpt-oss-120b/memory.json")
+    if os.path.exists(mem_path):
+        last_big_state = json.loads(open(mem_path).read())
+
+if last_big_state is None:
+    print("No big checkpoint found — using all checkpoints combined")
+    examples_raw = []
+    with open(LOG) as f:
+        for line in f:
+            obj = json.loads(line)
+            if obj['type'] == 'checkpoint':
+                s = json.loads(obj['memory_state'])
+                examples_raw = s['examples']  # keep growing
+    last_big_state = {'examples': examples_raw}
+
+examples_raw = last_big_state['examples']
+print(f"Loaded {len(examples_raw)} examples from checkpoint")
+
+# Build example list with token lists (not frozensets so we can get tf)
+examples = []
+for ex in examples_raw:
+    tokens = ex.get('tokens', [])
+    if isinstance(tokens, (list, frozenset)):
+        toks = list(tokens)
+    else:
+        raw = ex.get('raw_question', ex.get('input', ''))
+        toks = _tok(raw)
+    examples.append({
+        'input': ex.get('input', ''),
+        'target': ex.get('target', ''),
+        'raw_question': ex.get('raw_question', ex.get('input', '')),
+        'toks': toks,
+        'tok_set': frozenset(toks),
+    })
+
+# --- VARIANT A: plain Jaccard (baseline) ----------------------------
+def jaccard_score(q_tokset, ex):
+    a, b = q_tokset, ex['tok_set']
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+# --- VARIANT B: TF-IDF inverted index scoring -----------------------
+# Build inverted index: token -> {doc_id: tf}
+# df[token] = number of docs containing token
+inv_index = defaultdict(dict)   # token -> {doc_id: term_count}
+df = defaultdict(int)
+
+for i, ex in enumerate(examples):
+    tf_counts = defaultdict(int)
+    for t in ex['toks']:
+        tf_counts[t] += 1
+    for t, cnt in tf_counts.items():
+        inv_index[t][i] = cnt
+        df[t] += 1
+
+N = len(examples)
+
+def tfidf_score_all(query_toks):
+    """Return dict of doc_id -> score using TF-IDF."""
+    q_tf = defaultdict(int)
+    for t in query_toks:
+        q_tf[t] += 1
+
+    scores = defaultdict(float)
+    for t, qtf in q_tf.items():
+        if t not in inv_index:
+            continue
+        idf = math.log((N + 1) / (df[t] + 1)) + 1.0  # smoothed IDF
+        for doc_id, dtf in inv_index[t].items():
+            # BM25-like: query_tf * doc_tf_norm * idf^2
+            doc_len = len(examples[doc_id]['toks'])
+            norm_dtf = dtf / (dtf + 0.5 + 1.5 * doc_len / max(N, 1))
+            scores[doc_id] += qtf * norm_dtf * (idf ** 2)
+    return scores
+
+# --- Compare on 20 test queries (use training steps after step 30) ---
+test_steps = [s for s in all_steps if s['step'] >= 30][:20]
+if not test_steps:
+    test_steps = all_steps[-20:]
+
+print(f"\nComparing Jaccard vs TF-IDF on {len(test_steps)} queries\n")
+print(f"{'Step':>4}  {'Top-1 Jac label':35}  {'Top-1 TF-IDF label':35}  {'GT':30}")
+print("-" * 110)
+
+jaccard_rank_gt = []  # rank of GT in Jaccard ordering
+tfidf_rank_gt = []    # rank of GT in TF-IDF ordering
+
+for step in test_steps:
+    raw_q = step['input_preview'][:500]
+    toks = _tok(raw_q)
+    tok_set = frozenset(toks)
+    gt = step['tgt']
+
+    # Jaccard ranking
+    jac_ranked = sorted(range(len(examples)),
+                        key=lambda i: (jaccard_score(tok_set, examples[i]), i),
+                        reverse=True)
+
+    # TF-IDF ranking
+    tfidf_scores = tfidf_score_all(toks)
+    tfidf_ranked = sorted(range(len(examples)),
+                          key=lambda i: (tfidf_scores.get(i, 0.0), i),
+                          reverse=True)
+
+    # Get rank of GT in each
+    def rank_of_gt(ranked_list):
+        gt_label = gt.strip()
+        for rank, idx in enumerate(ranked_list):
+            if examples[idx]['target'].strip() == gt_label:
+                return rank
+        return len(ranked_list)
+
+    jr = rank_of_gt(jac_ranked)
+    tr = rank_of_gt(tfidf_ranked)
+    jaccard_rank_gt.append(jr)
+    tfidf_rank_gt.append(tr)
+
+    top_jac = examples[jac_ranked[0]]['target'] if jac_ranked else "N/A"
+    top_tfidf = examples[tfidf_ranked[0]]['target'] if tfidf_ranked else "N/A"
+    marker = "  <<" if tr < jr else ("  >>" if tr > jr else "")
+    print(f"{step['step']:>4}  {top_jac[:35]:35}  {top_tfidf[:35]:35}  {gt[:30]}{marker}")
+
+import statistics
+print(f"\nMedian GT rank — Jaccard: {statistics.median(jaccard_rank_gt):.1f}, "
+      f"TF-IDF: {statistics.median(tfidf_rank_gt):.1f}")
+print(f"Mean GT rank   — Jaccard: {sum(jaccard_rank_gt)/len(jaccard_rank_gt):.2f}, "
+      f"TF-IDF: {sum(tfidf_rank_gt)/len(tfidf_rank_gt):.2f}")
+print(f"TF-IDF better (lower rank) on: "
+      f"{sum(t < j for t,j in zip(tfidf_rank_gt, jaccard_rank_gt))}/{len(test_steps)} queries")
+print(f"Jaccard better on: "
+      f"{sum(j < t for t,j in zip(tfidf_rank_gt, jaccard_rank_gt))}/{len(test_steps)} queries")
+print(f"Tied: "
+      f"{sum(t == j for t,j in zip(tfidf_rank_gt, jaccard_rank_gt))}/{len(test_steps)} queries")
+
+
+
+--- output ---
+File created successfully at: C:/tmp/proto_tfidf.py (file state is current in your context — no need to Read it back)

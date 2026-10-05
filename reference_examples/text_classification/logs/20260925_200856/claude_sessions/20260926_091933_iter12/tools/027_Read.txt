@@ -1,0 +1,35 @@
+Read: agents\adaptive_tokenizer_confusion_memory.py
+
+limit: 30
+
+--- output ---
+1	"""Adaptive-Tokenizer Confusion Disambiguation Memory.
+2	
+3	Combines the confusion-matrix retrieval of confusion_disambiguation_memory with a
+4	language-adaptive tokenizer that routes to character bigrams for CJK text and to
+5	word tokens for ASCII/Latin text.
+6	
+7	Problem identified in iter6: a single tokenizer cannot be optimal for all scripts.
+8	Bigrams fix near-zero similarity on CJK inputs but degrade English retrieval where
+9	word tokens are better calibrated. This system detects the script of each text at
+10	tokenization time and applies the right strategy automatically, avoiding the
+11	accuracy trade-off that forced ngram_confusion_memory to sacrifice English datasets
+12	in order to fix CJK similarity.
+13	
+14	Retrieval algorithm (same as confusion_disambiguation_memory):
+15	1. Score all stored examples with adaptive Jaccard against the query.
+16	2. Identify confusion targets from the top-3 candidate labels.
+17	3. Inject one disambiguation example per confused label (round-robin, 2 rounds).
+18	4. Fill remaining budget with similarity-ranked examples.
+19	"""
+20	
+21	import json
+22	import re
+23	from collections import defaultdict
+24	from typing import Any
+25	
+26	from ..llm import LLMCallable
+27	from ..memory_system import MemorySystem, extract_json_field
+28	
+29	PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+30	

@@ -1,0 +1,42 @@
+Bash
+
+command:
+python -c "
+import json
+log = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/USPTO/decayed_confusion_memory/gpt-oss-120b/log.jsonl'
+lines = open(log, encoding='utf-8').readlines()
+steps = [json.loads(l) for l in lines if json.loads(l).get('type')=='step']
+print(f'Total step entries: {len(steps)}')
+errors = [s for s in steps if not s.get('ok')]
+correct = [s for s in steps if s.get('ok')]
+print(f'Errors: {len(errors)}, Correct: {len(correct)}')
+# Show a few error entries
+for s in errors[:5]:
+    print(f'  step={s[\"step\"]}, pred={repr(s.get(\"pred\",\"\")[:60])}, tgt={repr(s.get(\"tgt\",\"\")[:60])}')
+    print(f'  prompt_len={s.get(\"prompt_len\")}')
+# Show a few correct entries  
+print('Correct samples:')
+for s in correct[:3]:
+    print(f'  step={s[\"step\"]}, pred={repr(s.get(\"pred\",\"\")[:60])}, tgt={repr(s.get(\"tgt\",\"\")[:60])}')
+"
+
+
+description: Analyze USPTO error patterns from frontier logs
+
+--- output ---
+Total step entries: 50
+Errors: 45, Correct: 5
+  step=0, pred='COC(=O)[C@@H](N)c1ccc(cc1)C.CC(C)(C)OC(=O)OC(=O)OC(C)(C)C', tgt='CC(C)(C)OC(=O)OC(=O)OC(C)(C)C.COC(=O)[C@@H]([NH3+])c1ccccc1C'
+  prompt_len=1640
+  step=1, pred='Clc1ncncc1.c1ccccc1C#C', tgt='C#Cc1ccccc1.Clc1ncncc1I'
+  prompt_len=1794
+  step=2, pred='O=C(NCC(=O)N1CCN(C(=O)c2ccccc2C(F)(F)F)CC1)c1ccc(-c2ccccc2OC', tgt='O=C(NCC(=O)N1CCN(C(=O)c2ccccc2C(F)(F)F)CC1)c1ccc(-c2ccccc2OC'
+  prompt_len=1950
+  step=4, pred='Cc1c(-c2ccc(=O)n(Cc3cccc(F)c3F)c2)c2cc(F)ccc2n1CC=O', tgt='Cc1c(-c2ccc(=O)n(Cc3cccc(F)c3F)c2)c2cc(F)ccc2n1CC(=O)O'
+  prompt_len=2277
+  step=5, pred='C[C@@H]1C[C@H](NC(=O)OC(C)(C)C)C(=O)N1CC(=O)OC(C)(C)C', tgt='CCOC(=O)CN1C(=O)[C@@H](NC(=O)OC(C)(C)C)C[C@H]1C'
+  prompt_len=2446
+Correct samples:
+  step=3, pred='COc1cc([N+](=O)[O-])ccc1Oc1ccc(Cl)c(Cl)c1', tgt='COc1cc([N+](=O)[O-])ccc1Oc1ccc(Cl)c(Cl)c1'
+  step=7, pred='OCC12CC3CC(CC(C3)C1)C2', tgt='OCC12CC3CC(CC(C3)C1)C2'
+  step=19, pred='CC(C)(C)OC(=O)OC(=O)OC(C)(C)C.NCCc1ccc(N)cc1', tgt='CC(C)(C)OC(=O)OC(=O)OC(C)(C)C.NCCc1ccc(N)cc1'

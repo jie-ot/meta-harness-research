@@ -1,0 +1,39 @@
+Write: .prototypes\_probe2.py
+
+content:
+"""Minimal re-check: do the agent modules import from a .prototypes script?"""
+
+report = []
+
+try:
+    import importlib
+    mod = importlib.import_module("text_classification.memory_system")
+    report.append(("memory_system", "OK"))
+except Exception as exc:
+    report.append(("memory_system", f"{type(exc).__name__}: {exc}"))
+
+try:
+    import importlib
+    mod = importlib.import_module(
+        "text_classification.agents.label_lexicon_snap_memory"
+    )
+    report.append(("label_lexicon_snap_memory", "OK"))
+except Exception as exc:
+    report.append(("label_lexicon_snap_memory", f"{type(exc).__name__}: {exc}"))
+
+try:
+    import importlib
+    mod = importlib.import_module(
+        "text_classification.agents.charge_cooccurrence_count_memory"
+    )
+    report.append(("charge_cooccurrence_count_memory", "OK"))
+except Exception as exc:
+    report.append(("charge_cooccurrence_count_memory", f"{type(exc).__name__}: {exc}"))
+
+for name, status in report:
+    print(f"{name}: {status}")
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\.prototypes\_probe2.py (file state is current in your context — no need to Read it back)

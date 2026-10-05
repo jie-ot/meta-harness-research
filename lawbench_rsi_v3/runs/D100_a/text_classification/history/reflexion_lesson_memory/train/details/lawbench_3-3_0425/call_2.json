@@ -1,0 +1,72 @@
+{
+  "call_id": "2df87ea2fb6443cf8a708c4a3c10472e",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017579-F5Jxngzomm54dVF47bdO",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the case facts explicitly describe separate actions of selling, buying, or transporting counterfeit currency, label each distinct offense (e.g., 出售假币, 购买假币, 运输假币) rather than using a generic term like “非法买卖假币”.\",\n  \"keywords\": [\n    \"出售假币\",\n    \"购买假币\",\n    \"运输假币\",\n    \"假币\",\n    \"假人民币\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with rule and keywords. The error: AI predicted \"非法买卖假币\" but correct answer is \"出售、购买、运输假币\". So the classification should include specific crimes: \"出售假币\", \"购买假币\", \"运输假币\" rather than a generic \"非法买卖假币\". The rule: When the fact pattern mentions specific acts of selling, buying, or transporting counterfeit currency, the charge should list each applicable specific offense (sale, purchase, transport) rather than a generic \"illegal dealing\". So rule: Use precise statutory offense names matching the conduct described. Keywords: \"出售\", \"购买\", \"运输\", \"假币\", \"假人民币\", \"假钞\". Also \"12000元\", \"总面额10万元\". Provide JSON.\n\nLet's craft: {\"rule\":\"If the facts describe distinct actions such as selling, buying, or transporting counterfeit currency, assign the corresponding specific offenses (e.g., 出售假币, 购买假币, 运输假币) instead of a generic “非法买卖假币”.\",\"keywords\":[\"出售假币\",\"购买假币\",\"运输假币\",\"假币\",\"假人民币\"]}",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with rule and keywords. The error: AI predicted \"非法买卖假币\" but correct answer is \"出售、购买、运输假币\". So the classification should include specific crimes: \"出售假币\", \"购买假币\", \"运输假币\" rather than a generic \"非法买卖假币\". The rule: When the fact pattern mentions specific acts of selling, buying, or transporting counterfeit currency, the charge should list each applicable specific offense (sale, purchase, transport) rather than a generic \"illegal dealing\". So rule: Use precise statutory offense names matching the conduct described. Keywords: \"出售\", \"购买\", \"运输\", \"假币\", \"假人民币\", \"假钞\". Also \"12000元\", \"总面额10万元\". Provide JSON.\n\nLet's craft: {\"rule\":\"If the facts describe distinct actions such as selling, buying, or transporting counterfeit currency, assign the corresponding specific offenses (e.g., 出售假币, 购买假币, 运输假币) instead of a generic “非法买卖假币”.\",\"keywords\":[\"出售假币\",\"购买假币\",\"运输假币\",\"假币\",\"假人民币\"]}",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with rule and keywords. The error: AI predicted \"非法买卖假币\" but correct answer is \"出售、购买、运输假币\". So the classification should include specific crimes: \"出售假币\", \"购买假币\", \"运输假币\" rather than a generic \"非法买卖假币\". The rule: When the fact pattern mentions specific acts of selling, buying, or transporting counterfeit currency, the charge should list each applicable specific offense (sale, purchase, transport) rather than a generic \"illegal dealing\". So rule: Use precise statutory offense names matching the conduct described. Keywords: \"出售\", \"购买\", \"运输\", \"假币\", \"假人民币\", \"假钞\". Also \"12000元\", \"总面额10万元\". Provide JSON.\n\nLet's craft: {\"rule\":\"If the facts describe distinct actions such as selling, buying, or transporting counterfeit currency, assign the corresponding specific offenses (e.g., 出售假币, 购买假币, 运输假币) instead of a generic “非法买卖假币”.\",\"keywords\":[\"出售假币\",\"购买假币\",\"运输假币\",\"假币\",\"假人民币\"]}",
+            "reasoning_content": "We need to produce a JSON with rule and keywords. The error: AI predicted \"非法买卖假币\" but correct answer is \"出售、购买、运输假币\". So the classification should include specific crimes: \"出售假币\", \"购买假币\", \"运输假币\" rather than a generic \"非法买卖假币\". The rule: When the fact pattern mentions specific acts of selling, buying, or transporting counterfeit currency, the charge should list each applicable specific offense (sale, purchase, transport) rather than a generic \"illegal dealing\". So rule: Use precise statutory offense names matching the conduct described. Keywords: \"出售\", \"购买\", \"运输\", \"假币\", \"假人民币\", \"假钞\". Also \"12000元\", \"总面额10万元\". Provide JSON.\n\nLet's craft: {\"rule\":\"If the facts describe distinct actions such as selling, buying, or transporting counterfeit currency, assign the corresponding specific offenses (e.g., 出售假币, 购买假币, 运输假币) instead of a generic “非法买卖假币”.\",\"keywords\":[\"出售假币\",\"购买假币\",\"运输假币\",\"假币\",\"假人民币\"]}"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 354,
+      "prompt_tokens": 505,
+      "total_tokens": 859,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 8.4883e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 8.4883e-05,
+        "upstream_inference_prompt_cost": 1.8685e-05,
+        "upstream_inference_completions_cost": 6.6198e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

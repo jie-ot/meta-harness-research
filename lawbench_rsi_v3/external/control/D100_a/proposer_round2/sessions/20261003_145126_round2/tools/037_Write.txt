@@ -1,0 +1,29 @@
+Write: pending_eval.json
+
+content:
+{
+  "iteration": 2,
+  "candidates": [
+    {
+      "name": "label_vocab_memory",
+      "file": "agents/label_vocab_memory.py",
+      "hypothesis": "Maintaining a registry of all canonical label strings seen in training and injecting them as a 'Valid Labels' section at the top of the prompt will reduce label format errors (suffix hallucination, truncation, wrong specificity) and increase val accuracy above 38%.",
+      "axis": "exploitation",
+      "base_system": "chinese_bigram_confusion_memory",
+      "components": ["label_vocabulary_registry", "label_priming_prompt_section", "bigram_tokenizer", "confusion_matrix", "jaccard_similarity", "disambiguation_retrieval"]
+    },
+    {
+      "name": "contrastive_error_memory",
+      "file": "agents/contrastive_error_memory.py",
+      "hypothesis": "Storing (input_tokens, wrong_prediction, correct_label) contrastive pairs and presenting the top input-similar pairs in a dedicated 'Common Mistakes' section before positive examples will reduce systematic confusion errors and increase val accuracy above 38%.",
+      "axis": "exploration",
+      "base_system": "chinese_bigram_confusion_memory",
+      "components": ["contrastive_error_pair_store", "common_mistakes_prompt_section", "error_anchored_retrieval", "bigram_tokenizer", "confusion_matrix", "jaccard_similarity", "disambiguation_retrieval"]
+    }
+  ]
+}
+
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_a\text_classification\pending_eval.json has been updated successfully. (file state is current in your context — no need to Read it back)

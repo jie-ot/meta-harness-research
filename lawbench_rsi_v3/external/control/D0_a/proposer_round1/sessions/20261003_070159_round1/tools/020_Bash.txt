@@ -1,0 +1,34 @@
+Bash
+
+command: python .prototypes/reflexion_lesson_memory.py
+description: Run prototype B to verify Reflexion-style lesson memory mechanism
+
+--- output ---
+============================================================
+PROTOTYPE B: Reflexion-style Lesson Memory
+============================================================
+
+--- Training phase: learning from errors ---
+  Lessons stored: 3
+  [合同诈骗] lesson: 关键区别：行为人利用合同形式（签订协议、承诺履约）实施欺骗时，罪名是【合同诈骗】而非普通诈骗。关键标志：合同+虚构事实+非法占有目的。...
+  [非法种植毒品原植物] lesson: 关键区别：种植罂粟等毒品原植物的罪名精确表述为【非法种植毒品原植物】，不能简写为'非法种植罂粟'。...
+  [单位行贿] lesson: 关键区别：公司/单位为谋取不正当利益向国家工作人员行贿，罪名为【单位行贿】，不是普通行贿。主体是单位（企业、公司），不是个人。...
+
+--- Prediction: Variant 1 (lessons only) ---
+  ✓ contract_fraud_case: predicted='合同诈骗', expected='合同诈骗'
+  ✗ drug_plant_case: predicted='合同诈骗', expected='非法种植毒品原植物'
+
+--- Prediction: Variant 3 (lessons + examples) ---
+  ✓ contract_fraud_case: predicted='合同诈骗', expected='合同诈骗'
+  ✗ drug_plant_case: predicted='合同诈骗', expected='非法种植毒品原植物'
+
+--- Baseline: no-lesson comparison (raw predict_llm directly) ---
+  ✗ contract_fraud_case: predicted='诈骗', expected='合同诈骗'
+  ✗ drug_plant_case: predicted='非法种植罂粟', expected='非法种植毒品原植物'
+
+  Total LLM calls during learn: 3
+  Total LLM calls during predict: 6
+
+RESULT: Lesson memory correctly steers predictions after learning from errors.
+        Baseline (no lesson) fails on format-mismatch cases.
+PROTOTYPE B: PASS

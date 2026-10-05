@@ -1,0 +1,108 @@
+Write: C:/tmp/proto_rrf.py
+
+content:
+"""Prototype: Reciprocal Rank Fusion of similarity + confusion-affinity rankings."""
+from collections import defaultdict
+import re
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ]')
+
+def _has_cjk(text):
+    return bool(_CJK_RE.search(text))
+
+def _tokenize_word(text):
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+def _tokenize_bigram(text):
+    t = re.sub(r'\s+', ' ', text.strip())
+    if len(t) < 2:
+        return frozenset([t]) if t else frozenset()
+    return frozenset(t[i:i+2] for i in range(len(t)-1))
+
+def _tokenize_adaptive(text):
+    return _tokenize_bigram(text) if _has_cjk(text) else _tokenize_word(text)
+
+def _jaccard(a, b):
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+# Simulate stored examples
+examples = [
+    {"input": "aspirin acetylsalicylic acid synthesis", "target": "organic_chem"},
+    {"input": "legal liability contract breach", "target": "contract_law"},
+    {"input": "aspirin pain relief mechanism", "target": "pharmacology"},
+    {"input": "acid base reaction chemistry", "target": "inorganic_chem"},
+    {"input": "contract damages remedy", "target": "tort_law"},
+    {"input": "acetyl group chemistry", "target": "organic_chem"},
+]
+for ex in examples:
+    ex["tokens"] = _tokenize_adaptive(ex["input"])
+
+# Confusion: pharmacology was often confused as organic_chem
+confusion = defaultdict(lambda: defaultdict(float))
+confusion["organic_chem"]["pharmacology"] = 4.0
+confusion["tort_law"]["contract_law"] = 3.0
+confusion["inorganic_chem"]["pharmacology"] = 2.0
+
+# Build per-label confusion-target affinity: how often is each label the TRUE label when missed
+def build_col_affinity(confusion):
+    aff = defaultdict(float)
+    for pred, actuals in confusion.items():
+        for actual, cnt in actuals.items():
+            aff[actual] += cnt
+    return aff
+
+aff = build_col_affinity(confusion)
+print("Column affinity (label is a confusion target):", dict(aff))
+
+query = "aspirin acetyl compound"
+q_tok = _tokenize_adaptive(query)
+
+# Rank 1: by similarity
+sim_ranked = sorted(range(len(examples)), key=lambda i: -_jaccard(q_tok, examples[i]["tokens"]))
+sim_rank = {i: r for r, i in enumerate(sim_ranked)}
+
+print("\nSimilarity ranking:")
+for r, i in enumerate(sim_ranked):
+    print(f"  rank {r}: {examples[i]['target']} (sim={_jaccard(q_tok, examples[i]['tokens']):.3f})")
+
+# Rank 2: by confusion affinity of label
+aff_ranked = sorted(range(len(examples)), key=lambda i: -aff.get(examples[i]["target"], 0.0))
+aff_rank = {i: r for r, i in enumerate(aff_ranked)}
+
+print("\nAffinity ranking:")
+for r, i in enumerate(aff_ranked):
+    print(f"  rank {r}: {examples[i]['target']} (aff={aff.get(examples[i]['target'], 0):.1f})")
+
+# RRF fusion (k=60 standard)
+K = 60
+rrf_scores = {}
+for i in range(len(examples)):
+    rrf_scores[i] = 1.0/(K + sim_rank[i]) + 1.0/(K + aff_rank[i])
+
+rrf_ranked = sorted(range(len(examples)), key=lambda i: -rrf_scores[i])
+print("\nRRF ranking:")
+for r, i in enumerate(rrf_ranked):
+    ex = examples[i]
+    print(f"  rank {r}: {ex['target']} (rrf={rrf_scores[i]:.5f}, sim_r={sim_rank[i]}, aff_r={aff_rank[i]})")
+
+# Check: does pharmacology (index 2) surface higher vs pure similarity?
+print(f"\npharmacolgy: sim_rank={sim_rank[2]} -> rrf_rank={rrf_ranked.index(2)}")
+print(f"organic_chem(0): sim_rank={sim_rank[0]} -> rrf_rank={rrf_ranked.index(0)}")
+print(f"organic_chem(5): sim_rank={sim_rank[5]} -> rrf_rank={rrf_ranked.index(5)}")
+
+# Test cold start: empty confusion -> affinity is 0 for all -> aff_rank is arbitrary but consistent
+print("\n--- Cold start (empty confusion) ---")
+aff_empty = {}
+aff_rank_empty = {i: i for i in range(len(examples))}  # all zero -> stable by index
+rrf_cold = {i: 1.0/(K + sim_rank[i]) + 1.0/(K + aff_rank_empty[i]) for i in range(len(examples))}
+rrf_cold_ranked = sorted(range(len(examples)), key=lambda i: -rrf_cold[i])
+print("Cold start RRF order:", [examples[i]["target"] for i in rrf_cold_ranked])
+print("Pure sim order:", [examples[i]["target"] for i in sim_ranked])
+print("Effectively same? Sim+0 vs Sim+tiny ~ same ordering for uniform aff")
+
+
+
+--- output ---
+File created successfully at: C:/tmp/proto_rrf.py (file state is current in your context — no need to Read it back)

@@ -1,0 +1,33 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the factual description mentions distinct illegal tax‑related actions (e.g., falsifying VAT invoices, fraudulently obtaining export rebates, and using fake invoices for tax deduction), enumerate 
+- When the facts describe forged or false VAT invoices that were used to obtain export tax refunds or to offset tax liabilities, the charge must explicitly include the purpose clause (e.g., “用于骗取出口退税、抵扣
+- When extracting crimes from the facts, enumerate every distinct statutory offense mentioned, including any qualifying actions (e.g., 故意销毁, 用于骗取出口退税) and related financial documents, and separate each 
+- When extracting the crime name, output the exact statutory offense term (e.g., “行贿”) without adding descriptive prefixes or qualifiers such as “对国家工作人员”。
+- When the facts describe bribery directed at persons who are not state officials or at a legal entity (unit), the charge must be specified as “对非国家工作人员行贿” and/or “对单位行贿” rather than the generic “行贿”.
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控：
+（一）、单位行贿犯罪。
+2011年底至2016年春节前，被告人李某某作为大某隆某货物运输有限公司、大某聚某货物运输有限公司的实际经营人，为使其公司进入大某油田有限责任公司、大某头台油田有限责任公司承揽特车业务，分多次分别向孔某某（曾任大某油田采油七厂党委书记、副厂长、大某市头台油田开发有限公司总经理、党委副书记、大某油田采油八厂党委委员、副书记、厂长）行贿人民币550000元，美元10000元（价值人民币61508元），积家手表1块（价值人民币98250元），欧米茄手表1块（价值人民币45200元），软中华香烟50条，（价值人民币37000元），黄鹤楼生态烟48条，（价值人民币19200元），钱、物合计价值人民币811158元。公诉机关认为，被告单位大某隆某货物运输有限公司、大某聚某货物运输有限公司为谋取不正当利益，向国家工作人员行贿，情节严重，被告单位大某隆某货物运输有限公司、大某聚某货物运输有限公司构成××，被告人李某某作为二被告单位的直接负责的主管人员，依法应承担刑事责任。应依法以××追究被告单位大某隆某货物运输有限公司、大某聚某货物运输有限公司及被告人李某某的刑事责任。
+（二）、虚开增值税专用发票犯罪
+被告人李某某系大某市庆某工程机械租赁有限公司实际经营人，2014年10月份左右，李某某从一名陌生男子（姓名不详，另案处理）处以人民币90000元的价格购买虚开的增值税专用发票价税合计2900060元，用于抵扣税款人民币421376.24元。案发后，税款已经全部补缴。公诉机关认为，被告人李某某让他人为其经营的大某市庆某工程机械租赁有限公司虚开增值税专用发票，依法构成虚开增值税专用发票罪。应以虚开增值税专用发票罪追究被告人李某某的刑事责任。
+被告人李某某如实供述犯罪事实，可从轻处罚，犯数罪，依法应数罪并罚。
+二被告单位的诉讼代理人对起诉指控事实及罪名均未提出异议。被告人李某某对起诉指控的事实及罪名未提出异议。被告人李某某的辩护人辩称:1.被告人李某某在××中，具有自首情节。2.在虚开增值税专用发票罪中，补缴了税款，如实供述，认罪悔罪。3.被告人具有立功情节，在2013年大某油田遭遇洪水时，被告人李某某为抗洪抢险出人出力，捐赠物资，在抢险中表现突出，作出积极贡献，具有立功表现。4.被告人无前科劣迹。综上，建议对被告人从轻处罚。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

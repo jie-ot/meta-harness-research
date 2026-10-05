@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- If the facts only describe forging, altering, or selling state‑issued documents or certificates and do not contain any separate act of deceiving another party for financial gain, assign only the forge
+- When the alleged offender holds a position in a private or non‑governmental entity (e.g., company executive, manager) rather than a public official, classify the offense as “非国家工作人员受贿” instead of the 
+- When a public official’s conduct involves (1) the illegal receipt of money or valuables in exchange for using official power, and (2) the abuse of that power to approve actions that cause state loss, 
+- When the factual description contains multiple distinct illegal actions (e.g., fraud and any form of prostitution‑related conduct), list every applicable crime separated by semicolons rather than sele
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控，2013年7月3日10时许，XX九局集团有限公司（以下简称XX九局）在湖南省沅江市XX镇黄茅洲大桥施工时，被告人李某某带领刘A等十余人阻止施工，XX九局项目副经理刘X带领被告人王某某等人出面制止，为此双方发生冲突而打斗。被告人李某某持“顶托”将刘B打伤，被告人王某某持钢筋将刘1某打伤，经法医学鉴定，刘A、刘B的伤势均已构成轻伤。并因此造成停工8天，经鉴定，造成的停工损失144057元。
+就指控的上述事实，公诉机关当庭宣读和出示了沅江市公安局的发破案报告及抓获经过，被告人李某某、王某某的供述，被害人刘A、刘B的陈述，证人曾某某、杨某等人的证言，关于终止施工合同的通知书、确认函，法医学鉴定书、停工损失认证结论书等证据。
+公诉机关认为，被告人李某某的行为已构成××；被告人王某某的行为已构成××，提请本院依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- If the facts describe the use of a false or deceptive contract (e.g., a sale, lease, transfer agreement) to obtain money or property, classify the offense as “合同诈骗” rather than the generic “诈骗”.
+- If the factual description indicates that the offender used their official position or entrusted authority to appropriate property for personal gain, rather than physically taking or stealthily removi
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:浙江省杭州市江干区人民检察院指控：被告人朱某于2010年11月，向耀正公司实际负责人刘某提出，以将绿顺公司厂房隔层全部评估为钢架结构的方式提高评估价，进而骗取房屋拆迁补偿款，刘某表示通过虚增房屋拆迁面积和将隔层部分评估为钢架结构的方式提高评估价更妥，被告人朱某同意该方案并允诺事后分其好处。后刘某指使他人以上述方式虚增绿顺公司房屋拆迁面积1000余平方米，绿顺公司据此骗取拆迁补偿款共计人民币100余万元。2011年11月至2012年春节，被告人朱某通过支票、现金共向刘某等人兑现人民币55万元。公诉机关为证明上述事实，当庭提供了证人证言、相关的书证等证据，据此认为被告人朱某的行为已构成诈骗罪，数额特别巨大，应依照《中华人民共和国刑法》××之规定，予以惩处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

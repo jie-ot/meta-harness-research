@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the facts describe the acquisition, processing, and sale of animal-derived products that are unsafe or of unknown origin, classify the offense under food safety statutes (e.g., 生产、销售不符合安全标准的食品) r
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the facts describe the manufacturing or sale of food, health products, or supplements that contain prohibited or harmful substances (e.g., prescription‑drug ingredients), classify the offense as 
+- When extracting the crime name, output the exact statutory offense term (e.g., “行贿”) without adding descriptive prefixes or qualifiers such as “对国家工作人员”。
+- If the facts describe the defendant selling seeds under false variety names or misrepresenting the seed type, and the issue is that the seeds are counterfeit or substandard rather than the illegal tra
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，2013年11月25日，平舆县公安局民警在平舆县阳城镇后刘集对被告人刘XX所生产销售的油条进行检查，现场提取了刘XX正在销售的油条进行抽样送检化验。经洛阳黎明化工研究所检测，刘XX所生产并销售的油条内含的铝的残留量为1020mg／Kg，超出《食品安全国家标准、食品添加剂使用标准》中规定铝的残留量≤100mg／Kg的标准。
+上述事实，被告人刘XX在开庭审理过程中亦无异议，且有证人张XX的证言，书证：被告人户籍证明、到案经过、照片、平舆县公安局扣押物品清单、黎明化工研究院化工新材料检测中心检测报告（控制编号LTQR-510-11，No.L213-502C）等证据证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

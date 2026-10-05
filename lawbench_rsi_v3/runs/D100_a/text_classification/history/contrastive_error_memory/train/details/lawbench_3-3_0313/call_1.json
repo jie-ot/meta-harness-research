@@ -1,0 +1,72 @@
+{
+  "call_id": "3c8b3328cdee401fba515c2778ace7bb",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791042813-g89qcLa5GSYrMlG5gXib",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"被告人谢1某多次以暴力方式（踹门、翻窗等）进入他人住宅，窃取现金、银行卡、手机、证件等财物，构成盗窃罪。其又捏造他人参与盗窃的事实，使王某、王某立被刑事拘留，属于捏造事实诬告陷害他人，构成诬告陷害罪。\",\n  \"final_answer\": \"[罪名]盗窃;诬告陷害<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate crime(s) based on facts. The pattern: multiple burglaries (entering houses by force, theft). That's \"盗窃\" (theft). Also, he fabricated false accusations against others causing them to be detained. That is false accusation? In Chinese criminal law, making false accusations leading to detention is \"诬告陷害罪\" (defamation? Actually \"诬告陷害罪\" - false accusation). The examples: In earlier similar case, they used \"捏造...使其二人受到刑事拘留\" and they said \"构成××\". Need to map to correct label. In the common mistakes list, they gave examples of correct labels. Let's see list of possible labels from previous examples: They have many: 抢夺; 盗窃;非法持有毒品;容留他人吸毒;故意毁坏财物;过失致人死亡;破坏生产经营;故意伤害;绑架;寻衅滋事;强制猥亵、侮辱妇女;提供侵入、非法控制计算机信息系统程序、工具;非法吸收公众存款;非法组织卖血;走私珍贵动物、珍贵动物制品;盗窃;非法狩猎;拐卖妇女、儿童;诈骗;组织、强迫、引诱、容留、介绍卖淫;拐骗儿童;假冒注册商标;走私普通货物、物品;重大责任事故;失火;放火;编造、故意传播虚假恐怖信息;非法携带枪支;妨害公务; etc.\n\nWe need label for false accusation: In Chinese law, \"诬告陷害罪\" is often labeled as \"诬告陷害\". In examples, they haven't shown that label yet. Let's search memory: In dataset, typical label list includes \"诬告陷害\". Also \"捏造事实诬告陷害\". So likely answer: 盗窃;诬告陷害\n\nCheck if any other crimes: He also stole identity documents (ID, household register). That's still theft. So main crime: 盗窃. Also maybe \"抢夺\"? No, he entered houses, not snatching. So theft.\n\nThus final answer: [罪名]盗窃;诬告陷害<eoa>\n\nReturn JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to determine appropriate crime(s) based on facts. The pattern: multiple burglaries (entering houses by force, theft). That's \"盗窃\" (theft). Also, he fabricated false accusations against others causing them to be detained. That is false accusation? In Chinese criminal law, making false accusations leading to detention is \"诬告陷害罪\" (defamation? Actually \"诬告陷害罪\" - false accusation). The examples: In earlier similar case, they used \"捏造...使其二人受到刑事拘留\" and they said \"构成××\". Need to map to correct label. In the common mistakes list, they gave examples of correct labels. Let's see list of possible labels from previous examples: They have many: 抢夺; 盗窃;非法持有毒品;容留他人吸毒;故意毁坏财物;过失致人死亡;破坏生产经营;故意伤害;绑架;寻衅滋事;强制猥亵、侮辱妇女;提供侵入、非法控制计算机信息系统程序、工具;非法吸收公众存款;非法组织卖血;走私珍贵动物、珍贵动物制品;盗窃;非法狩猎;拐卖妇女、儿童;诈骗;组织、强迫、引诱、容留、介绍卖淫;拐骗儿童;假冒注册商标;走私普通货物、物品;重大责任事故;失火;放火;编造、故意传播虚假恐怖信息;非法携带枪支;妨害公务; etc.\n\nWe need label for false accusation: In Chinese law, \"诬告陷害罪\" is often labeled as \"诬告陷害\". In examples, they haven't shown that label yet. Let's search memory: In dataset, typical label list includes \"诬告陷害\". Also \"捏造事实诬告陷害\". So likely answer: 盗窃;诬告陷害\n\nCheck if any other crimes: He also stole identity documents (ID, household register). That's still theft. So main crime: 盗窃. Also maybe \"抢夺\"? No, he entered houses, not snatching. So theft.\n\nThus final answer: [罪名]盗窃;诬告陷害<eoa>\n\nReturn JSON with reasoning and final answer.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate crime(s) based on facts. The pattern: multiple burglaries (entering houses by force, theft). That's \"盗窃\" (theft). Also, he fabricated false accusations against others causing them to be detained. That is false accusation? In Chinese criminal law, making false accusations leading to detention is \"诬告陷害罪\" (defamation? Actually \"诬告陷害罪\" - false accusation). The examples: In earlier similar case, they used \"捏造...使其二人受到刑事拘留\" and they said \"构成××\". Need to map to correct label. In the common mistakes list, they gave examples of correct labels. Let's see list of possible labels from previous examples: They have many: 抢夺; 盗窃;非法持有毒品;容留他人吸毒;故意毁坏财物;过失致人死亡;破坏生产经营;故意伤害;绑架;寻衅滋事;强制猥亵、侮辱妇女;提供侵入、非法控制计算机信息系统程序、工具;非法吸收公众存款;非法组织卖血;走私珍贵动物、珍贵动物制品;盗窃;非法狩猎;拐卖妇女、儿童;诈骗;组织、强迫、引诱、容留、介绍卖淫;拐骗儿童;假冒注册商标;走私普通货物、物品;重大责任事故;失火;放火;编造、故意传播虚假恐怖信息;非法携带枪支;妨害公务; etc.\n\nWe need label for false accusation: In Chinese law, \"诬告陷害罪\" is often labeled as \"诬告陷害\". In examples, they haven't shown that label yet. Let's search memory: In dataset, typical label list includes \"诬告陷害\". Also \"捏造事实诬告陷害\". So likely answer: 盗窃;诬告陷害\n\nCheck if any other crimes: He also stole identity documents (ID, household register). That's still theft. So main crime: 盗窃. Also maybe \"抢夺\"? No, he entered houses, not snatching. So theft.\n\nThus final answer: [罪名]盗窃;诬告陷害<eoa>\n\nReturn JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to determine appropriate crime(s) based on facts. The pattern: multiple burglaries (entering houses by force, theft). That's \"盗窃\" (theft). Also, he fabricated false accusations against others causing them to be detained. That is false accusation? In Chinese criminal law, making false accusations leading to detention is \"诬告陷害罪\" (defamation? Actually \"诬告陷害罪\" - false accusation). The examples: In earlier similar case, they used \"捏造...使其二人受到刑事拘留\" and they said \"构成××\". Need to map to correct label. In the common mistakes list, they gave examples of correct labels. Let's see list of possible labels from previous examples: They have many: 抢夺; 盗窃;非法持有毒品;容留他人吸毒;故意毁坏财物;过失致人死亡;破坏生产经营;故意伤害;绑架;寻衅滋事;强制猥亵、侮辱妇女;提供侵入、非法控制计算机信息系统程序、工具;非法吸收公众存款;非法组织卖血;走私珍贵动物、珍贵动物制品;盗窃;非法狩猎;拐卖妇女、儿童;诈骗;组织、强迫、引诱、容留、介绍卖淫;拐骗儿童;假冒注册商标;走私普通货物、物品;重大责任事故;失火;放火;编造、故意传播虚假恐怖信息;非法携带枪支;妨害公务; etc.\n\nWe need label for false accusation: In Chinese law, \"诬告陷害罪\" is often labeled as \"诬告陷害\". In examples, they haven't shown that label yet. Let's search memory: In dataset, typical label list includes \"诬告陷害\". Also \"捏造事实诬告陷害\". So likely answer: 盗窃;诬告陷害\n\nCheck if any other crimes: He also stole identity documents (ID, household register). That's still theft. So main crime: 盗窃. Also maybe \"抢夺\"? No, he entered houses, not snatching. So theft.\n\nThus final answer: [罪名]盗窃;诬告陷害<eoa>\n\nReturn JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 654,
+      "prompt_tokens": 22583,
+      "total_tokens": 23237,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 537,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000946751,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000946751,
+        "upstream_inference_prompt_cost": 0.000835571,
+        "upstream_inference_completions_cost": 0.00011118
+      }
+    }
+  },
+  "raw_response_missing": false
+}

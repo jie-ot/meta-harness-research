@@ -1,0 +1,51 @@
+Bash
+
+command:
+cd "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification" && uv run python -c "
+import json, os
+
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+mem_path = os.path.join(base, 'LawBench', 'adaptive_tokenizer_confusion_memory', 'gpt-oss-120b', 'memory.json')
+state = json.loads(open(mem_path, encoding='utf-8').read())
+confusion = state['confusion']
+examples = state['examples']
+
+# Show what confusion keys look like vs example targets
+print('=== Confusion keys (first 5):')
+for k in list(confusion.keys())[:5]:
+    print(f'  {repr(k)}')
+
+print()
+print('=== Example targets (first 5):')
+for ex in examples[:5]:
+    print(f'  {repr(ex[\"target\"])}')
+
+# KEY BUG: _confusion_targets_for looks up confusion[lbl] where lbl = ex['target']
+# but confusion keys are RAW predictions like '[罪名]诈骗<eoa>'
+# Let's verify: do any confusion keys match example targets exactly?
+tgt_set = set(ex['target'] for ex in examples)
+conf_key_set = set(confusion.keys())
+overlap = tgt_set & conf_key_set
+print(f'\nConfusion keys that match example targets: {len(overlap)} / {len(conf_key_set)} conf keys')
+print('(If 0, the disambiguation phase never fires)')
+" 2>&1
+
+description: Verify the confusion key mismatch bug in frontier system
+
+--- output ---
+=== Confusion keys (first 5):
+  '[罪名]伪造国家机关证件罪<eoa>'
+  '[罪名]敲诈勒索罪<eoa>'
+  '[罪名]拐卖妇女<eoa>'
+  '[罪名]受贿<eoa>'
+  '[罪名]诈骗<eoa>'
+
+=== Example targets (first 5):
+  '伪造、变造、买卖国家机关公文、证件、印章'
+  '破坏计算机信息系统'
+  '故意毁坏财物'
+  '拐骗儿童'
+  '拐卖妇女、儿童'
+
+Confusion keys that match example targets: 0 / 103 conf keys
+(If 0, the disambiguation phase never fires)

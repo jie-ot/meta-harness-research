@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the alleged bribery is committed by a legal entity (e.g., a company) or its legal representative, the correct charge is "单位行贿" rather than the individual offense "行贿".
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the facts describe the misappropriation of money belonging to a private company or other non‑government entity (e.g., company funds, client payments) rather than state or public treasury funds, the
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:五华区人民检察院指控：2005年至2007年期间，被告人刘某为了昆明嘉恒房地产开发有限公司能够低价取得昆明威世实业有限责任公司位于景洪市勐龙镇240边境旅游贸易区的一处土地及地上建筑物威世宾馆，向当时担任昆明威世实业有限责任公司总经理的王某及党委书记，副总经理林某，共计行贿人民币14.2万元。根据鉴定，昆明威世实业有限责任公司转让该地块及地上建筑物时，造成公司资产损失1，138，447.15元。
+公诉机关认定被告人被告单位昆明嘉恒房地产开发有限公司、被告人刘某的行为构成××，应依法惩处，被告人刘某有自首情节，依法可从轻或减轻处罚。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

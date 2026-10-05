@@ -1,0 +1,72 @@
+{
+  "call_id": "0beb1e0662c947ba9c703144e2f86903",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791018454-Ha6sISpuzTjJP2N0h8TE",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic term “诈骗”.\",\n  \"keywords\": [\n    \"票据诈骗\",\n    \"信用卡诈骗\",\n    \"合同诈骗\",\n    \"多种诈骗\",\n    \"诈骗犯罪事实\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with a rule to prevent the error: AI gave only \"诈骗\" but correct answer includes multiple specific fraud types: 票据诈骗;信用卡诈骗;合同诈骗. The error is too generic classification; need to identify multiple specific fraud charges when text mentions multiple fraud types. Rule: When the facts mention distinct fraud categories (e.g.,票据,信用卡,合同) list each as separate charge. Keywords: \"票据\", \"信用卡\", \"合同\", \"诈骗\", \"犯××\" maybe. Provide rule.\n\nLet's craft: \"If the case facts mention more than one distinct type of fraud (e.g.,票据,信用卡,合同,网络,电信等), output each specific fraud charge separated by semicolons rather than a generic '诈骗'.\" Keywords: \"票据诈骗\", \"信用卡诈骗\", \"合同诈骗\", \"多种诈骗\", \"诈骗犯罪事实\". Provide JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with a rule to prevent the error: AI gave only \"诈骗\" but correct answer includes multiple specific fraud types: 票据诈骗;信用卡诈骗;合同诈骗. The error is too generic classification; need to identify multiple specific fraud charges when text mentions multiple fraud types. Rule: When the facts mention distinct fraud categories (e.g.,票据,信用卡,合同) list each as separate charge. Keywords: \"票据\", \"信用卡\", \"合同\", \"诈骗\", \"犯××\" maybe. Provide rule.\n\nLet's craft: \"If the case facts mention more than one distinct type of fraud (e.g.,票据,信用卡,合同,网络,电信等), output each specific fraud charge separated by semicolons rather than a generic '诈骗'.\" Keywords: \"票据诈骗\", \"信用卡诈骗\", \"合同诈骗\", \"多种诈骗\", \"诈骗犯罪事实\". Provide JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with a rule to prevent the error: AI gave only \"诈骗\" but correct answer includes multiple specific fraud types: 票据诈骗;信用卡诈骗;合同诈骗. The error is too generic classification; need to identify multiple specific fraud charges when text mentions multiple fraud types. Rule: When the facts mention distinct fraud categories (e.g.,票据,信用卡,合同) list each as separate charge. Keywords: \"票据\", \"信用卡\", \"合同\", \"诈骗\", \"犯××\" maybe. Provide rule.\n\nLet's craft: \"If the case facts mention more than one distinct type of fraud (e.g.,票据,信用卡,合同,网络,电信等), output each specific fraud charge separated by semicolons rather than a generic '诈骗'.\" Keywords: \"票据诈骗\", \"信用卡诈骗\", \"合同诈骗\", \"多种诈骗\", \"诈骗犯罪事实\". Provide JSON.",
+            "reasoning_content": "We need to produce a JSON with a rule to prevent the error: AI gave only \"诈骗\" but correct answer includes multiple specific fraud types: 票据诈骗;信用卡诈骗;合同诈骗. The error is too generic classification; need to identify multiple specific fraud charges when text mentions multiple fraud types. Rule: When the facts mention distinct fraud categories (e.g.,票据,信用卡,合同) list each as separate charge. Keywords: \"票据\", \"信用卡\", \"合同\", \"诈骗\", \"犯××\" maybe. Provide rule.\n\nLet's craft: \"If the case facts mention more than one distinct type of fraud (e.g.,票据,信用卡,合同,网络,电信等), output each specific fraud charge separated by semicolons rather than a generic '诈骗'.\" Keywords: \"票据诈骗\", \"信用卡诈骗\", \"合同诈骗\", \"多种诈骗\", \"诈骗犯罪事实\". Provide JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 299,
+      "prompt_tokens": 494,
+      "total_tokens": 793,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 202,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 6.565e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 6.565e-05,
+        "upstream_inference_prompt_cost": 1.482e-05,
+        "upstream_inference_completions_cost": 5.083e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

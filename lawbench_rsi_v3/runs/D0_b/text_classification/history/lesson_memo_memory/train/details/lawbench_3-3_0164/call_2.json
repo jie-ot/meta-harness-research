@@ -1,0 +1,72 @@
+{
+  "call_id": "5397caa1ced544799fcbd75d7edc0499",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791026629-7IOQhUMwhhYwvHLT4I7g",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"lesson\": \"- 当事实中出现明确的法律概念或专有名词（如“监管人”“传销”“合同”“诽谤”“徇私舞弊”“非法携带枪支”等），应直接对应相应的罪名，而不是使用常见的通用罪名。\\n- 若事实片段过于简短，仅包含地点、机构名称等信息，模型应判断信息不足并提示补充，而不是随意猜测罪名。\\n- 在事实中出现多个独立的违法行为关键词时，应分别列出对应的罪名，并用分号分隔，确保多罪名的完整呈现。\\n- 避免把“故意伤害”“诈骗”等高频标签作为默认答案；应先进行关键词匹配并核对法律要件后再确定罪名。\\n- 对于涉及行政或纪律类违规（如徇私舞弊不移交刑事案件），应使用对应的刑事罪名，而不是混淆为普通职务犯罪或其他不相关罪名。\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to summarize up to 5 concise \"lessons\" (判案规律) to avoid similar errors. Based on observed errors: model often misclassifies due to insufficient context, picks generic crimes like \"诈骗\" or \"故意伤害\" when facts are incomplete. The pattern: the prompt includes \"请你模拟法官依据下面事实给出罪名\" and then a short fragment like \"广元市荣山地区人\". The model picks a crime unrelated. So lessons: need to ensure enough factual detail; need to map keywords to specific crimes; avoid overgeneralizing; pay attention to legal terms like \"监管人\", \"传销\", \"合同诈骗\", \"诽谤\", \"徇私舞弊不移交刑事案件\", \"非法携带枪支危及公共安全\". Also need to handle multiple crimes separated by semicolon.\n\nThus produce JSON with \"lesson\": \"- ...\" lines.\n\nLet's craft 5 rules:\n\n1. 当事实中出现特定法律概念（如“监管人”“传销”“合同”“诽谤”“徇私舞弊”“非法携带枪支”等）时，直接对应相应罪名，而不是默认常见罪名。\n\n2. 若事实片段极其简短或仅包含地点、机构名称，模型应返回“信息不足，无法确定罪名”或请求补充，而不是随意猜测。\n\n3. 多罪名情形应依据事实中出现的多个独立行为关键词，分别列出对应罪名，用分号分隔。\n\n4. 避免把“故意伤害”“诈骗”等高频标签作为默认答案；应先进行关键词匹配和法律要件判断。\n\n5. 对于涉及行政或纪律类行为（如徇私舞弊不移交刑事案件），应使用对应的刑事罪名而非普通职务犯罪。\n\nLet's output JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to summarize up to 5 concise \"lessons\" (判案规律) to avoid similar errors. Based on observed errors: model often misclassifies due to insufficient context, picks generic crimes like \"诈骗\" or \"故意伤害\" when facts are incomplete. The pattern: the prompt includes \"请你模拟法官依据下面事实给出罪名\" and then a short fragment like \"广元市荣山地区人\". The model picks a crime unrelated. So lessons: need to ensure enough factual detail; need to map keywords to specific crimes; avoid overgeneralizing; pay attention to legal terms like \"监管人\", \"传销\", \"合同诈骗\", \"诽谤\", \"徇私舞弊不移交刑事案件\", \"非法携带枪支危及公共安全\". Also need to handle multiple crimes separated by semicolon.\n\nThus produce JSON with \"lesson\": \"- ...\" lines.\n\nLet's craft 5 rules:\n\n1. 当事实中出现特定法律概念（如“监管人”“传销”“合同”“诽谤”“徇私舞弊”“非法携带枪支”等）时，直接对应相应罪名，而不是默认常见罪名。\n\n2. 若事实片段极其简短或仅包含地点、机构名称，模型应返回“信息不足，无法确定罪名”或请求补充，而不是随意猜测。\n\n3. 多罪名情形应依据事实中出现的多个独立行为关键词，分别列出对应罪名，用分号分隔。\n\n4. 避免把“故意伤害”“诈骗”等高频标签作为默认答案；应先进行关键词匹配和法律要件判断。\n\n5. 对于涉及行政或纪律类行为（如徇私舞弊不移交刑事案件），应使用对应的刑事罪名而非普通职务犯罪。\n\nLet's output JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to summarize up to 5 concise \"lessons\" (判案规律) to avoid similar errors. Based on observed errors: model often misclassifies due to insufficient context, picks generic crimes like \"诈骗\" or \"故意伤害\" when facts are incomplete. The pattern: the prompt includes \"请你模拟法官依据下面事实给出罪名\" and then a short fragment like \"广元市荣山地区人\". The model picks a crime unrelated. So lessons: need to ensure enough factual detail; need to map keywords to specific crimes; avoid overgeneralizing; pay attention to legal terms like \"监管人\", \"传销\", \"合同诈骗\", \"诽谤\", \"徇私舞弊不移交刑事案件\", \"非法携带枪支危及公共安全\". Also need to handle multiple crimes separated by semicolon.\n\nThus produce JSON with \"lesson\": \"- ...\" lines.\n\nLet's craft 5 rules:\n\n1. 当事实中出现特定法律概念（如“监管人”“传销”“合同”“诽谤”“徇私舞弊”“非法携带枪支”等）时，直接对应相应罪名，而不是默认常见罪名。\n\n2. 若事实片段极其简短或仅包含地点、机构名称，模型应返回“信息不足，无法确定罪名”或请求补充，而不是随意猜测。\n\n3. 多罪名情形应依据事实中出现的多个独立行为关键词，分别列出对应罪名，用分号分隔。\n\n4. 避免把“故意伤害”“诈骗”等高频标签作为默认答案；应先进行关键词匹配和法律要件判断。\n\n5. 对于涉及行政或纪律类行为（如徇私舞弊不移交刑事案件），应使用对应的刑事罪名而非普通职务犯罪。\n\nLet's output JSON.",
+            "reasoning_content": "We need to summarize up to 5 concise \"lessons\" (判案规律) to avoid similar errors. Based on observed errors: model often misclassifies due to insufficient context, picks generic crimes like \"诈骗\" or \"故意伤害\" when facts are incomplete. The pattern: the prompt includes \"请你模拟法官依据下面事实给出罪名\" and then a short fragment like \"广元市荣山地区人\". The model picks a crime unrelated. So lessons: need to ensure enough factual detail; need to map keywords to specific crimes; avoid overgeneralizing; pay attention to legal terms like \"监管人\", \"传销\", \"合同诈骗\", \"诽谤\", \"徇私舞弊不移交刑事案件\", \"非法携带枪支危及公共安全\". Also need to handle multiple crimes separated by semicolon.\n\nThus produce JSON with \"lesson\": \"- ...\" lines.\n\nLet's craft 5 rules:\n\n1. 当事实中出现特定法律概念（如“监管人”“传销”“合同”“诽谤”“徇私舞弊”“非法携带枪支”等）时，直接对应相应罪名，而不是默认常见罪名。\n\n2. 若事实片段极其简短或仅包含地点、机构名称，模型应返回“信息不足，无法确定罪名”或请求补充，而不是随意猜测。\n\n3. 多罪名情形应依据事实中出现的多个独立行为关键词，分别列出对应罪名，用分号分隔。\n\n4. 避免把“故意伤害”“诈骗”等高频标签作为默认答案；应先进行关键词匹配和法律要件判断。\n\n5. 对于涉及行政或纪律类行为（如徇私舞弊不移交刑事案件），应使用对应的刑事罪名而非普通职务犯罪。\n\nLet's output JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 645,
+      "prompt_tokens": 933,
+      "total_tokens": 1578,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 488,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000155136,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000155136,
+        "upstream_inference_prompt_cost": 3.4521e-05,
+        "upstream_inference_completions_cost": 0.000120615
+      }
+    }
+  },
+  "raw_response_missing": false
+}

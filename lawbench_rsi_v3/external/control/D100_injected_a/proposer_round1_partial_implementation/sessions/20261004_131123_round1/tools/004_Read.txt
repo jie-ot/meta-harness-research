@@ -1,0 +1,34 @@
+Read: config.yaml
+
+
+--- output ---
+1	dataset:
+2	  num_train: 200
+3	  num_val: 100
+4	  num_test: 100
+5	  overrides:
+6	    LawBench:
+7	      num_train: 200
+8	      num_val: 100
+9	      num_test: 100
+10	inner_loop:
+11	  mode: online
+12	  num_epochs: 1
+13	  temperature: 0.0
+14	  eval_interval: 0
+15	  batch_size: 1
+16	  seed: 42
+17	models:
+18	- model: openrouter/openai/gpt-oss-120b
+19	benchmark:
+20	  seeds:
+21	  - 42
+22	  concurrency: 16
+23	datasets:
+24	- LawBench
+25	memory_systems:
+26	  baselines:
+27	  - no_memory
+28	  - fewshot_all
+29	  proposed: []
+30	

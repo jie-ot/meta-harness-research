@@ -1,0 +1,173 @@
+"""Label-Aware Prompt Memory — injects an explicit label menu above the examples.
+
+Standard fewshot prompts only surface labels that happen to appear in the
+retrieved examples. When the context budget is tight and many labels exist,
+most labels are never shown, so the model can only guess from what it saw.
+
+This system prepends a compact "Valid answers" header listing every label
+seen during training. The header occupies ~10-50 chars per label — trivial
+relative to the 30 000 char budget — but guarantees the full output space
+is always visible regardless of which examples fit. Retrieval is unchanged
+from similarity_retrieval_memory (Jaccard-ranked), so any improvement is
+attributable solely to the label-space disclosure in the prompt.
+"""
+
+import json
+import re
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+# Label header + examples block + problem footer
+PROMPT_TEMPLATE = """Valid answers (choose exactly one):
+{label_list}
+
+{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Your final_answer MUST be one of the valid answers listed above
+- Follow the patterns shown in the examples above
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+# Fallback template before any labels are known (cold start)
+PROMPT_TEMPLATE_COLD = """Solve the problem below.
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+MAX_CHARS = 30000
+
+
+def _tokenize(text: str) -> frozenset[str]:
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+
+def _jaccard(a: frozenset[str], b: frozenset[str]) -> float:
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+class LabelAwarePromptMemory(MemorySystem):
+    """Similarity retrieval with a full label-space header injected into every prompt."""
+
+    def __init__(self, llm: LLMCallable):
+        super().__init__(llm)
+        self.examples: list[dict[str, Any]] = []
+        # Ordered set of labels in insertion order (preserves discovery order)
+        self._label_order: list[str] = []
+        self._label_set: set[str] = set()
+
+    def _register_label(self, label: str) -> None:
+        if label not in self._label_set:
+            self._label_set.add(label)
+            self._label_order.append(label)
+
+    def _label_header(self) -> str:
+        """Return the sorted label list as a compact bullet string."""
+        return "\n".join(f"- {lbl}" for lbl in sorted(self._label_order))
+
+    def _select_by_similarity(self, query: str, reserved_chars: int = 0) -> list[str]:
+        """Rank stored examples by Jaccard similarity; fill remaining char budget."""
+        if not self.examples:
+            return []
+
+        q_tokens = _tokenize(query)
+        scored = [
+            (_jaccard(q_tokens, ex["tokens"]), idx, ex)
+            for idx, ex in enumerate(self.examples)
+        ]
+        scored.sort(key=lambda x: (x[0], x[1]), reverse=True)
+
+        parts: list[str] = []
+        total_chars = reserved_chars
+        for _score, _idx, ex in scored:
+            question = ex.get("raw_question", ex["input"])
+            part = f"Q: {question}\nA: {ex['target']}"
+            if total_chars + len(part) + 2 > MAX_CHARS:
+                break
+            parts.append(part)
+            total_chars += len(part) + 2
+
+        return parts
+
+    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+        if not self._label_order:
+            # True cold start: no labels seen yet
+            prompt = PROMPT_TEMPLATE_COLD.format(input=input)
+            response = self.call_llm(prompt)
+            answer = extract_json_field(response, "final_answer")
+            return answer, {"full_response": response, "num_examples": 0, "num_selected": 0}
+
+        label_header = self._label_header()
+        # Reserve chars for the label header so it doesn't evict examples
+        reserved = len(label_header) + 100  # 100 for surrounding template text
+        parts = self._select_by_similarity(input, reserved_chars=reserved)
+        examples_section = "\n\n".join(parts)
+
+        prompt = PROMPT_TEMPLATE.format(
+            label_list=label_header,
+            examples_section=examples_section,
+            input=input,
+        )
+        response = self.call_llm(prompt)
+        answer = extract_json_field(response, "final_answer")
+        return answer, {
+            "full_response": response,
+            "num_examples": len(self.examples),
+            "num_selected": len(parts),
+            "num_labels": len(self._label_order),
+        }
+
+    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+        for r in batch_results:
+            lbl = r["ground_truth"]
+            self._register_label(lbl)
+            raw_q = r.get("raw_question", r["input"])
+            ex: dict[str, Any] = {
+                "input": r["input"],
+                "target": lbl,
+                "tokens": _tokenize(raw_q),
+            }
+            if "raw_question" in r:
+                ex["raw_question"] = r["raw_question"]
+            self.examples.append(ex)
+
+    def get_context_length(self) -> int:
+        header_chars = len(self._label_header()) + 100 if self._label_order else 0
+        return header_chars + sum(len(p) + 2 for p in self._select_by_similarity("", reserved_chars=header_chars))
+
+    def get_state(self) -> str:
+        serialisable = [
+            {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+            for ex in self.examples
+        ]
+        return json.dumps({
+            "examples": serialisable,
+            "label_order": self._label_order,
+        }, indent=2)
+
+    def set_state(self, state: str) -> None:
+        data = json.loads(state)
+        self._label_order = data.get("label_order", [])
+        self._label_set = set(self._label_order)
+        self.examples = []
+        for ex in data.get("examples", []):
+            restored = dict(ex)
+            if "tokens" in restored and isinstance(restored["tokens"], list):
+                restored["tokens"] = frozenset(restored["tokens"])
+            else:
+                raw_q = restored.get("raw_question", restored.get("input", ""))
+                restored["tokens"] = _tokenize(raw_q)
+            self.examples.append(restored)

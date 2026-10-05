@@ -1,0 +1,146 @@
+Bash [ERROR]
+
+command:
+python3 - << 'PYEOF'
+import os
+
+REPORTS = r"D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/reports"
+
+reports = {
+    "iter_09.md": """# Iteration 9 Report
+
+## What changed
+- **fixed_confusion_memory**: applied prediction normalization (strip format wrappers) before storing confusion keys — the minimal fix to unlock the disambiguation phase.
+- **idf_confusion_memory**: added IDF-weighted Jaccard on top of normalization, down-weighting tokens common across all stored examples.
+
+## Results
+| System | Avg val | Delta |
+|--------|---------|-------|
+| fixed_confusion_memory | 50.9% | -0.7 |
+| idf_confusion_memory | 48.4% | -3.2 |
+
+## Why
+Normalization alone reached 50.9%, confirming it was the right fix — predictions stored with wrappers like `[TAG]label<eoa>` never matched plain ground-truth strings, so the disambiguation phase had never fired in any prior system. IDF hurt because at small pool sizes (~50-200 examples), IDF estimates are noisy; high-IDF tokens are often one-off strings that mislead retrieval rather than discriminating signal.
+
+## Takeaway
+Prediction normalization is confirmed essential and must appear in every future system. IDF weighting at small corpus sizes adds noise — skip weighted similarity variants.
+""",
+
+    "iter_10.md": """# Iteration 10 Report
+
+## What changed
+- **anchor_last_memory**: placed the single best-matching example per top candidate label at the very end of context (immediately before the question), filling the rest of the budget normally.
+- **utility_weighted_memory**: tracked per-example utility scores (+1 when in context and prediction was correct, -1 otherwise), then used sigmoid-scaled utility as a retrieval weight multiplier.
+
+## Results
+| System | Avg val | Delta |
+|--------|---------|-------|
+| anchor_last_memory | 46.0% | -5.6 |
+| utility_weighted_memory | 45.8% | -5.8 |
+
+## Why
+Anchor placement assumes recency/proximity bias strong enough to override retrieval quality — not true at these context lengths. Displacing high-similarity examples from the fill budget costs more than the placement gain. Utility weighting is too noisy at batch_size=1: each example accumulates very few feedback signals, scores converge slowly, and early accidents permanently bias the weights.
+
+## Takeaway
+Prompt ordering effects exist but are not large enough to justify displacing quality examples. Per-example feedback needs larger batches or a different aggregation strategy to be reliable.
+""",
+
+    "iter_11.md": """# Iteration 11 Report
+
+## What changed
+- **contrastive_boundary_memory**: rendered disambiguation examples in a dedicated "Common Confusions" section with explicit "[NOT: wrong_label]" annotations, splitting the prompt into two sections.
+- **cluster_confusion_memory**: expanded top candidate labels to their full connected component in the undirected confusion graph (BFS over both prediction→actual and actual→prediction edges), injecting one representative per cluster member.
+
+## Results
+| System | Avg val | Delta |
+|--------|---------|-------|
+| contrastive_boundary_memory | 46.7% | -4.9 |
+| cluster_confusion_memory | 50.2% | -1.4 |
+
+## Why
+Explicit "[NOT: wrong_label]" annotations surface the wrong label prominently — the model anchors on the negative-example text and treats it as a plausible answer, which hurts more than the explicit contrast helps. Cluster BFS expansion surfaces transitively confused labels that share fewer tokens with the query than direct confusions do, diluting the disambiguation signal and consuming context budget for low-value examples.
+
+## Takeaway
+Negative annotations in prompts are harmful at this scale. Confusion graph expansion should stay at depth 1. The single-hop approach in the frontier is already near-optimal for the confusion mechanism.
+""",
+
+    "iter_12.md": """# Iteration 12 Report
+
+## What changed
+- **anchor_recency_confusion_memory**: replaced unbounded pool with one anchor (most-recent example per label) plus an 80-example recency window, on top of confusion disambiguation.
+- **discriminative_similarity_memory**: replaced Jaccard with label-discriminativeness-weighted Jaccard where w(t) = 1 / num_distinct_labels_containing_t.
+
+## Results
+| System | Avg val | Delta |
+|--------|---------|-------|
+| anchor_recency_confusion_memory | 45.6% | -6.0 |
+| discriminative_similarity_memory | 47.8% | -3.8 |
+
+## Why
+Bounded pool (80 examples) truncates the LawBench training set — with 116 labels and ~300 training examples, an 80-example window covers only the last 25% of the label space. Early labels are under-represented even though one anchor per label is kept. Discriminativeness weighting has the same small-corpus noise problem as IDF: a token appearing in only one label gets maximum weight even if it is a formatting artifact, not semantic content.
+
+## Takeaway
+Pool size bounds hurt multi-label datasets where full label coverage requires a larger history. Stick with the full unbounded pool. Custom similarity weights remain unreliable at small corpus sizes.
+""",
+
+    "iter_13.md": """# Iteration 13 Report
+
+## What changed
+- **unified_confusion_retrieval_memory**: merged two-phase retrieval into a single unified ranking: score(ex) = jaccard(q, ex) + alpha * log(1 + confusion_affinity(ex.label)).
+- **decayed_confusion_memory**: multiplied all confusion counts by 0.95 after each learn_from_batch call, pruning entries below 0.05.
+
+## Results
+| System | Avg val | Delta |
+|--------|---------|-------|
+| unified_confusion_retrieval_memory | 49.6% | -2.6 |
+| decayed_confusion_memory | 52.2% | +0.0 |
+
+decayed_confusion_memory matched the frontier and became the Pareto leader at 52.2% average.
+
+## Why
+Unified scoring promotes confusion-affiliated examples even when they are topically unrelated to the current query — the additive bonus fires for the wrong label on many queries. The two-phase approach (confusion slots filled first, then similarity fill) is better because confusion examples only reach context when topically relevant examples for those labels exist in the pool.
+
+Decay is a near-free win: LawBench prediction patterns shift over training, and early confusions corrected later still dominated the matrix with high accumulated counts. Exponential decay recency-weights the matrix without retrieval overhead.
+
+## Takeaway
+decayed_confusion_memory is the new frontier. Decay is a required component for all future confusion-based systems. Unified additive scoring is strictly weaker than the two-phase approach on these datasets.
+""",
+
+    "iter_14.md": """# Iteration 14 Report
+
+## What changed
+- **missed_component_memory**: split compound labels on semicolons, tracked per-atomic-component miss counts, and added a log-scaled component-overlap bonus to Jaccard scoring.
+- **recent_error_hint_memory**: prepended a compact rolling window of the last 10 distinct wrong→correct pairs as an explicit "Recent corrections" section above retrieved examples.
+
+## Results
+| System | Avg val | Delta |
+|--------|---------|-------|
+| missed_component_memory | 46.9% | -5.3 |
+| recent_error_hint_memory | 45.6% | -6.6 |
+
+Both regressed significantly from the 52.2% frontier.
+
+## Why
+Compound label splitting treats semicolons as delimiters across all datasets — on USPTO (SMILES with semicolons as formula separators) and LawBench (single-string labels), this produces nonsensical sub-components that corrupt the scoring signal. The mechanism was implicitly dataset-specific.
+
+Recent error hints put wrong-answer strings directly into the prompt before the examples. The model anchors on the wrong-answer tokens, treating the correction list as problem context rather than meta-guidance, which hurts prediction for the current query.
+
+## Takeaway
+Dataset-specific assumptions (semicolon splitting) must be validated as truly general before inclusion. Explicit error history in the prompt context is harmful — the model uses example Q/A pairs better than it uses meta-commentary about past failures.
+""",
+}
+
+for filename, content in reports.items():
+    path = os.path.join(REPORTS, filename)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(content)
+    print(f"wrote {filename}")
+
+print("done")
+PYEOF
+
+description: Write iteration 9-14 reports via Python to avoid heredoc quoting issues
+
+--- output ---
+Exit code 2
+/usr/bin/bash: -c: line 1: unexpected EOF while looking for matching `''

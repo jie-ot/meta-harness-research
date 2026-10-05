@@ -1,0 +1,22 @@
+Edit: .prototypes\canonical_charge_lexicon_memory.py
+
+replace_all: False
+old_string:
+    mem.learn_from_batch(batch)
+    ans2, meta2 = mem.predict("事实：某甲销售假冒某注册商标的手袋。")
+    print("post-learning answer:", repr(ans2))
+    assert ans2 == "假冒注册商标", f"learned alias did not rewrite output: {ans2!r}"
+
+new_string:
+    mem.learn_from_batch(batch)
+    ans2, meta2 = mem.predict("事实：某甲销售假冒某注册商标的手袋。")
+    print("post-learning answer:", repr(ans2))
+    # The framework's output convention keeps the [罪名]<eoa> wrapper (the scorer
+    # reads the payload out of it), so assert on the payload, not the raw string.
+    assert _extract_payload(ans2) == "假冒注册商标", (
+        f"learned alias did not rewrite output: {ans2!r}"
+    )
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_a\text_classification\.prototypes\canonical_charge_lexicon_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

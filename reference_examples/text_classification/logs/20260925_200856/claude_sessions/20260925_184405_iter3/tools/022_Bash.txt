@@ -1,0 +1,60 @@
+Bash
+
+command:
+cd "D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples" && python C:/tmp/proto_mmr.py
+
+description: Run MMR prototype
+
+--- output ---
+=== Variant A λ=0.6 ===
+  [typhoid     ] fever headache vomiting nausea
+  [dengue      ] fever joint pain rash skin
+  [pneumonia   ] chest pain breathing difficulty fever
+  [typhoid     ] fever headache body ache malaise
+  [common cold ] runny nose sneezing throat pain
+  [common cold ] cough sore throat congestion fever
+  [diabetes    ] frequent urination thirst fatigue
+  [dengue      ] high temperature mosquito bite joint pain
+  [diabetes    ] high blood sugar thirst weight loss
+  Total: 9
+
+=== Variant B λ=0.7 (more relevance) ===
+  [typhoid     ] fever headache vomiting nausea
+  [dengue      ] fever joint pain rash skin
+  [pneumonia   ] chest pain breathing difficulty fever
+  [typhoid     ] fever headache body ache malaise
+  [common cold ] runny nose sneezing throat pain
+  [common cold ] cough sore throat congestion fever
+  [dengue      ] high temperature mosquito bite joint pain
+  [diabetes    ] frequent urination thirst fatigue
+  [diabetes    ] high blood sugar thirst weight loss
+  Total: 9
+
+=== Variant C λ=0.5 (pure balance) ===
+  [typhoid     ] fever headache vomiting nausea
+  [dengue      ] fever joint pain rash skin
+  [diabetes    ] frequent urination thirst fatigue
+  [common cold ] runny nose sneezing throat pain
+  [pneumonia   ] chest pain breathing difficulty fever
+  [common cold ] cough sore throat congestion fever
+  [typhoid     ] fever headache body ache malaise
+  [diabetes    ] high blood sugar thirst weight loss
+  [dengue      ] high temperature mosquito bite joint pain
+  Total: 9
+
+=== Diversity check ===
+V A labels: ['typhoid', 'dengue', 'pneumonia', 'typhoid', 'common cold', 'common cold', 'diabetes', 'dengue', 'diabetes']
+V B labels: ['typhoid', 'dengue', 'pneumonia', 'typhoid', 'common cold', 'common cold', 'dengue', 'diabetes', 'diabetes']
+Duplicate labels: A=4, B=4 (lower is more diverse)
+
+=== Full budget (30k) label distribution ===
+  chicken pox: 2
+  common cold: 2
+  dengue: 2
+  diabetes: 2
+  pneumonia: 2
+  typhoid: 2
+Total: 12
+
+PROTO MMR OK
+Shell cwd was reset to D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification

@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the alleged bribery is committed by a legal entity (e.g., a company) or its legal representative, the correct charge is "单位行贿" rather than the individual offense "行贿".
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the alleged offender is not a public official (i.e., not a state functionary) but the conduct involves accepting or soliciting a bribe, the correct charge is '非国家工作人员受贿' rather than the generic '
+- If the facts describe the use of a false or deceptive contract (e.g., a sale, lease, transfer agreement) to obtain money or property, classify the offense as “合同诈骗” rather than the generic “诈骗”.
+- When extracting the crime name, output the exact statutory offense term (e.g., “行贿”) without adding descriptive prefixes or qualifiers such as “对国家工作人员”。
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:杭州市上城区人民检察院指控：2009年4、5月期间，被告人徐某为了确保其与陈某经营的杭州中顺拆迁工程有限公司能够中标工联大厦、金城大厦建筑物拆除施工工程，借得杭州金安房产实业有限公司、杭州中兴房屋拆迁有限公司及杭州建民拆房有限公司的资质参与投标，最终中标，获利近300万元。公诉机关还指控被告人徐某于2000年10月至2002年8月期间，在承接海宁旧城改造拆房工程过程中，以各种名义送给海宁市房地产管理处拆迁办负责相关事宜的工作人员顾某共计人民币2万元。公诉机关认为上述事实有被告人供述、证人证言、旧城改造项目立项批复及旧房拆除协议书、刑事判决书、招投标材料、招标文件、招标文件领取登记表、介某、营业执照、资质等级证书、江干区建设局文件、标书签收单、授权委托书、开标某及评分表、公司承诺书、投标报价单附表、房屋拆除施工合同会签单及施工合同、杭州市房管局文件、银行记账凭证、转账支票、现金缴款单、进账单、明某、支票某、记账凭证、银行存款日记账、情况说明、户籍证明、抓获经过、工商登记材料等证据证明，对被告单位杭州中顺拆迁工程有限公司应以××追究刑事责任，对被告人徐某应以××、××追究刑事责任。
+被告单位杭州中顺拆迁工程有限公司诉讼代表人对起诉书指控的事实无异议，请求对其从轻处罚。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

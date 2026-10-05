@@ -1,0 +1,38 @@
+Edit: agents\label_lexicon_snap_memory.py
+
+replace_all: False
+old_string:
+        ranked = self._ranked(query)
+        chosen: list[dict] = []
+        seen: set[int] = set()
+        total = 0
+        for score, idx, ex in ranked[:_RETRIEVE_K]:
+            # The top hit is always kept; others must stay within the margin.
+            if chosen and score < _ANNEX_MARGIN * ranked[0][0]:
+                break
+            part_len = len(ex["target"]) + len(ex.get("raw_question", "")) + 8
+            if total + part_len > MAX_CHARS:
+                continue
+            chosen.append(ex)
+            seen.add(idx)
+            total += part_len
+        return chosen
+
+new_string:
+        ranked = self._ranked(query)
+        chosen: list[dict] = []
+        total = 0
+        for score, _idx, ex in ranked[:_RETRIEVE_K]:
+            # The top hit is always kept; others must stay within the margin.
+            if chosen and score < _ANNEX_MARGIN * ranked[0][0]:
+                break
+            part_len = len(ex["target"]) + len(ex.get("raw_question", "")) + 8
+            if total + part_len > MAX_CHARS:
+                continue
+            chosen.append(ex)
+            total += part_len
+        return chosen
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\agents\label_lexicon_snap_memory.py has been updated successfully.

@@ -1,0 +1,61 @@
+Write: agents\label_centroid_memory.py
+
+content:
+"""Label Centroid Routing Memory.
+
+Replaces the confusion-matrix disambiguation phase from
+adaptive_tokenizer_confusion_memory with per-label token centroid routing.
+
+Problem with confusion-based systems: the disambiguation phase only fires when a
+stored confusion key exactly matches the (normalised) prediction — a brittle lookup
+that misses all queries for which the model is uncertain but hasn't been wrong on
+that exact pair before.  Confusion counts also accumulate unboundedly on early-
+training errors, crowding out signal from later corrections (addressed partially by
+decay, but the lookup key mismatch remains).
+
+Fix: maintain a per-label token-frequency centroid.  At predict time, compute
+Jaccard similarity between the query and each label's centroid (tokens present in
+≥30 % of that label's training examples) to identify the top CENTROID_TOP_LABELS
+most likely labels.  Retrieve examples from those candidate labels first (similarity
+ranked), then fill the remainder of the context budget globally.  The centroid
+routing fires on every query regardless of past errors and requires no exact-match
+normalisation.
+
+Selection axis C (algorithm) + memory-content axis B.
+"""
+
+import json
+import re
+from collections import defaultdict
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+
+{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Follow the patterns shown in the examples above
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+MAX_CHARS = 30000
+_CENTROID_TOP_LABELS = 3   # candidate labels returned by centroid routing
+_CENTROID_THRESHOLD = 0.3  # token must appear in this fraction of label examples
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+
+
+def _has_cjk(text: str) -> bool:
+    return bool(_CJK_RE.search(text))
+
+
+
+--- output ---
+File created successfully at: D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/agents/label_centroid_memory.py (file state is current in your context — no need to Read it back)

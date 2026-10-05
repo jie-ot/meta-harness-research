@@ -1,0 +1,171 @@
+Bash
+
+command:
+cat > /tmp/proto_segmented.py << 'PROTO'
+"""
+Prototype: input-segmented dual similarity.
+Key idea: split input into prefix (domain header) and suffix (key entity/SMILES/specific fact).
+Score examples as max(sim_prefix, sim_suffix).
+"""
+import json, re
+from collections import defaultdict
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+
+def _has_cjk(text):
+    return bool(_CJK_RE.search(text))
+
+def _tokenize_word(text):
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+def _tokenize_bigram(text):
+    t = re.sub(r'\s+', ' ', text.strip())
+    if len(t) < 2:
+        return frozenset([t]) if t else frozenset()
+    return frozenset(t[i:i+2] for i in range(len(t)-1))
+
+def _tokenize_adaptive(text):
+    return _tokenize_bigram(text) if _has_cjk(text) else _tokenize_word(text)
+
+def _jaccard(a, b):
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+def _split_input(text, suffix_chars=500):
+    """Split into prefix and suffix. Suffix captures the most specific part."""
+    if len(text) <= suffix_chars:
+        return text, text
+    return text[:-suffix_chars], text[-suffix_chars:]
+
+# Load USPTO trace - this is the hardest task
+log = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/USPTO/decayed_confusion_memory/gpt-oss-120b/log.jsonl'
+lines = open(log, encoding='utf-8').readlines()
+steps = [json.loads(l) for l in lines if json.loads(l).get('type')=='step']
+
+# Load USPTO memory
+mem_path = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/USPTO/decayed_confusion_memory/gpt-oss-120b/memory.json'
+mem = json.load(open(mem_path, encoding='utf-8'))
+
+examples = []
+for ex in mem['examples']:
+    restored = dict(ex)
+    if isinstance(restored.get('tokens'), list):
+        restored['tokens'] = frozenset(restored['tokens'])
+    else:
+        raw_q = restored.get('raw_question', restored.get('input', ''))
+        restored['tokens'] = _tokenize_adaptive(raw_q)
+    # Also compute split tokens
+    raw_q = restored.get('raw_question', restored.get('input', ''))
+    prefix, suffix = _split_input(raw_q)
+    restored['tokens_prefix'] = _tokenize_adaptive(prefix)
+    restored['tokens_suffix'] = _tokenize_bigram(suffix)  # always bigram for suffix (catches SMILES)
+    examples.append(restored)
+
+print(f"Loaded {len(examples)} USPTO examples")
+
+# Show what the suffix looks like for USPTO
+print("\nSuffix samples (USPTO - should contain SMILES):")
+for ex in examples[:3]:
+    raw_q = ex.get('raw_question', ex.get('input', ''))
+    prefix, suffix = _split_input(raw_q)
+    print(f"  Prefix ({len(prefix)} chars): {repr(prefix[:80])}")
+    print(f"  Suffix ({len(suffix)} chars): {repr(suffix[:100])}")
+    print()
+
+# Measure: does segmented similarity improve top-1 hit rate vs flat similarity?
+def get_top_k_flat(query, examples, k=5):
+    q_tok = _tokenize_adaptive(query)
+    scored = [(_jaccard(q_tok, ex['tokens']), i, ex) for i, ex in enumerate(examples)]
+    scored.sort(key=lambda x: (x[0], x[1]), reverse=True)
+    return [ex for _, _, ex in scored[:k]]
+
+def get_top_k_segmented(query, examples, k=5):
+    prefix, suffix = _split_input(query)
+    q_prefix = _tokenize_adaptive(prefix)
+    q_suffix = _tokenize_bigram(suffix)  # always bigram for suffix
+    scored = []
+    for i, ex in enumerate(examples):
+        sim_prefix = _jaccard(q_prefix, ex['tokens_prefix'])
+        sim_suffix = _jaccard(q_suffix, ex['tokens_suffix'])
+        combined = max(sim_prefix, sim_suffix)
+        scored.append((combined, i, ex))
+    scored.sort(key=lambda x: (x[0], x[1]), reverse=True)
+    return [ex for _, _, ex in scored[:k]]
+
+# For each test step, check if the correct target (ground truth from memory context)
+# appears more frequently in the top-5 retrieved by segmented vs flat
+# We can't simulate exact prediction, but we can check similarity-to-target of top retrieved
+correct_target_in_top5_flat = 0
+correct_target_in_top5_seg = 0
+total_steps = 0
+
+for s in steps[:30]:  # first 30 steps only
+    if s.get('type') != 'step':
+        continue
+    step_num = s.get('step', -1)
+    # Pool is examples seen so far
+    pool = examples[:step_num] if step_num > 0 else []
+    if not pool:
+        continue
+    total_steps += 1
+    query = s.get('input_preview', '')
+    target = s.get('tgt', '')
+    
+    top5_flat = get_top_k_flat(query, pool, k=5)
+    top5_seg = get_top_k_segmented(query, pool, k=5)
+    
+    flat_targets = [ex['target'] for ex in top5_flat]
+    seg_targets = [ex['target'] for ex in top5_seg]
+    
+    if target in flat_targets:
+        correct_target_in_top5_flat += 1
+    if target in seg_targets:
+        correct_target_in_top5_seg += 1
+
+print(f"\nSteps evaluated: {total_steps}")
+print(f"Target in top-5 (flat): {correct_target_in_top5_flat}/{total_steps} = {correct_target_in_top5_flat/max(total_steps,1)*100:.1f}%")
+print(f"Target in top-5 (segmented): {correct_target_in_top5_seg}/{total_steps} = {correct_target_in_top5_seg/max(total_steps,1)*100:.1f}%")
+
+# Also compare similarity scores for query-target pairs
+print("\nSimilarity score comparison (flat vs segmented) for a few examples:")
+for s in steps[5:10]:
+    step_num = s.get('step', -1)
+    pool = examples[:step_num] if step_num > 0 else []
+    if not pool: continue
+    query = s.get('input_preview', '')
+    target = s.get('tgt', '')
+    prefix, suffix = _split_input(query)
+    q_flat = _tokenize_adaptive(query)
+    q_prefix = _tokenize_adaptive(prefix)
+    q_suffix = _tokenize_bigram(suffix)
+    for ex in pool:
+        if ex['target'] == target:
+            sim_flat = _jaccard(q_flat, ex['tokens'])
+            sim_prefix = _jaccard(q_prefix, ex['tokens_prefix'])
+            sim_suffix = _jaccard(q_suffix, ex['tokens_suffix'])
+            print(f"  step={step_num}, flat={sim_flat:.3f}, prefix={sim_prefix:.3f}, suffix={sim_suffix:.3f}, max={max(sim_prefix,sim_suffix):.3f}")
+            break
+PROTO
+python /tmp/proto_segmented.py
+
+description: Prototype input-segmented dual similarity on USPTO data
+
+--- output ---
+Loaded 50 USPTO examples
+
+Suffix samples (USPTO - should contain SMILES):
+  Prefix (98 chars): 'Context: The reaction type is Protections.\nInput: COC(=O)[C@@H](NC(=O)OC(C)(C)C)'
+  Suffix (98 chars): 'Context: The reaction type is Protections.\nInput: COC(=O)[C@@H](NC(=O)OC(C)(C)C)c1ccccc1C\nAnswer: '
+
+  Prefix (87 chars): 'Context: The reaction type is C-C bond formation.\nInput: Clc1ncncc1C#Cc1ccccc1\nA'
+  Suffix (87 chars): 'Context: The reaction type is C-C bond formation.\nInput: Clc1ncncc1C#Cc1ccccc1\nAnswer: '
+
+  Prefix (124 chars): 'Context: The reaction type is Deprotections.\nInput: O=C(NCC(=O)N1CCN(C(=O)c2cccc'
+  Suffix (124 chars): 'Context: The reaction type is Deprotections.\nInput: O=C(NCC(=O)N1CCN(C(=O)c2ccccc2C(F)(F)F)CC1)c1ccc'
+
+
+Steps evaluated: 29
+Target in top-5 (flat): 0/29 = 0.0%
+Target in top-5 (segmented): 0/29 = 0.0%
+
+Similarity score comparison (flat vs segmented) for a few examples:

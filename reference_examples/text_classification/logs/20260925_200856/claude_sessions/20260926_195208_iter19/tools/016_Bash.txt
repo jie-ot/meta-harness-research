@@ -1,0 +1,27 @@
+Bash
+
+command:
+python -c "
+import json
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+for system in ['reasoning_trace_memory', 'error_summary_memory']:
+    for dataset in ['USPTO', 'LawBench', 'Symptom2Disease']:
+        import os
+        vpath = os.path.join(base, dataset, system, 'gpt-oss-120b', 'val.json')
+        if os.path.exists(vpath):
+            with open(vpath) as f:
+                d = json.load(f)
+            print(f'{system} / {dataset}: {d.get(\"accuracy\", d)}')
+        else:
+            print(f'{system} / {dataset}: no val.json')
+" 2>&1
+
+description: Read iter-18 per-dataset val accuracy
+
+--- output ---
+reasoning_trace_memory / USPTO: 0.23333333333333334
+reasoning_trace_memory / LawBench: 0.36
+reasoning_trace_memory / Symptom2Disease: 0.86
+error_summary_memory / USPTO: 0.26666666666666666
+error_summary_memory / LawBench: 0.32
+error_summary_memory / Symptom2Disease: 0.88

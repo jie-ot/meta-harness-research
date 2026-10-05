@@ -1,0 +1,51 @@
+Read: agents\label_lexicon_snap_memory.py
+
+offset: 186
+limit: 45
+
+--- output ---
+186	        return scored
+187	
+188	    def _select(self, query: str) -> list[dict]:
+189	        if not self.examples:
+190	            return []
+191	        ranked = self._ranked(query)
+192	        chosen: list[dict] = []
+193	        seen: set[int] = set()
+194	        total = 0
+195	        for score, idx, ex in ranked[:_RETRIEVE_K]:
+196	            # The top hit is always kept; others must stay within the margin.
+197	            if chosen and score < _ANNEX_MARGIN * ranked[0][0]:
+198	                break
+199	            part_len = len(ex["target"]) + len(ex.get("raw_question", "")) + 8
+200	            if total + part_len > MAX_CHARS:
+201	                continue
+202	            chosen.append(ex)
+203	            seen.add(idx)
+204	            total += part_len
+205	        return chosen
+206	
+207	    def _examples_section(self, picked: list[dict]) -> str:
+208	        if not picked:
+209	            return "(no examples available yet — reason from the facts alone)"
+210	        return "\n\n".join(
+211	            f"Q: {ex.get('raw_question', ex['input'])}\nA: {ex['target']}"
+212	            for ex in picked
+213	        )
+214	
+215	    # ------------------------------------------------------------------
+216	    # MemorySystem interface
+217	    # ------------------------------------------------------------------
+218	
+219	    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+220	        picked = self._select(input)
+221	        prompt = PROMPT_TEMPLATE.format(
+222	            examples_section=self._examples_section(picked),
+223	            input=input,
+224	        )
+225	        response = self.call_llm(prompt)
+226	        raw = extract_json_field(response, "final_answer")
+227	        answer = _canonicalize(raw, self.lexicon) if raw else raw
+228	        repaired = answer != _strip_markup(raw)
+229	        return answer, {
+230	            "full_response": response,

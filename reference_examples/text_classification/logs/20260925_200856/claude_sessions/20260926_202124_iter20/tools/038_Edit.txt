@@ -1,0 +1,57 @@
+Edit: agents\notation_adaptive_memory.py
+
+replace_all: False
+old_string:
+"""Symmetric Confusion Memory.
+
+Extends decayed_confusion_memory with one structural change to the confusion
+matrix learning strategy (axis E): confusion entries are stored symmetrically.
+
+Problem with the baseline: the confusion matrix only records pred→gt edges.
+The disambiguation phase looks up what labels were *predicted* as the top
+candidate labels and then finds what they were confused with. This fires rarely
+because the top candidate labels at query time are ground-truth labels (pulled
+from stored examples), not predicted labels — so lookup keys almost never match
+stored confusion keys. Prototype traces showed only 21/200 disambiguation fires.
+
+Fix: when an error pred→gt is recorded, also record the reverse edge gt→pred at
+half weight. This doubles the number of confusion keys, so when the disambiguation
+phase looks up a top candidate label (a ground-truth label), it now finds confusion
+partners from the gt→pred direction. Prototype traces showed this raises coverage
+from 21/200 to 170/200 fires — an 8× improvement in disambiguation activation.
+
+Both directions decay at the same DECAY_FACTOR. All other mechanics (adaptive
+tokenizer, two-phase retrieval, prediction normalization) are unchanged.
+"""
+
+new_string:
+"""Notation-Adaptive Memory.
+
+Extends symmetric_confusion_memory with a three-way tokenizer routing strategy
+(axis C — selection algorithm) that adds detection for structured notation.
+
+Problem: the adaptive tokenizer in all prior systems routes on a binary: CJK text
+→ character bigrams, everything else → word tokens ([A-Za-z0-9]+). This works
+well for natural-language inputs, but structured notations (chemical SMILES
+strings, molecular formulae, accession numbers, structured codes) are ASCII yet
+contain almost no meaningful word-level tokens. A SMILES string like
+  COC(=O)[C@@H](N)c1ccc(cc1)C
+yields only {'coc', 'o', 'c', 'h', 'n', 'c1ccc', 'cc1', 'c'} under the word
+tokenizer — losing all structural information in the parentheses, brackets,
+stereo bonds, ring closure digits, and bond symbols that distinguish one
+compound from another.
+
+Fix: add a third routing branch before the CJK check. If the input is
+non-CJK but has a high proportion of non-alphanumeric characters (ratio > 0.35
+among the non-space characters), treat it as structured notation and use
+character bigrams. The threshold of 0.35 separates:
+  - Natural language ASCII (ratio ~0.10-0.20): stays on word tokens
+  - Structured notations (ratio ~0.40-0.70): routes to bigrams
+
+All other mechanics (two-phase confusion/similarity retrieval, symmetric edges,
+prediction normalization, decay) are unchanged from symmetric_confusion_memory.
+"""
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\notation_adaptive_memory.py has been updated successfully.

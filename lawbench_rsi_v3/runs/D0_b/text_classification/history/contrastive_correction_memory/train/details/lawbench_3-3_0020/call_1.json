@@ -1,0 +1,72 @@
+{
+  "call_id": "ea9d6f19227848fda92acd7df8900362",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791014218-R3NqJhmrQudlAMzkNagX",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant committed two distinct criminal acts. First, he stole two electric bicycles using a prepared key to unlock the locks, with a total value of 4,860 yuan, which qualifies as theft (盗窃) with a relatively large amount. Second, during a search he was found to be in possession of 7.34 g of methamphetamine and 4.41 g of heroin (total 12.45 g), which meets the statutory threshold for illegal possession of narcotics, constituting the crime of illegal possession of drugs (非法持有毒品). Both crimes are separate and should be listed together.\",\n  \"final_answer\": \"[罪名]盗窃;非法持有毒品<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate crime(s) based on facts.\n\nFirst part: theft of electric bikes. Two incidents, value 1964 + 2896 = 4860 yuan, which is \"数额较大\". So crime: theft (盗窃罪). In examples they used \"盗窃\" as the label. So first crime: 盗窃.\n\nSecond part: illegal possession of drugs. They seized 7.34g methamphetamine (甲基苯丙胺, i.e., meth) and 4.41g heroin, plus small amounts of other. Total 12.45g. Under Chinese law, possession of certain amounts triggers \"非法持有毒品罪\" (illegal possession of narcotics). The examples used \"非法持有毒品\". So second crime: 非法持有毒品.\n\nThus answer should be \"盗窃;非法持有毒品\". Ensure format: [罪名]盗窃;非法持有毒品<eoa>\n\nReturn JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate crime(s) based on facts.\n\nFirst part: theft of electric bikes. Two incidents, value 1964 + 2896 = 4860 yuan, which is \"数额较大\". So crime: theft (盗窃罪). In examples they used \"盗窃\" as the label. So first crime: 盗窃.\n\nSecond part: illegal possession of drugs. They seized 7.34g methamphetamine (甲基苯丙胺, i.e., meth) and 4.41g heroin, plus small amounts of other. Total 12.45g. Under Chinese law, possession of certain amounts triggers \"非法持有毒品罪\" (illegal possession of narcotics). The examples used \"非法持有毒品\". So second crime: 非法持有毒品.\n\nThus answer should be \"盗窃;非法持有毒品\". Ensure format: [罪名]盗窃;非法持有毒品<eoa>\n\nReturn JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine appropriate crime(s) based on facts.\n\nFirst part: theft of electric bikes. Two incidents, value 1964 + 2896 = 4860 yuan, which is \"数额较大\". So crime: theft (盗窃罪). In examples they used \"盗窃\" as the label. So first crime: 盗窃.\n\nSecond part: illegal possession of drugs. They seized 7.34g methamphetamine (甲基苯丙胺, i.e., meth) and 4.41g heroin, plus small amounts of other. Total 12.45g. Under Chinese law, possession of certain amounts triggers \"非法持有毒品罪\" (illegal possession of narcotics). The examples used \"非法持有毒品\". So second crime: 非法持有毒品.\n\nThus answer should be \"盗窃;非法持有毒品\". Ensure format: [罪名]盗窃;非法持有毒品<eoa>\n\nReturn JSON with reasoning and final answer.",
+            "refusal": null,
+            "reasoning_content": "We need to determine appropriate crime(s) based on facts.\n\nFirst part: theft of electric bikes. Two incidents, value 1964 + 2896 = 4860 yuan, which is \"数额较大\". So crime: theft (盗窃罪). In examples they used \"盗窃\" as the label. So first crime: 盗窃.\n\nSecond part: illegal possession of drugs. They seized 7.34g methamphetamine (甲基苯丙胺, i.e., meth) and 4.41g heroin, plus small amounts of other. Total 12.45g. Under Chinese law, possession of certain amounts triggers \"非法持有毒品罪\" (illegal possession of narcotics). The examples used \"非法持有毒品\". So second crime: 非法持有毒品.\n\nThus answer should be \"盗窃;非法持有毒品\". Ensure format: [罪名]盗窃;非法持有毒品<eoa>\n\nReturn JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 386,
+      "prompt_tokens": 8216,
+      "total_tokens": 8602,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 224,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0003121,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0003121,
+        "upstream_inference_prompt_cost": 0.00024648,
+        "upstream_inference_completions_cost": 6.562e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

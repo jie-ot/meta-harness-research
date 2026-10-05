@@ -1,0 +1,77 @@
+Write: _proto_balanced.py
+
+content:
+"""Prototype: label-balanced vs recency selection at various char budgets."""
+import collections
+import random
+
+LABELS = [
+    "typhoid", "psoriasis", "allergy", "fungal infection", "chicken pox",
+    "diabetes", "hypertension", "cervical spondylosis", "bronchial asthma",
+    "varicose veins", "malaria", "dengue", "arthritis", "impetigo",
+    "common cold", "gastroesophageal reflux disease", "urinary tract infection",
+    "pneumonia", "peptic ulcer disease", "jaundice", "migraine", "drug reaction",
+]
+
+# Generate 200 training examples with skewed label distribution (mimics real imbalance)
+rng = random.Random(42)
+pool = []
+for i in range(200):
+    if rng.random() < 0.35:
+        label = rng.choice(LABELS[:4])  # first 4 labels overrepresented
+    else:
+        label = rng.choice(LABELS)
+    q = f"Patient reports symptom set {i}: " + ", ".join(rng.choices(["fever","cough","rash","pain","nausea","fatigue"], k=3))
+    pool.append({"raw_question": q, "target": label})
+
+
+def recency_select(pool, max_chars):
+    parts, total = [], 0
+    for ex in reversed(pool):
+        part = f"Q: {ex['raw_question']}\nA: {ex['target']}"
+        if total + len(part) + 2 > max_chars:
+            break
+        parts.append(part)
+        total += len(part) + 2
+    return list(reversed(parts))
+
+
+def label_balanced_select(pool, max_chars):
+    """Round-robin across per-label buckets (most recent first within each bucket)."""
+    by_label = collections.defaultdict(list)
+    for ex in pool:
+        by_label[ex["target"]].append(ex)
+    # Each bucket ordered oldest→newest; we pop from the end (most recent first)
+    queues = {l: list(exs) for l, exs in by_label.items()}
+    label_order = sorted(queues.keys())
+    parts, total = [], 0
+    changed = True
+    while changed:
+        changed = False
+        for label in label_order:
+            if not queues[label]:
+                continue
+            ex = queues[label].pop()  # most recent
+            part = f"Q: {ex['raw_question']}\nA: {ex['target']}"
+            if total + len(part) + 2 > max_chars:
+                return parts
+            parts.append(part)
+            total += len(part) + 2
+            changed = True
+    return parts
+
+
+def coverage(parts):
+    return len({p.split("\nA: ")[-1] for p in parts})
+
+
+for budget in [3000, 6294, 10000, 30000]:
+    r = recency_select(pool, budget)
+    b = label_balanced_select(pool, budget)
+    print(f"budget={budget:6d}  recency: {len(r):3d} ex, {coverage(r):2d} labels"
+          f"  |  balanced: {len(b):3d} ex, {coverage(b):2d} labels")
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\_proto_balanced.py (file state is current in your context — no need to Read it back)

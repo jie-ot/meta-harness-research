@@ -1,0 +1,37 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the facts describe a person in a managerial or official position receiving money or valuables in exchange for using their职务便利, classify the crime simply as "受贿" unless the source explicitly states 
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- When the statutory offense name in the facts contains multiple listed items separated by commas (e.g., “走私国家禁止进出口的货物、物品”), always output the complete official charge name including every listed item.
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+- When the factual scenario describes a major safety accident caused by negligence of the responsible party and the prosecution frames the liability under the '重大责任事故' provision of the Criminal Law, the
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:南阳市卧龙区人民检察院指控：
+被告人尹某在任唐河县国土资源管理局主任科员兼党委委员期间，利用职务之便，为他人谋取利益，非法收受他人现金计13.9万元据为己有，其中：
+1、2011年12月份一天，被告人尹某在负责唐河县土地整理中心二期移民生产用地土地整理项目期间，福建路港集团河南分公司负责人王某某（另案处理）为感谢尹某在项目投标及施工中对他的关照，到唐河国土资源管理局三楼西头办公室，送给尹某现金20000元，尹某将该款占为己有。
+2、2012年1月份一天，被告人尹某在负责唐河县土地整理中心二期移民生产用地土地整理项目期间，王某某为感谢被告人尹某在项目投标及工程承揽中对他的关照，在唐河唐城金源小区门口，送给尹某现金2000元，尹某将该款占为己有。
+3、2012年6月份一天，被告人尹某在负责唐河县土地整理中心龙潭镇等四个镇土地整治项目期间，福建路港集团河南分公司负责人王某某为感谢尹某在项目投标及承揽工程中对他的关照，在唐河唐城金源小区附近，给尹某送现金20000元，尹某将该款占为己有。2013年3月13日，被告人尹某听说原局长郭某某因为在唐河国土局土地整理项目工作中的有关问题被市纪委双规调查，让其儿子将20000元上缴到唐河县纪委廉政账户。
+4、2012年9月份一天，被告人尹某在负责唐河县土地整理中心龙潭镇等四个镇土地整治项目期间，王某某为感谢被告人尹某在该项目中标记工程承揽中对他的关照，在唐河唐城金源小区尹某家中给其送价值2000元的万某购物卡，尹某将该卡收下后占为己有。
+5、2012年9月份一天，被告人尹某在负责唐河县土地整理中心龙潭镇等四个镇土地整治项目期间，以去北京看病花销多为借口，给王某某提供8万元的发票让王想办法解决，后在唐河县滨河路一家足浴城门口，被告人尹某收受王某某现金80000元据为己有。
+6、2013年1月份一天，在被告人尹某和王某某一起去北京检查身体期间，为感谢被告人尹某在承揽土地整理项目中的关照，王某某以代缴住院费的名义送给尹某现金10000元。2013年3月13日，被告人尹某听说原局长郭某某因为在唐河国土局土地整理项目工作中的有关问题被市纪委双规调查，让其儿子将10000元上缴到唐河县纪委廉政账户。
+7、2013年1月份，王某某为感谢被告人尹某在承揽土地整理项目中的关照，在唐河县国土局三楼的办公室送给尹某价值5000元的万某购物卡一张，尹某将该卡收下后占为己有。
+案发后，尹某已退出赃款109000元。
+公诉机关认为被告人尹某的行为触犯《中华人民共和国刑法》××规定，构成××，应当以××追究刑事责任。公诉机关向法庭提交了被告人尹某的供述、证人王某某、张某某等人的证言、书证等相应的证据，要求依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

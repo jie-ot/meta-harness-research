@@ -1,0 +1,64 @@
+Write: agents\lesson_memo_memory.py
+
+content:
+"""LessonMemoMemory — LLM-synthesized lesson memos from error batches.
+
+Axis F exploitation on top of bigram_confusion_memory: the LLM is called
+once per error batch (after accumulating _MAX_ERRORS_TO_SYNTHESIZE wrong
+predictions) to produce a compact set of generalizable rules. Rules are
+stored with bigram tokens derived from their source errors. At predict time
+the top-3 most relevant rules are injected as a "Key rules" section before
+the examples, steering the model toward correct canonical label formats and
+away from the fine-grained boundary errors that dominate remaining failures.
+
+Unlike raw contrastive pairs, synthesized rules generalize: a rule that
+identifies "when the subject is a legal entity, use the unit-form charge"
+applies to any unseen entity-bribery case, not just the specific example
+that triggered it.
+"""
+
+import json
+import re
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+MAX_CHARS = 30000
+_MAX_ERRORS_TO_SYNTHESIZE = 6   # trigger synthesis after this many new errors
+_MAX_LESSONS = 20               # rolling cap on stored lessons (evict oldest)
+_MAX_LESSON_INJECT = 3          # top-k lessons to inject per prediction
+_MAX_EXAMPLES = 15              # similarity-ranked examples to append after lessons
+
+
+def _tokenize(text: str) -> frozenset[str]:
+    """Chinese character bigrams + ASCII words."""
+    tokens: set[str] = set()
+    tokens.update(re.findall(r"[A-Za-z0-9]+", text.lower()))
+    cjk_chars = re.findall(r"[一-鿿]", text)
+    for i in range(len(cjk_chars) - 1):
+        tokens.add(cjk_chars[i] + cjk_chars[i + 1])
+    return frozenset(tokens)
+
+
+def _jaccard(a: frozenset[str], b: frozenset[str]) -> float:
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+LESSON_PROMPT = """以下是模型在若干案例中的预测错误，请总结出最多5条简明的判案规律，帮助未来避免类似错误。
+每条规律必须基于案件事实中可观测的信号，而非简单重复错误本身。
+用中文回答，格式如下：
+
+{{"lesson": "- 规律1\\n- 规律2\\n- ..."}}
+
+错误案例：
+{error_cases}
+
+请生成规律："""
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D0_b\text_classification\agents\lesson_memo_memory.py (file state is current in your context — no need to Read it back)

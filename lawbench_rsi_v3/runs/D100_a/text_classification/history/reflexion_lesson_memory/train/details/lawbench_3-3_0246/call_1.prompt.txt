@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+- If the facts describe a person in a managerial or official position receiving money or valuables in exchange for using their职务便利, classify the crime simply as "受贿" unless the source explicitly states 
+- When extracting charges, match the charge name to the specific subject described in the facts (e.g., use “单位受贿” for a unit’s bribery and “受贿” for an individual) and list the charges in the order they 
+- If the conduct described involves the creation of a fire (e.g., by welding, ignition of combustible material) that leads to extensive property loss, the appropriate charge is 失火罪 rather than 过失毁坏财物.
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:临沂市兰山区人民检察院指控，2017年7月24日10时许，被告人王某甲在未取得叉车操作证的情况下，在临沂市兰山区义堂镇葛疃村其经营的补皮厂驾驶叉车运送木皮时，叉车上的木皮不慎滑落，将在一侧工作的符某砸到在地，后经医院抢救无效死亡。经鉴定，符某符合创伤性休克合并胸部闭合性损伤死亡。案发后，王某甲拨打报警电话，并抢救被害人。后双方达成和解协议，王某甲赔偿被害人符某近亲属各项损失计40万元，并取得被害人亲属对王某甲的谅解。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

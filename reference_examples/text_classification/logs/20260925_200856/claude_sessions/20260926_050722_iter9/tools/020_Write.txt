@@ -1,0 +1,107 @@
+Write: C:/tmp/proto_normalization.py
+
+content:
+"""Prototype: verify normalization fix for confusion key alignment."""
+import re
+import json
+from collections import defaultdict
+
+# Simulated predictions from the LawBench trace
+raw_preds = [
+    "[罪名]伪造国家机关证件罪<eoa>",
+    "[罪名]敲诈勒索罪<eoa>",
+    "[罪名]故意毁坏财物<eoa>",
+    "[罪名]拐骗儿童<eoa>",
+    "[罪名]非法获取公民个人信息罪<eoa>",
+    "故意毁坏财物",  # already clean (in case some predictions are clean)
+    "[罪名]受贿;滥用职权<eoa>",
+]
+
+ground_truths = [
+    "伪造、变造、买卖国家机关公文、证件、印章",
+    "破坏计算机信息系统",
+    "故意毁坏财物",
+    "拐骗儿童",
+    "非法获取公民个人信息",
+    "故意毁坏财物",
+    "受贿;滥用职权",
+]
+
+# Normalization function
+def normalize_pred(pred: str) -> str:
+    """Strip format wrappers like '[TAG]content<eoa>' to get plain label."""
+    # Strip leading [TAG] wrapper (any content between brackets)
+    pred = re.sub(r'^\[[^\]]*\]', '', pred).strip()
+    # Strip trailing <eoa> marker
+    pred = re.sub(r'<eoa>\s*$', '', pred).strip()
+    return pred
+
+# Build confusion matrix WITHOUT normalization (current broken behavior)
+confusion_raw = defaultdict(lambda: defaultdict(int))
+for pred, gt in zip(raw_preds, ground_truths):
+    if pred != gt:
+        confusion_raw[pred][gt] += 1
+
+# Build confusion matrix WITH normalization (proposed fix)
+confusion_norm = defaultdict(lambda: defaultdict(int))
+for pred, gt in zip(raw_preds, ground_truths):
+    pred_clean = normalize_pred(pred)
+    if pred_clean != gt:
+        confusion_norm[pred_clean][gt] += 1
+
+print("=== WITHOUT normalization ===")
+print("Confusion keys:", list(confusion_raw.keys()))
+print()
+
+print("=== WITH normalization ===")
+print("Confusion keys:", list(confusion_norm.keys()))
+print()
+
+# Simulate _confusion_targets_for lookup
+# In the system, top_labels are ground-truth labels from top-ranked examples
+top_labels = ["受贿;滥用职权", "拐骗儿童", "故意毁坏财物"]
+
+print("=== Lookup test (simulating _confusion_targets_for) ===")
+print("Top candidate labels:", top_labels)
+print()
+
+# Without normalization: confusion keys are raw preds, will never match gt labels
+counts_raw = defaultdict(int)
+for lbl in top_labels:
+    row = confusion_raw.get(lbl, {})
+    for actual, cnt in row.items():
+        if actual not in set(top_labels):
+            counts_raw[actual] += cnt
+print("Without normalization - confusion targets found:", dict(counts_raw))
+
+# With normalization: confusion keys are clean labels, CAN match gt labels
+counts_norm = defaultdict(int)
+for lbl in top_labels:
+    row = confusion_norm.get(lbl, {})
+    for actual, cnt in row.items():
+        if actual not in set(top_labels):
+            counts_norm[actual] += cnt
+print("With normalization - confusion targets found:", dict(counts_norm))
+
+# Also test the reverse: the system also checks predictions that match ground truth
+# (model predicted X but actual was Y → X confused with Y)
+# Let's also check: do we want confusion[pred][gt] or confusion[gt][pred]?
+# The system stores: self.confusion[pred][gt] += 1
+# Then looks up: for lbl in top_labels: row = self.confusion.get(lbl, {})
+# So it looks for: "I predicted this label in the past, what was the actual?"
+# That means it needs: confusion[top_label][other] → "when I predicted top_label, I was actually wrong"
+# This requires pred keys to match top_labels (ground-truth labels from retrieved examples)
+# The normalization achieves exactly this.
+
+print()
+print("=== Variant: also test disambiguation injection ===")
+# After normalization, confusion targets are found. Let's verify one specific case:
+# The model predicts "受贿;滥用职权" but actual was something else
+for k, v in confusion_norm.items():
+    if k == "受贿;滥用职权":
+        print(f"  When model predicted '受贿;滥用职权', it was actually: {dict(v)}")
+
+
+
+--- output ---
+File created successfully at: C:/tmp/proto_normalization.py (file state is current in your context — no need to Read it back)

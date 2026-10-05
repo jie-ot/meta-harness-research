@@ -1,0 +1,165 @@
+Write: C:/tmp/proto_unified.py
+
+content:
+"""Prototype: unified confusion-similarity scoring vs. two-phase selection.
+
+Loads a real LawBench checkpoint at step ~150, then compares:
+  A) two-phase (current frontier): inject confusion slots, then fill by similarity
+  B) unified: rank all examples by jaccard + alpha * log(1+confusion_count)
+
+Reports how many distinct labels appear in the top-20 selected examples.
+"""
+import json, re, math, pathlib
+from collections import defaultdict
+
+LOG = pathlib.Path("D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/LawBench/adaptive_tokenizer_confusion_memory/gpt-oss-120b/log.jsonl")
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+def has_cjk(t): return bool(_CJK_RE.search(t))
+def tok_word(t): return frozenset(re.findall(r"[A-Za-z0-9]+", t.lower()))
+def tok_bigram(t):
+    t = re.sub(r'\s+', ' ', t.strip())
+    return frozenset(t[i:i+2] for i in range(len(t)-1)) if len(t) >= 2 else frozenset([t])
+def tok(t): return tok_bigram(t) if has_cjk(t) else tok_word(t)
+def jaccard(a, b):
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+# Load checkpoint near step 150
+examples, confusion = [], defaultdict(lambda: defaultdict(int))
+target_step = 150
+lines = LOG.read_text(encoding='utf-8').splitlines()
+for line in lines:
+    obj = json.loads(line)
+    if obj['type'] == 'checkpoint' and obj.get('step', 0) == target_step:
+        state = json.loads(obj['memory_state'])
+        for ex in state['examples']:
+            tokens = frozenset(ex['tokens']) if isinstance(ex['tokens'], list) else ex['tokens']
+            if not isinstance(tokens, frozenset):
+                tokens = frozenset(tokens)
+            raw_q = ex.get('raw_question', ex['input'])
+            examples.append({'input': ex['input'], 'target': ex['target'],
+                             'tokens': tok(raw_q), 'raw_question': raw_q})
+        for pred, actuals in state.get('confusion', {}).items():
+            for actual, cnt in actuals.items():
+                confusion[pred][actual] = cnt
+        print(f"Loaded {len(examples)} examples, confusion pairs: {sum(len(v) for v in confusion.values())}")
+        break
+
+if not examples:
+    print("No checkpoint at step 150, trying step 100")
+    for line in lines:
+        obj = json.loads(line)
+        if obj['type'] == 'checkpoint' and obj.get('step', 0) == 100:
+            state = json.loads(obj['memory_state'])
+            for ex in state['examples']:
+                raw_q = ex.get('raw_question', ex['input'])
+                examples.append({'input': ex['input'], 'target': ex['target'],
+                                 'tokens': tok(raw_q), 'raw_question': raw_q})
+            for pred, actuals in state.get('confusion', {}).items():
+                for actual, cnt in actuals.items():
+                    confusion[pred][actual] = cnt
+            print(f"Loaded {len(examples)} examples at step 100")
+            break
+
+# Pick a test query from step 160
+query_ex = None
+for line in lines:
+    obj = json.loads(line)
+    if obj['type'] == 'step' and obj.get('step', 0) == 160:
+        query_ex = obj
+        break
+
+if query_ex is None:
+    query_ex = json.loads(lines[-5]) if len(lines) > 5 else None
+
+if query_ex:
+    raw_q = query_ex.get('input_preview', '')
+    print(f"\nTest query (first 80 chars): {raw_q[:80]}")
+    print(f"Ground truth: {query_ex.get('tgt','?')[:50]}")
+
+    q_tok = tok(raw_q)
+    ranked = sorted([(jaccard(q_tok, ex['tokens']), i, ex) for i, ex in enumerate(examples)],
+                    key=lambda x: (x[0], x[1]), reverse=True)
+
+    # --- Method A: two-phase (current frontier) ---
+    top_labels = [ex['target'] for _, _, ex in ranked[:3]]
+    label_set = set(top_labels)
+    conf_counts = defaultdict(int)
+    for lbl in top_labels:
+        for actual, cnt in confusion.get(lbl, {}).items():
+            if actual not in label_set:
+                conf_counts[actual] += cnt
+    confused_labels = [l for l, _ in sorted(conf_counts.items(), key=lambda x: -x[1])][:3]
+
+    parts_A = []
+    used = set()
+    total = 0
+    MAX = 30000
+    per_lbl = defaultdict(list)
+    for score, idx, ex in ranked:
+        if ex['target'] in set(confused_labels):
+            per_lbl[ex['target']].append((score, idx, ex))
+    for _r in range(2):
+        for lbl in confused_labels:
+            for score, idx, ex in per_lbl.get(lbl, []):
+                if idx not in used:
+                    parts_A.append((score, idx, ex))
+                    used.add(idx)
+                    break
+    for score, idx, ex in ranked:
+        if idx not in used:
+            parts_A.append((score, idx, ex))
+            used.add(idx)
+        if len(parts_A) >= 20:
+            break
+
+    # --- Method B: unified scoring ---
+    def confusion_affinity(label, top_labels, confusion):
+        total = 0
+        for tl in top_labels:
+            total += confusion.get(tl, {}).get(label, 0)
+            total += confusion.get(label, {}).get(tl, 0)
+        return total
+
+    ALPHA = 0.3
+    unified_ranked = []
+    for score, idx, ex in ranked:
+        ca = confusion_affinity(ex['target'], top_labels, confusion)
+        unified_score = score + ALPHA * math.log(1 + ca)
+        unified_ranked.append((unified_score, idx, ex))
+    unified_ranked.sort(key=lambda x: (x[0], x[1]), reverse=True)
+    parts_B = unified_ranked[:20]
+
+    # Compare label diversity
+    labels_A = [ex['target'] for _, _, ex in parts_A[:20]]
+    labels_B = [ex['target'] for _, _, ex in parts_B]
+    distinct_A = len(set(labels_A))
+    distinct_B = len(set(labels_B))
+
+    print(f"\n--- Method A (two-phase) top-20 ---")
+    print(f"Distinct labels: {distinct_A}")
+    print(f"Confusion injected: {confused_labels}")
+    print(f"Top-5 selected labels: {labels_A[:5]}")
+
+    print(f"\n--- Method B (unified, alpha={ALPHA}) top-20 ---")
+    print(f"Distinct labels: {distinct_B}")
+    print(f"Scores: {[round(s,4) for s,_,_ in parts_B[:5]]}")
+    print(f"Top-5 selected labels: {labels_B[:5]}")
+
+    # Try different alpha values
+    for alpha in [0.1, 0.2, 0.3, 0.5]:
+        ur = []
+        for score, idx, ex in ranked:
+            ca = confusion_affinity(ex['target'], top_labels, confusion)
+            ur.append((score + alpha * math.log(1 + ca), idx, ex))
+        ur.sort(key=lambda x: (x[0], x[1]), reverse=True)
+        lbls = [ex['target'] for _, _, ex in ur[:20]]
+        print(f"  alpha={alpha}: distinct_labels={len(set(lbls))}, confusion_labels_covered={len(set(lbls) & set(confused_labels))}")
+else:
+    print("No query found")
+
+
+
+--- output ---
+File created successfully at: C:/tmp/proto_unified.py (file state is current in your context — no need to Read it back)

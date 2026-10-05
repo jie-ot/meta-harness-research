@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the facts describe a person performing any medical diagnosis, treatment, or related procedure without a valid medical license, classify the conduct under the statutory offense of “非法行医” rather th
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+- When the conduct consists of performing an abortion or sex‑selective termination of pregnancy without a medical license, classify the offense under the specific crime of ‘非法进行节育手术’ rather than as sepa
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the facts describe manufacturing or selling drugs without the required drug production license and using false or misleading packaging/labels (i.e., the product is a counterfeit or unapproved dru
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，2012年底，被告人廖某某在重庆市沙坪坝区新桥农贸市场附近开设“某口腔修复保健护理中心”，廖某某在未取得《执业医师资格证》，其经营的诊所无《医疗机构执业许可证》的情况下，开展诊疗活动，先后于2013年1月29日、2014年12月18日被重庆市沙坪坝区卫生局行政处罚2次。2014年12月26日11时许，廖某某在其经营的诊所内为赵某进行镶牙治疗时，被民警现行查获。
+上述事实，被告人廖某某在开庭审理过程中亦无异议，且有证人赵某、余某某的证言，辨认笔录，提取笔录，扣押物品清单，指认现场照片，到案经过，行政处罚决定书，沙坪坝区卫生局出具的证明以及廖某某的供述等证据证实，足以认定。
+公诉机关建议对被告人廖某某判处××至五个月，并处罚金。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

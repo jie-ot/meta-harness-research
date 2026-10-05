@@ -1,0 +1,23 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:上栗县人民检察院指控，2015年3月起，被告人张某在未取得制造烟花鞭炮的行政许可的情况下，在上栗县金山镇龙泉村欧某老屋内，用高氯酸钾、银粉、硫磺等材料配制点火药和过火药，并雇请赖某、叶某为擦炮上点火药和封尾，生产擦炮。同年11月10日公安人员在该屋内查获点火药11千克、过火药70千克、半成某擦炮998饼、成某擦炮1020饼。经鉴定，查获的点火药属于烟火药，擦炮成某和半成某中含有烟火药。
+针对指控的事实，公诉机关当庭出示并宣读了物证、书证、证人证言、被告人供述和辩解、鉴定意见、勘验笔录、辨认笔录等证据。公诉机关认为，被告人张某非法制造爆炸物，其行为触犯了《中华人民共和国刑法》××之规定，应当以非法制造爆炸物罪追究其刑事责任。
+
+
+Wrong prediction: [罪名]非法制造爆炸物<eoa>
+Correct answer: 非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

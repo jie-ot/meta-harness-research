@@ -1,0 +1,25 @@
+Edit: agents\act_decomposition_union_memory.py
+
+replace_all: False
+old_string:
+  2. Answer-cardinality prior — the observed distribution of |truth| conditioned on
+     how many acts were detected — trims a union that is longer than this kind of
+     fact ever warrants, dropping the weakest-evidence excess first.
+
+new_string:
+  2. Answer-cardinality prior — the observed distribution of |truth| conditioned on
+     how many acts were detected — trims a union that is longer than this kind of
+     fact ever warrants, dropping the weakest-evidence excess first.
+
+The two layers are deliberately unequal in strength. An act's charge is *grounded*:
+the model read that act and named what it supports. The cardinality prior is only a
+*prior*, so it never gets to contradict grounded evidence — it may cut the union
+down toward the observed size, but never below the number of acts that actually
+produced a charge. Likewise a size bucket is only used once at least
+``MIN_BUCKET_OBS`` items have landed in it, so a single observation can never
+retune the output. Without those two guards the prior over-trims the very
+multi-charge facts the per-act union was built to recover.
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_a\text_classification\agents\act_decomposition_union_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

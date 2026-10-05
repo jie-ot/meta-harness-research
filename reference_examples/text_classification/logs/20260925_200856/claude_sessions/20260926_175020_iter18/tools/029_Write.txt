@@ -1,0 +1,29 @@
+Write: logs\20260925_200856\pending_eval.json
+
+content:
+{
+  "iteration": 18,
+  "candidates": [
+    {
+      "name": "reasoning_trace_memory",
+      "file": "agents/reasoning_trace_memory.py",
+      "hypothesis": "Storing the LLM's reasoning chain alongside correct examples and injecting a truncated reasoning prefix for the top-K most similar retrieved examples will outperform decayed_confusion_memory, because the model receives a procedural 'how to reason to this answer' template rather than only input/output pairs — giving it explicit reasoning structure to imitate rather than forcing it to infer the reasoning pattern from outcomes alone.",
+      "axis": "exploitation",
+      "base_system": "decayed_confusion_memory",
+      "components": ["reasoning_trace_storage", "correct_only_reasoning", "reasoning_prefix_injection", "top_k_reasoning_cutoff", "memory_content_axis", "decay", "prediction_normalization", "adaptive_tokenizer", "confusion_matrix"]
+    },
+    {
+      "name": "error_summary_memory",
+      "file": "agents/error_summary_memory.py",
+      "hypothesis": "After each batch containing at least 5 errors, calling the LLM once to synthesize a 2-3 sentence narrative 'Current weaknesses' hint from a rolling window of recent wrong predictions and injecting that hint above the few-shot examples will outperform decayed_confusion_memory, because a synthesized natural-language description of current error patterns gives the model direct meta-knowledge about its failure modes that raw example retrieval cannot express — without the per-predict LLM overhead of two_pass_confusion_memory or the O(N^2) cost of llm_rule_synthesis_memory.",
+      "axis": "exploration",
+      "base_system": "decayed_confusion_memory",
+      "components": ["llm_error_synthesis", "rolling_error_window", "narrative_hint_injection", "hint_budget_reservation", "periodic_synthesis_trigger", "llm_usage_in_learning", "decay", "prediction_normalization", "adaptive_tokenizer", "confusion_matrix"]
+    }
+  ]
+}
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\pending_eval.json (file state is current in your context — no need to Read it back)

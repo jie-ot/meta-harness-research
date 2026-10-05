@@ -1,0 +1,15 @@
+Bash
+
+command:
+powershell -Command "
+Set-Content 'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\_validate14.py' 'from text_classification.agents.missed_component_memory import MissedComponentMemory; from text_classification.agents.recent_error_hint_memory import RecentErrorHintMemory; print(\"missed_component_memory: OK\"); print(\"recent_error_hint_memory: OK\")'
+cd 'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples'
+uv run python _validate14.py
+Remove-Item _validate14.py
+"
+
+description: Validate both new agents from reference_examples directory
+
+--- output ---
+missed_component_memory: OK
+recent_error_hint_memory: OK

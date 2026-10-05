@@ -1,0 +1,72 @@
+{
+  "call_id": "45c0f93e058c4d95b13fe8b20a02f8af",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791027829-HNB7zMSE9R8BfNEmYwRC",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"lesson\": \"- 在事实描述中出现多个犯罪行为时，必须逐一识别并全部列出对应的罪名，避免只输出最显眼的单一罪名。\\n- 对于法律专有名词要使用准确的罪名表述，例如“为赌博提供场所”应对应“开设赌场”，而不是笼统的描述。\\n- 当事实涉及复合罪名（如伪造、变造、买卖国家机关公文、证件、印章）时，必须完整列出所有构成要件的罪名，使用分号分隔，不能省略任何一项。\\n- 对于“拒不执行判决、裁定”之类的罪名，直接使用法条规定的完整名称，不要自行简化或添加额外词汇。\\n- 在涉及行贿类案件时，要区分对象（非国家工作人员、单位等），并在罪名中分别列出，如“对非国家工作人员行贿;对单位行贿”，而不是仅写“行贿”。\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to infer patterns of errors. The model often outputs a single simplified crime, missing multiple charges, or misinterpreting the crime based on limited text. Need to derive lessons: need to parse full fact text, detect multiple crimes, pay attention to key terms like \"开设赌场\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"拒不执行判决、裁定\", \"盗窃;开设赌场\", \"对非国家工作人员行贿;对单位行贿\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\". Errors: model picks a generic or related but not exact term, or picks only one crime. So lessons: 1) Identify all distinct criminal conduct described, not just the most salient. 2) Use precise statutory terminology, especially for composite offenses. 3) Recognize that \"提供场所\" + \"赌博\" => \"开设赌场\" not \"为赌博提供场所\". 4) When text mentions multiple categories (e.g., \"伪造、变造、买卖...印章\"), output all. 5) Pay attention to jurisdiction-specific phrasing: \"对非国家工作人员行贿;对单位行贿\" vs just \"行贿\". Also ensure not to truncate after first semicolon.\n\nThus produce up to 5 rules.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to infer patterns of errors. The model often outputs a single simplified crime, missing multiple charges, or misinterpreting the crime based on limited text. Need to derive lessons: need to parse full fact text, detect multiple crimes, pay attention to key terms like \"开设赌场\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"拒不执行判决、裁定\", \"盗窃;开设赌场\", \"对非国家工作人员行贿;对单位行贿\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\". Errors: model picks a generic or related but not exact term, or picks only one crime. So lessons: 1) Identify all distinct criminal conduct described, not just the most salient. 2) Use precise statutory terminology, especially for composite offenses. 3) Recognize that \"提供场所\" + \"赌博\" => \"开设赌场\" not \"为赌博提供场所\". 4) When text mentions multiple categories (e.g., \"伪造、变造、买卖...印章\"), output all. 5) Pay attention to jurisdiction-specific phrasing: \"对非国家工作人员行贿;对单位行贿\" vs just \"行贿\". Also ensure not to truncate after first semicolon.\n\nThus produce up to 5 rules.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to infer patterns of errors. The model often outputs a single simplified crime, missing multiple charges, or misinterpreting the crime based on limited text. Need to derive lessons: need to parse full fact text, detect multiple crimes, pay attention to key terms like \"开设赌场\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"拒不执行判决、裁定\", \"盗窃;开设赌场\", \"对非国家工作人员行贿;对单位行贿\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\". Errors: model picks a generic or related but not exact term, or picks only one crime. So lessons: 1) Identify all distinct criminal conduct described, not just the most salient. 2) Use precise statutory terminology, especially for composite offenses. 3) Recognize that \"提供场所\" + \"赌博\" => \"开设赌场\" not \"为赌博提供场所\". 4) When text mentions multiple categories (e.g., \"伪造、变造、买卖...印章\"), output all. 5) Pay attention to jurisdiction-specific phrasing: \"对非国家工作人员行贿;对单位行贿\" vs just \"行贿\". Also ensure not to truncate after first semicolon.\n\nThus produce up to 5 rules.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to infer patterns of errors. The model often outputs a single simplified crime, missing multiple charges, or misinterpreting the crime based on limited text. Need to derive lessons: need to parse full fact text, detect multiple crimes, pay attention to key terms like \"开设赌场\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"拒不执行判决、裁定\", \"盗窃;开设赌场\", \"对非国家工作人员行贿;对单位行贿\", \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\". Errors: model picks a generic or related but not exact term, or picks only one crime. So lessons: 1) Identify all distinct criminal conduct described, not just the most salient. 2) Use precise statutory terminology, especially for composite offenses. 3) Recognize that \"提供场所\" + \"赌博\" => \"开设赌场\" not \"为赌博提供场所\". 4) When text mentions multiple categories (e.g., \"伪造、变造、买卖...印章\"), output all. 5) Pay attention to jurisdiction-specific phrasing: \"对非国家工作人员行贿;对单位行贿\" vs just \"行贿\". Also ensure not to truncate after first semicolon.\n\nThus produce up to 5 rules."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 546,
+      "prompt_tokens": 950,
+      "total_tokens": 1496,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 304,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00012132,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00012132,
+        "upstream_inference_prompt_cost": 2.85e-05,
+        "upstream_inference_completions_cost": 9.282e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

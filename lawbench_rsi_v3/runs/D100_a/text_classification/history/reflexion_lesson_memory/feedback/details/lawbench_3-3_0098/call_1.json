@@ -1,0 +1,72 @@
+{
+  "call_id": "869ffc07c8664426a963cd63c96157ab",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791038217-jPeISC9hxEqi8HdBuzEj",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The facts state that 单某 committed fraud against individuals and a company (general fraud) and also committed contract fraud against 鲁某某. According to the correction rules, when multiple distinct fraud categories are present, each should be listed separately. Additionally, 单某 refused to execute a court judgment, which is a separate offense. Therefore, the applicable crimes are 诈骗, 合同诈骗, and 拒不执行判决.\",\n  \"final_answer\": \"[罪名]诈骗;合同诈骗;拒不执行判决<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine crimes. Facts: \"上诉人单某诈骗被害人张某、沈某某及被害单位通恒公司，合同诈骗鲁某某的经过以及拒不执行判决的事实和证据与原判相同。\" So single person 单某 committed fraud against individuals and a company, and also contract fraud against 鲁某某. Also refused to execute court judgment (refusal to execute judgment). Also note that 鲁某某 received 4,000 rent before, should be deducted from amount. So crimes: 合同诈骗 (contract fraud) and 拒不执行判决 (refusal to execute judgment). Also maybe 诈骗? The description says \"诈骗被害人...以及被害单位...合同诈骗鲁某某的经过\". It says \"诈骗...以及...合同诈骗\". So there are two types: general fraud (诈骗) against individuals and company, and contract fraud (合同诈骗) against 鲁某某. According to correction rule: If factual scenario describes fraud through contract, classify as 合同诈骗 rather than generic 诈骗. Here there is both generic fraud and contract fraud. Should we list both? The rule: \"If the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately\". So we list 合同诈骗 and 诈骗. Also refusal to execute judgment: \"拒不执行判决\". So three crimes: 诈骗;合同诈骗;拒不执行判决. Need to output without the character “罪”. So just \"诈骗;合同诈骗;拒不执行判决\". Format: [罪名]诈骗;合同诈骗;拒不执行判决<eoa>. JSON with reasoning and final_answer.\n\n",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine crimes. Facts: \"上诉人单某诈骗被害人张某、沈某某及被害单位通恒公司，合同诈骗鲁某某的经过以及拒不执行判决的事实和证据与原判相同。\" So single person 单某 committed fraud against individuals and a company, and also contract fraud against 鲁某某. Also refused to execute court judgment (refusal to execute judgment). Also note that 鲁某某 received 4,000 rent before, should be deducted from amount. So crimes: 合同诈骗 (contract fraud) and 拒不执行判决 (refusal to execute judgment). Also maybe 诈骗? The description says \"诈骗被害人...以及被害单位...合同诈骗鲁某某的经过\". It says \"诈骗...以及...合同诈骗\". So there are two types: general fraud (诈骗) against individuals and company, and contract fraud (合同诈骗) against 鲁某某. According to correction rule: If factual scenario describes fraud through contract, classify as 合同诈骗 rather than generic 诈骗. Here there is both generic fraud and contract fraud. Should we list both? The rule: \"If the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately\". So we list 合同诈骗 and 诈骗. Also refusal to execute judgment: \"拒不执行判决\". So three crimes: 诈骗;合同诈骗;拒不执行判决. Need to output without the character “罪”. So just \"诈骗;合同诈骗;拒不执行判决\". Format: [罪名]诈骗;合同诈骗;拒不执行判决<eoa>. JSON with reasoning and final_answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine crimes. Facts: \"上诉人单某诈骗被害人张某、沈某某及被害单位通恒公司，合同诈骗鲁某某的经过以及拒不执行判决的事实和证据与原判相同。\" So single person 单某 committed fraud against individuals and a company, and also contract fraud against 鲁某某. Also refused to execute court judgment (refusal to execute judgment). Also note that 鲁某某 received 4,000 rent before, should be deducted from amount. So crimes: 合同诈骗 (contract fraud) and 拒不执行判决 (refusal to execute judgment). Also maybe 诈骗? The description says \"诈骗被害人...以及被害单位...合同诈骗鲁某某的经过\". It says \"诈骗...以及...合同诈骗\". So there are two types: general fraud (诈骗) against individuals and company, and contract fraud (合同诈骗) against 鲁某某. According to correction rule: If factual scenario describes fraud through contract, classify as 合同诈骗 rather than generic 诈骗. Here there is both generic fraud and contract fraud. Should we list both? The rule: \"If the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately\". So we list 合同诈骗 and 诈骗. Also refusal to execute judgment: \"拒不执行判决\". So three crimes: 诈骗;合同诈骗;拒不执行判决. Need to output without the character “罪”. So just \"诈骗;合同诈骗;拒不执行判决\". Format: [罪名]诈骗;合同诈骗;拒不执行判决<eoa>. JSON with reasoning and final_answer.\n\n",
+            "reasoning_content": "We need to determine crimes. Facts: \"上诉人单某诈骗被害人张某、沈某某及被害单位通恒公司，合同诈骗鲁某某的经过以及拒不执行判决的事实和证据与原判相同。\" So single person 单某 committed fraud against individuals and a company, and also contract fraud against 鲁某某. Also refused to execute court judgment (refusal to execute judgment). Also note that 鲁某某 received 4,000 rent before, should be deducted from amount. So crimes: 合同诈骗 (contract fraud) and 拒不执行判决 (refusal to execute judgment). Also maybe 诈骗? The description says \"诈骗被害人...以及被害单位...合同诈骗鲁某某的经过\". It says \"诈骗...以及...合同诈骗\". So there are two types: general fraud (诈骗) against individuals and company, and contract fraud (合同诈骗) against 鲁某某. According to correction rule: If factual scenario describes fraud through contract, classify as 合同诈骗 rather than generic 诈骗. Here there is both generic fraud and contract fraud. Should we list both? The rule: \"If the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately\". So we list 合同诈骗 and 诈骗. Also refusal to execute judgment: \"拒不执行判决\". So three crimes: 诈骗;合同诈骗;拒不执行判决. Need to output without the character “罪”. So just \"诈骗;合同诈骗;拒不执行判决\". Format: [罪名]诈骗;合同诈骗;拒不执行判决<eoa>. JSON with reasoning and final_answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 495,
+      "prompt_tokens": 550,
+      "total_tokens": 1045,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 448,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00016,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00016,
+        "upstream_inference_prompt_cost": 2.4615384615384616e-05,
+        "upstream_inference_completions_cost": 0.0001353846153846154
+      }
+    }
+  },
+  "raw_response_missing": false
+}

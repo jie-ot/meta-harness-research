@@ -1,0 +1,28 @@
+Bash
+
+command:
+python -c "
+import os, json
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+for ds in ['USPTO', 'Symptom2Disease', 'LawBench']:
+    p = os.path.join(base, ds, 'symmetric_confusion_memory')
+    if os.path.exists(p):
+        models = os.listdir(p)
+        print(f'{ds}/symmetric_confusion_memory: {models}')
+        for m in models:
+            vp = os.path.join(p, m, 'val.json')
+            if os.path.exists(vp):
+                with open(vp) as f: v = json.load(f)
+                print(f'  val: {v}')
+"
+
+
+description: Check iter 19 val results for symmetric_confusion_memory
+
+--- output ---
+USPTO/symmetric_confusion_memory: ['gpt-oss-120b']
+  val: {'accuracy': 0.26666666666666666, 'correct': 8, 'total': 30, 'dataset': 'USPTO', 'memory': 'agents/symmetric_confusion_memory.py', 'model': 'openrouter/openai/gpt-oss-120b', 'seed': 42, 'mode': 'online', 'num_epochs': None, 'timestamp': '2026-09-27T03:52:27.479139', 'runtime_seconds': 1.03, 'memory_context_chars': 8897, 'llm_calls': 80, 'llm_input_tokens': 0, 'llm_output_tokens': 0, 'llm_total_tokens': 0, 'estimated_cost_usd': 0.0}
+Symptom2Disease/symmetric_confusion_memory: ['gpt-oss-120b']
+  val: {'accuracy': 0.9, 'correct': 45, 'total': 50, 'dataset': 'Symptom2Disease', 'memory': 'agents/symmetric_confusion_memory.py', 'model': 'openrouter/openai/gpt-oss-120b', 'seed': 42, 'mode': 'online', 'num_epochs': None, 'timestamp': '2026-09-27T04:00:22.063495', 'runtime_seconds': 475.95, 'memory_context_chars': 30194, 'llm_calls': 250, 'llm_input_tokens': 422884, 'llm_output_tokens': 27822, 'llm_total_tokens': 450706, 'estimated_cost_usd': 0.0256}
+LawBench/symmetric_confusion_memory: ['gpt-oss-120b']
+  val: {'accuracy': 0.4, 'correct': 20, 'total': 50, 'dataset': 'LawBench', 'memory': 'agents/symmetric_confusion_memory.py', 'model': 'openrouter/openai/gpt-oss-120b', 'seed': 42, 'mode': 'online', 'num_epochs': None, 'timestamp': '2026-09-27T03:58:55.873674', 'runtime_seconds': 390.72, 'memory_context_chars': 30211, 'llm_calls': 250, 'llm_input_tokens': 999068, 'llm_output_tokens': 25378, 'llm_total_tokens': 1024446, 'estimated_cost_usd': 0.0677}

@@ -1,0 +1,72 @@
+{
+  "call_id": "75bd0d9f7e2b4042acaee4f94357a85a",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791018556-FEy2FVVfKfNqVxqPCfts",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the facts describe the illegal manufacturing and/or trading of police uniforms, caps, or other police gear, the charge must be the specific statutory offense '非法生产、买卖警用装备' rather than a generic term like '非法买卖警用物品'.\",\n  \"keywords\": [\n    \"非法买卖警服\",\n    \"警便帽\",\n    \"训练服\",\n    \"警用装备\",\n    \"生产并买卖警用装备\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with a rule that prevents the classification error: the AI predicted \"非法买卖警用物品\" but correct answer is \"非法生产、买卖警用装备\". So the error is using a too generic term \"警用物品\" vs the specific legal term \"警用装备\" and also missing \"生产\". The rule should ensure that classification uses the precise statutory offense name, matching the legal terminology. So rule: When the factual description includes \"非法买卖警服、警便帽、训练服等警用装备\", the correct charge is \"非法生产、买卖警用装备\". Keywords: \"非法买卖警服\", \"警便帽\", \"训练服\", \"警用装备\", \"生产\". Provide JSON.\n\nLet's craft: {\"rule\":\"If the facts describe the illegal manufacturing and trading of police uniforms or equipment, use the statutory charge '非法生产、买卖警用装备' rather than a generic term.\", \"keywords\":[...]}",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with a rule that prevents the classification error: the AI predicted \"非法买卖警用物品\" but correct answer is \"非法生产、买卖警用装备\". So the error is using a too generic term \"警用物品\" vs the specific legal term \"警用装备\" and also missing \"生产\". The rule should ensure that classification uses the precise statutory offense name, matching the legal terminology. So rule: When the factual description includes \"非法买卖警服、警便帽、训练服等警用装备\", the correct charge is \"非法生产、买卖警用装备\". Keywords: \"非法买卖警服\", \"警便帽\", \"训练服\", \"警用装备\", \"生产\". Provide JSON.\n\nLet's craft: {\"rule\":\"If the facts describe the illegal manufacturing and trading of police uniforms or equipment, use the statutory charge '非法生产、买卖警用装备' rather than a generic term.\", \"keywords\":[...]}",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with a rule that prevents the classification error: the AI predicted \"非法买卖警用物品\" but correct answer is \"非法生产、买卖警用装备\". So the error is using a too generic term \"警用物品\" vs the specific legal term \"警用装备\" and also missing \"生产\". The rule should ensure that classification uses the precise statutory offense name, matching the legal terminology. So rule: When the factual description includes \"非法买卖警服、警便帽、训练服等警用装备\", the correct charge is \"非法生产、买卖警用装备\". Keywords: \"非法买卖警服\", \"警便帽\", \"训练服\", \"警用装备\", \"生产\". Provide JSON.\n\nLet's craft: {\"rule\":\"If the facts describe the illegal manufacturing and trading of police uniforms or equipment, use the statutory charge '非法生产、买卖警用装备' rather than a generic term.\", \"keywords\":[...]}",
+            "reasoning_content": "We need to produce a JSON with a rule that prevents the classification error: the AI predicted \"非法买卖警用物品\" but correct answer is \"非法生产、买卖警用装备\". So the error is using a too generic term \"警用物品\" vs the specific legal term \"警用装备\" and also missing \"生产\". The rule should ensure that classification uses the precise statutory offense name, matching the legal terminology. So rule: When the factual description includes \"非法买卖警服、警便帽、训练服等警用装备\", the correct charge is \"非法生产、买卖警用装备\". Keywords: \"非法买卖警服\", \"警便帽\", \"训练服\", \"警用装备\", \"生产\". Provide JSON.\n\nLet's craft: {\"rule\":\"If the facts describe the illegal manufacturing and trading of police uniforms or equipment, use the statutory charge '非法生产、买卖警用装备' rather than a generic term.\", \"keywords\":[...]}"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 319,
+      "prompt_tokens": 392,
+      "total_tokens": 711,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 251,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 6.8734e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 6.8734e-05,
+        "upstream_inference_prompt_cost": 1.4504e-05,
+        "upstream_inference_completions_cost": 5.423e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

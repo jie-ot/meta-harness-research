@@ -1,0 +1,36 @@
+# Iteration 8 Report
+
+## What changed
+Two systems were introduced:
+- `confusion_normalized_bfs_memory` (exploitation): fixed prediction normalization in the confusion
+  matrix (stripping `[罪名]...<eoa>` wrappers) so disambiguation keys align with ground-truth
+  labels, then added BFS depth-2 traversal to surface transitively confused label clusters.
+- `label_prototype_memory` (exploration): stored one LLM-written discriminative prototype per label,
+  updated on error threshold trigger, injected top-K prototype matches above fewshot examples.
+
+## Results
+- `confusion_normalized_bfs_memory`: 48.9% avg (-2.7 from frontier 51.6%)
+- `label_prototype_memory`: 48.2% avg (-3.4 from frontier)
+- Both regressed. Frontier unchanged at `adaptive_tokenizer_confusion_memory` 51.6%.
+
+## Why each regressed
+**confusion_normalized_bfs_memory**: The normalization fix itself was correct — prior systems had
+a key-alignment bug where confusion[wrapped_pred][gt] never matched gt-keyed lookups. However,
+BFS depth-2 traversal appears to have added noise: on datasets with many fine-grained labels,
+distant BFS neighbors are rarely true confusors and dilute the disambiguation phase with irrelevant
+examples. The net effect across three datasets was negative even if LawBench improved locally.
+
+**label_prototype_memory**: Error-threshold-triggered prototype updates (only rewrite when error
+rate exceeds threshold) produced stale prototypes for labels with few training examples. Prototypes
+written early from limited data were not updated even as the model accumulated more examples.
+The 1-2 sentence descriptions also consumed context budget that examples would have used more
+efficiently on tasks with many similar-looking inputs.
+
+## Takeaways for future iterations
+1. The prediction normalization fix is correct and worth keeping — but drop BFS, use only
+   single-hop confusion lookup with cleaned keys. This alone should restore LawBench gains.
+2. Prototype/summary-style memory content underperforms raw examples when context budget is
+   ample and label descriptions overlap. Avoid LLM synthesis in learning for now.
+3. A fundamentally different retrieval axis: structured metadata extraction from inputs
+   (e.g. explicit field:value patterns in the input text) could bypass Jaccard similarity
+   entirely for tasks where inputs carry discriminative structured context.

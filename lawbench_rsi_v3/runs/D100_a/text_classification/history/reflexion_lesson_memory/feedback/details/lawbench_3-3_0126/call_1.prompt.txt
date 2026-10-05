@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When extracting the crime name, output the exact statutory offense term (e.g., “行贿”) without adding descriptive prefixes or qualifiers such as “对国家工作人员”。
+- If the factual scenario describes fraud that is carried out through the creation, signing, or performance of a contract (e.g., false representation of a business role, fictitious project, or fabricate
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:惠东县人民检察院指控：被告人吴某自2016年7月12日开始租住在惠东县黄埠镇一瓦房，临近被拐儿童施某1（女，2005年5月出生）家。期间，施某1时常会到吴某的租房玩耍。同年2016年8月16日14时许，吴某以带施某1去湖南老家玩耍为由，私自将施某1带至黄埠镇某公寓开房藏匿。次日，吴某搬离租房带上施某1逃往湖南武冈市老家，后以“养女”的名义让施与其一同生活，使唤施某1帮其做家务。2017年5月11日，公安机关在湖南省武冈市电信大楼十字路口抓获吴某，随后在吴某的住处解救施某1。
+惠东县人民检察院提交了相关证据，据此认为被告人吴某无视国家法律，拐骗不满十四周岁的未成年人，使其脱离家庭，其行为触犯《中华人民共和国刑法》××之规定，犯罪事实清楚，证据确实充分，应当以××追究其刑事责任。根据《中华人民共和国刑事诉讼法》××的规定，提请本院依法判处。
+被告人吴某当庭表示认罪，请求法庭对其从轻处罚。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

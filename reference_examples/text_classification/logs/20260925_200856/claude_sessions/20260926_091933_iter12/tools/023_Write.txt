@@ -1,0 +1,170 @@
+Write: proto_iter12.py
+
+content:
+"""Prototype for iter 12 candidates: unified scoring and length-normalized retrieval."""
+import json, re, math
+from collections import defaultdict
+from pathlib import Path
+
+BASE = Path(__file__).parent / "logs" / "20260925_200856"
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+def _has_cjk(t): return bool(_CJK_RE.search(t))
+def _tok_word(t): return frozenset(re.findall(r"[A-Za-z0-9]+", t.lower()))
+def _tok_bigram(t):
+    t = re.sub(r'\s+', ' ', t.strip())
+    return frozenset(t[i:i+2] for i in range(len(t)-1)) if len(t) >= 2 else frozenset()
+def _tok(t): return _tok_bigram(t) if _has_cjk(t) else _tok_word(t)
+def _jaccard(a, b):
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+def load_steps(dataset, system):
+    p = BASE / dataset / system / "gpt-oss-120b" / "log.jsonl"
+    steps = []
+    for line in p.read_text(encoding="utf-8").splitlines():
+        obj = json.loads(line)
+        if obj["type"] == "step":
+            steps.append(obj)
+    return steps
+
+# ---- Build mini memory from LawBench training steps ----
+steps_law = load_steps("LawBench", "adaptive_tokenizer_confusion_memory")
+steps_usp  = load_steps("USPTO",   "adaptive_tokenizer_confusion_memory")
+print(f"LawBench steps: {len(steps_law)},  USPTO steps: {len(steps_usp)}")
+
+def build_memory(steps, train_n):
+    examples = []
+    confusion = defaultdict(lambda: defaultdict(int))
+    for s in steps[:train_n]:
+        raw_q = s["input_preview"][:600]
+        tgt = s["tgt"]
+        tok = _tok(raw_q)
+        examples.append({"tokens": tok, "target": tgt, "len": len(tok) or 1})
+        if not s["ok"]:
+            pred = s["pred"]
+            # strip [罪名]...<eoa> wrapper
+            m = re.search(r'\[.*?\](.*?)<eoa>', pred)
+            if m: pred = m.group(1).strip()
+            if pred != tgt:
+                confusion[pred][tgt] += 1
+    return examples, confusion
+
+examples_law, confusion_law = build_memory(steps_law, 150)
+examples_usp, confusion_usp = build_memory(steps_usp, 40)
+
+def avg_len(examples):
+    return sum(e["len"] for e in examples) / max(1, len(examples))
+
+avgl_law = avg_len(examples_law)
+avgl_usp = avg_len(examples_usp)
+print(f"LawBench avg tok len: {avgl_law:.1f},  USPTO avg tok len: {avgl_usp:.1f}")
+
+# Length distribution
+for name, exs in [("LawBench", examples_law), ("USPTO", examples_usp)]:
+    lens = sorted(e["len"] for e in exs)
+    print(f"  {name}: min={lens[0]} p25={lens[len(lens)//4]} med={lens[len(lens)//2]} "
+          f"p75={lens[3*len(lens)//4]} max={lens[-1]}")
+
+# ---- Ranking methods ----
+def confusion_targets_for(labels, confusion, k=3):
+    label_set = set(labels)
+    counts = defaultdict(int)
+    for lbl in labels:
+        for actual, cnt in confusion.get(lbl, {}).items():
+            if actual not in label_set:
+                counts[actual] += cnt
+    return [lbl for lbl, _ in sorted(counts.items(), key=lambda x: -x[1])[:k]]
+
+def top_labels(query_tok, examples, k=3):
+    ranked = sorted(range(len(examples)), key=lambda i: -_jaccard(query_tok, examples[i]["tokens"]))
+    return [examples[i]["target"] for i in ranked[:k]]
+
+def rank_baseline(query_tok, examples):
+    return sorted(range(len(examples)), key=lambda i: -_jaccard(query_tok, examples[i]["tokens"]))
+
+def rank_unified(query_tok, examples, confusion, gamma=0.3):
+    tl = top_labels(query_tok, examples)
+    ct = confusion_targets_for(tl, confusion)
+    # confusion lift: how many times was this example's label a confusion target?
+    lift_map = defaultdict(int)
+    for pred_lbl, actuals in confusion.items():
+        for actual, cnt in actuals.items():
+            if actual in set(ct):
+                lift_map[actual] += cnt
+    max_lift = max(lift_map.values(), default=1) or 1
+    scores = []
+    for i, ex in enumerate(examples):
+        sim = _jaccard(query_tok, ex["tokens"])
+        lift = lift_map.get(ex["target"], 0) / max_lift
+        scores.append((i, sim + gamma * lift))
+    scores.sort(key=lambda x: -x[1])
+    return [i for i, _ in scores]
+
+def rank_len_norm(query_tok, examples, avgl, b=0.5):
+    scores = []
+    for i, ex in enumerate(examples):
+        sim = _jaccard(query_tok, ex["tokens"])
+        norm = ex["len"] / avgl
+        length_factor = 1.0 / (1.0 - b + b * math.sqrt(norm))
+        scores.append((i, sim * length_factor))
+    scores.sort(key=lambda x: -x[1])
+    return [i for i, _ in scores]
+
+# ---- Evaluate: for each test query, rank of FIRST matching-target example ----
+def eval_method(test_steps, examples, rank_fn, name):
+    hits, ranks = 0, []
+    for s in test_steps:
+        query_tok = _tok(s["input_preview"][:600])
+        tgt = s["tgt"]
+        ranking = rank_fn(query_tok)
+        for pos, idx in enumerate(ranking[:60]):
+            if examples[idx]["target"] == tgt:
+                ranks.append(pos + 1)
+                hits += 1
+                break
+    avg = sum(ranks)/len(ranks) if ranks else float('inf')
+    mrr = sum(1/r for r in ranks)/len(test_steps) if ranks else 0.0
+    print(f"  {name:<32} rank@found={avg:5.1f}  MRR={mrr:.3f}  found={hits}/{len(test_steps)}")
+
+print("\n=== LawBench (test steps 150-200) ===")
+test_law = steps_law[150:200]
+for gname, fn in [
+    ("baseline",          lambda q: rank_baseline(q, examples_law)),
+    ("unified γ=0.2",     lambda q: rank_unified(q, examples_law, confusion_law, 0.2)),
+    ("unified γ=0.4",     lambda q: rank_unified(q, examples_law, confusion_law, 0.4)),
+    ("unified γ=0.6",     lambda q: rank_unified(q, examples_law, confusion_law, 0.6)),
+    ("len-norm b=0.3",    lambda q: rank_len_norm(q, examples_law, avgl_law, 0.3)),
+    ("len-norm b=0.5",    lambda q: rank_len_norm(q, examples_law, avgl_law, 0.5)),
+    ("len-norm b=0.75",   lambda q: rank_len_norm(q, examples_law, avgl_law, 0.75)),
+]:
+    eval_method(test_law, examples_law, fn, gname)
+
+print("\n=== USPTO (test steps 40-60) ===")
+test_usp = steps_usp[40:60] if len(steps_usp) > 40 else steps_usp
+for gname, fn in [
+    ("baseline",          lambda q: rank_baseline(q, examples_usp)),
+    ("unified γ=0.3",     lambda q: rank_unified(q, examples_usp, confusion_usp, 0.3)),
+    ("len-norm b=0.5",    lambda q: rank_len_norm(q, examples_usp, avgl_usp, 0.5)),
+    ("len-norm b=0.75",   lambda q: rank_len_norm(q, examples_usp, avgl_usp, 0.75)),
+]:
+    eval_method(test_usp, examples_usp, fn, gname)
+
+# ---- Show how much length varies on USPTO (short texts) ----
+print("\n=== How distinct are unified scores from baseline? ===")
+if test_law:
+    q = _tok(test_law[0]["input_preview"][:600])
+    base_r = rank_baseline(q, examples_law)[:20]
+    unif_r = rank_unified(q, examples_law, confusion_law, 0.4)[:20]
+    moved = [(i, base_r.index(i)+1, unif_r.index(i)+1)
+             for i in unif_r[:15] if i in base_r and abs(base_r.index(i) - unif_r.index(i)) > 2]
+    print(f"  Examples that moved >2 positions (unified vs baseline, query 0):")
+    for idx, old, new in moved[:8]:
+        print(f"    idx={idx} label='{examples_law[idx]['target'][:35]}' {old}→{new}")
+
+print("\nDone.")
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\proto_iter12.py (file state is current in your context — no need to Read it back)

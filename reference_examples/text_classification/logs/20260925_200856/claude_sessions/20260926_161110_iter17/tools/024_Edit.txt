@@ -1,0 +1,144 @@
+Edit: agents\rrf_confusion_memory.py
+
+replace_all: False
+old_string:
+class DecayedConfusionMemory(MemorySystem):
+    """Adaptive-tokenizer confusion memory with exponentially-decayed confusion counts."""
+
+    def __init__(self, llm: LLMCallable):
+        super().__init__(llm)
+        self.examples: list[dict[str, Any]] = []
+        # Float-valued counts to allow decay
+        self.confusion: dict[str, dict[str, float]] = defaultdict(lambda: defaultdict(float))
+
+    def _scored(self, query: str) -> list[tuple[float, int, dict]]:
+        q_tok = _tokenize_adaptive(query)
+        result = [
+            (_jaccard(q_tok, ex["tokens"]), idx, ex)
+            for idx, ex in enumerate(self.examples)
+        ]
+        result.sort(key=lambda x: (x[0], x[1]), reverse=True)
+        return result
+
+    def _confusion_targets_for(self, labels: list[str]) -> list[str]:
+        label_set = set(labels)
+        counts: dict[str, float] = defaultdict(float)
+        for lbl in labels:
+            row = self.confusion.get(lbl, {})
+            for actual, cnt in row.items():
+                if actual not in label_set:
+                    counts[actual] += cnt
+        return [lbl for lbl, _ in sorted(counts.items(), key=lambda x: (-x[1], x[0]))]
+
+    def _build_parts(self, query: str) -> list[str]:
+        if not self.examples:
+            return []
+
+        ranked = self._scored(query)
+        top_labels = [ex["target"] for _, _, ex in ranked[:_TOP_CANDIDATE_LABELS]]
+        confused_with = self._confusion_targets_for(top_labels)
+
+        parts: list[str] = []
+        used_indices: set[int] = set()
+        total_chars = 0
+
+        def try_add(idx: int, ex: dict) -> bool:
+            nonlocal total_chars
+            if idx in used_indices:
+                return False
+            q = ex.get("raw_question", ex["input"])
+            part = f"Q: {q}\nA: {ex['target']}"
+            if total_chars + len(part) + 2 > MAX_CHARS:
+                return False
+            parts.append(part)
+            used_indices.add(idx)
+            total_chars += len(part) + 2
+            return True
+
+        if confused_with:
+            disambig_labels_needed = set(confused_with[:_TOP_CANDIDATE_LABELS])
+            per_label_disambig: dict[str, list[tuple[float, int, dict]]] = defaultdict(list)
+            for score, idx, ex in ranked:
+                if ex["target"] in disambig_labels_needed:
+                    per_label_disambig[ex["target"]].append((score, idx, ex))
+
+            for _round in range(_DISAMBIG_PER_CONFUSION):
+                for lbl in confused_with[:_TOP_CANDIDATE_LABELS]:
+                    pool = per_label_disambig.get(lbl, [])
+                    for score, idx, ex in pool:
+                        if idx not in used_indices:
+                            try_add(idx, ex)
+                            break
+
+        for _, idx, ex in ranked:
+            if total_chars >= MAX_CHARS:
+                break
+            try_add(idx, ex)
+
+        return parts
+
+new_string:
+class RrfConfusionMemory(MemorySystem):
+    """Confusion memory with Reciprocal Rank Fusion retrieval.
+
+    Fuses two ranked lists — (1) adaptive Jaccard similarity and (2) confusion
+    column affinity (how often each label is the true label when the model errs)
+    — using parameter-free RRF scoring: 1/(k+sim_rank) + 1/(k+aff_rank).
+    Replaces the two-phase slot-reservation design entirely.
+    """
+
+    def __init__(self, llm: LLMCallable):
+        super().__init__(llm)
+        self.examples: list[dict[str, Any]] = []
+        self.confusion: dict[str, dict[str, float]] = defaultdict(lambda: defaultdict(float))
+
+    def _col_affinity(self) -> dict[str, float]:
+        """Column sums of the confusion matrix: how often each label is the true label."""
+        aff: dict[str, float] = defaultdict(float)
+        for actuals in self.confusion.values():
+            for actual, cnt in actuals.items():
+                aff[actual] += cnt
+        return aff
+
+    def _build_parts(self, query: str) -> list[str]:
+        if not self.examples:
+            return []
+
+        q_tok = _tokenize_adaptive(query)
+        n = len(self.examples)
+
+        # Rank 1: by similarity (descending)
+        sim_order = sorted(range(n), key=lambda i: -_jaccard(q_tok, self.examples[i]["tokens"]))
+        sim_rank = [0] * n
+        for r, i in enumerate(sim_order):
+            sim_rank[i] = r
+
+        # Rank 2: by column affinity of the example's label (descending)
+        aff = self._col_affinity()
+        aff_order = sorted(range(n), key=lambda i: -aff.get(self.examples[i]["target"], 0.0))
+        aff_rank = [0] * n
+        for r, i in enumerate(aff_order):
+            aff_rank[i] = r
+
+        # Fuse with RRF
+        rrf_order = sorted(
+            range(n),
+            key=lambda i: -(1.0 / (RRF_K + sim_rank[i]) + 1.0 / (RRF_K + aff_rank[i])),
+        )
+
+        parts: list[str] = []
+        total_chars = 0
+        for idx in rrf_order:
+            ex = self.examples[idx]
+            q = ex.get("raw_question", ex["input"])
+            part = f"Q: {q}\nA: {ex['target']}"
+            if total_chars + len(part) + 2 > MAX_CHARS:
+                break
+            parts.append(part)
+            total_chars += len(part) + 2
+
+        return parts
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\rrf_confusion_memory.py has been updated successfully.

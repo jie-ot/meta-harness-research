@@ -1,0 +1,30 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the facts describe manufacturing or distributing drugs that are counterfeit, adulterated, or otherwise not meeting legal standards (i.e., ‘假药’), the appropriate charge is “生产、销售假药” rather than th
+- When the facts describe manufacturing or selling drugs without the required drug production license and using false or misleading packaging/labels (i.e., the product is a counterfeit or unapproved dru
+- When the facts describe the acquisition, processing, and sale of animal-derived products that are unsafe or of unknown origin, classify the offense under food safety statutes (e.g., 生产、销售不符合安全标准的食品) r
+- If the facts describe the defendant selling seeds under false variety names or misrepresenting the seed type, and the issue is that the seeds are counterfeit or substandard rather than the illegal tra
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:南县人民检察院指控：2015年11月至2016年1月期间，被告人刘某受一自称是马来西亚华侨的李姓男子（在逃）委托，帮助其寻找能够生产减肥药的生产厂家。随即被告人刘某通过“腾讯QQ”网上联系了陕西省汉中市南郑县樊某等人经营的汉中则辰商贸有限公司。在该公司无《全国工业产品生产许可证》和《食品生产许可证》的情况下，通过淘宝网向其陆续订购8批共计500余件无生产日期、无质量合格证和无生产厂家（简称“三无产品”）的减肥药，并通过南县“天地华宇”物流公司运送至南县南洲镇，由被告人刘某接收货物后存放至其租用的位于南县南洲镇永安社区教育新村后面的车库。随后被告人刘某按照李姓男子的安排，通过南县国通快递将减肥药发送至广州、江门、深圳等地分散销售。其中，2016年1月6日，被告入刘某通过淘宝网向汉中则辰商贸有限公司订购了20000瓶标注为“GCG2”的减肥药，并于同年1月9日通过“天地华宇”物流公司运送至被告人刘某租用的车库内，随后由其分销。按照南郑县价格认证中心出具的价格鉴定结论书认定的“GCG2”白瓶价值6.92元/瓶计算，被告人刘某此次订购的“三无”减肥药的货值金额达到13.84万元。2016年12月6日被告人刘某被公安机关暂扣24万元。
+2016年8月1日，被告人刘某主动到公安机关投案并如实交代了自己的犯罪事实。
+为了证明上述事实，公诉机关提供了书证：户籍资料、汉中则辰商贸有限公司营业执照及生产日报表、订单、陕西省南郑县市场监督管理局调查情况说明、南郑县市场监督管理局认定报告两份、陕西省食品药品检验所检验报告、抽样单、资质认定证书附表、产品翻译对照及翻译人资质证明、《关于停止生产销售使用西布曲明制剂及原料药的通知》、南郑县价格认证中心价格鉴定结论书、物流公司货运单、快递公司快递单、湖南省非税收入一般缴款书等，证人徐某、孙某、段某某、张某某、杜某某、戴某某、聂某某的证言，同案人余某、樊某的供述，南郑县公安局现场勘验笔录和现场图，提取笔录及照片,南郑县公安局扣押清单，南县公安局提取笔录，辨认笔录，被告人刘某的到案说明及其供述等证据。
+公诉机关认为，被告人刘某在委托他人生产并销售的产品中，以不合格产品冒充合格产品，销售金额二十万元以上不满五十万元，其行为已触犯《中华人民共和国刑法》××之规定，应当以××追究被告人刘某的刑事责任。提请本院依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

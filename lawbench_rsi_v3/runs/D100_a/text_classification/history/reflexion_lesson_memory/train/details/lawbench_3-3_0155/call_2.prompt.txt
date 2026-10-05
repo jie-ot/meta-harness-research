@@ -1,0 +1,24 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:德惠市人民检察院指控：2013年高考前夕，杨1某（已判刑）、潘某（已不起诉）二人以牟取不法利益为目的，经共同预谋后由杨1某在网上购进高考作弊器材，潘某向参加当年高考的德惠市第一中学学生销售，先后向刘某某、李某甲、李某乙等学生销售高考作弊器材23套，同时向考生承诺在高考期间负责提供考题答案。被告人杨某某明知杨1某、潘某违法销售高考作弊器材，于2013年5月末至当年高考前单独或与杨1某一起开车为潘某运送作弊器材并帮助购买使用作弊器材的考生调试试用。
+对于上述事实，公诉机关提供的证据有：被告人杨某某的供述与辩解；同案杨1某、潘某的供述；证人刘某某、李某甲、李某乙等人的证言；到案经过及户口证明等。
+公诉机关认为，被告人杨某某伙同他人非法获取国家秘密的事实清楚，证据确实充分，应当以××追究其刑事责任，提请本院依法惩处。
+
+
+Wrong prediction: [罪名]非法获取国家秘密;非法提供国家秘密<eoa>
+Correct answer: 非法获取国家秘密
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

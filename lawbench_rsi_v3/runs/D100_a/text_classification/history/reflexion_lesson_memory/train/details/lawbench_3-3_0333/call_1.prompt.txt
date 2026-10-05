@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the factual description explicitly states that the perpetrator seized the victim's property by force, threat, or taking advantage of the victim’s unpreparedness (e.g., using the term “抢夺” or descri
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+- When the factual description involves the use of false documents or misrepresentation to conclude a contract and obtain money, classify the offense as the specific type of fraud (e.g., 合同诈骗) rather th
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控：2013年8月9日13时许，被告人刘某甲携带火纸、打火机到商城县冯店乡冯店村刘湾组彭洼岭头处祭祖，因烧火冥纸不慎将山林引燃，造成坟地周边山林火灾，后经群众扑救，大火被扑灭，经商城县林业部门鉴定：过火有林地面积为99.1亩。另查明：火灾发生后，被告人在现场让其亲属报警，其在现场扑火，后被赶到的公安干警当场抓获。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

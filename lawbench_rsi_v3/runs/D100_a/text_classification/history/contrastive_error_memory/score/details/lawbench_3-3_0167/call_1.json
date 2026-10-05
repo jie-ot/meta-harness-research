@@ -1,0 +1,72 @@
+{
+  "call_id": "565659e8bd6545c1812ab452e7792654",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791079832-cIaOaZQZkrUs6JmKLxpz",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"被告人李1某在未取得合法许可的情况下，将大量罂粟壳（680.08千克）和罂粟籽（1185.1千克）从瑞丽运往昆明，属于非法运输受管制的毒品及其原植物、种子。根据《中华人民共和国刑法》，构成“运输毒品罪”和“非法运输毒品原植物、种子罪”。案件事实仅涉及上述两项行为，无其他情节。\",\n  \"final_answer\": \"[罪名]运输毒品;非法运输毒品原植物种子<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate crime(s) based on facts. The facts: transport of poppy husk and poppy seeds (raw plant material) - these are considered drug raw materials. The prosecution says \"运输毒品罪、非法运输毒品原植物种子罪\". In Chinese criminal law, there is \"运输毒品罪\" (transporting narcotics) and \"非法运输毒品原植物、种子罪\". So we need to output both? In examples, they sometimes combine multiple crimes separated by semicolon. For example, earlier example: \"故意伤害;聚众扰乱社会秩序\". So we should output both: \"运输毒品;非法运输毒品原植物种子\". However need to match the style used in answer list. Look at earlier mapping: For illegal manufacturing of explosives, answer: \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\". That's a combined phrase. For \"非法制造爆炸物\" they gave that long phrase. For \"运输毒品\" they have examples: \"非法持有毒品\" etc. For \"非法运输毒品原植物种子罪\" maybe they have a standard phrase: \"非法运输毒品原植物、种子\". Let's see similar example: The first case: \"运输毒品罪、非法运输毒品原植物种子罪\". So answer likely \"运输毒品;非法运输毒品原植物种子\". Or maybe combine as \"运输毒品;非法运输毒品原植物、种子\". The examples show they separate with semicolon. So final answer: [罪名]运输毒品;非法运输毒品原植物种子<eoa>.\n\nCheck for any other crimes? The facts: He transported poppy husk and seeds. That's both drug raw material and maybe \"走私\" but not mentioned. So just those two.\n\nThus final JSON with reasoning and final answer.\n\n",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to determine appropriate crime(s) based on facts. The facts: transport of poppy husk and poppy seeds (raw plant material) - these are considered drug raw materials. The prosecution says \"运输毒品罪、非法运输毒品原植物种子罪\". In Chinese criminal law, there is \"运输毒品罪\" (transporting narcotics) and \"非法运输毒品原植物、种子罪\". So we need to output both? In examples, they sometimes combine multiple crimes separated by semicolon. For example, earlier example: \"故意伤害;聚众扰乱社会秩序\". So we should output both: \"运输毒品;非法运输毒品原植物种子\". However need to match the style used in answer list. Look at earlier mapping: For illegal manufacturing of explosives, answer: \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\". That's a combined phrase. For \"非法制造爆炸物\" they gave that long phrase. For \"运输毒品\" they have examples: \"非法持有毒品\" etc. For \"非法运输毒品原植物种子罪\" maybe they have a standard phrase: \"非法运输毒品原植物、种子\". Let's see similar example: The first case: \"运输毒品罪、非法运输毒品原植物种子罪\". So answer likely \"运输毒品;非法运输毒品原植物种子\". Or maybe combine as \"运输毒品;非法运输毒品原植物、种子\". The examples show they separate with semicolon. So final answer: [罪名]运输毒品;非法运输毒品原植物种子<eoa>.\n\nCheck for any other crimes? The facts: He transported poppy husk and seeds. That's both drug raw material and maybe \"走私\" but not mentioned. So just those two.\n\nThus final JSON with reasoning and final answer.\n\n",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate crime(s) based on facts. The facts: transport of poppy husk and poppy seeds (raw plant material) - these are considered drug raw materials. The prosecution says \"运输毒品罪、非法运输毒品原植物种子罪\". In Chinese criminal law, there is \"运输毒品罪\" (transporting narcotics) and \"非法运输毒品原植物、种子罪\". So we need to output both? In examples, they sometimes combine multiple crimes separated by semicolon. For example, earlier example: \"故意伤害;聚众扰乱社会秩序\". So we should output both: \"运输毒品;非法运输毒品原植物种子\". However need to match the style used in answer list. Look at earlier mapping: For illegal manufacturing of explosives, answer: \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\". That's a combined phrase. For \"非法制造爆炸物\" they gave that long phrase. For \"运输毒品\" they have examples: \"非法持有毒品\" etc. For \"非法运输毒品原植物种子罪\" maybe they have a standard phrase: \"非法运输毒品原植物、种子\". Let's see similar example: The first case: \"运输毒品罪、非法运输毒品原植物种子罪\". So answer likely \"运输毒品;非法运输毒品原植物种子\". Or maybe combine as \"运输毒品;非法运输毒品原植物、种子\". The examples show they separate with semicolon. So final answer: [罪名]运输毒品;非法运输毒品原植物种子<eoa>.\n\nCheck for any other crimes? The facts: He transported poppy husk and seeds. That's both drug raw material and maybe \"走私\" but not mentioned. So just those two.\n\nThus final JSON with reasoning and final answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to determine appropriate crime(s) based on facts. The facts: transport of poppy husk and poppy seeds (raw plant material) - these are considered drug raw materials. The prosecution says \"运输毒品罪、非法运输毒品原植物种子罪\". In Chinese criminal law, there is \"运输毒品罪\" (transporting narcotics) and \"非法运输毒品原植物、种子罪\". So we need to output both? In examples, they sometimes combine multiple crimes separated by semicolon. For example, earlier example: \"故意伤害;聚众扰乱社会秩序\". So we should output both: \"运输毒品;非法运输毒品原植物种子\". However need to match the style used in answer list. Look at earlier mapping: For illegal manufacturing of explosives, answer: \"非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物\". That's a combined phrase. For \"非法制造爆炸物\" they gave that long phrase. For \"运输毒品\" they have examples: \"非法持有毒品\" etc. For \"非法运输毒品原植物种子罪\" maybe they have a standard phrase: \"非法运输毒品原植物、种子\". Let's see similar example: The first case: \"运输毒品罪、非法运输毒品原植物种子罪\". So answer likely \"运输毒品;非法运输毒品原植物种子\". Or maybe combine as \"运输毒品;非法运输毒品原植物、种子\". The examples show they separate with semicolon. So final answer: [罪名]运输毒品;非法运输毒品原植物种子<eoa>.\n\nCheck for any other crimes? The facts: He transported poppy husk and seeds. That's both drug raw material and maybe \"走私\" but not mentioned. So just those two.\n\nThus final JSON with reasoning and final answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 558,
+      "prompt_tokens": 22176,
+      "total_tokens": 22734,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 516,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00076572,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00076572,
+        "upstream_inference_prompt_cost": 0.00066528,
+        "upstream_inference_completions_cost": 0.00010044
+      }
+    }
+  },
+  "raw_response_missing": false
+}

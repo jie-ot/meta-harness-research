@@ -1,0 +1,40 @@
+Bash
+
+command:
+python -c "
+import json, os
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+# Read last few entries of LawBench fixed_confusion_memory log
+systems = ['fixed_confusion_memory', 'adaptive_tokenizer_confusion_memory']
+for s in systems:
+    p = os.path.join(base, 'LawBench', s)
+    if not os.path.isdir(p): continue
+    for sub in os.listdir(p):
+        lf = os.path.join(p, sub, 'log.jsonl')
+        if os.path.exists(lf):
+            with open(lf) as f:
+                lines = f.readlines()
+            print(f'=== LawBench/{s} last 3 entries ===')
+            for line in lines[-3:]:
+                r = json.loads(line)
+                print(json.dumps({k: r[k] for k in ['prediction','ground_truth','was_correct'] if k in r}, ensure_ascii=False))
+            # also show metadata from one entry
+            if lines:
+                r0 = json.loads(lines[-1])
+                print('metadata keys:', list(r0.get('metadata',{}).keys()))
+"
+
+
+description: Read last log entries for LawBench iter9 systems
+
+--- output ---
+=== LawBench/fixed_confusion_memory last 3 entries ===
+{}
+{}
+{}
+metadata keys: []
+=== LawBench/adaptive_tokenizer_confusion_memory last 3 entries ===
+{}
+{}
+{}
+metadata keys: []

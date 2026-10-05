@@ -1,0 +1,129 @@
+Read: agents\label_balanced_memory.py
+
+
+--- output ---
+1	"""Label-Balanced Memory - round-robin selection across per-label buckets.
+2	
+3	Addresses the core coverage failure from iteration 1: both candidates cut
+4	example counts to provide "better" examples, but missing labels hurt more
+5	than format quality helped.
+6	
+7	Selection algorithm: group stored examples by label, then fill context by
+8	taking one example per seen label (most recent first) before any label gets
+9	a second slot. At any char budget this maximises label coverage, which
+10	directly helps multi-class tasks. For tasks with non-class outputs (e.g.
+11	SMILES), round-robin over distinct targets still diversifies examples.
+12	"""
+13	
+14	import collections
+15	import hashlib
+16	import json
+17	import random
+18	from typing import Any
+19	
+20	from ..llm import LLMCallable
+21	from ..memory_system import MemorySystem, extract_json_field
+22	
+23	PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+24	
+25	{examples_section}
+26	
+27	**Problem:**
+28	{input}
+29	
+30	**Instructions:**
+31	- Follow the patterns shown in the examples above
+32	- Respond in JSON format
+33	
+34	{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+35	
+36	MAX_CHARS = 30000
+37	
+38	
+39	def _seed_for_input(input_str: str) -> int:
+40	    return int.from_bytes(hashlib.sha256(input_str.encode()).digest()[:8], "big")
+41	
+42	
+43	class LabelBalancedMemory(MemorySystem):
+44	    """Round-robin-by-label selection: maximises label coverage at any char budget."""
+45	
+46	    def __init__(self, llm: LLMCallable):
+47	        super().__init__(llm)
+48	        # Ordered list of all examples — preserves arrival order
+49	        self.examples: list[dict[str, str]] = []
+50	
+51	    def _label_balanced_select(self, seed: int | None = None) -> list[str]:
+52	        """Fill context by taking one example per label before any label gets two.
+53	
+54	        Within each label bucket, most recent examples come first. The
+55	        round-robin pass repeats until the char budget is exhausted.
+56	        """
+57	        if not self.examples:
+58	            return []
+59	
+60	        # Group examples by target label
+61	        by_label: dict[str, list[dict]] = collections.defaultdict(list)
+62	        for ex in self.examples:
+63	            by_label[ex["target"]].append(ex)
+64	
+65	        # Build per-label stacks (most recent at the end — pop() gives most recent)
+66	        label_order = sorted(by_label.keys())
+67	        stacks = {label: list(exs) for label, exs in by_label.items()}
+68	
+69	        # Optional shuffle of label order for diversity (stable per input)
+70	        if seed is not None:
+71	            rng = random.Random(seed)
+72	            rng.shuffle(label_order)
+73	
+74	        parts: list[str] = []
+75	        total_chars = 0
+76	        any_added = True
+77	        while any_added:
+78	            any_added = False
+79	            for label in label_order:
+80	                if not stacks[label]:
+81	                    continue
+82	                ex = stacks[label].pop()  # most recent for this label
+83	                question = ex.get("raw_question", ex["input"])
+84	                part = f"Q: {question}\nA: {ex['target']}"
+85	                if total_chars + len(part) + 2 > MAX_CHARS:
+86	                    return parts
+87	                parts.append(part)
+88	                total_chars += len(part) + 2
+89	                any_added = True
+90	
+91	        return parts
+92	
+93	    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+94	        seed = _seed_for_input(input)
+95	        parts = self._label_balanced_select(seed=seed)
+96	        examples_section = "\n\n".join(parts)
+97	        prompt = PROMPT_TEMPLATE.format(
+98	            examples_section=examples_section,
+99	            input=input,
+100	        )
+101	        response = self.call_llm(prompt)
+102	        answer = extract_json_field(response, "final_answer")
+103	        return answer, {
+104	            "full_response": response,
+105	            "num_examples": len(self.examples),
+106	            "num_selected": len(parts),
+107	        }
+108	
+109	    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+110	        for r in batch_results:
+111	            ex = {"input": r["input"], "target": r["ground_truth"]}
+112	            if "raw_question" in r:
+113	                ex["raw_question"] = r["raw_question"]
+114	            self.examples.append(ex)
+115	
+116	    def get_context_length(self) -> int:
+117	        return sum(len(p) + 2 for p in self._label_balanced_select())
+118	
+119	    def get_state(self) -> str:
+120	        return json.dumps({"examples": self.examples}, indent=2)
+121	
+122	    def set_state(self, state: str) -> None:
+123	        data = json.loads(state)
+124	        self.examples = data.get("examples", [])
+125	

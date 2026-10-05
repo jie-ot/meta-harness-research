@@ -1,0 +1,59 @@
+Edit: agents\verbatim_label_memory.py
+
+replace_all: False
+old_string:
+"""Symmetric Confusion Memory.
+
+Extends decayed_confusion_memory with one structural change to the confusion
+matrix learning strategy (axis E): confusion entries are stored symmetrically.
+
+Problem with the baseline: the confusion matrix only records pred→gt edges.
+The disambiguation phase looks up what labels were *predicted* as the top
+candidate labels and then finds what they were confused with. This fires rarely
+because the top candidate labels at query time are ground-truth labels (pulled
+from stored examples), not predicted labels — so lookup keys almost never match
+stored confusion keys. Prototype traces showed only 21/200 disambiguation fires.
+
+Fix: when an error pred→gt is recorded, also record the reverse edge gt→pred at
+half weight. This doubles the number of confusion keys, so when the disambiguation
+phase looks up a top candidate label (a ground-truth label), it now finds confusion
+partners from the gt→pred direction. Prototype traces showed this raises coverage
+from 21/200 to 170/200 fires — an 8× improvement in disambiguation activation.
+
+Both directions decay at the same DECAY_FACTOR. All other mechanics (adaptive
+tokenizer, two-phase retrieval, prediction normalization) are unchanged.
+"""
+
+new_string:
+"""Verbatim Label Memory.
+
+Extends symmetric_confusion_memory with a prompt-template change (axis A) that
+adds an explicit verbatim-copy and multi-label completeness instruction.
+
+Problem: trace analysis on the frontier system showed two recurring format error
+classes that account for roughly a third of all errors on tasks with structured
+label spaces:
+  1. Label-suffix inflation — the model appends common categorical suffixes (e.g.
+     "罪" in Chinese legal tasks) to label strings that don't carry that suffix in
+     the training data.
+  2. Partial multi-label output — when a ground-truth answer contains several
+     semicolon-separated components, the model predicts only the most salient one
+     and omits the rest.
+
+Both error classes share the same root: the model is paraphrasing rather than
+copying. Neither class requires better retrieval to fix — they persist even when
+the correct label appears in context.
+
+Fix: add two sentences to the instruction section of the prompt:
+  a) Copy answer labels character-for-character from the examples — do not
+     paraphrase, add suffixes, or alter the phrasing.
+  b) If the answer requires multiple labels, include every label separated by
+     semicolons just as shown in the examples.
+
+All retrieval mechanics (adaptive tokenizer, two-phase confusion/similarity fill,
+prediction normalization, symmetric confusion edges, decay) are unchanged.
+"""
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\verbatim_label_memory.py has been updated successfully.

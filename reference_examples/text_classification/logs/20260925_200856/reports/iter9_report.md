@@ -1,0 +1,26 @@
+# Iteration 9 Report
+
+## What Changed
+- **fixed_confusion_memory**: Added prediction normalisation (strip format wrappers like `[TAG]…<eoa>`) before storing confusion-matrix keys, identical to adaptive_tokenizer_confusion_memory otherwise.
+- **idf_confusion_memory**: Added IDF-weighted Jaccard on top of the same normalisation fix; rare tokens get higher weight.
+
+## Results
+
+| System | USPTO | S2D | LawBench | Avg | Δ |
+|---|---|---|---|---|---|
+| fixed_confusion_memory | 26.7% | 90.0% | 36.0% | 50.9% | −0.7 |
+| idf_confusion_memory | 23.3% | 88.0% | 34.0% | 48.4% | −3.2 |
+| *frontier (iter7)* | *26.7%* | *90.0%* | *38.0%* | *51.6%* | — |
+
+## Why
+
+**fixed_confusion_memory** confirmed that prediction normalisation lets the confusion phase fire, but the net effect is small: LawBench dropped from 38% to 36%, suggesting that once the confusion phase fires, it injects examples that slightly crowd out the better similarity-fill examples.
+
+**idf_confusion_memory** regressed on all three datasets. IDF up-weights rare tokens, but in domain-specific corpora (legal, medical) many rare tokens are corpus-specific artefacts rather than discriminative features. This adds noise to retrieval.
+
+## Takeaways
+
+1. Prediction normalisation is necessary but not sufficient — the confusion phase firing doesn't automatically help.
+2. Weighting tokens by IDF hurts; plain adaptive Jaccard remains the best similarity metric tried.
+3. The critical gap: confusion-phase examples are injected BEFORE similarity-fill examples in the prompt. Recency bias may mean those early examples carry less weight than examples placed just before the question.
+4. LawBench is the only dataset with meaningful headroom (38% → unknown ceiling). USPTO and S2D are near their ceilings.

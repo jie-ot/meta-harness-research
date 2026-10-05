@@ -1,0 +1,32 @@
+Bash
+
+command:
+cd "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification" && uv run python -c "
+import os, glob, json
+
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+for ds in ['USPTO', 'LawBench', 'Symptom2Disease']:
+    path = os.path.join(base, ds, 'adaptive_tokenizer_confusion_memory')
+    logs = glob.glob(os.path.join(path, '**', 'log.jsonl'), recursive=True)
+    for lf in logs[:1]:
+        lines = [l for l in open(lf, encoding='utf-8').read().strip().split('\n') if l.strip()]
+        entry = json.loads(lines[0])
+        print(f'=== {ds} keys: {list(entry.keys())}')
+        print(f'    first entry: {json.dumps(entry, ensure_ascii=False)[:300]}')
+        # show a few entries to find failures
+        for i, line in enumerate(lines[-20:]):
+            e = json.loads(line)
+            correct = e.get('correct', e.get('was_correct', e.get('is_correct', None)))
+            if correct is False or correct == 0:
+                print(f'  WRONG idx={i}: pred={str(e.get(\"prediction\",\"?\"))[:40]}  gt={str(e.get(\"ground_truth\",e.get(\"label\",\"?\")))[:40]}')
+" 2>&1
+
+description: Inspect log entry structure to find field names
+
+--- output ---
+=== USPTO keys: ['type', 't', 'dataset', 'memory', 'model', 'seed', 'mode', 'num_epochs', 'start_time']
+    first entry: {"type": "meta", "t": 0.0, "dataset": "USPTO", "memory": "adaptive_tokenizer_confusion_memory", "model": "openrouter/openai/gpt-oss-120b", "seed": 42, "mode": "online", "num_epochs": null, "start_time": "2026-09-26T10:34:41.017584"}
+=== LawBench keys: ['type', 't', 'dataset', 'memory', 'model', 'seed', 'mode', 'num_epochs', 'start_time']
+    first entry: {"type": "meta", "t": 0.0, "dataset": "LawBench", "memory": "adaptive_tokenizer_confusion_memory", "model": "openrouter/openai/gpt-oss-120b", "seed": 42, "mode": "online", "num_epochs": null, "start_time": "2026-09-26T10:34:41.019582"}
+=== Symptom2Disease keys: ['type', 't', 'dataset', 'memory', 'model', 'seed', 'mode', 'num_epochs', 'start_time']
+    first entry: {"type": "meta", "t": 0.0, "dataset": "Symptom2Disease", "memory": "adaptive_tokenizer_confusion_memory", "model": "openrouter/openai/gpt-oss-120b", "seed": 42, "mode": "online", "num_epochs": null, "start_time": "2026-09-26T10:34:41.017584"}

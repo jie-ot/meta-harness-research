@@ -1,0 +1,135 @@
+Write: .prototypes\validate_confusion_lesson_memory.py
+
+content:
+"""Validate confusion_lesson_memory.py imports and mechanism without real LLM calls."""
+import sys
+import os
+import re
+import json
+import types
+
+# ---------------------------------------------------------------------------
+# Stub the package so relative imports resolve
+# ---------------------------------------------------------------------------
+BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Stub ..llm
+llm_mod = types.ModuleType("agents_pkg.llm")
+LLMCallable = type("LLMCallable", (), {})
+llm_mod.LLMCallable = LLMCallable
+sys.modules["agents_pkg.llm"] = llm_mod
+
+# Stub ..memory_system
+def extract_json_field(text, field, default=""):
+    try:
+        data = json.loads(text)
+        if isinstance(data, dict):
+            return str(data.get(field, default))
+    except Exception:
+        pass
+    m = re.findall(rf'"{field}"\s*:\s*"([^"]*)"', text)
+    return m[-1] if m else default
+
+class MemorySystem:
+    def __init__(self, llm):
+        self._llm = llm
+    def call_llm(self, prompt):
+        return self._llm(prompt)
+
+ms_mod = types.ModuleType("agents_pkg.memory_system")
+ms_mod.MemorySystem = MemorySystem
+ms_mod.extract_json_field = extract_json_field
+sys.modules["agents_pkg.memory_system"] = ms_mod
+
+# Patch the agent's relative imports to resolve against our stubs
+import importlib.util
+agent_path = os.path.join(BASE, "agents", "confusion_lesson_memory.py")
+spec = importlib.util.spec_from_file_location("agents_pkg.confusion_lesson_memory", agent_path,
+    submodule_search_locations=[])
+mod = importlib.util.module_from_spec(spec)
+# Rewrite relative imports by injecting parent package stubs
+sys.modules["agents_pkg"] = types.ModuleType("agents_pkg")
+sys.modules["agents_pkg"].__path__ = [os.path.join(BASE, "agents")]
+spec.loader.exec_module(mod)
+
+ConfusionLessonMemory = mod.ConfusionLessonMemory
+
+# ---------------------------------------------------------------------------
+# Fake LLM
+# ---------------------------------------------------------------------------
+call_log = []
+
+def fake_llm(prompt):
+    call_log.append(prompt[:80])
+    if "lesson" in prompt.lower() or "predicted" in prompt.lower():
+        return '{"lesson": "When the giver bribes an official, use 行贿, not 受贿."}'
+    return '{"reasoning": "test", "final_answer": "行贿"}'
+
+# ---------------------------------------------------------------------------
+# Tests
+# ---------------------------------------------------------------------------
+def test():
+    print("=== Validating confusion_lesson_memory.py ===\n")
+    mem = ConfusionLessonMemory(fake_llm)
+
+    # Cold start
+    ans, meta = mem.predict("被告人某某向官员行贿三万元。")
+    print(f"Cold start answer: '{ans}'  meta keys: {list(meta.keys())}")
+    assert ans == "行贿", f"unexpected answer: {ans}"
+    assert meta["num_lessons_injected"] == 0
+
+    # learn with one wrong item
+    batch = [{
+        "input": "被告人黄某某找到于某甲帮忙，送给于某甲三万元。",
+        "raw_question": "被告人黄某某找到于某甲帮忙，送给于某甲三万元。",
+        "prediction": "非国家工作人员受贿",
+        "ground_truth": "行贿",
+        "was_correct": False,
+    }]
+    mem.learn_from_batch(batch)
+    print(f"After learn: examples={len(mem.examples)}, lessons={len(mem.lessons)}, glossary={len(mem.label_glossary)}")
+    assert len(mem.examples) == 1
+    assert len(mem.lessons) == 1, f"Expected 1 lesson for 1 wrong item, got {len(mem.lessons)}"
+    assert "行贿" in mem.label_glossary
+
+    # learn with one correct item — no lesson expected
+    batch2 = [{
+        "input": "被告人朱某某破坏计算机信息系统。",
+        "raw_question": "被告人朱某某破坏计算机信息系统。",
+        "prediction": "破坏计算机信息系统",
+        "ground_truth": "破坏计算机信息系统",
+        "was_correct": True,
+    }]
+    mem.learn_from_batch(batch2)
+    assert len(mem.lessons) == 1, "Correct item must not generate a lesson"
+    assert len(mem.examples) == 2
+
+    # predict warm — lesson should appear in prompt
+    call_log.clear()
+    ans2, meta2 = mem.predict("被告人某某向官员行贿三万元。")
+    print(f"Warm answer: '{ans2}'  lessons_injected={meta2['num_lessons_injected']}")
+    assert meta2["num_lessons_injected"] >= 1, "Expected lesson injection in warm predict"
+    prompt_sent = call_log[-1]
+    assert len(prompt_sent) > 0
+
+    # get_state / set_state round-trip
+    state = mem.get_state()
+    mem2 = ConfusionLessonMemory(fake_llm)
+    mem2.set_state(state)
+    assert len(mem2.examples) == len(mem.examples)
+    assert len(mem2.lessons) == len(mem.lessons)
+    assert mem2.label_glossary == mem.label_glossary
+    # tokens must be reconstructed as frozensets
+    assert isinstance(mem2.examples[0]["tokens"], frozenset)
+    assert isinstance(mem2.lessons[0]["tokens"], frozenset)
+    print("State round-trip OK")
+
+    print("\n✓ All assertions passed")
+
+if __name__ == "__main__":
+    test()
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_b\text_classification\.prototypes\validate_confusion_lesson_memory.py (file state is current in your context — no need to Read it back)

@@ -1,0 +1,36 @@
+Read: benchmark.py
+
+limit: 30
+offset: 36
+
+--- output ---
+36	_SKIP_MEMORY_FILES = {"__init__", "fewshot_memory"}
+37	
+38	
+39	def discover_all_memory_systems() -> list[tuple[str, str]]:
+40	    """Auto-discover all memory system .py files on disk."""
+41	    base = Path(__file__).parent
+42	    systems = []
+43	    for f in sorted((base / "agents").glob("*.py")):
+44	        name = f.stem
+45	        if name in _SKIP_MEMORY_FILES:
+46	            continue
+47	        systems.append((name, f"agents/{name}.py"))
+48	    return systems
+49	
+50	
+51	def get_dataset_sizes(dataset: str) -> tuple[int, int, int]:
+52	    """Return (num_train, num_val, num_test) for a dataset, applying overrides."""
+53	    o = _DS_OVERRIDES.get(dataset, {})
+54	    return (
+55	        o.get("num_train", _DS_DEFAULTS["num_train"]),
+56	        o.get("num_val", _DS_DEFAULTS["num_val"]),
+57	        o.get("num_test", _DS_DEFAULTS["num_test"]),
+58	    )
+59	
+60	
+61	def _sanitize_filename(desc: str) -> str:
+62	    return re.sub(r"[^\w\-.]", "_", desc)
+63	
+64	
+65	def _print_failure(desc: str, log_path: Path) -> None:

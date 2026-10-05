@@ -1,0 +1,57 @@
+Bash
+
+command:
+python -c "
+import os, json, re
+from collections import defaultdict
+
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+log_path = os.path.join(base, 'LawBench', 'symmetric_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+lines = open(log_path, encoding='utf-8').readlines()
+steps = [json.loads(l) for l in lines if json.loads(l).get('type') == 'step']
+
+_WRAPPER_RE = re.compile(r'^\s*\[[^\]]*\]|<eoa>\s*$|\[[^\]]*\]\s*$', re.IGNORECASE)
+def _normalize(p):
+    c = _WRAPPER_RE.sub('', p).strip()
+    return c if c else p
+
+# Analyze specific LawBench error categories
+errors = [s for s in steps if not s.get('ok')]
+pred_norm = [_normalize(e['pred']) for e in errors]
+gts = [e['tgt'] for e in errors]
+
+# Category 1: 罪 suffix - pred ends in 罪 but GT doesn't
+suffix_罪 = [(p, g) for p, g in zip(pred_norm, gts) if p.endswith('罪') and not any(part.endswith('罪') for part in g.split(';'))]
+print(f'罪 suffix errors: {len(suffix_罪)}')
+for p, g in suffix_罪[:5]:
+    print(f'  pred={repr(p[:40])} gt={repr(g[:40])}')
+
+# Category 2: pred is subset of gt labels (partial multi-label)
+partial_subset = [(p, g) for p, g in zip(pred_norm, gts) 
+                  if ';' in g and all(part.strip() in g for part in p.split(';'))]
+print(f'Partial subset errors (pred subset of multi-label gt): {len(partial_subset)}')
+for p, g in partial_subset[:5]:
+    print(f'  pred={repr(p[:40])} gt={repr(g[:60])}')
+
+# Category 3: exact match if we strip 罪 suffix
+strip_罪 = [(p, g) for p, g in zip(pred_norm, gts) if p.rstrip('罪') == g or p.rstrip('罪') in g.split(';')]
+print(f'Would fix if strip 罪 from pred: {len(strip_罪)}')
+"
+
+
+description: Quantify LawBench error categories in detail
+
+--- output ---
+罪 suffix errors: 25
+  pred='伪造国家机关证件罪' gt='伪造、变造、买卖国家机关公文、证件、印章'
+  pred='敲诈勒索罪' gt='破坏计算机信息系统'
+  pred='故意伤害罪;故意毁坏财物罪' gt='故意伤害;故意毁坏财物'
+  pred='非法获取公民个人信息罪' gt='非法获取公民个人信息'
+  pred='非法使用爆炸物罪;过失致人死亡罪' gt='危险物品肇事'
+Partial subset errors (pred subset of multi-label gt): 26
+  pred='诈骗' gt='诈骗;组织、强迫、引诱、容留、介绍卖淫;引诱、容留、介绍卖淫'
+  pred='盗窃' gt='盗窃;掩饰、隐瞒犯罪所得、犯罪所得收益'
+  pred='' gt='持有、使用假币;盗窃'
+  pred='虚开增值税专用发票' gt='虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;经济犯'
+  pred='诈骗' gt='诈骗;聚众扰乱公共场所秩序、交通秩序'
+Would fix if strip 罪 from pred: 21

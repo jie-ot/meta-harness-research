@@ -1,0 +1,72 @@
+{
+  "call_id": "9049e70b604949ea8cb43410a458af78",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791016723-aoRRqXbrvOhq0EDWuhlW",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"Only assign the charge of ‘寻衅滋事’ when the facts explicitly describe a public order disturbance (e.g., creating a fight, causing chaos in a public place, or provoking trouble without a legitimate purpose) that is not already subsumed by specific offenses such as 故意伤害 or 故意毁坏财物.\",\n  \"keywords\": [\n    \"公共场所扰乱\",\n    \"挑衅\",\n    \"聚众斗殴\",\n    \"危害公共秩序\",\n    \"无正当理由的争执\",\n    \"寻衅滋事\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a rule to prevent the classification error: they incorrectly added \"寻衅滋事\" as a charge. The correct answer is only \"故意伤害;故意毁坏财物\". So the rule should be about not adding \"寻衅滋事\" unless the facts specifically meet its elements, i.e., when the conduct is not just assault and property damage but also includes \"picking quarrels and provoking trouble\" as a separate crime, which requires certain criteria (public order disturbance, etc.). The error likely arises from overgeneralizing that any violent dispute qualifies as \"寻衅滋事\". So rule: Only assign \"寻衅滋事\" if the conduct is a public order offense characterized by creating a disturbance, not merely assault or property damage.\n\nKeywords: \"寻衅滋事\", \"公共场所扰乱\", \"挑衅\", \"聚众斗殴\", \"危害公共秩序\", \"无正当理由的争执\". Also need to detect when the facts mention \"争执\" but not \"扰乱公共秩序\". So rule: Exclude \"寻衅滋事\" when the acts are covered by specific crimes like故意伤害 or故意毁坏财物 and there is no indication of public order disturbance.\n\nNow produce JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a rule to prevent the classification error: they incorrectly added \"寻衅滋事\" as a charge. The correct answer is only \"故意伤害;故意毁坏财物\". So the rule should be about not adding \"寻衅滋事\" unless the facts specifically meet its elements, i.e., when the conduct is not just assault and property damage but also includes \"picking quarrels and provoking trouble\" as a separate crime, which requires certain criteria (public order disturbance, etc.). The error likely arises from overgeneralizing that any violent dispute qualifies as \"寻衅滋事\". So rule: Only assign \"寻衅滋事\" if the conduct is a public order offense characterized by creating a disturbance, not merely assault or property damage.\n\nKeywords: \"寻衅滋事\", \"公共场所扰乱\", \"挑衅\", \"聚众斗殴\", \"危害公共秩序\", \"无正当理由的争执\". Also need to detect when the facts mention \"争执\" but not \"扰乱公共秩序\". So rule: Exclude \"寻衅滋事\" when the acts are covered by specific crimes like故意伤害 or故意毁坏财物 and there is no indication of public order disturbance.\n\nNow produce JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a rule to prevent the classification error: they incorrectly added \"寻衅滋事\" as a charge. The correct answer is only \"故意伤害;故意毁坏财物\". So the rule should be about not adding \"寻衅滋事\" unless the facts specifically meet its elements, i.e., when the conduct is not just assault and property damage but also includes \"picking quarrels and provoking trouble\" as a separate crime, which requires certain criteria (public order disturbance, etc.). The error likely arises from overgeneralizing that any violent dispute qualifies as \"寻衅滋事\". So rule: Only assign \"寻衅滋事\" if the conduct is a public order offense characterized by creating a disturbance, not merely assault or property damage.\n\nKeywords: \"寻衅滋事\", \"公共场所扰乱\", \"挑衅\", \"聚众斗殴\", \"危害公共秩序\", \"无正当理由的争执\". Also need to detect when the facts mention \"争执\" but not \"扰乱公共秩序\". So rule: Exclude \"寻衅滋事\" when the acts are covered by specific crimes like故意伤害 or故意毁坏财物 and there is no indication of public order disturbance.\n\nNow produce JSON.",
+            "reasoning_content": "We need to produce a rule to prevent the classification error: they incorrectly added \"寻衅滋事\" as a charge. The correct answer is only \"故意伤害;故意毁坏财物\". So the rule should be about not adding \"寻衅滋事\" unless the facts specifically meet its elements, i.e., when the conduct is not just assault and property damage but also includes \"picking quarrels and provoking trouble\" as a separate crime, which requires certain criteria (public order disturbance, etc.). The error likely arises from overgeneralizing that any violent dispute qualifies as \"寻衅滋事\". So rule: Only assign \"寻衅滋事\" if the conduct is a public order offense characterized by creating a disturbance, not merely assault or property damage.\n\nKeywords: \"寻衅滋事\", \"公共场所扰乱\", \"挑衅\", \"聚众斗殴\", \"危害公共秩序\", \"无正当理由的争执\". Also need to detect when the facts mention \"争执\" but not \"扰乱公共秩序\". So rule: Exclude \"寻衅滋事\" when the acts are covered by specific crimes like故意伤害 or故意毁坏财物 and there is no indication of public order disturbance.\n\nNow produce JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 417,
+      "prompt_tokens": 707,
+      "total_tokens": 1124,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 281,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 9.21e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 9.21e-05,
+        "upstream_inference_prompt_cost": 2.121e-05,
+        "upstream_inference_completions_cost": 7.089e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

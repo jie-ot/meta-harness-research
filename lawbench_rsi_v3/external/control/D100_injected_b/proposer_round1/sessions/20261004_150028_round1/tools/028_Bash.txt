@@ -1,0 +1,36 @@
+Bash
+
+command: python .prototypes/label_lexicon_snap_memory.py
+description: Run prototype A mechanism check
+
+--- output ---
+=== Variant comparison: guard settings ===
+min_run=3 cover=0.5: 14/14 cases differ from expectation
+min_run=4 cover=0.6: 14/14 cases differ from expectation
+min_run=4 cover=0.8: 14/14 cases differ from expectation
+
+=== Chosen variant: min_run=4, cover=0.6 ===
+PASS  [罪名]破坏电力设施<eoa>                        -> ['破坏电力设备']   (share 破坏电力 (4) -> snap)
+PASS  [罪名]非法种植罂粟<eoa>                        -> ['非法种植毒品原植物']   (share 非法种植 (4) -> snap)
+PASS  [罪名]盗窃;破坏电力设施<eoa>                     -> ['盗窃', '破坏电力设备']   (mixed: one safe, one snapped)
+PASS  [罪名]拐骗儿童罪<eoa>                         -> ['拐骗儿童']   (G4 spurious 罪 suffix)
+PASS  [罪名]盗窃<eoa>                            -> ['盗窃']   (exact, must NOT snap)
+PASS  [罪名]失火<eoa>                            -> ['失火']   (exact short, must NOT snap)
+PASS  [罪名]诈骗<eoa>                            -> ['诈骗']   (exact short, must NOT snap)
+PASS  [罪名]行贿<eoa>                            -> ['行贿']   (exact, must NOT be pulled to 单位行贿)
+PASS  [罪名]故意伤害<eoa>                          -> ['故意伤害']   (exact, must NOT snap)
+PASS  [罪名]受贿<eoa>                            -> ['受贿']   (exact, must NOT be pulled to 非国家工作人员受贿)
+PASS  [罪名]盗窃;诈骗<eoa>                         -> ['盗窃', '诈骗']   (both exact)
+PASS  [罪名]侵犯注册商标专用权<eoa>                     -> ['侵犯注册商标专用权']   (G2 blocks: run 4 < 0.6*9)
+PASS  [罪名]非法采矿<eoa>                          -> ['非法采矿']   (exact, plausible standalone)
+FAIL  [罪名]掩饰、隐瞒犯罪所得<eoa>                     -> ['掩饰', '隐瞒犯罪所得']   (exact sub-part)
+
+=== Retrieval signal check: degenerate tokens vs bigrams ===
+old tokenizer: query_jaccard_set = []
+  old jaccard vs related: 0.0000   bigram dice vs related: 0.3529
+  old jaccard vs unrelated: 0.0000   bigram dice vs unrelated: 0.1200
+
+=== End-to-end predict/learn with fake LLM ===
+predicted: ['失火'] | expected ['盗窃', '破坏电力设备'] -> False
+
+PROTOTYPE A REVIEW: 1 case(s) differ

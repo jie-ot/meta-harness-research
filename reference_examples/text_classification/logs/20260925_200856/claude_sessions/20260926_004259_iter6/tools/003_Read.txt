@@ -1,0 +1,49 @@
+Read: config.yaml
+
+
+--- output ---
+1	# Dataset split sizes — full datasets
+2	dataset:
+3	  num_train: 200
+4	  num_val: 50
+5	  num_test: 100
+6	  overrides:
+7	    # MCE tasks: use full official splits
+8	    USPTO:                     {num_train: 50, num_val: 30, num_test: 100}
+9	    Symptom2Disease:           {num_train: 200, num_val: 50, num_test: 212}
+10	    LawBench:                  {num_train: 200, num_val: 50, num_test: 100}
+11	
+12	# Inner loop settings
+13	inner_loop:
+14	  mode: online      # "online" or "offline"
+15	  num_epochs: 1      # For offline mode: 1 epoch for local server speed (was 5)
+16	  temperature: 0.0   # LLM temperature (null = model default)
+17	  eval_interval: 0   # 0 = no intermediate evals
+18	  batch_size: 1
+19	  seed: 42
+20	
+21	# Models to test
+22	models:
+23	  - model: openrouter/openai/gpt-oss-120b
+24	  # To use a custom OpenAI-compatible endpoint instead, switch to e.g.:
+25	  # - model: gpt-oss-120b
+26	  #   api_base: https://your-api-host/v1
+27	
+28	# Benchmark sweep settings
+29	benchmark:
+30	  seeds: [42]              # multi-seed: [42, 123, 456]
+31	  concurrency: 16
+32	
+33	# Datasets to test
+34	datasets:
+35	  - USPTO
+36	  - Symptom2Disease
+37	  - LawBench
+38	
+39	# Memory systems to test
+40	memory_systems:
+41	  baselines:
+42	    - no_memory
+43	    - fewshot_all
+44	  proposed: []  # meta_harness.py writes candidate files into agents/ at runtime
+45	

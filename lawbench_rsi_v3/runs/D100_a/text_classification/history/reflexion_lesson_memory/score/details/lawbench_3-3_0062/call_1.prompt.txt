@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- When the facts describe a person performing any medical diagnosis, treatment, or related procedure without a valid medical license, classify the conduct under the statutory offense of “非法行医” rather th
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:南宫市人民检察院指控：2014年11月25日17时许，在南宫市凤某KTV院内，被害人曲某因结账问题与该KTV员工王某乙发生纠纷，王某乙遂将其丈夫闫某唤来，被告人闫某驾驶一辆别克牌白色英某轿车赶到后与被害人曲某发生冲突，闫某驾车将曲某撞倒并从其身上碾过。不久，被告人王某甲赶到现场了解情况之后，为掩盖闫某的犯罪行为，将存有闫某驾车撞人监控视频的主机送到张某甲经营的南宫市金某戴某电脑门市，让张某甲帮助其删除了该段视频。经南宫市公安局法医鉴定：曲某的损伤程度为轻伤一级。2014年11月26日，被告人闫某到南宫市公安局十里派出所投案。
+公诉机关就指控的上述事实，当庭宣读和出示了被告人供述，被害人陈述，证人证言，现场勘查笔录、现场图、现场照片，鉴定意见，相关书证以及视听资料等证据。认为被告人闫某故意驾车将他人撞伤，其行为触犯了《中华人民共和国刑法》××之规定，犯罪事实清楚，证据确实、充分，应当以××追究其刑事责任。被告人王某甲为掩盖闫某的犯罪事实，帮助其毁灭证据，情节严重，其行为触犯了《中华人民共和国刑法》××××之规定，犯罪事实清楚，证据确实、充分，应当以帮助毁灭证据罪追究其刑事责任。鉴于二被告人赔偿了被害人的经济损失，取得谅解，且被害人有一定的过错，可酌情从轻处罚。提请本院依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

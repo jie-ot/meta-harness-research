@@ -1,0 +1,30 @@
+Bash
+
+command:
+powershell -Command "
+\$lines = Get-Content 'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\USPTO\decayed_confusion_memory\gpt-oss-120b\log.jsonl'
+\$steps = \$lines | ForEach-Object { \$_ | ConvertFrom-Json } | Where-Object { \$_.type -eq 'step' }
+\$errors = \$steps | Where-Object { -not \$_.ok }
+Write-Host \"Total steps: \$(\$steps.Count), Errors: \$(\$errors.Count)\"
+\$errors | Select-Object -First 15 | ForEach-Object { \"pred=[\$(\$_.pred)] tgt=[\$(\$_.tgt)]\" }
+"
+
+description: Analyze USPTO error patterns
+
+--- output ---
+Total steps: 50, Errors: 45
+pred=[COC(=O)[C@@H](N)c1ccc(cc1)C.CC(C)(C)OC(=O)OC(=O)OC(C)(C)C] tgt=[CC(C)(C)OC(=O)OC(=O)OC(C)(C)C.COC(=O)[C@@H]([NH3+])c1ccccc1C]
+pred=[Clc1ncncc1.c1ccccc1C#C] tgt=[C#Cc1ccccc1.Clc1ncncc1I]
+pred=[O=C(NCC(=O)N1CCN(C(=O)c2ccccc2C(F)(F)F)CC1)c1ccc(-c2ccccc2OC(=O)C)cc1] tgt=[O=C(NCC(=O)N1CCN(C(=O)c2ccccc2C(F)(F)F)CC1)c1ccc(-c2ccccc2OCc2ccccc2)cc1]
+pred=[Cc1c(-c2ccc(=O)n(Cc3cccc(F)c3F)c2)c2cc(F)ccc2n1CC=O] tgt=[Cc1c(-c2ccc(=O)n(Cc3cccc(F)c3F)c2)c2cc(F)ccc2n1CC(=O)O]
+pred=[C[C@@H]1C[C@H](NC(=O)OC(C)(C)C)C(=O)N1CC(=O)OC(C)(C)C] tgt=[CCOC(=O)CN1C(=O)[C@@H](NC(=O)OC(C)(C)C)C[C@H]1C]
+pred=[Cc1c(Cl)ccc2c1[nH]c2C=O.NCCN] tgt=[Cc1ccc(Cl)cc1NN.Cl.O=C1CCNCC1]
+pred=[COC(=O)c1cc(-c2cc(Br)ccc2OCc2ccc(F)cc2)ccc1NC(C)=O.Cc1ccccn1] tgt=[CC(=O)CCC(=O)c1cc(Br)ccc1OCc1ccc(F)cc1.COC(=O)c1cc(N)ccc1NC(C)=O]
+pred=[C[C@H](N)C1CCCCC1.c1c(CBr)c(-c2ccccc2)nc2cc(Cl)ccc12C(=O)Cl] tgt=[Cc1c(-c2ccccc2)nc2cc(Cl)ccc2c1C(=O)N[C@@H](C)C1CCCCC1.O=C1CCC(=O)N1Br]
+pred=[C[C@H]1C[C@@H](c2ccncc2NC(=O)c2ccc(F)c(-c3c(F)cccc3F)n2)C[C@@H](N)[C@H]1N] tgt=[C[C@H]1C[C@@H](c2ccncc2NC(=O)c2ccc(F)c(-c3c(F)cccc3F)n2)C[C@@H](NC(=O)OC(C)(C)C)[C@H]1N=[N+]=[N-]]
+pred=[Clc1c(C(=O)NC2C3CC4CC(C3)CC2C4)cnn1.CC1CCCN1.c1ccccc1Br] tgt=[CC1CCCN1.O=C(NC1C2CC3CC(C2)CC1C3)c1cnn(-c2ccccc2)c1Cl]
+pred=[COP(=O)(OC)OC.C=CCBr] tgt=[C/C=C\P(=O)(OC)OC.O=C1CCC(=O)N1Br]
+pred=[CN(Cc1cccc(C(=O)N2CC(=O)Nc3ccccc32)c1).ClC(=O)OC(C)(C)C] tgt=[CN(Cc1cccc(C(=O)O)c1)C(=O)OC(C)(C)C.O=C1CNc2ccccc2N1]
+pred=[COc1cc2c(cc1OC)-c1cc(=O)nc(=O)n1CC2.CI] tgt=[CI.COc1cc2c(cc1OC)-c1cc(=O)[nH]c(=O)n1CC2]
+pred=[OCC1=CC=CC=C1c1ccc2cc(CNCc3ccc(C(F)(F)F)cc3)c(-c3ccsc3)nc2c1] tgt=[COc1ccc2cc(CNCc3ccc(C(F)(F)F)cc3)c(-c3ccsc3)nc2c1]
+pred=[CCCCCCc3nnn[nH]3C(=NO)N.O=C(O)c1ccccc1] tgt=[N#CCCCCCCc1nc(-c2ccccc2)c(-c2ccccc2)o1.[N-]=[N+]=[N-]]

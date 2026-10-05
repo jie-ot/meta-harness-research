@@ -1,0 +1,72 @@
+{
+  "call_id": "29cf1ea272934e1b834089afd14d0c49",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791037750-6RF9r6SI36RU5n0NWdjx",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"被告人冒充国家税务局工作人员，向银行虚假申请信用卡并取得信用额度，随后未按约定偿还透支本金，构成利用虚假身份信息办理信用卡并恶意透支的行为，符合《刑法》关于信用卡诈骗的规定。\",\n  \"final_answer\": \"[罪名]信用卡诈骗<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine charge based on facts. The facts: person impersonated tax bureau staff, applied for a credit card, then defaulted on repayment. This is credit card fraud (信用卡诈骗). The examples show similar: applying for credit card, malicious overdraft, etc. So charge: 信用卡诈骗.\n\nWe need to output JSON with \"reasoning\" and \"final_answer\". The final answer should be in format: [罪名]信用卡诈骗<eoa>. Actually the answer format: The final answer should be the string between [罪名] and <eoa>. In examples they output like [罪名]盗窃<eoa>. So final answer should be \"[罪名]信用卡诈骗<eoa>\". But the JSON field \"final_answer\" should contain that string? The instruction: \"Respond in JSON format\n\n{\\\"reasoning\\\": \\\"[your reasoning]\\\", \\\"final_answer\\\": \\\"[your answer]\\\"}\". So final_answer should be the string with the charge label? Probably include the [罪名]...<eoa> wrapper. In examples they show final answer as that. So final_answer = \"[罪名]信用卡诈骗<eoa]\". Wait closing tag is <eoa>. So final_answer = \"[罪名]信用卡诈骗<eoa>\". Ensure correct.\n\nNow reasoning: mention impersonation, fraudulent credit card application, default, qualifies as credit card fraud.\n\nReturn JSON.",
+          "provider_specific_fields": {
+            "reasoning": "We need to determine charge based on facts. The facts: person impersonated tax bureau staff, applied for a credit card, then defaulted on repayment. This is credit card fraud (信用卡诈骗). The examples show similar: applying for credit card, malicious overdraft, etc. So charge: 信用卡诈骗.\n\nWe need to output JSON with \"reasoning\" and \"final_answer\". The final answer should be in format: [罪名]信用卡诈骗<eoa>. Actually the answer format: The final answer should be the string between [罪名] and <eoa>. In examples they output like [罪名]盗窃<eoa>. So final answer should be \"[罪名]信用卡诈骗<eoa>\". But the JSON field \"final_answer\" should contain that string? The instruction: \"Respond in JSON format\n\n{\\\"reasoning\\\": \\\"[your reasoning]\\\", \\\"final_answer\\\": \\\"[your answer]\\\"}\". So final_answer should be the string with the charge label? Probably include the [罪名]...<eoa> wrapper. In examples they show final answer as that. So final_answer = \"[罪名]信用卡诈骗<eoa]\". Wait closing tag is <eoa>. So final_answer = \"[罪名]信用卡诈骗<eoa>\". Ensure correct.\n\nNow reasoning: mention impersonation, fraudulent credit card application, default, qualifies as credit card fraud.\n\nReturn JSON.",
+            "refusal": null,
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine charge based on facts. The facts: person impersonated tax bureau staff, applied for a credit card, then defaulted on repayment. This is credit card fraud (信用卡诈骗). The examples show similar: applying for credit card, malicious overdraft, etc. So charge: 信用卡诈骗.\n\nWe need to output JSON with \"reasoning\" and \"final_answer\". The final answer should be in format: [罪名]信用卡诈骗<eoa>. Actually the answer format: The final answer should be the string between [罪名] and <eoa>. In examples they output like [罪名]盗窃<eoa>. So final answer should be \"[罪名]信用卡诈骗<eoa>\". But the JSON field \"final_answer\" should contain that string? The instruction: \"Respond in JSON format\n\n{\\\"reasoning\\\": \\\"[your reasoning]\\\", \\\"final_answer\\\": \\\"[your answer]\\\"}\". So final_answer should be the string with the charge label? Probably include the [罪名]...<eoa> wrapper. In examples they show final answer as that. So final_answer = \"[罪名]信用卡诈骗<eoa]\". Wait closing tag is <eoa>. So final_answer = \"[罪名]信用卡诈骗<eoa>\". Ensure correct.\n\nNow reasoning: mention impersonation, fraudulent credit card application, default, qualifies as credit card fraud.\n\nReturn JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to determine charge based on facts. The facts: person impersonated tax bureau staff, applied for a credit card, then defaulted on repayment. This is credit card fraud (信用卡诈骗). The examples show similar: applying for credit card, malicious overdraft, etc. So charge: 信用卡诈骗.\n\nWe need to output JSON with \"reasoning\" and \"final_answer\". The final answer should be in format: [罪名]信用卡诈骗<eoa>. Actually the answer format: The final answer should be the string between [罪名] and <eoa>. In examples they output like [罪名]盗窃<eoa>. So final answer should be \"[罪名]信用卡诈骗<eoa>\". But the JSON field \"final_answer\" should contain that string? The instruction: \"Respond in JSON format\n\n{\\\"reasoning\\\": \\\"[your reasoning]\\\", \\\"final_answer\\\": \\\"[your answer]\\\"}\". So final_answer should be the string with the charge label? Probably include the [罪名]...<eoa> wrapper. In examples they show final answer as that. So final_answer = \"[罪名]信用卡诈骗<eoa]\". Wait closing tag is <eoa>. So final_answer = \"[罪名]信用卡诈骗<eoa>\". Ensure correct.\n\nNow reasoning: mention impersonation, fraudulent credit card application, default, qualifies as credit card fraud.\n\nReturn JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 394,
+      "prompt_tokens": 4465,
+      "total_tokens": 4859,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 323,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0003075,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0003075,
+        "upstream_inference_prompt_cost": 0.00019977184544499232,
+        "upstream_inference_completions_cost": 0.00010772815455500768
+      }
+    }
+  },
+  "raw_response_missing": false
+}

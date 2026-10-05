@@ -1,0 +1,72 @@
+{
+  "call_id": "f361188c71b64de28b67e3fa5a822195",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791018951-hdRVWZb6rricN5JUgxjS",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"Only assign crimes that are directly supported by the factual description and statutory elements; do not label payments to private individuals for false testimony as 行贿 (bribery), but as 妨害作证 (obstruction of justice).\",\n  \"keywords\": [\n    \"指使作伪证\",\n    \"支付金钱换取伪证\",\n    \"私下证人\",\n    \"未涉及公职人员\",\n    \"妨害作证\",\n    \"行贿\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a correction rule to prevent the AI from misclassifying crimes. The error: The AI included \"行贿\" (bribery) incorrectly. The correct answer should be \"故意伤害;妨害作证\". So the rule should be about not adding unrelated crimes like bribery unless facts support it. Also ensure that \"伪证\" is not a separate crime but part of \"妨害作证\". Also ensure that \"行贿\" is not inferred from \"承诺每月给1万元\" unless it's a bribe to a public official; here it's paying a witness, which is obstruction of justice, not bribery. So rule: Only assign crimes that are explicitly described in the facts and correspond to statutory definitions; avoid inferring bribery when the payment is to a private individual for false testimony.\n\nKeywords: \"承诺每月给1万元\", \"伪证\", \"指使作伪证\", \"故意伤害\", \"妨害作证\", \"行贿\". But we need keywords that identify when rule applies: \"支付金钱以换取伪证\", \"指使他人作伪证\", \"未涉及公职人员\", \"仅为私下证人\", \"不构成行贿\". Provide 3-6.\n\nThus JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a correction rule to prevent the AI from misclassifying crimes. The error: The AI included \"行贿\" (bribery) incorrectly. The correct answer should be \"故意伤害;妨害作证\". So the rule should be about not adding unrelated crimes like bribery unless facts support it. Also ensure that \"伪证\" is not a separate crime but part of \"妨害作证\". Also ensure that \"行贿\" is not inferred from \"承诺每月给1万元\" unless it's a bribe to a public official; here it's paying a witness, which is obstruction of justice, not bribery. So rule: Only assign crimes that are explicitly described in the facts and correspond to statutory definitions; avoid inferring bribery when the payment is to a private individual for false testimony.\n\nKeywords: \"承诺每月给1万元\", \"伪证\", \"指使作伪证\", \"故意伤害\", \"妨害作证\", \"行贿\". But we need keywords that identify when rule applies: \"支付金钱以换取伪证\", \"指使他人作伪证\", \"未涉及公职人员\", \"仅为私下证人\", \"不构成行贿\". Provide 3-6.\n\nThus JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a correction rule to prevent the AI from misclassifying crimes. The error: The AI included \"行贿\" (bribery) incorrectly. The correct answer should be \"故意伤害;妨害作证\". So the rule should be about not adding unrelated crimes like bribery unless facts support it. Also ensure that \"伪证\" is not a separate crime but part of \"妨害作证\". Also ensure that \"行贿\" is not inferred from \"承诺每月给1万元\" unless it's a bribe to a public official; here it's paying a witness, which is obstruction of justice, not bribery. So rule: Only assign crimes that are explicitly described in the facts and correspond to statutory definitions; avoid inferring bribery when the payment is to a private individual for false testimony.\n\nKeywords: \"承诺每月给1万元\", \"伪证\", \"指使作伪证\", \"故意伤害\", \"妨害作证\", \"行贿\". But we need keywords that identify when rule applies: \"支付金钱以换取伪证\", \"指使他人作伪证\", \"未涉及公职人员\", \"仅为私下证人\", \"不构成行贿\". Provide 3-6.\n\nThus JSON.",
+            "reasoning_content": "We need to produce a correction rule to prevent the AI from misclassifying crimes. The error: The AI included \"行贿\" (bribery) incorrectly. The correct answer should be \"故意伤害;妨害作证\". So the rule should be about not adding unrelated crimes like bribery unless facts support it. Also ensure that \"伪证\" is not a separate crime but part of \"妨害作证\". Also ensure that \"行贿\" is not inferred from \"承诺每月给1万元\" unless it's a bribe to a public official; here it's paying a witness, which is obstruction of justice, not bribery. So rule: Only assign crimes that are explicitly described in the facts and correspond to statutory definitions; avoid inferring bribery when the payment is to a private individual for false testimony.\n\nKeywords: \"承诺每月给1万元\", \"伪证\", \"指使作伪证\", \"故意伤害\", \"妨害作证\", \"行贿\". But we need keywords that identify when rule applies: \"支付金钱以换取伪证\", \"指使他人作伪证\", \"未涉及公职人员\", \"仅为私下证人\", \"不构成行贿\". Provide 3-6.\n\nThus JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 402,
+      "prompt_tokens": 571,
+      "total_tokens": 973,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 289,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 8.9467e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 8.9467e-05,
+        "upstream_inference_prompt_cost": 2.1127e-05,
+        "upstream_inference_completions_cost": 6.834e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

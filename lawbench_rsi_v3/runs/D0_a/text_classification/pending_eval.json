@@ -1,0 +1,21 @@
+{
+  "iteration": 2,
+  "candidates": [
+    {
+      "name": "contrastive_error_pair_memory",
+      "file": "agents/contrastive_error_pair_memory.py",
+      "hypothesis": "Storing raw wrong-prediction records (predicted label, correct label, case excerpt) and retrieving the most similar past mistakes at predict time will outperform LLM-generated lesson storage, because the model receives a structurally distinct WRONG/CORRECT signal from a directly parallel case rather than an abstract rule that may mis-generalize; this specifically targets the wrong-variant errors (e.g. 盗窃 vs 破坏电力设备, 受贿 vs 非国家工作人员受贿) that persist after iteration 1.",
+      "axis": "exploitation",
+      "base_system": "reflexion_lesson_memory",
+      "components": ["contrastive_error_pairs", "similarity_retrieval", "no_llm_in_learning", "cjk_bigram_tokenizer", "wrong_correct_prompt_section"]
+    },
+    {
+      "name": "cooccurrence_scaffold_memory",
+      "file": "agents/cooccurrence_scaffold_memory.py",
+      "hypothesis": "Building an explicit charge co-occurrence graph from all training ground-truth label sets and injecting a companion-charge scaffold at predict time will reduce multi-charge under-prediction (the dominant remaining failure at ~30% of errors), because it gives the model a statistically grounded list of charges to verify against the case facts rather than requiring it to spontaneously enumerate secondary charges from examples alone.",
+      "axis": "exploration",
+      "base_system": "reflexion_lesson_memory",
+      "components": ["cooccurrence_graph", "primary_charge_majority_vote", "companion_charge_scaffold", "fact_verification_instruction", "cjk_bigram_tokenizer", "graph_updated_on_all_ground_truths"]
+    }
+  ]
+}

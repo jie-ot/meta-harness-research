@@ -1,0 +1,22 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控2015年8月15日1时20分许，被告人张某某乘坐李某某驾驶的甘AYXXXX号小型轿车，行驶至永某县刘家峡镇川南路后宫KTV门口路段时，发生致一人死亡的交通肇事，后李某某驾车逃逸。当日3时许，被告人张某某被传唤至永某县公安局交通警察大队，在询问时，被告人张某某作虚假证明包庇李某某交通肇事后逃逸的犯罪事实。
+
+
+Wrong prediction: [罪名]提供虚假证明;包庇<eoa>
+Correct answer: 危险驾驶;窝藏、包庇
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

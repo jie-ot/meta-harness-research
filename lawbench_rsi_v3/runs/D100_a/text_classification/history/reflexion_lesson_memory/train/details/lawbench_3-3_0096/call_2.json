@@ -1,0 +1,72 @@
+{
+  "call_id": "f358e85a32e24910bf3b7a2fbc83d147",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017824-kJaLeAggEbKyN9DXVqVd",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead of leaving the charge field empty.\",\n  \"keywords\": [\n    \"非法转让\",\n    \"倒卖土地使用权\",\n    \"故意伤害\",\n    \"二审审理查明\",\n    \"事实与证据\",\n    \"罪名\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with a rule that prevents the classification error: The AI gave a wrong prediction: it output just [罪名]<eoa> (i.e., blank). The correct answer is two charges: 非法转让、倒卖土地使用权;故意伤害. So the error is that the model didn't extract any charges from the text. The rule should ensure that when the text includes mention of specific crimes (like illegal transfer of land use rights, intentional injury), the model must output those charges. So rule: Ensure to parse the factual description for explicit criminal conduct and map to appropriate statutory offenses; do not output empty placeholder.\n\nKeywords: \"非法转让\", \"倒卖土地使用权\", \"故意伤害\", \"二审审理查明\", \"事实与证据\", \"罪名\". Provide 3-6.\n\nThus JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with a rule that prevents the classification error: The AI gave a wrong prediction: it output just [罪名]<eoa> (i.e., blank). The correct answer is two charges: 非法转让、倒卖土地使用权;故意伤害. So the error is that the model didn't extract any charges from the text. The rule should ensure that when the text includes mention of specific crimes (like illegal transfer of land use rights, intentional injury), the model must output those charges. So rule: Ensure to parse the factual description for explicit criminal conduct and map to appropriate statutory offenses; do not output empty placeholder.\n\nKeywords: \"非法转让\", \"倒卖土地使用权\", \"故意伤害\", \"二审审理查明\", \"事实与证据\", \"罪名\". Provide 3-6.\n\nThus JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with a rule that prevents the classification error: The AI gave a wrong prediction: it output just [罪名]<eoa> (i.e., blank). The correct answer is two charges: 非法转让、倒卖土地使用权;故意伤害. So the error is that the model didn't extract any charges from the text. The rule should ensure that when the text includes mention of specific crimes (like illegal transfer of land use rights, intentional injury), the model must output those charges. So rule: Ensure to parse the factual description for explicit criminal conduct and map to appropriate statutory offenses; do not output empty placeholder.\n\nKeywords: \"非法转让\", \"倒卖土地使用权\", \"故意伤害\", \"二审审理查明\", \"事实与证据\", \"罪名\". Provide 3-6.\n\nThus JSON.",
+            "reasoning_content": "We need to produce a JSON with a rule that prevents the classification error: The AI gave a wrong prediction: it output just [罪名]<eoa> (i.e., blank). The correct answer is two charges: 非法转让、倒卖土地使用权;故意伤害. So the error is that the model didn't extract any charges from the text. The rule should ensure that when the text includes mention of specific crimes (like illegal transfer of land use rights, intentional injury), the model must output those charges. So rule: Ensure to parse the factual description for explicit criminal conduct and map to appropriate statutory offenses; do not output empty placeholder.\n\nKeywords: \"非法转让\", \"倒卖土地使用权\", \"故意伤害\", \"二审审理查明\", \"事实与证据\", \"罪名\". Provide 3-6.\n\nThus JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 287,
+      "prompt_tokens": 279,
+      "total_tokens": 566,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 210,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 5.9113e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 5.9113e-05,
+        "upstream_inference_prompt_cost": 1.0323e-05,
+        "upstream_inference_completions_cost": 4.879e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

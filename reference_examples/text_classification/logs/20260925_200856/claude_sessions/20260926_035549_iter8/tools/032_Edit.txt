@@ -1,0 +1,50 @@
+Edit: agents\confusion_normalized_bfs_memory.py
+
+replace_all: False
+old_string:
+"""Adaptive-Tokenizer Confusion Disambiguation Memory.
+
+Combines the confusion-matrix retrieval of confusion_disambiguation_memory with a
+language-adaptive tokenizer that routes to character bigrams for CJK text and to
+word tokens for ASCII/Latin text.
+
+Problem identified in iter6: a single tokenizer cannot be optimal for all scripts.
+Bigrams fix near-zero similarity on CJK inputs but degrade English retrieval where
+word tokens are better calibrated. This system detects the script of each text at
+tokenization time and applies the right strategy automatically, avoiding the
+accuracy trade-off that forced ngram_confusion_memory to sacrifice English datasets
+in order to fix CJK similarity.
+
+Retrieval algorithm (same as confusion_disambiguation_memory):
+1. Score all stored examples with adaptive Jaccard against the query.
+2. Identify confusion targets from the top-3 candidate labels.
+3. Inject one disambiguation example per confused label (round-robin, 2 rounds).
+4. Fill remaining budget with similarity-ranked examples.
+"""
+
+new_string:
+"""Confusion-Normalized BFS Memory.
+
+Builds on adaptive_tokenizer_confusion_memory with two targeted fixes:
+
+1. Prediction normalization bug fix: the base system stores raw predictions as
+   confusion keys (e.g. '[罪名]诈骗<eoa>') but looks them up using clean
+   ground-truth labels ('诈骗'). This means the disambiguation phase never fires —
+   zero overlap between keys and lookup labels. This system normalizes predictions
+   before storing, so all 133 confusion edges become active.
+
+2. BFS depth-2 traversal: after normalizing, traverse the confusion graph up to
+   depth 2 with a (count / depth) weight decay so that direct confusors rank higher
+   than transitive ones. This surfaces label clusters the single-hop lookup misses.
+
+Retrieval algorithm:
+1. Score all stored examples with adaptive Jaccard against the query.
+2. Extract top-3 candidate labels from highest-scoring examples.
+3. BFS from those labels over the normalized confusion graph (depth ≤ 2).
+4. Inject one disambiguation example per BFS neighbor, ordered by weighted score.
+5. Fill remaining budget with similarity-ranked examples.
+"""
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\confusion_normalized_bfs_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

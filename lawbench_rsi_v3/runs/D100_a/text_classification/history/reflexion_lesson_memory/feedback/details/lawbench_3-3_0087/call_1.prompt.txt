@@ -1,0 +1,30 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the factual description mentions distinct illegal tax‑related actions (e.g., falsifying VAT invoices, fraudulently obtaining export rebates, and using fake invoices for tax deduction), enumerate 
+- When the facts describe forged or false VAT invoices that were used to obtain export tax refunds or to offset tax liabilities, the charge must explicitly include the purpose clause (e.g., “用于骗取出口退税、抵扣
+- When extracting crimes from the facts, enumerate every distinct statutory offense mentioned, including any qualifying actions (e.g., 故意销毁, 用于骗取出口退税) and related financial documents, and separate each 
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:敖汉旗人民检察院指控，
+1、被告人周2某伙同李3某、张1某良、孙2某（三人均判刑）于2011年12月9日成立“敖汉旗鑫腾药业有限公司”于2012年1月12日向安徽省“阜阳安瑞药业有限公司”虚开增值税专用发票25份，金额2462393.75元，税额418606.80元（该公司已认证抵扣税款401824.75元），于2012年2月16日、2月23日、3月16日向衡水明日医药科技发展有限公司药品部虚开增值税专用发票100份，金额9884401.80元，税额1680348.42元，（该公司已认证抵扣税款1680348.42元）。
+2、被告人周2某伙同李3某、张1某良、周1某（已判刑）于2012年6月12日成立敖汉旗强力汽车贸易销售中心、敖汉旗贝子府路畅挂车销售中心，于2012年7月至8月份虚开机动车销售统一发票220份，已查证属实3份，虚开金额3013880元。
+公诉机关向本院提交了相关的证据材料，认为被告人周2某虚开增值税专用发票骗取国家税款，数额巨大，其行为已构成虚开增值税专用发票罪。系共同犯罪。被告人周2某虚开《中华人民共和国刑法》××规定以外的其他发票，情节特别严重，其行为已构成××，系共同犯罪。被告人周2某一人犯数罪，应数罪并罚。认为被告人周2某能够认罪，并协助司法机关抓捕其他犯罪嫌疑人，具有立功表现。请依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

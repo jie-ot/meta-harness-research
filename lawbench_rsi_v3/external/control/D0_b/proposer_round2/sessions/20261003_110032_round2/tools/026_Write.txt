@@ -1,0 +1,78 @@
+Write: agents\label_cluster_memory.py
+
+content:
+"""LabelClusterMemory — retrieval organized by charge-label clusters.
+
+Axes A+C exploration: the prompt architecture changes from a flat
+similarity-ranked example list to per-label sections with canonical charge
+headers, and the selection algorithm shifts from global Jaccard ranking to
+a two-tier approach: first rank candidate labels by max-example similarity,
+then select the best representatives per label.
+
+Root cause addressed: the frontier (bigram_confusion_memory) builds a flat
+similarity list that often collapses to examples from a single dominant
+charge, giving the model no comparative signal across adjacent charge types.
+More critically, the model sees answer strings embedded in "A: ..." lines
+rather than as prominent headers, which contributes to suffix-format errors
+("故意毁坏财物罪" vs "故意毁坏财物") and wrong sub-category picks.
+
+New mechanism: memory is indexed by individual charge labels (multi-charge
+labels split on ';'). At predict time the top-4 most similar labels are
+selected and each gets a "### Charge: {label}" section showing its most
+representative examples. The prompt explicitly instructs the model to use
+the exact canonical strings from these headers. A similarity fill follows
+for remaining budget.
+"""
+
+import json
+import re
+from collections import defaultdict
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+MAX_CHARS = 30000
+_TOP_LABELS = 4           # candidate charge labels to show as cluster sections
+_EXAMPLES_PER_LABEL = 2   # most-similar examples per cluster section
+_MAX_FILL = 10            # similarity fill after cluster sections
+
+PREDICT_PROMPT = """Solve the problem below based on the clustered examples provided.
+
+Each section below shows examples for a specific charge label. The section \
+header gives the EXACT canonical charge string to use in your answer.
+
+{cluster_section}{fill_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Use the exact charge label strings shown in the section headers as your answer
+- Do NOT append extra characters or suffixes to charge names
+- If multiple charges apply, join them with ';'
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+
+def _tokenize(text: str) -> frozenset[str]:
+    """Chinese character bigrams + ASCII words."""
+    tokens: set[str] = set()
+    tokens.update(re.findall(r"[A-Za-z0-9]+", text.lower()))
+    cjk_chars = re.findall(r"[一-鿿]", text)
+    for i in range(len(cjk_chars) - 1):
+        tokens.add(cjk_chars[i] + cjk_chars[i + 1])
+    return frozenset(tokens)
+
+
+def _jaccard(a: frozenset[str], b: frozenset[str]) -> float:
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D0_b\text_classification\agents\label_cluster_memory.py (file state is current in your context — no need to Read it back)

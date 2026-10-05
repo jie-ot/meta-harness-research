@@ -1,0 +1,34 @@
+Bash
+
+command:
+powershell -Command "cd 'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples'; uv run python C:\Windows\Temp\proto_llm_rules.py"
+
+description: Run LLM rule synthesis prototype
+
+--- output ---
+Pairs needing rules: [('malaria', 'typhoid', 3), ('typhoid', 'malaria', 2)]
+
+--- Synthesis prompt (first 400 chars) ---
+A classifier has been confusing label "malaria" with "typhoid".
+
+Examples correctly labeled "typhoid":
+  - fever diarrhea vomiting dehydration stomach pain
+  - prolonged fever headache weakness rose spots
+
+Examples of "malaria":
+  - fever chills sweating headache muscle pain cyclic
+  - high fever shaking chills anemia fatigue
+
+Write a brief (1-2 sentence) decision rule that distinguishes when to c
+
+--- Rules section injected into prompt ---
+**Disambiguation Notes (high priority):**
+- "typhoid" vs "malaria": Choose 'typhoid' when symptoms include prolonged fever with headache and weakness; choose 'malaria' when fever is cyclic/intermittent with chills and sweating.
+- "malaria" vs "typhoid": Choose 'malaria' when there are cyclic fever patterns and chills; choose 'typhoid' for sustained fever with gastrointestinal symptoms.
+
+
+Empty section for irrelevant labels: repr=''
+
+Serialization round-trip: PASSED
+
+Prototype 2 PASSED: rule synthesis prompts build correctly, injection logic works

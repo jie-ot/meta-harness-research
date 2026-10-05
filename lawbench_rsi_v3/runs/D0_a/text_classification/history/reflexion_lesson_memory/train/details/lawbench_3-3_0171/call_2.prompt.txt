@@ -1,0 +1,26 @@
+An AI classifier made an error on this case. Generate a compact correction lesson.
+
+**Correct label:** 危险驾驶;单位受贿
+**Wrong prediction:** [罪名]受贿;危险驾驶<eoa>
+**Case facts (excerpt):**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:威海经济技术开发区人民检察院指控，一、单位受贿事实
+被告单位教研中心是教育局下属的全额拨款的事业单位，负责辖区内中小学教师的培训、各学科的教研及教材教辅的审核、征订、发放工作。被告人岳某自2005年4月25日至2014年8月15日期间担任该单位主任、法定代表人。2007年至2013年期间，被告单位经手向威海市文教图书有限公司（以下简称图书公司）征订了价值4108778.73元的图书，该公司按照10%的比例向教研中心支付了410877元回扣款。被告人岳某擅自指使会计将上述款项存放于帐外小金库，用于非正常开支。
+二、危险驾驶事实
+2014年4月14日15时许，被告人岳某酒后驾驶鲁K×××××号小型轿车，在威海经济技术开发区杨家滩花园南门处与吕某驾驶的黑F×××××号小型轿车刮擦。民警到现场处理事故时发现岳某有酒后驾驶机动车辆的嫌疑，遂将其带至经区医院抽血送检。经检验，岳某静脉血液中乙醇成分含量为266.64毫克／毫升。
+公诉机关认为，被告单位教研中心在经济往来中帐外收受回扣款，其行为构成××，被告人岳某作为该单位负责人，也构成××。被告人岳某又违反交通法规，
+
+Write a lesson that:
+1. States the KEY distinguishing feature that determines the correct label
+2. Explains what makes this different from "[罪名]受贿;危险驾驶<eoa>"
+3. Gives a brief rule a classifier can apply to future cases
+
+Respond only in JSON:
+{"lesson": "<one to three sentences, in the same language as the case facts>", "final_answer": "危险驾驶;单位受贿"}

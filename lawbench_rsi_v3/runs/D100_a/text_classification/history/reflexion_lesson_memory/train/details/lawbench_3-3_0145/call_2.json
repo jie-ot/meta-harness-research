@@ -1,0 +1,72 @@
+{
+  "call_id": "822143206c614b07b3a6f7f69f7ea5f0",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791018905-nOnzWITrxDhq1g3fqoQZ",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the factual description contains distinct elements that satisfy the legal criteria of more than one separate criminal offense, list every applicable offense, separating them with semicolons.\",\n  \"keywords\": [\n    \"非法占有\",\n    \"欺骗方法\",\n    \"医疗保险费\",\n    \"非法行医\",\n    \"多罪并罚\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with a rule to prevent the classification error. The error: AI predicted only \"诈骗\" but correct answer includes \"诈骗;非法行医\". So the error is missing an additional charge (illegal medical practice). The rule should ensure that when facts mention multiple distinct crimes (e.g., fraud and illegal medical practice), the model should list all applicable crimes separated by semicolons. Keywords: \"非法占有\", \"欺骗方法\", \"医疗保险费\", \"非法行医\", \"多罪并罚\". Provide rule: \"If the fact description mentions distinct illegal conduct elements that correspond to separate statutory offenses, list each offense separated by semicolons.\" Keywords: \"非法占有\", \"欺骗\", \"医疗保险费\", \"非法行医\", \"多罪\". Provide JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with a rule to prevent the classification error. The error: AI predicted only \"诈骗\" but correct answer includes \"诈骗;非法行医\". So the error is missing an additional charge (illegal medical practice). The rule should ensure that when facts mention multiple distinct crimes (e.g., fraud and illegal medical practice), the model should list all applicable crimes separated by semicolons. Keywords: \"非法占有\", \"欺骗方法\", \"医疗保险费\", \"非法行医\", \"多罪并罚\". Provide rule: \"If the fact description mentions distinct illegal conduct elements that correspond to separate statutory offenses, list each offense separated by semicolons.\" Keywords: \"非法占有\", \"欺骗\", \"医疗保险费\", \"非法行医\", \"多罪\". Provide JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with a rule to prevent the classification error. The error: AI predicted only \"诈骗\" but correct answer includes \"诈骗;非法行医\". So the error is missing an additional charge (illegal medical practice). The rule should ensure that when facts mention multiple distinct crimes (e.g., fraud and illegal medical practice), the model should list all applicable crimes separated by semicolons. Keywords: \"非法占有\", \"欺骗方法\", \"医疗保险费\", \"非法行医\", \"多罪并罚\". Provide rule: \"If the fact description mentions distinct illegal conduct elements that correspond to separate statutory offenses, list each offense separated by semicolons.\" Keywords: \"非法占有\", \"欺骗\", \"医疗保险费\", \"非法行医\", \"多罪\". Provide JSON.",
+            "reasoning_content": "We need to produce a JSON with a rule to prevent the classification error. The error: AI predicted only \"诈骗\" but correct answer includes \"诈骗;非法行医\". So the error is missing an additional charge (illegal medical practice). The rule should ensure that when facts mention multiple distinct crimes (e.g., fraud and illegal medical practice), the model should list all applicable crimes separated by semicolons. Keywords: \"非法占有\", \"欺骗方法\", \"医疗保险费\", \"非法行医\", \"多罪并罚\". Provide rule: \"If the fact description mentions distinct illegal conduct elements that correspond to separate statutory offenses, list each offense separated by semicolons.\" Keywords: \"非法占有\", \"欺骗\", \"医疗保险费\", \"非法行医\", \"多罪\". Provide JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 254,
+      "prompt_tokens": 433,
+      "total_tokens": 687,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 208,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 5.9201e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 5.9201e-05,
+        "upstream_inference_prompt_cost": 1.6021e-05,
+        "upstream_inference_completions_cost": 4.318e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

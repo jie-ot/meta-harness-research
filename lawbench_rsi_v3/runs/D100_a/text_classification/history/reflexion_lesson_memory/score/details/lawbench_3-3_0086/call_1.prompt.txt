@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the factual description indicates that the offender used their official position or entrusted authority to appropriate property for personal gain, rather than physically taking or stealthily removi
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the factual description contains distinct elements that satisfy the legal criteria of more than one separate criminal offense, list every applicable offense, separating them with semicolons.
+- When the facts describe a defendant’s role in a scheme that withdraws money from victims’ bank or credit‑card accounts, classify the conduct under the specific statutory offenses of fraud (诈骗) and, if
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:福建省安溪县人民检察院指控，被告人刘2某自2014年11月至2015年3月间，向他人购买残疾人个人信息25，751条及手机、银行卡等作案工具，后在厦门市湖里区台湾街318区金盛大厦12D室租房等地，利用上述公民个人信息拨打电话，谎称系民政局及残疾人补助中心工作人员，骗取侯某某、顾某某等人将302，840元转入其指定的户名为“杨某某”、“刘1某”等银行账户内。
+指控上述事实提供的证据有：1、扣押物品清单、银行交易明细等书证；2、被告人刘2某的供述和辩解；3、文件检验鉴定书；4、取款录像截图、手机通话记录等视听材料、电子数据等。
+公诉机关认为，被告人刘2某以非法占有为目的，采用虚构事实的手段，骗取他人财物，数额巨大，其行为应当以××追究其刑事责任；其又以其他方式非法获取公民个人信息，情节严重，其行为应当以××追究其刑事责任；被告人刘2某一人犯数罪，应数罪并罚。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

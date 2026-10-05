@@ -1,0 +1,72 @@
+{
+  "call_id": "58dac2f78e424b5984b203a3679045a2",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791026708-xTFdgwpcvZoRPwmWqGm8",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"lesson\": \"- 必须依据完整的案件事实进行判断，不能仅凭检察院名称或片段信息推断罪名。\\n- 罪名表述必须严格使用《刑法》或司法解释中的官方名称，避免使用非标准或多余的“罪”字。\\n- 当事实涉及多项犯罪时，要全部列出并用分号分隔，不能遗漏或随意添加未在事实中出现的罪名。\\n- 对于专业术语（如吸毒、持有枪支等），必须使用法律规定的精准表述，如“容留他人吸毒”“非法持有、私藏枪支、弹药”，避免同义词替换导致错误。\\n- 输出必须严格遵守 “[罪名]...<eoa>” 的格式，包括分号、空格和标点的准确位置，确保格式符合要求。\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model misinterprets Chinese legal terms, truncates, uses wrong synonyms, adds extra words, misreads partial text. Observations: The input includes \"事实: ...\" with only a short phrase like \"辽中县人民检察院\". The model guessed a crime unrelated. So rule: need to rely on full factual description, not just institution name. Also need to map to correct legal terminology (e.g., \"容留他人吸毒\" vs \"容留他人吸食毒品\"). Also need to handle multiple charges correctly, separate with semicolon, not include extra descriptors like \"组织赌博罪\". Also need to avoid adding \"罪\" suffix redundantly? Actually correct answer sometimes includes \"赌博;开设赌场\" without \"罪\". So rule: output should match official charge naming conventions (no extra \"罪\" suffix unless part of term). Also need to ensure that when multiple charges, include all present in facts, not guess missing ones. Also need to avoid truncation of long charge names (e.g., \"非法持有、私藏枪支、弹药\" vs \"非法持有枪支、弹药罪\").\n\nThus produce lessons:\n\n1. 必须依据完整事实内容，而不是仅凭检察院名称等无关信息来推断罪名。  \n2. 罪名的表述要严格对应《刑法》或司法解释中的标准名称，避免使用非官方词汇或多余的“罪”字。  \n3. 当事实中涉及多项犯罪时，需全部列出，使用分号分隔，且不遗漏或随意添加未在事实中出现的罪名。  \n4. 对于包含“吸食毒品”“持有枪支”等专业术语的案件，必须使用法律规定的精准表述（如“容留他人吸毒”“非法持有、私藏枪支、弹药”），避免同义词替换导致错误。  \n5. 输出格式必须严格遵守 “[罪名]...<eoa>” 的结构，确保分号、空格和标点位置准确，防止因格式错误导致判定失误。\n\nNow format JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model misinterprets Chinese legal terms, truncates, uses wrong synonyms, adds extra words, misreads partial text. Observations: The input includes \"事实: ...\" with only a short phrase like \"辽中县人民检察院\". The model guessed a crime unrelated. So rule: need to rely on full factual description, not just institution name. Also need to map to correct legal terminology (e.g., \"容留他人吸毒\" vs \"容留他人吸食毒品\"). Also need to handle multiple charges correctly, separate with semicolon, not include extra descriptors like \"组织赌博罪\". Also need to avoid adding \"罪\" suffix redundantly? Actually correct answer sometimes includes \"赌博;开设赌场\" without \"罪\". So rule: output should match official charge naming conventions (no extra \"罪\" suffix unless part of term). Also need to ensure that when multiple charges, include all present in facts, not guess missing ones. Also need to avoid truncation of long charge names (e.g., \"非法持有、私藏枪支、弹药\" vs \"非法持有枪支、弹药罪\").\n\nThus produce lessons:\n\n1. 必须依据完整事实内容，而不是仅凭检察院名称等无关信息来推断罪名。  \n2. 罪名的表述要严格对应《刑法》或司法解释中的标准名称，避免使用非官方词汇或多余的“罪”字。  \n3. 当事实中涉及多项犯罪时，需全部列出，使用分号分隔，且不遗漏或随意添加未在事实中出现的罪名。  \n4. 对于包含“吸食毒品”“持有枪支”等专业术语的案件，必须使用法律规定的精准表述（如“容留他人吸毒”“非法持有、私藏枪支、弹药”），避免同义词替换导致错误。  \n5. 输出格式必须严格遵守 “[罪名]...<eoa>” 的结构，确保分号、空格和标点位置准确，防止因格式错误导致判定失误。\n\nNow format JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model misinterprets Chinese legal terms, truncates, uses wrong synonyms, adds extra words, misreads partial text. Observations: The input includes \"事实: ...\" with only a short phrase like \"辽中县人民检察院\". The model guessed a crime unrelated. So rule: need to rely on full factual description, not just institution name. Also need to map to correct legal terminology (e.g., \"容留他人吸毒\" vs \"容留他人吸食毒品\"). Also need to handle multiple charges correctly, separate with semicolon, not include extra descriptors like \"组织赌博罪\". Also need to avoid adding \"罪\" suffix redundantly? Actually correct answer sometimes includes \"赌博;开设赌场\" without \"罪\". So rule: output should match official charge naming conventions (no extra \"罪\" suffix unless part of term). Also need to ensure that when multiple charges, include all present in facts, not guess missing ones. Also need to avoid truncation of long charge names (e.g., \"非法持有、私藏枪支、弹药\" vs \"非法持有枪支、弹药罪\").\n\nThus produce lessons:\n\n1. 必须依据完整事实内容，而不是仅凭检察院名称等无关信息来推断罪名。  \n2. 罪名的表述要严格对应《刑法》或司法解释中的标准名称，避免使用非官方词汇或多余的“罪”字。  \n3. 当事实中涉及多项犯罪时，需全部列出，使用分号分隔，且不遗漏或随意添加未在事实中出现的罪名。  \n4. 对于包含“吸食毒品”“持有枪支”等专业术语的案件，必须使用法律规定的精准表述（如“容留他人吸毒”“非法持有、私藏枪支、弹药”），避免同义词替换导致错误。  \n5. 输出格式必须严格遵守 “[罪名]...<eoa>” 的结构，确保分号、空格和标点位置准确，防止因格式错误导致判定失误。\n\nNow format JSON.",
+            "reasoning_content": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model misinterprets Chinese legal terms, truncates, uses wrong synonyms, adds extra words, misreads partial text. Observations: The input includes \"事实: ...\" with only a short phrase like \"辽中县人民检察院\". The model guessed a crime unrelated. So rule: need to rely on full factual description, not just institution name. Also need to map to correct legal terminology (e.g., \"容留他人吸毒\" vs \"容留他人吸食毒品\"). Also need to handle multiple charges correctly, separate with semicolon, not include extra descriptors like \"组织赌博罪\". Also need to avoid adding \"罪\" suffix redundantly? Actually correct answer sometimes includes \"赌博;开设赌场\" without \"罪\". So rule: output should match official charge naming conventions (no extra \"罪\" suffix unless part of term). Also need to ensure that when multiple charges, include all present in facts, not guess missing ones. Also need to avoid truncation of long charge names (e.g., \"非法持有、私藏枪支、弹药\" vs \"非法持有枪支、弹药罪\").\n\nThus produce lessons:\n\n1. 必须依据完整事实内容，而不是仅凭检察院名称等无关信息来推断罪名。  \n2. 罪名的表述要严格对应《刑法》或司法解释中的标准名称，避免使用非官方词汇或多余的“罪”字。  \n3. 当事实中涉及多项犯罪时，需全部列出，使用分号分隔，且不遗漏或随意添加未在事实中出现的罪名。  \n4. 对于包含“吸食毒品”“持有枪支”等专业术语的案件，必须使用法律规定的精准表述（如“容留他人吸毒”“非法持有、私藏枪支、弹药”），避免同义词替换导致错误。  \n5. 输出格式必须严格遵守 “[罪名]...<eoa>” 的结构，确保分号、空格和标点位置准确，防止因格式错误导致判定失误。\n\nNow format JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 680,
+      "prompt_tokens": 925,
+      "total_tokens": 1605,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000161385,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000161385,
+        "upstream_inference_prompt_cost": 3.4225e-05,
+        "upstream_inference_completions_cost": 0.00012716
+      }
+    }
+  },
+  "raw_response_missing": false
+}

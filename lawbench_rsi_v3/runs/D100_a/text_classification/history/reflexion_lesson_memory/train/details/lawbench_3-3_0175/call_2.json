@@ -1,0 +1,72 @@
+{
+  "call_id": "c0d0cfda54ca4eda936bbf4b20c701a2",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017941-KL8bcRBQF11KSloL4XYq",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the facts describe bribery directed at persons who are not state officials or at a legal entity (unit), the charge must be specified as “对非国家工作人员行贿” and/or “对单位行贿” rather than the generic “行贿”.\",\n  \"keywords\": [\n    \"非国家工作人员\",\n    \"单位\",\n    \"对...行贿\",\n    \"药品推广\",\n    \"收受贿赂\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a correction rule to prevent misclassifying this scenario as \"行贿\" (bribery) when the correct answer is \"对非国家工作人员行贿;对单位行贿\". The error is that the AI gave a single charge \"行贿\" instead of specifying the correct charges: bribery of non-state personnel and bribery of a unit. So the rule should be: when the facts involve bribery of non-state personnel or units, the classification must include specific subcharges rather than generic \"行贿\". Also need keywords that trigger rule: \"非国家工作人员\", \"单位\", \"药品推广\", \"现金\", \"收受\", \"对...行贿\". Provide JSON.\n\nLet's craft: rule: \"If the alleged bribery involves persons who are not state officials or a legal entity (unit), the charge must be specified as '对非国家工作人员行贿' and/or '对单位行贿' rather than the generic '行贿'.\" Keywords: \"非国家工作人员\", \"单位\", \"药品推广\", \"收受贿赂\", \"对...行贿\". Provide JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a correction rule to prevent misclassifying this scenario as \"行贿\" (bribery) when the correct answer is \"对非国家工作人员行贿;对单位行贿\". The error is that the AI gave a single charge \"行贿\" instead of specifying the correct charges: bribery of non-state personnel and bribery of a unit. So the rule should be: when the facts involve bribery of non-state personnel or units, the classification must include specific subcharges rather than generic \"行贿\". Also need keywords that trigger rule: \"非国家工作人员\", \"单位\", \"药品推广\", \"现金\", \"收受\", \"对...行贿\". Provide JSON.\n\nLet's craft: rule: \"If the alleged bribery involves persons who are not state officials or a legal entity (unit), the charge must be specified as '对非国家工作人员行贿' and/or '对单位行贿' rather than the generic '行贿'.\" Keywords: \"非国家工作人员\", \"单位\", \"药品推广\", \"收受贿赂\", \"对...行贿\". Provide JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a correction rule to prevent misclassifying this scenario as \"行贿\" (bribery) when the correct answer is \"对非国家工作人员行贿;对单位行贿\". The error is that the AI gave a single charge \"行贿\" instead of specifying the correct charges: bribery of non-state personnel and bribery of a unit. So the rule should be: when the facts involve bribery of non-state personnel or units, the classification must include specific subcharges rather than generic \"行贿\". Also need keywords that trigger rule: \"非国家工作人员\", \"单位\", \"药品推广\", \"现金\", \"收受\", \"对...行贿\". Provide JSON.\n\nLet's craft: rule: \"If the alleged bribery involves persons who are not state officials or a legal entity (unit), the charge must be specified as '对非国家工作人员行贿' and/or '对单位行贿' rather than the generic '行贿'.\" Keywords: \"非国家工作人员\", \"单位\", \"药品推广\", \"收受贿赂\", \"对...行贿\". Provide JSON.",
+            "reasoning_content": "We need to produce a correction rule to prevent misclassifying this scenario as \"行贿\" (bribery) when the correct answer is \"对非国家工作人员行贿;对单位行贿\". The error is that the AI gave a single charge \"行贿\" instead of specifying the correct charges: bribery of non-state personnel and bribery of a unit. So the rule should be: when the facts involve bribery of non-state personnel or units, the classification must include specific subcharges rather than generic \"行贿\". Also need keywords that trigger rule: \"非国家工作人员\", \"单位\", \"药品推广\", \"现金\", \"收受\", \"对...行贿\". Provide JSON.\n\nLet's craft: rule: \"If the alleged bribery involves persons who are not state officials or a legal entity (unit), the charge must be specified as '对非国家工作人员行贿' and/or '对单位行贿' rather than the generic '行贿'.\" Keywords: \"非国家工作人员\", \"单位\", \"药品推广\", \"收受贿赂\", \"对...行贿\". Provide JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 356,
+      "prompt_tokens": 672,
+      "total_tokens": 1028,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 263,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 8.424e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 8.424e-05,
+        "upstream_inference_prompt_cost": 2.016e-05,
+        "upstream_inference_completions_cost": 6.408e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

@@ -1,0 +1,23 @@
+An AI classifier made an error on this case. Generate a compact correction lesson.
+
+**Correct label:** 隐匿、故意销毁会计凭证、会计帐簿、财务会计报告;虚开增值税专用发票、用于骗取出口退税、抵扣税款发票
+**Wrong prediction:** [罪名]虚开增值税专用发票;隐匿会计凭证、会计账簿<eoa>
+**Case facts (excerpt):**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:东阿县人民检察院指控，被告人邱1某科为他人虚开、让他人为自己虚开增值税专用发票，税款数额3821881.96元，案发后隐匿依法应当保存的会计凭证、会计账簿，情节严重；被告人尚某让他人为自己虚开增值税专用发票，税款数额为142474.55元。公诉机关就其指控向本院提供并当庭出示了增值税专用发票、抵扣证明等书证，证人邱某乙、郭某、赵某己等人的证言，被告人邱1某科、尚某的供述和辩解等证据，认为被告人邱1某科犯虚开增值税专用发票罪、隐匿会计凭证、会计账簿罪，系累犯，被告人尚某犯虚开增值税专用发票罪，提请本院依照《中华人民共和国刑法》××××、××××××之规定对其定罪处罚。
+
+
+Write a lesson that:
+1. States the KEY distinguishing feature that determines the correct label
+2. Explains what makes this different from "[罪名]虚开增值税专用发票;隐匿会计凭证、会计账簿<eoa>"
+3. Gives a brief rule a classifier can apply to future cases
+
+Respond only in JSON:
+{"lesson": "<one to three sentences, in the same language as the case facts>", "final_answer": "隐匿、故意销毁会计凭证、会计帐簿、财务会计报告;虚开增值税专用发票、用于骗取出口退税、抵扣税款发票"}

@@ -1,0 +1,24 @@
+An AI classifier made an error on this case. Generate a compact correction lesson.
+
+**Correct label:** 掩饰、隐瞒犯罪所得、犯罪所得收益
+**Wrong prediction:** [罪名]掩饰、隐瞒犯罪所得<eoa>
+**Case facts (excerpt):**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:石家庄市井陉矿区人民检察院指控，2015年3、4月份的一天，被告人高某在明知蓝色飞鹰牌二轮摩托车是盗窃所得的情况下，从于某某（另案处理）处以1500元的价格购买。经鉴定，该车价值5681元。现该车已发还失主。
+公诉机关向法庭出示了相应的证据证实指控的犯罪事实。公诉机关认为，被告人高某明知是犯罪所得的赃物而予以收购，其行为触犯了《中华人民共和国刑法》××之规定，应以掩饰、隐瞒犯罪所得罪追究其刑事责任。
+
+
+Write a lesson that:
+1. States the KEY distinguishing feature that determines the correct label
+2. Explains what makes this different from "[罪名]掩饰、隐瞒犯罪所得<eoa>"
+3. Gives a brief rule a classifier can apply to future cases
+
+Respond only in JSON:
+{"lesson": "<one to three sentences, in the same language as the case facts>", "final_answer": "掩饰、隐瞒犯罪所得、犯罪所得收益"}

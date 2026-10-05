@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description indicates that the offender used their official position or entrusted authority to appropriate property for personal gain, rather than physically taking or stealthily removi
+- When the alleged offender is not a public official (i.e., not a state functionary) but the conduct involves accepting or soliciting a bribe, the correct charge is '非国家工作人员受贿' rather than the generic '
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+- When extracting the crime name, output the exact statutory offense term (e.g., “行贿”) without adding descriptive prefixes or qualifiers such as “对国家工作人员”。
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:朝阳市双塔区人民检察院指控，2010年3月，被告人马某冒充朝阳县运输管理所的正式职工，以自己名义在朝阳银行新华支行办理了“白领通”贷款200000元人民币。在贷款过程中，马某向银行提供了虚假的贷款资料，包括虚假的“工资收入证明及单位扣款协议”、假单位公章及法人名章、假房产证明、假车辆登记证明等，后银行向其发放200000元贷款，贷款到期后经银行工作人员多次催要均未归还，给朝阳市新华支行造成重大经济损失。案发后马某家属将此笔贷款本息全部还清。公诉机关认为，被告人马某以非法占有为目的，使用虚假的证明文件，骗取银行贷款，数额特别巨大，其行为应以贷款诈骗罪追究刑事责任。
+被告人马某表示认罪。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- If the facts only describe forging, altering, or selling state‑issued documents or certificates and do not contain any separate act of deceiving another party for financial gain, assign only the forge
+- When the factual description contains multiple distinct illegal actions (e.g., fraud and any form of prostitution‑related conduct), list every applicable crime separated by semicolons rather than sele
+- When the factual description involves possession of controlled substances (e.g., heroin, cocaine) and cites violation of drug control laws, always label the offense as “非法持有毒品” rather than the generic
+- When the alleged offender holds a position in a private or non‑governmental entity (e.g., company executive, manager) rather than a public official, classify the offense as “非国家工作人员受贿” instead of the 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:仙居县人民检察院指控：
+2012年四、五月间，被告人吴某在本县南峰街道世纪新村二区二幢西灿头一楼开设的“龙腾性保健店”内，销售“海狗鞭”、“美国79胶囊”、“艾某可”、“金刚钻”等。同年5月30日，公安机关将其查获，扣押“海狗鞭”12盒、“美国79胶囊”2盒、“艾某可”2盒、“金刚钻”10盒，共计26盒（260粒）。经台州市食品药品检验所检验及仙居县食品药品监督管理局认定，查扣的海狗鞭”、“美国79胶囊”、“艾某可”、“金刚钻”均系假药。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

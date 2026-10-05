@@ -26,6 +26,8 @@ def _args(**overrides):
         "iterations": 0,
         "propose_timeout": 1,
         "test": False,
+        "test_all": False,
+        "test_harness_concurrency": 1,
     }
     values.update(overrides)
     return argparse.Namespace(**values)
@@ -150,6 +152,62 @@ class HeldOutIsolationTests(unittest.TestCase):
         results_flag = command.index("--results-dir")
         self.assertEqual(command[results_flag + 1], str(root / "logs/run/results"))
         self.assertEqual(command[-2:], ["--results", "--test"])
+
+    def test_full_finalization_includes_every_candidate(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            run_dir = root / "logs" / "test-run"
+            run_dir.mkdir(parents=True)
+            (run_dir / "frontier_val.json").write_text('{"_pareto": []}')
+            (run_dir / "evolution_summary.jsonl").write_text(
+                '\n'.join(
+                    [
+                        '{"iteration": 1, "system": "candidate_a"}',
+                        '{"iteration": 1, "system": "candidate_b"}',
+                    ]
+                )
+            )
+            calls = []
+
+            def fake_benchmark(args):
+                calls.append(args)
+                if "--memory" in args:
+                    system = args[args.index("--memory") + 1]
+                    for dataset in ("USPTO", "Symptom2Disease", "LawBench"):
+                        result_dir = benchmark_run_dir(
+                            meta_harness.RESULTS_DIR,
+                            dataset,
+                            system,
+                            "gpt-oss-120b",
+                            42,
+                        )
+                        result_dir.mkdir(parents=True, exist_ok=True)
+                        (result_dir / "test.json").write_text('{"accuracy": 1.0}')
+                return subprocess.CompletedProcess(args, 0, "", "")
+
+            with (
+                patch.object(meta_harness, "EVOLVE_DIR", root),
+                patch.object(meta_harness, "AGENTS_DIR", root / "agents"),
+                patch.object(meta_harness, "run_benchmark", fake_benchmark),
+                redirect_stdout(io.StringIO()),
+            ):
+                meta_harness.run_evolve(
+                    _args(test=True, test_all=True, test_harness_concurrency=2)
+                )
+
+            state = json.loads((run_dir / "finalized.json").read_text())
+            tested = {
+                call[call.index("--memory") + 1]
+                for call in calls
+                if "--memory" in call
+            }
+
+        self.assertEqual(
+            tested,
+            {"no_memory", "fewshot_all", "candidate_a", "candidate_b"},
+        )
+        self.assertTrue(state["all_systems"])
+        self.assertEqual(state["harness_concurrency"], 2)
 
     def test_incomplete_finalization_allows_evolution(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

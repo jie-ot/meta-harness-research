@@ -1,0 +1,21 @@
+Bash
+
+command:
+powershell -Command "cd 'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification'; uv run python C:/tmp/proto_normalization.py"
+
+description: Run normalization prototype script
+
+--- output ---
+=== WITHOUT normalization ===
+Confusion keys: ['[罪名]伪造国家机关证件罪<eoa>', '[罪名]敲诈勒索罪<eoa>', '[罪名]故意毁坏财物<eoa>', '[罪名]拐骗儿童<eoa>', '[罪名]非法获取公民个人信息罪<eoa>', '[罪名]受贿;滥用职权<eoa>']
+
+=== WITH normalization ===
+Confusion keys: ['伪造国家机关证件罪', '敲诈勒索罪', '非法获取公民个人信息罪']
+
+=== Lookup test (simulating _confusion_targets_for) ===
+Top candidate labels: ['受贿;滥用职权', '拐骗儿童', '故意毁坏财物']
+
+Without normalization - confusion targets found: {}
+With normalization - confusion targets found: {}
+
+=== Variant: also test disambiguation injection ===

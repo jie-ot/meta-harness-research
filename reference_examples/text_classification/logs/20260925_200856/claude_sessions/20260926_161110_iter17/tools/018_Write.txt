@@ -1,0 +1,88 @@
+Write: C:/tmp/proto_diffsort.py
+
+content:
+"""Prototype: difficulty-sorted prompt ordering.
+
+After retrieval, sort selected examples so the most confusion-targeted labels
+appear LAST in the prompt (nearest to the question).
+"""
+from collections import defaultdict
+import re
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ]')
+
+def _has_cjk(t): return bool(_CJK_RE.search(t))
+def _tok_word(t): return frozenset(re.findall(r"[A-Za-z0-9]+", t.lower()))
+def _tok_bigram(t):
+    t2 = re.sub(r'\s+', ' ', t.strip())
+    return frozenset(t2[i:i+2] for i in range(len(t2)-1)) if len(t2)>=2 else frozenset()
+def _tok(t): return _tok_bigram(t) if _has_cjk(t) else _tok_word(t)
+def _jaccard(a,b): return 0.0 if (not a and not b) else len(a&b)/len(a|b)
+
+examples = [
+    {"input": "aspirin synthesis", "target": "organic_chem"},
+    {"input": "breach of contract damages", "target": "contract_law"},
+    {"input": "aspirin analgesic fever", "target": "pharmacology"},      # confusion target
+    {"input": "acid base reaction equilibrium", "target": "inorganic_chem"},
+    {"input": "tort negligence liability", "target": "tort_law"},
+    {"input": "acetyl ester organic compound", "target": "organic_chem"},
+    {"input": "pharmacokinetics drug absorption", "target": "pharmacology"},  # confusion target
+]
+for ex in examples:
+    ex["tokens"] = _tok(ex["input"])
+
+confusion = defaultdict(lambda: defaultdict(float))
+confusion["organic_chem"]["pharmacology"] = 4.0
+confusion["tort_law"]["contract_law"] = 3.0
+confusion["inorganic_chem"]["pharmacology"] = 2.0
+
+def col_affinity(confusion):
+    aff = defaultdict(float)
+    for pred, actuals in confusion.items():
+        for actual, cnt in actuals.items():
+            aff[actual] += cnt
+    return dict(aff)
+
+aff = col_affinity(confusion)
+print("Confusion column affinity:", aff)
+
+query = "acetylsalicylic acid analgesic"
+q_tok = _tok(query)
+
+# Step 1: retrieve by similarity (standard, keep top 5)
+sim_scored = sorted(enumerate(examples), key=lambda x: -_jaccard(q_tok, x[1]["tokens"]))
+selected = [(i, ex) for i, ex in sim_scored[:5]]
+
+print("\nSelected by similarity:")
+for i, ex in selected:
+    print(f"  {ex['target']}: sim={_jaccard(q_tok,ex['tokens']):.3f}, conf_aff={aff.get(ex['target'],0):.1f}")
+
+# Variant A: sort ascending by conf_aff (most confused LAST = nearest to question)
+sorted_A = sorted(selected, key=lambda x: aff.get(x[1]["target"], 0.0))
+print("\nVariant A (most confused LAST):")
+for i, ex in sorted_A:
+    print(f"  {ex['target']}: conf_aff={aff.get(ex['target'],0):.1f}")
+
+# Variant B: sort descending (most confused FIRST)
+sorted_B = sorted(selected, key=lambda x: -aff.get(x[1]["target"], 0.0))
+print("\nVariant B (most confused FIRST):")
+for i, ex in sorted_B:
+    print(f"  {ex['target']}: conf_aff={aff.get(ex['target'],0):.1f}")
+
+# Variant C: sort by (similarity desc, conf_aff asc) — primary sort sim, tiebreak by confusion
+sorted_C = sorted(selected, key=lambda x: (-_jaccard(q_tok, x[1]["tokens"]), aff.get(x[1]["target"], 0.0)))
+print("\nVariant C (primary sim desc, tiebreak conf_aff asc):")
+for i, ex in sorted_C:
+    print(f"  {ex['target']}: sim={_jaccard(q_tok,ex['tokens']):.3f}, conf_aff={aff.get(ex['target'],0):.1f}")
+
+# Cold start test
+aff_empty = {}
+sorted_cold = sorted(selected, key=lambda x: aff_empty.get(x[1]["target"], 0.0))
+print("\nCold start (empty confusion): ordering =", [ex["target"] for _, ex in sorted_cold])
+print("Stable? (all affinity=0, sort is stable so preserves similarity order) ->",
+      [ex["target"] for _, ex in sorted_cold] == [ex["target"] for _, ex in selected])
+
+
+
+--- output ---
+File created successfully at: C:/tmp/proto_diffsort.py (file state is current in your context — no need to Read it back)

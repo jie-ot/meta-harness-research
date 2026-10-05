@@ -1,0 +1,46 @@
+Read: agents\act_decomposition_union_memory.py
+
+limit: 40
+offset: 148
+
+--- output ---
+148	                segs = segs[: max_acts - 1] + ["\n".join(segs[max_acts - 1 :])]
+149	            return segs
+150	    return [t]
+151	
+152	
+153	class ActDecompositionUnionMemory(MemorySystem):
+154	    """Per-act charging with system-side union and learned charge-count control."""
+155	
+156	    def __init__(self, llm: LLMCallable):
+157	        super().__init__(llm)
+158	        # charge predicted but absent from the truth -> times observed
+159	        self.spurious: dict[str, int] = defaultdict(int)
+160	        # charge that appeared in some truth -> times observed
+161	        self.confirmed: dict[str, int] = defaultdict(int)
+162	        # number of detected acts -> {number of true charges: times observed}
+163	        self.size_by_acts: dict[int, dict[int, int]] = defaultdict(lambda: defaultdict(int))
+164	        # every observed |truth|, for facts whose act count was never seen
+165	        self.global_sizes: dict[int, int] = defaultdict(int)
+166	        self._size_obs = 0
+167	        # (act text, charge) style hints, most recent last
+168	        self.examples: list[dict[str, str]] = []
+169	        self._learned_items = 0
+170	
+171	    # ------------------------------------------------------------------
+172	    # Learning — structural memory only; no string rewriting
+173	    # ------------------------------------------------------------------
+174	
+175	    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+176	        for r in batch_results:
+177	            truth = _clean(_payload(r.get("ground_truth", "")))
+178	            if not truth:
+179	                continue
+180	            truth_parts = [_clean(t) for t in _split_charges(truth)]
+181	            truth_parts = [t for t in truth_parts if t]
+182	            if not truth_parts:
+183	                continue
+184	            for t in truth_parts:
+185	                self.confirmed[t] += 1
+186	
+187	            truth_set = set(truth_parts)

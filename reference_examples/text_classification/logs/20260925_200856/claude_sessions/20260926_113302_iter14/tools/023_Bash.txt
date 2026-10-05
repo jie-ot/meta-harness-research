@@ -1,0 +1,40 @@
+Bash
+
+command:
+powershell -Command "cd 'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification'; uv run python C:\tmp\proto_hint.py"
+
+description: Run recent-error hint prototype
+
+--- output ---
+=== HINT SECTION ===
+**Recent corrections (study these carefully):**
+✗ Predicted: 诈骗  →  ✓ Correct: 诈骗;组织、领导传销活动
+✗ Predicted: 走私  →  ✓ Correct: 走私贵重金属;走私普通货物、物品
+✗ Predicted: 强迫卖淫  →  ✓ Correct: 组织卖淫;强迫卖淫
+====================
+
+Prompt length: 438 chars
+--- Prompt preview ---
+**Recent corrections (study these carefully):**
+✗ Predicted: 诈骗  →  ✓ Correct: 诈骗;组织、领导传销活动
+✗ Predicted: 走私  →  ✓ Correct: 走私贵重金属;走私普通货物、物品
+✗ Predicted: 强迫卖淫  →  ✓ Correct: 组织卖淫;强迫卖淫
+
+Q: 公诉机关指控...
+A: 诈骗;组织、领导传销活动
+
+**Problem:**
+事实：被告人于某年销售假冒商品...
+
+**Instructions:**
+- Follow the patterns shown in the examples above
+- Pay special attention to the recent corrections above
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}
+...
+
+=== DEDUPED HINT SECTION ===
+**Recent corrections (study these carefully):**
+✗ Predicted: 强迫卖淫  →  ✓ Correct: 组织卖淫;强迫卖淫
+✗ Predicted: 走私  →  ✓ Correct: 走私贵重金属;走私普通货物、物品
+✗ Predicted: 诈骗  →  ✓ Correct: 诈骗;组织、领导传销活动

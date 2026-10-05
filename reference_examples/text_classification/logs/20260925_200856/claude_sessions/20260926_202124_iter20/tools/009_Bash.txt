@@ -1,0 +1,20 @@
+Bash
+
+command:
+python -c "
+import os, json
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+# Check per-dataset log structure
+for ds in ['USPTO', 'Symptom2Disease', 'LawBench']:
+    ds_path = os.path.join(base, ds)
+    if os.path.exists(ds_path):
+        agents = os.listdir(ds_path)
+        print(f'{ds}: {agents[:5]}')
+"
+
+description: List log subdirectories per dataset
+
+--- output ---
+USPTO: ['adaptive_tokenizer_confusion_memory', 'anchor_last_memory', 'anchor_recency_confusion_memory', 'category_cluster_memory', 'cluster_confusion_memory']
+Symptom2Disease: ['adaptive_tokenizer_confusion_memory', 'anchor_last_memory', 'anchor_recency_confusion_memory', 'category_cluster_memory', 'cluster_confusion_memory']
+LawBench: ['adaptive_tokenizer_confusion_memory', 'anchor_last_memory', 'anchor_recency_confusion_memory', 'category_cluster_memory', 'cluster_confusion_memory']

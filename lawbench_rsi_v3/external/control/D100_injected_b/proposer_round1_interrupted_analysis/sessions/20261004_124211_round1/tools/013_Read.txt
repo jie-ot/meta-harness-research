@@ -1,0 +1,36 @@
+Read: inner_loop.py
+
+limit: 30
+offset: 200
+
+--- output ---
+200	
+201	    # Restore best checkpoint if we did early stopping
+202	    if best_state is not None and best_epoch < num_epochs - 1:
+203	        print(
+204	            f"  early stopping: restoring epoch {best_epoch} (val={best_val_acc:.1%})",
+205	            flush=True,
+206	        )
+207	        memory.set_state(best_state)
+208	        if logger:
+209	            logger.log(
+210	                "early_stop", best_epoch=best_epoch, best_val_acc=round(best_val_acc, 4)
+211	            )
+212	
+213	    # Evaluation phase: predict on all examples (no updates)
+214	    # Skip when skip_train_eval=True (val-only mode — saves ~15 min per system)
+215	    if skip_train_eval:
+216	        return {
+217	            "accuracy": 0.0,
+218	            "correct": 0,
+219	            "total": len(examples),
+220	            "trajectory": trajectory,
+221	            "num_epochs": num_epochs,
+222	        }
+223	
+224	    def predict_one(idx: int, ex: dict[str, Any]) -> tuple:
+225	        pred, meta = memory.predict(ex["input"])
+226	        prompt_info = memory.get_last_prompt_info()
+227	        raw = check_answer(pred, ex["target"], **_get_eval_kwargs(ex))
+228	        ok, metrics = _unpack_eval_result(raw)
+229	        return idx, ex, pred, meta, ok, metrics, prompt_info

@@ -1,0 +1,27 @@
+Bash
+
+command:
+python -c "
+import json
+log = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/LawBench/decayed_confusion_memory/gpt-oss-120b/log.jsonl'
+lines = open(log, encoding='utf-8').readlines()
+# Find entries that have actual data
+for i, line in enumerate(lines[:30]):
+    d = json.loads(line)
+    if d.get('prediction') or d.get('ground_truth') or d.get('was_correct') is not None:
+        print(f'Line {i}: {json.dumps(d, ensure_ascii=False)[:300]}')
+        break
+print('---')
+# Sample line 50
+d = json.loads(lines[50])
+print('Line 50 keys:', list(d.keys()))
+print(repr(str(d)[:500]))
+"
+
+
+description: Find non-empty log entries
+
+--- output ---
+---
+Line 50 keys: ['type', 't', 'step', 'input_preview', 'pred', 'tgt', 'ok', 'prompt_len', 'prompt_hash']
+"{'type': 'step', 't': 0.88, 'step': 24, 'input_preview': '请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\\n\\n格式示例：\\n- 单个罪名: [罪名]盗窃<eoa>\\n- 多个罪名: [罪名]盗窃;诈骗<eoa>\\n\\n\\n## 案件事实\\n事实:仙居县人民检察院指控：\\r\\n2012年四、五月间，被告人吴某在本县南峰街道世纪新村二区二幢西灿头一楼开设的“龙腾性保健店”内，销售“海狗鞭”、“美国79胶囊”、“艾某可”、“金刚', 'pred': '[罪名]生产、销售假药<eoa>', 'tgt': '生产、销售假药', 'ok': True, 'prompt_len': 11311, 'prompt_hash': '81d57b74'}"

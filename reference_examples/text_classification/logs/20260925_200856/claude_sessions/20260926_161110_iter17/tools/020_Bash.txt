@@ -1,0 +1,39 @@
+Bash
+
+command: cd /c/tmp && python proto_diffsort.py
+description: Run difficulty-sort prototype
+
+--- output ---
+Confusion column affinity: {'pharmacology': 6.0, 'contract_law': 3.0}
+
+Selected by similarity:
+  pharmacology: sim=0.200, conf_aff=6.0
+  inorganic_chem: sim=0.167, conf_aff=0.0
+  organic_chem: sim=0.000, conf_aff=0.0
+  contract_law: sim=0.000, conf_aff=3.0
+  tort_law: sim=0.000, conf_aff=0.0
+
+Variant A (most confused LAST):
+  inorganic_chem: conf_aff=0.0
+  organic_chem: conf_aff=0.0
+  tort_law: conf_aff=0.0
+  contract_law: conf_aff=3.0
+  pharmacology: conf_aff=6.0
+
+Variant B (most confused FIRST):
+  pharmacology: conf_aff=6.0
+  contract_law: conf_aff=3.0
+  inorganic_chem: conf_aff=0.0
+  organic_chem: conf_aff=0.0
+  tort_law: conf_aff=0.0
+
+Variant C (primary sim desc, tiebreak conf_aff asc):
+  pharmacology: sim=0.200, conf_aff=6.0
+  inorganic_chem: sim=0.167, conf_aff=0.0
+  organic_chem: sim=0.000, conf_aff=0.0
+  tort_law: sim=0.000, conf_aff=0.0
+  contract_law: sim=0.000, conf_aff=3.0
+
+Cold start (empty confusion): ordering = ['pharmacology', 'inorganic_chem', 'organic_chem', 'contract_law', 'tort_law']
+Stable? (all affinity=0, sort is stable so preserves similarity order) -> True
+Shell cwd was reset to D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification

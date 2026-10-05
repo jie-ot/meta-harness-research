@@ -1,0 +1,72 @@
+{
+  "call_id": "f51b3205b9c447bab7e7af6ad0b89596",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791127785-l98Ev0KabQzbYmBfOunS",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant repeatedly broke into homes and stole cash, cards, and personal documents, which constitutes the crime of theft (入室盗窃). Additionally, the defendant fabricated false accusations against two other persons, leading to their criminal detention, which matches the offense of false accusation (诬告罪). Both crimes are distinct and must be charged.\",\n  \"final_answer\": \"[罪名]盗窃;诬告<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine charges based on facts. The prior examples show mapping: \"抢夺\" for robbery (抢夺). \"非法吸收公众存款\" for illegal public deposit. \"容留他人吸毒\". \"过失致人死亡;破坏生产经营\". So we need to map this case to appropriate Chinese criminal law charges.\n\nFacts: multiple burglaries (入室盗窃) - theft (盗窃). Also false accusation causing others to be detained: 捏造事实诬告他人 (defamation? Actually \"诬告罪\" - false accusation). In Chinese criminal law, \"捏造事实诬告陷害罪\" (fabricating facts to accuse others). The description: \"捏造王某、王某立参与盗窃的事实，使王某、王某立受到刑事拘留\" => This is \"诬告罪\" (defamation by false accusation). The charge is \"诬告罪\". In Chinese law, article 243 of Criminal Law: \"捏造事实诬告陷害罪\". So we need two charges: 盗窃 (multiple counts) and 诬告罪.\n\nBut need to see label used in prior examples: they used \"抢夺\" for robbery, \"非法吸收公众存款\", \"容留他人吸毒\". For theft they used \"过失致人死亡\" etc. Not given example for theft. We need to infer label wording: likely \"盗窃\". The label should be exactly \"盗窃\". For false accusation: \"诬告罪\" or \"捏造事实诬告陷害罪\". Which label used in dataset? Not given. Need to guess typical label: \"诬告\". In Chinese criminal law, the crime is called \"诬告罪\". So label likely \"诬告\". Let's check typical Chinese legal term: \"捏造事实诬告陷害罪\" is full name. But dataset may use short \"诬告\". Hard to know. The instruction: \"Use the established label wording, not a paraphrase\". We have only seen labels: \"抢夺\", \"非法吸收公众存款\", \"容留他人吸毒\", \"过失致人死亡\", \"破坏生产经营\". So they use concise terms. For false accusation, likely \"诬告\". For theft, \"盗窃\". So answer: [罪名]盗窃;诬告<eoa>\n\nReturn JSON with reasoning and final answer.\n\n",
+          "provider_specific_fields": {
+            "reasoning": "We need to determine charges based on facts. The prior examples show mapping: \"抢夺\" for robbery (抢夺). \"非法吸收公众存款\" for illegal public deposit. \"容留他人吸毒\". \"过失致人死亡;破坏生产经营\". So we need to map this case to appropriate Chinese criminal law charges.\n\nFacts: multiple burglaries (入室盗窃) - theft (盗窃). Also false accusation causing others to be detained: 捏造事实诬告他人 (defamation? Actually \"诬告罪\" - false accusation). In Chinese criminal law, \"捏造事实诬告陷害罪\" (fabricating facts to accuse others). The description: \"捏造王某、王某立参与盗窃的事实，使王某、王某立受到刑事拘留\" => This is \"诬告罪\" (defamation by false accusation). The charge is \"诬告罪\". In Chinese law, article 243 of Criminal Law: \"捏造事实诬告陷害罪\". So we need two charges: 盗窃 (multiple counts) and 诬告罪.\n\nBut need to see label used in prior examples: they used \"抢夺\" for robbery, \"非法吸收公众存款\", \"容留他人吸毒\". For theft they used \"过失致人死亡\" etc. Not given example for theft. We need to infer label wording: likely \"盗窃\". The label should be exactly \"盗窃\". For false accusation: \"诬告罪\" or \"捏造事实诬告陷害罪\". Which label used in dataset? Not given. Need to guess typical label: \"诬告\". In Chinese criminal law, the crime is called \"诬告罪\". So label likely \"诬告\". Let's check typical Chinese legal term: \"捏造事实诬告陷害罪\" is full name. But dataset may use short \"诬告\". Hard to know. The instruction: \"Use the established label wording, not a paraphrase\". We have only seen labels: \"抢夺\", \"非法吸收公众存款\", \"容留他人吸毒\", \"过失致人死亡\", \"破坏生产经营\". So they use concise terms. For false accusation, likely \"诬告\". For theft, \"盗窃\". So answer: [罪名]盗窃;诬告<eoa>\n\nReturn JSON with reasoning and final answer.\n\n",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine charges based on facts. The prior examples show mapping: \"抢夺\" for robbery (抢夺). \"非法吸收公众存款\" for illegal public deposit. \"容留他人吸毒\". \"过失致人死亡;破坏生产经营\". So we need to map this case to appropriate Chinese criminal law charges.\n\nFacts: multiple burglaries (入室盗窃) - theft (盗窃). Also false accusation causing others to be detained: 捏造事实诬告他人 (defamation? Actually \"诬告罪\" - false accusation). In Chinese criminal law, \"捏造事实诬告陷害罪\" (fabricating facts to accuse others). The description: \"捏造王某、王某立参与盗窃的事实，使王某、王某立受到刑事拘留\" => This is \"诬告罪\" (defamation by false accusation). The charge is \"诬告罪\". In Chinese law, article 243 of Criminal Law: \"捏造事实诬告陷害罪\". So we need two charges: 盗窃 (multiple counts) and 诬告罪.\n\nBut need to see label used in prior examples: they used \"抢夺\" for robbery, \"非法吸收公众存款\", \"容留他人吸毒\". For theft they used \"过失致人死亡\" etc. Not given example for theft. We need to infer label wording: likely \"盗窃\". The label should be exactly \"盗窃\". For false accusation: \"诬告罪\" or \"捏造事实诬告陷害罪\". Which label used in dataset? Not given. Need to guess typical label: \"诬告\". In Chinese criminal law, the crime is called \"诬告罪\". So label likely \"诬告\". Let's check typical Chinese legal term: \"捏造事实诬告陷害罪\" is full name. But dataset may use short \"诬告\". Hard to know. The instruction: \"Use the established label wording, not a paraphrase\". We have only seen labels: \"抢夺\", \"非法吸收公众存款\", \"容留他人吸毒\", \"过失致人死亡\", \"破坏生产经营\". So they use concise terms. For false accusation, likely \"诬告\". For theft, \"盗窃\". So answer: [罪名]盗窃;诬告<eoa>\n\nReturn JSON with reasoning and final answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": "We need to determine charges based on facts. The prior examples show mapping: \"抢夺\" for robbery (抢夺). \"非法吸收公众存款\" for illegal public deposit. \"容留他人吸毒\". \"过失致人死亡;破坏生产经营\". So we need to map this case to appropriate Chinese criminal law charges.\n\nFacts: multiple burglaries (入室盗窃) - theft (盗窃). Also false accusation causing others to be detained: 捏造事实诬告他人 (defamation? Actually \"诬告罪\" - false accusation). In Chinese criminal law, \"捏造事实诬告陷害罪\" (fabricating facts to accuse others). The description: \"捏造王某、王某立参与盗窃的事实，使王某、王某立受到刑事拘留\" => This is \"诬告罪\" (defamation by false accusation). The charge is \"诬告罪\". In Chinese law, article 243 of Criminal Law: \"捏造事实诬告陷害罪\". So we need two charges: 盗窃 (multiple counts) and 诬告罪.\n\nBut need to see label used in prior examples: they used \"抢夺\" for robbery, \"非法吸收公众存款\", \"容留他人吸毒\". For theft they used \"过失致人死亡\" etc. Not given example for theft. We need to infer label wording: likely \"盗窃\". The label should be exactly \"盗窃\". For false accusation: \"诬告罪\" or \"捏造事实诬告陷害罪\". Which label used in dataset? Not given. Need to guess typical label: \"诬告\". In Chinese criminal law, the crime is called \"诬告罪\". So label likely \"诬告\". Let's check typical Chinese legal term: \"捏造事实诬告陷害罪\" is full name. But dataset may use short \"诬告\". Hard to know. The instruction: \"Use the established label wording, not a paraphrase\". We have only seen labels: \"抢夺\", \"非法吸收公众存款\", \"容留他人吸毒\", \"过失致人死亡\", \"破坏生产经营\". So they use concise terms. For false accusation, likely \"诬告\". For theft, \"盗窃\". So answer: [罪名]盗窃;诬告<eoa>\n\nReturn JSON with reasoning and final answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 641,
+      "prompt_tokens": 3036,
+      "total_tokens": 3677,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 539,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00031205,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00031205,
+        "upstream_inference_prompt_cost": 0.0001518,
+        "upstream_inference_completions_cost": 0.00016025
+      }
+    }
+  },
+  "raw_response_missing": false
+}

@@ -1,0 +1,36 @@
+Read: meta_harness.py
+
+limit: 30
+offset: 470
+
+--- output ---
+470	        sys.exit(1)
+471	
+472	    model_short = get_model_short_name(args.model)
+473	
+474	    # Isolate run outputs under run-name subdirs
+475	    if args.run_name:
+476	        run_name = args.run_name
+477	    else:
+478	        run_name = datetime.now().strftime("%Y%m%d_%H%M%S")
+479	    LOGS_DIR = EVOLVE_DIR / "logs" / run_name
+480	    PENDING_EVAL = LOGS_DIR / "pending_eval.json"
+481	    FRONTIER_VAL = LOGS_DIR / "frontier_val.json"
+482	    EVOLUTION_SUMMARY = LOGS_DIR / "evolution_summary.jsonl"
+483	    RESULTS_DIR = LOGS_DIR / "results"
+484	    FINALIZED = LOGS_DIR / "finalized.json"
+485	
+486	    LOGS_DIR.mkdir(parents=True, exist_ok=True)
+487	    AGENTS_DIR.mkdir(parents=True, exist_ok=True)
+488	
+489	    baselines = cfg["memory_systems"]["baselines"]
+490	    if args.test:
+491	        finalize_run(
+492	            baselines,
+493	            datasets,
+494	            model_short,
+495	            all_systems=args.test_all,
+496	            harness_concurrency=args.test_harness_concurrency,
+497	        )
+498	        return
+499	

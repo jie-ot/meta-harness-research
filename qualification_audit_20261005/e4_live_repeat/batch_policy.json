@@ -1,0 +1,37 @@
+{
+  "experiment": "E4 fixed Codex-wrapper descriptive repeat",
+  "model": "gpt-5.6-sol",
+  "reasoning_effort": "max",
+  "schedule": [
+    {
+      "pass": 1,
+      "locked_item_indices": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    },
+    {
+      "pass": 2,
+      "locked_item_indices": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    }
+  ],
+  "prior_completed_observation": {
+    "pass": 1,
+    "locked_item_index": 0,
+    "result": "observation_000_live/result.json",
+    "must_not_rerun": true
+  },
+  "maximum_new_turn_start_requests": 39,
+  "execution": "strictly serial; one new ephemeral thread per observation",
+  "weekly_quota_stop_condition": {
+    "window_duration_minutes": 10080,
+    "stop_before_request_when_remaining_percent_lte": 2,
+    "note": "2% is a safety margin, not a hard cap; one request may cross a displayed integer boundary"
+  },
+  "request_retry_limit_per_observation": 0,
+  "answer_retry_limit_per_observation": 0,
+  "failure_policy": "persist current observation and aggregate state, then stop; never substitute a model or favorable subset",
+  "invalid_final_text_policy": "preserve raw completed text and apply the frozen original extractor/evaluator once",
+  "missing_completion_policy": "mark missing/failed, exclude from accuracy denominator, and do not encode as an incorrect prediction",
+  "tool_policy": "official process-local feature disables plus web disabled; any emitted tool item or client action request stops the batch",
+  "wrapper_policy": "each thread must match the audited instruction-source path/content hashes and contain no project task data",
+  "state_policy": "same locked R4B memory-rendered prompt; no training, candidate generation, or conversational carryover",
+  "remaining_experiments_authorized": false
+}

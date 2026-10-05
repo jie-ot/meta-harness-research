@@ -1,0 +1,206 @@
+Write: agents\utility_weighted_memory.py
+
+content:
+"""Utility-Weighted Memory.
+
+Each stored example accumulates a utility score based on observed
+prediction outcomes: +1 when the example was in the context and the
+prediction was correct, -1 when it was in context and wrong.  At
+retrieval time the base Jaccard similarity is multiplied by a
+utility-derived modifier, so examples that have historically helped the
+model float up in ranking while examples that have historically misled
+it are down-weighted.
+
+This is fundamentally different from all prior systems:
+- Unlike confusion_disambiguation, it tracks per-EXAMPLE helpfulness
+  rather than per-label confusion patterns.
+- Unlike mmr_memory, the diversity penalty is replaced by a
+  performance-feedback signal.
+- Unlike difficulty_weighted, the boost comes from actual observed
+  outcomes rather than error-rate heuristics.
+
+The utility modifier uses a sigmoid so extreme values are capped and
+cold-start examples (utility=0) score a neutral modifier of 1.0.
+
+Retrieval score = jaccard(q, ex) * (1 + alpha * (sigmoid(utility) - 0.5))
+              = jaccard(q, ex) * [0.5..1.5] for alpha=1.0
+
+predict() stores the retrieved example indices in metadata so that
+learn_from_batch() can credit or penalise each example that contributed
+to each prediction.
+"""
+
+import json
+import math
+import re
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+
+{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Follow the patterns shown in the examples above
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+MAX_CHARS = 30000
+_UTILITY_ALPHA = 1.5   # multiplier for utility modifier; keeps score in [0.25, 1.75] * jaccard
+
+# CJK Unicode ranges: CJK Unified, Hiragana, Katakana, Fullwidth/Halfwidth
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+
+
+def _has_cjk(text: str) -> bool:
+    return bool(_CJK_RE.search(text))
+
+
+def _tokenize_word(text: str) -> frozenset:
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+
+def _tokenize_bigram(text: str) -> frozenset:
+    t = re.sub(r'\s+', ' ', text.strip())
+    if len(t) < 2:
+        return frozenset([t]) if t else frozenset()
+    return frozenset(t[i:i + 2] for i in range(len(t) - 1))
+
+
+def _tokenize_adaptive(text: str) -> frozenset:
+    """Route to bigrams for CJK text, word tokens for ASCII/Latin."""
+    return _tokenize_bigram(text) if _has_cjk(text) else _tokenize_word(text)
+
+
+def _jaccard(a: frozenset, b: frozenset) -> float:
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+
+def _sigmoid(x: float) -> float:
+    return 1.0 / (1.0 + math.exp(-max(-20.0, min(20.0, x))))
+
+
+def _utility_modifier(utility: float) -> float:
+    """Map utility score to a multiplier centred on 1.0.
+
+    utility=0  → modifier=1.0 (neutral, cold start)
+    utility>>0 → modifier→1.75 (examples that consistently helped)
+    utility<<0 → modifier→0.25 (examples that consistently hurt)
+    """
+    return 1.0 + _UTILITY_ALPHA * (_sigmoid(utility) - 0.5)
+
+
+class UtilityWeightedMemory(MemorySystem):
+    """Retrieval weighted by per-example prediction outcome history."""
+
+    def __init__(self, llm: LLMCallable):
+        super().__init__(llm)
+        self.examples: list[dict[str, Any]] = []
+
+    def _scored(self, query: str) -> list[tuple[float, int, dict]]:
+        q_tok = _tokenize_adaptive(query)
+        result = []
+        for idx, ex in enumerate(self.examples):
+            sim = _jaccard(q_tok, ex["tokens"])
+            score = sim * _utility_modifier(ex.get("utility", 0.0))
+            result.append((score, idx, ex))
+        result.sort(key=lambda x: (x[0], x[1]), reverse=True)
+        return result
+
+    def _build_parts(self, query: str) -> tuple[list[str], list[int]]:
+        """Return (prompt parts, retrieved example indices)."""
+        if not self.examples:
+            return [], []
+
+        ranked = self._scored(query)
+        parts: list[str] = []
+        indices: list[int] = []
+        total_chars = 0
+
+        for _, idx, ex in ranked:
+            if total_chars >= MAX_CHARS:
+                break
+            q = ex.get("raw_question", ex["input"])
+            p = f"Q: {q}\nA: {ex['target']}"
+            if total_chars + len(p) + 2 > MAX_CHARS:
+                break
+            parts.append(p)
+            indices.append(idx)
+            total_chars += len(p) + 2
+
+        return parts, indices
+
+    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+        parts, indices = self._build_parts(input)
+        examples_section = "\n\n".join(parts)
+        prompt = PROMPT_TEMPLATE.format(
+            examples_section=examples_section,
+            input=input,
+        )
+        response = self.call_llm(prompt)
+        answer = extract_json_field(response, "final_answer")
+        return answer, {
+            "full_response": response,
+            "num_examples": len(self.examples),
+            "num_selected": len(parts),
+            # pass retrieved indices to learn_from_batch via metadata
+            "retrieved_indices": indices,
+        }
+
+    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+        for r in batch_results:
+            # 1. Store the new example
+            raw_q = r.get("raw_question", r["input"])
+            ex: dict[str, Any] = {
+                "input": r["input"],
+                "target": r["ground_truth"],
+                "tokens": _tokenize_adaptive(raw_q),
+                "utility": 0.0,
+            }
+            if "raw_question" in r:
+                ex["raw_question"] = r["raw_question"]
+            self.examples.append(ex)
+
+            # 2. Update utility scores for examples that were in context
+            retrieved = r.get("metadata", {}).get("retrieved_indices", [])
+            if retrieved:
+                delta = 1.0 if r.get("was_correct", True) else -1.0
+                for idx in retrieved:
+                    if 0 <= idx < len(self.examples):
+                        self.examples[idx]["utility"] = (
+                            self.examples[idx].get("utility", 0.0) + delta
+                        )
+
+    def get_state(self) -> str:
+        serialisable = [
+            {k: (sorted(v) if isinstance(v, frozenset) else v) for k, v in ex.items()}
+            for ex in self.examples
+        ]
+        return json.dumps({"examples": serialisable}, indent=2)
+
+    def set_state(self, state: str) -> None:
+        data = json.loads(state)
+        self.examples = []
+        for ex in data.get("examples", []):
+            restored = dict(ex)
+            if "tokens" in restored and isinstance(restored["tokens"], list):
+                restored["tokens"] = frozenset(restored["tokens"])
+            else:
+                raw_q = restored.get("raw_question", restored.get("input", ""))
+                restored["tokens"] = _tokenize_adaptive(raw_q)
+            if "utility" not in restored:
+                restored["utility"] = 0.0
+            self.examples.append(restored)
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\utility_weighted_memory.py (file state is current in your context — no need to Read it back)

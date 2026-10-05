@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- If the conduct described involves the creation of a fire (e.g., by welding, ignition of combustible material) that leads to extensive property loss, the appropriate charge is 失火罪 rather than 过失毁坏财物.
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+- If the facts describe a person in a managerial or official position receiving money or valuables in exchange for using their职务便利, classify the crime simply as "受贿" unless the source explicitly states 
+- If the factual description mentions the illegal removal or theft of telecom or broadcast cables *and* describes actions that damage, cut, or interfere with public telecommunications or broadcasting in
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:东光县人民检察院指控，2014年10月2日，东光县东光镇庄楼村村民王某乙与被告人高某甲在酒桌上因开玩笑发生纠纷，当天中午，被告人高某甲酒后来到王某乙家质问，期间高某甲和王某乙互相撕扯着往屋外走，当走到王某乙家北房东数第二间屋时，被告人高某甲在王某乙家屋内拿了一把斧子朝王某乙头部打了一下，其后又来到王某乙家门口用斧子砸了王某乙的奇瑞QQ轿车（车牌号冀J×××××）的前机盖子，后又对该车前大灯、后尾灯，左右反光镜，前后车挡风玻璃，四个车门的玻璃及四个车门进行了打砸。后经东光县物价局鉴定该轿车损失价值6340元。2014年11月4日，被告人高某甲到东光县公安局投案自首。
+东光县人民检察院认为，被告人高某甲的行为触犯了《中华人民共和国刑法》××之规定，犯罪事实清楚，证据确实充分，应以××追究其刑事责任。被告人高某甲系投案自首，适用《中华人民共和国刑法》××之规定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

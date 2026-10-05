@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the facts describe the defendant soliciting money from multiple members of the public by promising returns, knowing there is no ability to repay and without any legal approval or licensing, the con
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual narrative describes more than one distinct illegal act that maps to separate statutory offenses, list every applicable charge (separated by semicolons) rather than selecting only the 
+- If the facts describe the use of a false or deceptive contract (e.g., a sale, lease, transfer agreement) to obtain money or property, classify the offense as “合同诈骗” rather than the generic “诈骗”.
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:贵州省织金县人民检察院指控：2012年以来，被告人姜某以织金县城关镇为中心，通过来会的方式变相吸收社会上不特定公众的存款，严重扰乱了当地的金融秩序。其所邀的“会”为月会，并分为“红会”和“黑某”，红会为会员在结会前每月交会金1000、2000或3000元，黑某为会员在结会后每月交会金1100、2200或3300元（其中100、200、300元为利息），变相吸收公众存款。截止2015年初，共给刘某芳、罗某举等18名被害人造成经济损失共计1087700元。被告人姜某将所吸收的会金用于支付会金、偿还借款和借给他人等方面。
+案发后，被告人姜某于2015年6月16日主动到公安机关投案，并如实供述犯罪事实。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

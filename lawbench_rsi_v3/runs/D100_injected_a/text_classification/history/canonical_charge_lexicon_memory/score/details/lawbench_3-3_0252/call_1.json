@@ -1,0 +1,72 @@
+{
+  "call_id": "d5209fae952e4d9ba67aa4c39bee5879",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791128642-FpRVFh9jsmDzairirxx2",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant gave cash to a public official (局长) to obtain a job promotion, which matches the statutory offense of offering a bribe to a state functionary. No other listed offenses are applicable.\",\n  \"final_answer\": \"[罪名]行贿<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine applicable charge(s) from lexicon based on facts.\n\nFact: Defendant Wang 2 gave cash 20,000 RMB to Wang 3, then as a result got a job promotion (position adjustment). That's bribery (行贿) – giving bribe to public official for personal benefit. The lexicon includes \"行贿\" and also \"对单位行贿\", \"对非国家工作人员行贿\". The bribe was given to a public official (局长) – a state functionary. So the appropriate charge is \"行贿\". Also possibly \"受贿\" is for the recipient, not the giver. So only \"行贿\". Also maybe \"徇私舞弊不移交刑事案件\"? No. So answer: [罪名]行贿<eoa>\n\nWe need to include reasoning in JSON? The instruction says output format: {\"reasoning\": \"...\", \"final_answer\": \"...\"}? Actually the example says format: - Single: [罪名]盗窃<eoa>. The user says \"请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" So we need to provide reasoning then final answer. The final answer should be in that format. The user also gave a JSON wrapper in the prompt: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"}. So we should output a JSON with those fields.\n\nThus produce:\n\n{\n  \"reasoning\": \"The defendant gave cash to a public official to obtain a job promotion, which constitutes bribery (行贿). No other listed offenses apply.\",\n  \"final_answer\": \"[罪名]行贿<eoa>\"\n}\n\nMake sure no extra spaces.",
+          "provider_specific_fields": {
+            "reasoning": "We need to determine applicable charge(s) from lexicon based on facts.\n\nFact: Defendant Wang 2 gave cash 20,000 RMB to Wang 3, then as a result got a job promotion (position adjustment). That's bribery (行贿) – giving bribe to public official for personal benefit. The lexicon includes \"行贿\" and also \"对单位行贿\", \"对非国家工作人员行贿\". The bribe was given to a public official (局长) – a state functionary. So the appropriate charge is \"行贿\". Also possibly \"受贿\" is for the recipient, not the giver. So only \"行贿\". Also maybe \"徇私舞弊不移交刑事案件\"? No. So answer: [罪名]行贿<eoa>\n\nWe need to include reasoning in JSON? The instruction says output format: {\"reasoning\": \"...\", \"final_answer\": \"...\"}? Actually the example says format: - Single: [罪名]盗窃<eoa>. The user says \"请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" So we need to provide reasoning then final answer. The final answer should be in that format. The user also gave a JSON wrapper in the prompt: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"}. So we should output a JSON with those fields.\n\nThus produce:\n\n{\n  \"reasoning\": \"The defendant gave cash to a public official to obtain a job promotion, which constitutes bribery (行贿). No other listed offenses apply.\",\n  \"final_answer\": \"[罪名]行贿<eoa>\"\n}\n\nMake sure no extra spaces.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine applicable charge(s) from lexicon based on facts.\n\nFact: Defendant Wang 2 gave cash 20,000 RMB to Wang 3, then as a result got a job promotion (position adjustment). That's bribery (行贿) – giving bribe to public official for personal benefit. The lexicon includes \"行贿\" and also \"对单位行贿\", \"对非国家工作人员行贿\". The bribe was given to a public official (局长) – a state functionary. So the appropriate charge is \"行贿\". Also possibly \"受贿\" is for the recipient, not the giver. So only \"行贿\". Also maybe \"徇私舞弊不移交刑事案件\"? No. So answer: [罪名]行贿<eoa>\n\nWe need to include reasoning in JSON? The instruction says output format: {\"reasoning\": \"...\", \"final_answer\": \"...\"}? Actually the example says format: - Single: [罪名]盗窃<eoa>. The user says \"请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" So we need to provide reasoning then final answer. The final answer should be in that format. The user also gave a JSON wrapper in the prompt: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"}. So we should output a JSON with those fields.\n\nThus produce:\n\n{\n  \"reasoning\": \"The defendant gave cash to a public official to obtain a job promotion, which constitutes bribery (行贿). No other listed offenses apply.\",\n  \"final_answer\": \"[罪名]行贿<eoa>\"\n}\n\nMake sure no extra spaces.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": "We need to determine applicable charge(s) from lexicon based on facts.\n\nFact: Defendant Wang 2 gave cash 20,000 RMB to Wang 3, then as a result got a job promotion (position adjustment). That's bribery (行贿) – giving bribe to public official for personal benefit. The lexicon includes \"行贿\" and also \"对单位行贿\", \"对非国家工作人员行贿\". The bribe was given to a public official (局长) – a state functionary. So the appropriate charge is \"行贿\". Also possibly \"受贿\" is for the recipient, not the giver. So only \"行贿\". Also maybe \"徇私舞弊不移交刑事案件\"? No. So answer: [罪名]行贿<eoa>\n\nWe need to include reasoning in JSON? The instruction says output format: {\"reasoning\": \"...\", \"final_answer\": \"...\"}? Actually the example says format: - Single: [罪名]盗窃<eoa>. The user says \"请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" So we need to provide reasoning then final answer. The final answer should be in that format. The user also gave a JSON wrapper in the prompt: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"}. So we should output a JSON with those fields.\n\nThus produce:\n\n{\n  \"reasoning\": \"The defendant gave cash to a public official to obtain a job promotion, which constitutes bribery (行贿). No other listed offenses apply.\",\n  \"final_answer\": \"[罪名]行贿<eoa>\"\n}\n\nMake sure no extra spaces."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 449,
+      "prompt_tokens": 1807,
+      "total_tokens": 2256,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 382,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 96,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.000150822,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.000150822,
+        "upstream_inference_prompt_cost": 6.6859e-05,
+        "upstream_inference_completions_cost": 8.3963e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

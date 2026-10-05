@@ -1,0 +1,29 @@
+Write: logs\20260925_200856\pending_eval.json
+
+content:
+{
+  "iteration": 4,
+  "candidates": [
+    {
+      "name": "label_aware_prompt_memory",
+      "file": "agents/label_aware_prompt_memory.py",
+      "hypothesis": "Prepending an explicit 'Valid answers' list of all seen labels to every prompt will improve accuracy on tasks with large label spaces, because the model currently only sees the labels that happen to appear in the retrieved examples — missing labels cannot be predicted regardless of how good the retrieval is.",
+      "axis": "exploitation",
+      "base_system": "similarity_retrieval_memory",
+      "components": ["label_space_disclosure", "prompt_template_axis", "similarity_retrieval", "cold_start_fallback"]
+    },
+    {
+      "name": "confusion_disambiguation_memory",
+      "file": "agents/confusion_disambiguation_memory.py",
+      "hypothesis": "Tracking a confusion matrix during training and injecting stored examples of historically confused label pairs before similarity-ranked examples will outperform pure similarity retrieval, because surfacing the hard label boundaries the model has already failed on provides more targeted disambiguation signal than topically similar but label-redundant examples.",
+      "axis": "exploration",
+      "base_system": "similarity_retrieval_memory",
+      "components": ["confusion_matrix", "error_driven_selection", "disambiguation_examples", "learning_trigger_axis", "graceful_cold_start"]
+    }
+  ]
+}
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\pending_eval.json (file state is current in your context — no need to Read it back)

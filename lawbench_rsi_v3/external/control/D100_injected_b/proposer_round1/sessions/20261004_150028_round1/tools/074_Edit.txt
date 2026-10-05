@@ -1,0 +1,33 @@
+Edit: agents\charge_cooccurrence_count_memory.py
+
+replace_all: False
+old_string:
+        slots = _planned_slots(input)
+        # Only pad when the input's own structure says the set is larger than
+        # the model produced; never pad on a guess.
+        if slots > len(units) and seeds:
+            for companion in self._expand(seeds):
+                if len(units) >= slots:
+                    break
+                if companion in units:
+                    continue
+                units.append(_snap(companion, self.lexicon))
+
+new_string:
+        slots = _planned_slots(input)
+        # Only pad when the input's own structure says the set is larger than
+        # the model produced; never pad on a guess. Preferred fill order:
+        # labels retrieved from matched prior cases first (they are evidence),
+        # then graph companions (they are inference).
+        if slots > len(units) and seeds:
+            pool = list(seeds) + self._expand(seeds)
+            for candidate in pool:
+                if len(units) >= slots:
+                    break
+                snapped = _snap(candidate, self.lexicon)
+                if snapped and snapped not in units:
+                    units.append(snapped)
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\agents\charge_cooccurrence_count_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

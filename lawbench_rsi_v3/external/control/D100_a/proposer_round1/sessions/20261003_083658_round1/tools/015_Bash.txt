@@ -1,0 +1,33 @@
+Bash
+
+command: python .prototypes/chinese_bigram_confusion_memory.py
+description: Run prototype A to validate Chinese bigram tokenizer
+
+--- output ---
+=================================================================
+Tokenizer comparison on Chinese legal text
+=================================================================
+
+[ASCII-only]
+  Token set sizes: EX1=6, EX2=4, EX3=1, EX4=5
+  Q~EX1: top=EX4(0.0000) ✗  all=['EX4=0.000', 'EX3=0.000', 'EX2=0.000', 'EX1=0.000']
+  Q~EX4: top=EX4(0.0000) ✓  all=['EX4=0.000', 'EX3=0.000', 'EX2=0.000', 'EX1=0.000']
+  Q_dis: top=EX4(0.0000) ✓  all=['EX4=0.000', 'EX3=0.000', 'EX2=0.000', 'EX1=0.000']
+
+[Bigram   ]
+  Token set sizes: EX1=133, EX2=106, EX3=122, EX4=80
+  Q~EX1: top=EX1(0.1034) ✓  all=['EX1=0.103', 'EX2=0.019', 'EX3=0.017', 'EX4=0.015']
+  Q~EX4: top=EX4(0.0221) ✓  all=['EX4=0.022', 'EX1=0.021', 'EX2=0.019', 'EX3=0.017']
+  Q_dis: top=EX2(0.0426) ✓  all=['EX2=0.043', 'EX1=0.042', 'EX3=0.019', 'EX4=0.017']
+
+=================================================================
+Confusion-matrix disambiguation with bigram tokenizer
+=================================================================
+
+Q~EX1 top-3 labels by bigram similarity: ['伪造、变造、买卖国家机关公文、证件、印章', '破坏计算机信息系统', '单位行贿']
+Disambiguation targets from confusion matrix: []
+→ EX1's target (伪造、变造、买卖国家机关公文、证件、印章) in disambig: False
+
+Prototype A PASSED
+Bigram tokenizer: meaningful similarity discrimination on Chinese text.
+ASCII-only tokenizer: all similarities ≈ 0 (only numbers differ).

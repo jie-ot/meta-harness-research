@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the facts describe an unintentional fire caused by negligence (e.g., accidental ignition during a ritual or domestic activity) that results in forest or property damage, the appropriate charge is
+- When the factual narrative describes more than one distinct illegal act that maps to separate statutory offenses, list every applicable charge (separated by semicolons) rather than selecting only the 
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- If the factual description involves tampering with pressurized gas containers (e.g., cutting, opening valves, releasing gas) with the intent to cause an explosion rather than merely igniting a fire, c
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控，2016年3月26日12时许，被告人白X1在未经县级以上林业主管部门审批同意的情况下，在其地里干农活时，用自身携带的打火机点燃杂草后引发火灾，烧毁了被害人钱XX的芒果树苗。经红河红林司法鉴定中心鉴定，过火总面积为9.6公顷(即未成林地144.5亩)，被烧苗木总株数为10065株。经红河县价格认证中心鉴定，被烧芒果树苗价值人民币75279元。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

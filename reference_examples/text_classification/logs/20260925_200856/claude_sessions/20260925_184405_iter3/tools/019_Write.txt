@@ -1,0 +1,179 @@
+Write: C:\tmp\proto_label_champion.py
+
+content:
+"""Prototype: label_champion_memory — per-label similarity champion retrieval.
+
+For each seen label, pick the single stored example most similar to the
+current query (the 'champion' for that label). Then rank those champions
+by their similarity scores and fill context greedily.
+
+This fuses:
+  - label_balanced_memory: every seen label contributes at most once in the
+    first pass, guaranteeing coverage.
+  - similarity_retrieval_memory: within each label we pick the *best* example,
+    not an arbitrary one.
+"""
+
+import re
+import collections
+
+MAX_CHARS = 30_000
+
+# --- helpers ---
+
+def _tokenize(text):
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+def _jaccard(a, b):
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+# --- Variant A: one champion per label, ranked by score, then fill remaining ---
+
+def select_label_champion_v1(examples, query, max_chars):
+    """Pick best-matching example per label; fill with highest-scoring champions."""
+    if not examples:
+        return []
+
+    q_tok = _tokenize(query)
+    by_label = collections.defaultdict(list)
+    for i, ex in enumerate(examples):
+        by_label[ex["target"]].append((i, ex))
+
+    # For each label, find its champion (highest Jaccard to query)
+    champions = []
+    for label, exs in by_label.items():
+        best_score = -1
+        best_idx = -1
+        best_ex = None
+        for idx, ex in exs:
+            tok = _tokenize(ex.get("raw_question", ex["input"]))
+            score = _jaccard(q_tok, tok)
+            if score > best_score or (score == best_score and idx > best_idx):
+                best_score = score
+                best_idx = idx
+                best_ex = ex
+        champions.append((best_score, best_idx, best_ex))
+
+    # Rank champions by score descending (ties broken by most recent)
+    champions.sort(key=lambda x: (x[0], x[1]), reverse=True)
+
+    parts = []
+    total = 0
+    for score, idx, ex in champions:
+        q = ex.get("raw_question", ex["input"])
+        part = f"Q: {q}\nA: {ex['target']}"
+        if total + len(part) + 2 > max_chars:
+            break
+        parts.append(part)
+        total += len(part) + 2
+
+    # After one champion per label, fill with remaining examples sorted by score
+    used_indices = {idx for _, idx, _ in champions[:len(parts)]}
+    remaining = []
+    for i, ex in enumerate(examples):
+        if i in used_indices:
+            continue
+        tok = _tokenize(ex.get("raw_question", ex["input"]))
+        score = _jaccard(q_tok, tok)
+        remaining.append((score, i, ex))
+    remaining.sort(key=lambda x: (x[0], x[1]), reverse=True)
+
+    for score, idx, ex in remaining:
+        q = ex.get("raw_question", ex["input"])
+        part = f"Q: {q}\nA: {ex['target']}"
+        if total + len(part) + 2 > max_chars:
+            break
+        parts.append(part)
+        total += len(part) + 2
+
+    return parts
+
+
+# --- Variant B: champions only, no fill (pure one-per-label coverage) ---
+
+def select_label_champion_v2(examples, query, max_chars):
+    """One champion per label, no fill phase."""
+    if not examples:
+        return []
+    q_tok = _tokenize(query)
+    by_label = collections.defaultdict(list)
+    for i, ex in enumerate(examples):
+        by_label[ex["target"]].append((i, ex))
+    champions = []
+    for label, exs in by_label.items():
+        best_score = -1
+        best_idx = -1
+        best_ex = None
+        for idx, ex in exs:
+            tok = _tokenize(ex.get("raw_question", ex["input"]))
+            score = _jaccard(q_tok, tok)
+            if score > best_score or (score == best_score and idx > best_idx):
+                best_score = score
+                best_idx = idx
+                best_ex = ex
+        champions.append((best_score, best_idx, best_ex))
+    champions.sort(key=lambda x: (x[0], x[1]), reverse=True)
+    parts = []
+    total = 0
+    for score, idx, ex in champions:
+        q = ex.get("raw_question", ex["input"])
+        part = f"Q: {q}\nA: {ex['target']}"
+        if total + len(part) + 2 > max_chars:
+            break
+        parts.append(part)
+        total += len(part) + 2
+    return parts
+
+
+# --- Test with synthetic multi-label examples ---
+
+examples = [
+    {"raw_question": "fever headache vomiting nausea", "target": "typhoid", "input": "..."},
+    {"raw_question": "fever headache body ache malaise", "target": "typhoid", "input": "..."},
+    {"raw_question": "itchy red rash spreading skin", "target": "chicken pox", "input": "..."},
+    {"raw_question": "skin rash blisters fluid filled", "target": "chicken pox", "input": "..."},
+    {"raw_question": "frequent urination thirst fatigue", "target": "diabetes", "input": "..."},
+    {"raw_question": "high blood sugar thirst weight loss", "target": "diabetes", "input": "..."},
+    {"raw_question": "runny nose sneezing throat pain", "target": "common cold", "input": "..."},
+    {"raw_question": "cough sore throat congestion", "target": "common cold", "input": "..."},
+    {"raw_question": "chest pain breathing difficulty", "target": "pneumonia", "input": "..."},
+]
+
+# Query closely matches typhoid but has different symptoms
+query = "fever headache stomach pain vomiting"
+
+print("=== Variant A (champion + fill) ===")
+parts_a = select_label_champion_v1(examples, query, max_chars=2000)
+for p in parts_a:
+    label = p.split("A: ")[-1].strip()
+    question = p.split("\n")[0].replace("Q: ", "")
+    print(f"  [{label}] {question}")
+print(f"  Total selected: {len(parts_a)}")
+
+print("\n=== Variant B (champion only) ===")
+parts_b = select_label_champion_v2(examples, query, max_chars=2000)
+for p in parts_b:
+    label = p.split("A: ")[-1].strip()
+    question = p.split("\n")[0].replace("Q: ", "")
+    print(f"  [{label}] {question}")
+print(f"  Total selected: {len(parts_b)}")
+
+# Verify: does V1 include more examples from the remaining pool?
+print(f"\nV1 picks {len(parts_a)} examples, V2 picks {len(parts_b)}")
+# V1 should always be >= V2 (it adds a fill phase)
+assert len(parts_a) >= len(parts_b), "V1 should pick at least as many as V2"
+
+# Verify champion selection: typhoid champion should be "fever headache vomiting nausea"
+# since query has "fever headache" + "vomiting" — V1 should rank typhoid first
+print("\nTop 3 from V1:")
+for p in parts_a[:3]:
+    print(" ", p.replace("\n", " | "))
+
+print("\nPROTO label_champion OK")
+
+
+
+--- output ---
+File created successfully at: C:\tmp\proto_label_champion.py (file state is current in your context — no need to Read it back)

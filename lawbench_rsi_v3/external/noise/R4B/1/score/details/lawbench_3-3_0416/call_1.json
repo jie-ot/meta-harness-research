@@ -1,0 +1,72 @@
+{
+  "call_id": "b0d04769a73e46e6a91dcfd8f44f9c00",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791004894-bW4GBsIkvGWQ9iQcaP0X",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"被告人徐某在夜间利用工具非法捕捉了70只属于国家重点保护的青蛙（黑斑蛙、金线蛙），构成《刑法》规定的非法捕猎、收购、运输、出售国家重点保护野生动物罪。案件事实明确，证据充分，且被告人如实供述，符合该罪的构成要件。\",\n  \"final_answer\": \"[罪名]非法捕猎、收购、运输、出售国家重点保护野生动物<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the crime(s) based on facts. The case: illegal capture of protected wildlife (frogs) - black-spotted frog and golden line frog, both protected species. The crime likely is \"非法捕捉、收购、运输、出售国家重点保护野生动物罪\" or \"非法捕捞、猎捕、收购、运输、出售国家重点保护野生动物罪\". In Chinese criminal law, there is a crime: \"非法捕猎、收购、运输、出售国家重点保护的野生动物罪\" (Article 341 of Criminal Law). The typical label used in dataset: \"非法捕猎、收购、运输、出售国家重点保护野生动物罪\" maybe simplified as \"非法捕猎、收购、运输、出售国家重点保护野生动物\". In examples, they used \"走私国家禁止进出口的货物、物品\" etc. For wildlife, they used \"走私珍贵动物、珍贵动物制品\". For protected animals, they might have label \"非法捕猎、收购、运输、出售国家重点保护野生动物\". Let's see similar examples: In dataset earlier, there is \"走私国家禁止进出口的货物、物品\". For wildlife, there is \"走私珍贵动物、珍贵动物制品\". For protected species, maybe \"非法捕猎、收购、运输、出售国家重点保护野生动物\". Also could be \"非法捕捉国家重点保护野生动物\". The fact says \"非法捕捉青蛙70只\". So crime: \"非法捕捉国家重点保护野生动物罪\". The dataset may have a label \"非法捕猎、收购、运输、出售国家重点保护野生动物\". But they might also have \"非法捕猎、收购、运输、出售国家重点保护野生动物\" as a single label. Let's check earlier examples: None about wildlife capture. There's \"走私珍贵动物、珍贵动物制品\". There's \"非法种植毒品原植物\". There's \"容留他人吸毒\". So we need to guess the label used.\n\nThe question: \"请你模拟法官依据下面事实给出罪名。\" So we need to output the crime(s). Likely just one: \"非法捕猎、收购、运输、出售国家重点保护野生动物罪\". Or maybe \"非法捕猎国家重点保护野生动物罪\". Let's choose \"非法捕猎、收购、运输、出售国家重点保护野生动物\". Provide as [罪名]...<eoa>.\n\nThus final answer: [罪名]非法捕猎、收购、运输、出售国家重点保护野生动物<eoa>\n\nReturn JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the crime(s) based on facts. The case: illegal capture of protected wildlife (frogs) - black-spotted frog and golden line frog, both protected species. The crime likely is \"非法捕捉、收购、运输、出售国家重点保护野生动物罪\" or \"非法捕捞、猎捕、收购、运输、出售国家重点保护野生动物罪\". In Chinese criminal law, there is a crime: \"非法捕猎、收购、运输、出售国家重点保护的野生动物罪\" (Article 341 of Criminal Law). The typical label used in dataset: \"非法捕猎、收购、运输、出售国家重点保护野生动物罪\" maybe simplified as \"非法捕猎、收购、运输、出售国家重点保护野生动物\". In examples, they used \"走私国家禁止进出口的货物、物品\" etc. For wildlife, they used \"走私珍贵动物、珍贵动物制品\". For protected animals, they might have label \"非法捕猎、收购、运输、出售国家重点保护野生动物\". Let's see similar examples: In dataset earlier, there is \"走私国家禁止进出口的货物、物品\". For wildlife, there is \"走私珍贵动物、珍贵动物制品\". For protected species, maybe \"非法捕猎、收购、运输、出售国家重点保护野生动物\". Also could be \"非法捕捉国家重点保护野生动物\". The fact says \"非法捕捉青蛙70只\". So crime: \"非法捕捉国家重点保护野生动物罪\". The dataset may have a label \"非法捕猎、收购、运输、出售国家重点保护野生动物\". But they might also have \"非法捕猎、收购、运输、出售国家重点保护野生动物\" as a single label. Let's check earlier examples: None about wildlife capture. There's \"走私珍贵动物、珍贵动物制品\". There's \"非法种植毒品原植物\". There's \"容留他人吸毒\". So we need to guess the label used.\n\nThe question: \"请你模拟法官依据下面事实给出罪名。\" So we need to output the crime(s). Likely just one: \"非法捕猎、收购、运输、出售国家重点保护野生动物罪\". Or maybe \"非法捕猎国家重点保护野生动物罪\". Let's choose \"非法捕猎、收购、运输、出售国家重点保护野生动物\". Provide as [罪名]...<eoa>.\n\nThus final answer: [罪名]非法捕猎、收购、运输、出售国家重点保护野生动物<eoa>\n\nReturn JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine the crime(s) based on facts. The case: illegal capture of protected wildlife (frogs) - black-spotted frog and golden line frog, both protected species. The crime likely is \"非法捕捉、收购、运输、出售国家重点保护野生动物罪\" or \"非法捕捞、猎捕、收购、运输、出售国家重点保护野生动物罪\". In Chinese criminal law, there is a crime: \"非法捕猎、收购、运输、出售国家重点保护的野生动物罪\" (Article 341 of Criminal Law). The typical label used in dataset: \"非法捕猎、收购、运输、出售国家重点保护野生动物罪\" maybe simplified as \"非法捕猎、收购、运输、出售国家重点保护野生动物\". In examples, they used \"走私国家禁止进出口的货物、物品\" etc. For wildlife, they used \"走私珍贵动物、珍贵动物制品\". For protected animals, they might have label \"非法捕猎、收购、运输、出售国家重点保护野生动物\". Let's see similar examples: In dataset earlier, there is \"走私国家禁止进出口的货物、物品\". For wildlife, there is \"走私珍贵动物、珍贵动物制品\". For protected species, maybe \"非法捕猎、收购、运输、出售国家重点保护野生动物\". Also could be \"非法捕捉国家重点保护野生动物\". The fact says \"非法捕捉青蛙70只\". So crime: \"非法捕捉国家重点保护野生动物罪\". The dataset may have a label \"非法捕猎、收购、运输、出售国家重点保护野生动物\". But they might also have \"非法捕猎、收购、运输、出售国家重点保护野生动物\" as a single label. Let's check earlier examples: None about wildlife capture. There's \"走私珍贵动物、珍贵动物制品\". There's \"非法种植毒品原植物\". There's \"容留他人吸毒\". So we need to guess the label used.\n\nThe question: \"请你模拟法官依据下面事实给出罪名。\" So we need to output the crime(s). Likely just one: \"非法捕猎、收购、运输、出售国家重点保护野生动物罪\". Or maybe \"非法捕猎国家重点保护野生动物罪\". Let's choose \"非法捕猎、收购、运输、出售国家重点保护野生动物\". Provide as [罪名]...<eoa>.\n\nThus final answer: [罪名]非法捕猎、收购、运输、出售国家重点保护野生动物<eoa>\n\nReturn JSON with reasoning and final answer.",
+            "reasoning_content": "We need to determine the crime(s) based on facts. The case: illegal capture of protected wildlife (frogs) - black-spotted frog and golden line frog, both protected species. The crime likely is \"非法捕捉、收购、运输、出售国家重点保护野生动物罪\" or \"非法捕捞、猎捕、收购、运输、出售国家重点保护野生动物罪\". In Chinese criminal law, there is a crime: \"非法捕猎、收购、运输、出售国家重点保护的野生动物罪\" (Article 341 of Criminal Law). The typical label used in dataset: \"非法捕猎、收购、运输、出售国家重点保护野生动物罪\" maybe simplified as \"非法捕猎、收购、运输、出售国家重点保护野生动物\". In examples, they used \"走私国家禁止进出口的货物、物品\" etc. For wildlife, they used \"走私珍贵动物、珍贵动物制品\". For protected animals, they might have label \"非法捕猎、收购、运输、出售国家重点保护野生动物\". Let's see similar examples: In dataset earlier, there is \"走私国家禁止进出口的货物、物品\". For wildlife, there is \"走私珍贵动物、珍贵动物制品\". For protected species, maybe \"非法捕猎、收购、运输、出售国家重点保护野生动物\". Also could be \"非法捕捉国家重点保护野生动物\". The fact says \"非法捕捉青蛙70只\". So crime: \"非法捕捉国家重点保护野生动物罪\". The dataset may have a label \"非法捕猎、收购、运输、出售国家重点保护野生动物\". But they might also have \"非法捕猎、收购、运输、出售国家重点保护野生动物\" as a single label. Let's check earlier examples: None about wildlife capture. There's \"走私珍贵动物、珍贵动物制品\". There's \"非法种植毒品原植物\". There's \"容留他人吸毒\". So we need to guess the label used.\n\nThe question: \"请你模拟法官依据下面事实给出罪名。\" So we need to output the crime(s). Likely just one: \"非法捕猎、收购、运输、出售国家重点保护野生动物罪\". Or maybe \"非法捕猎国家重点保护野生动物罪\". Let's choose \"非法捕猎、收购、运输、出售国家重点保护野生动物\". Provide as [罪名]...<eoa>.\n\nThus final answer: [罪名]非法捕猎、收购、运输、出售国家重点保护野生动物<eoa>\n\nReturn JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 718,
+      "prompt_tokens": 25092,
+      "total_tokens": 25810,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 584,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00419498,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00419498,
+        "upstream_inference_prompt_cost": 0.00351288,
+        "upstream_inference_completions_cost": 0.0006821
+      }
+    }
+  },
+  "raw_response_missing": false
+}

@@ -1,0 +1,35 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the factual description includes actions of forging, altering, or trafficking state-issued documents, certificates, or seals, the classification must list all applicable offenses (e.g., 伪造、变造、买卖国
+- When the facts describe the creation, alteration, or commercial transaction of forged state‑issued documents, certificates, or official seals, the charge must list all applicable offenses: 伪造、变造、以及买卖（
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the described conduct involves using personal or official connections to arrange or facilitate a bribe—i.e., acting as an intermediary who introduces a bribe or obtains money by promising to use in
+- When the alleged offender is not a public official (i.e., not a state functionary) but the conduct involves accepting or soliciting a bribe, the correct charge is '非国家工作人员受贿' rather than the generic '
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控：在2015年度高考报名期间，被告人付武1某与邓某共同接受李某1、梁某和易某的请托，违反江西省异地高考报名政策，违规为135名不具备江西省普通高考资格的考生成功在江西省报名参加高考。在报名过程中，邓某与付武1某共同收受请托人贿赂。具体事实如下：
+1、邓某在帮助李某1违规报考89名考生过程中实际向李某1收受人民币195800元，扣除正常的报名费用25332元，邓某分给付武1某43234元，余款127234元被邓某个人占有。
+2、邓某在帮助梁某违规报考17名考生过程中，共收
+受梁某人民币20400元，扣除正常的报名费用6204元后，邓某与付武1某平分，二人各分得7098元。
+3、邓某在帮助易某违规报考29名考生过程中，共收
+受易某人民币34800元，扣除正常的报名费用11538元后，邓某与付武1某平分，二人各分得11631元。
+2015年6月7日，教育主管部门发现一名替考考生，该替考考生为上述李某1违规报考的89名考生××。被告人邓某随即要求李某1提供上述考生学籍证明材料，李某1表示无法提供，但可以为被告人邓某联系刻假印章。当天下午8时许，李某1联系的刻假印章人员杜某（已逮捕）将刻有“南某赣江中学”和“南某公安局湖坊派出所”铭文的两片假印章交给被告人邓某，被告人邓某在南某青云谱区高招办打印出148名考生的《学籍证明》和《户籍证明》，并将盖有上述两个假印章的证明文件交给上级主管部门用以应付检查。经鉴定，《学籍证明》、《户籍证明》文件上的印章与真实印章均不符。
+认定上述事实的证据有：报名登记表、银行转账记录、扣押文件清单等书证；证人李某1、易某、梁某等人的证言；被告人邓某、付武1某的供述与辩解；文书检验鉴定意见等。
+公诉机关认为，被告人邓某与付武1某违反江西省高考招生政策、违规为他人办理高考报名。被告人邓某收受贿赂人民币207926元，付武1某收受贿赂人民币123926元，犯罪事实清楚，证据确实充分，应当以××、招收学生徇私舞弊罪追究其刑事责任。同时，被告人邓某伪造国家机关公文，还应当以伪造国家机关公文罪追究刑事责任。且被告人邓某与付武1某同时具有《中华人民共和国刑法》××××规定之情节。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

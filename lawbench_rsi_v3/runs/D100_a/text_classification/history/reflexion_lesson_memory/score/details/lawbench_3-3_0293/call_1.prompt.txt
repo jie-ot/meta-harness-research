@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the facts describe a person performing any medical diagnosis, treatment, or related procedure without a valid medical license, classify the conduct under the statutory offense of “非法行医” rather th
+- When the conduct consists of performing an abortion or sex‑selective termination of pregnancy without a medical license, classify the offense under the specific crime of ‘非法进行节育手术’ rather than as sepa
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the facts describe the acquisition, processing, and sale of animal-derived products that are unsafe or of unknown origin, classify the offense under food safety statutes (e.g., 生产、销售不符合安全标准的食品) r
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明：被告人龙某甲曾于2013年9月23日、2014年11月6日两次因未取得医生执业资格而从事诊疗活动被义乌市卫生局行政处罚。2015年3月17日13时许，被告人龙某甲在未取得医生执业资格的情况下，又在XX市XX街道XX村XXXX号X单元XXX室为上门就诊的陈某进行诊疗活动，后被公安机关查获。现有复方氨林巴比妥注射液四十盒、输液器九包、盐酸利多卡因注射液四十盒、葡萄糖注射液十箱、剪刀四把、地塞米松七十盒被扣押在案。
+上述事实，被告人龙某甲在庭审过程中亦无异议，且有证人龙某乙、舒某、陈某、吴某的证言，扣押决定书，扣押清单，证明，情况说明，卫生监督意见书，现场照片证据，案件受理记录，证据先行登记保存决定书，处理决定书，行政处罚事先告知书，相对人提供材料通知书，送达回执，搜查笔录及照片，辨认笔录及照片，到案经过，被告人龙某甲的供述及身份证明等证据证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

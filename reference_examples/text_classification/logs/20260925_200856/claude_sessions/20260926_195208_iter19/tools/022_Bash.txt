@@ -1,0 +1,35 @@
+Bash
+
+command:
+python -c "
+import json, os
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+
+# Check what metadata fields decayed_confusion returns for correct vs wrong
+log = os.path.join(base, 'LawBench', 'decayed_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+entries = []
+with open(log) as f:
+    for line in f:
+        entries.append(json.loads(line))
+
+print(f'Total entries: {len(entries)}')
+correct = [e for e in entries if e.get('was_correct', True)]
+errors = [e for e in entries if not e.get('was_correct', True)]
+print(f'Correct: {len(correct)}, Errors: {len(errors)}')
+print()
+# Look at num_selected distribution for errors vs correct
+from collections import Counter
+err_sel = Counter(e.get('metadata',{}).get('num_selected',0) for e in errors)
+cor_sel = Counter(e.get('metadata',{}).get('num_selected',0) for e in correct)
+print('Error num_selected distribution:', sorted(err_sel.items()))
+print('Correct num_selected distribution:', sorted(cor_sel.items())[:8])
+" 2>&1
+
+description: Check num_selected distribution for errors vs correct predictions
+
+--- output ---
+Total entries: 404
+Correct: 404, Errors: 0
+
+Error num_selected distribution: []
+Correct num_selected distribution: [(0, 404)]

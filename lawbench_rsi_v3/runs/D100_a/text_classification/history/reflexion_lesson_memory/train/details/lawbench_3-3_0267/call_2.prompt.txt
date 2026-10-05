@@ -1,0 +1,23 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控，2013年4月，被告人韩某某在担任西宁某物业管理有限公司副总经理期间，在某小区保障性住房项目改造过程中利用职务之便利，非法收受闫某的行贿款200，000元人民币。
+针对上述指控事实，公诉机关出示了相关证据，并认为被告人韩某某的行为己触犯《中华人民共和国刑法》××、××之规定，构成受贿罪。提请本院予以惩处。
+
+
+Wrong prediction: [罪名]受贿<eoa>
+Correct answer: 非国家工作人员受贿
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

@@ -1,0 +1,35 @@
+Bash [ERROR]
+
+command:
+powershell -Command "
+$base = 'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+$p = \"$base\LawBench\adaptive_tokenizer_confusion_memory\gpt-oss-120b\log.jsonl\"
+Get-Content $p | Select-Object -Last 20
+"
+
+description: Read last 20 log entries for frontier system on LawBench
+
+--- output ---
+Exit code 1
+= : �޷�����=����ʶ��Ϊ cmdlet���������ű��ļ�������г�������ơ��������Ƶ�ƴд���������·������ȷ��·����ȷ��Ȼ������һ
+�Ρ�
+����λ�� ��:2 �ַ�: 2
++  = 'D:\�ҵ��ļ�\���пƼ���ѧ\����ʦ�������о�����\meta-harness\reference_examples\text_cl ...
++  ~
+    + CategoryInfo          : ObjectNotFound: (=:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 
+= : �޷�����=����ʶ��Ϊ cmdlet���������ű��ļ�������г�������ơ��������Ƶ�ƴд���������·������ȷ��·����ȷ��Ȼ������һ
+�Ρ�
+����λ�� ��:3 �ַ�: 2
++  = "\LawBench\adaptive_tokenizer_confusion_memory\gpt-oss-120b\log.js ...
++  ~
+    + CategoryInfo          : ObjectNotFound: (=:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 
+Get-Content : �޷����������Ϊһ������ǿ�Ʋ�����ʧ:  Path��
+����λ�� ��:4 �ַ�: 1
++ Get-Content  | Select-Object -Last 20
++ ~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [Get-Content]��ParameterBindingException
+    + FullyQualifiedErrorId : MissingMandatoryParameter,Microsoft.PowerShell.Commands.GetContentCommand

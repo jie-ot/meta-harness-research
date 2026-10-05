@@ -1,0 +1,108 @@
+Edit: agents\act_decomposition_union_memory.py
+
+replace_all: False
+old_string:
+    def _expected_size(self, n_acts: int) -> int | None:
+        """Most common true charge count for a fact with this many acts.
+
+        A bucket is only consulted once it has accumulated MIN_BUCKET_OBS items;
+        before that the global distribution is used, and before that nothing.
+        """
+        row = self.size_by_acts.get(n_acts)
+        if row and sum(row.values()) >= MIN_BUCKET_OBS:
+            return max(row.items(), key=lambda kv: (kv[1], -kv[0]))[0]
+        if self._size_obs >= MIN_GLOBAL_OBS and self.global_sizes:
+            return max(self.global_sizes.items(), key=lambda kv: (kv[1], -kv[0]))[0]
+        return None
+
+    def _calibrate(self, charges: list[str], n_acts: int, grounded: int) -> list[str]:
+        """Trim an over-long union, never below what the acts themselves support.
+
+        ``grounded`` is how many acts produced at least one charge. Those charges
+        were read off that act's own text, so the cardinality prior may not argue
+        them away; it only removes headroom above that floor.
+        """
+        if not charges:
+            return []
+        # Layer 1: strip inventions that recur without ever being confirmed.
+        kept = [
+            c
+            for c in charges
+            if not (self.spurious.get(c, 0) >= SPURIOUS_MIN and c not in self.confirmed)
+        ]
+        if not kept:
+            kept = list(charges)
+        # Layer 2: an answer longer than this kind of fact ever warrants loses its
+        # weakest-evidence parts first (unconfirmed before confirmed), but the
+        # grounded floor and the observed size are both respected.
+        expected = self._expected_size(n_acts)
+        if expected is None:
+            floor = 1
+        else:
+            floor = max(1, min(grounded, expected))
+        while len(kept) > floor and len(kept) > 1:
+            idx = max(
+                range(len(kept)),
+                key=lambda i: (
+                    self.spurious.get(kept[i], 0),
+                    1 if kept[i] not in self.confirmed else 0,
+                ),
+            )
+            kept.pop(idx)
+        return kept
+
+new_string:
+    def _expected_size(self, n_acts: int) -> int | None:
+        """Most common true charge count for a fact with this many acts.
+
+        Only the matching bucket is consulted, and only once it has accumulated
+        MIN_BUCKET_OBS items. The global distribution is deliberately *not* used as
+        a fallback: the whole point of conditioning on act count is that a fact
+        with several acts is not the same population as one with a single act, and
+        substituting the global majority size would trim multi-act facts down to
+        the single-charge majority.
+        """
+        row = self.size_by_acts.get(n_acts)
+        if row and sum(row.values()) >= MIN_BUCKET_OBS:
+            return max(row.items(), key=lambda kv: (kv[1], -kv[0]))[0]
+        return None
+
+    def _calibrate(self, charges: list[str], n_acts: int, grounded: int) -> list[str]:
+        """Trim an over-long union, never below what the acts themselves support.
+
+        ``grounded`` is how many acts produced at least one charge. Those charges
+        were read off that act's own text, so they are evidence, not redundancy —
+        the prior never removes them, it only removes headroom above that floor.
+        """
+        if not charges:
+            return []
+        # Layer 1: strip inventions that recur without ever being confirmed.
+        # This is real information: the model emitted these and the truth never
+        # contained them, repeatedly.
+        kept = [
+            c
+            for c in charges
+            if not (self.spurious.get(c, 0) >= SPURIOUS_MIN and c not in self.confirmed)
+        ]
+        if not kept:
+            kept = list(charges)
+        # Layer 2: only an *observed* size bucket may argue the union down, and
+        # never below the number of acts that each independently produced a charge.
+        expected = self._expected_size(n_acts)
+        if expected is None:
+            return kept
+        floor = max(1, min(grounded, expected))
+        while len(kept) > floor and len(kept) > 1:
+            idx = max(
+                range(len(kept)),
+                key=lambda i: (
+                    self.spurious.get(kept[i], 0),
+                    1 if kept[i] not in self.confirmed else 0,
+                ),
+            )
+            kept.pop(idx)
+        return kept
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_a\text_classification\agents\act_decomposition_union_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

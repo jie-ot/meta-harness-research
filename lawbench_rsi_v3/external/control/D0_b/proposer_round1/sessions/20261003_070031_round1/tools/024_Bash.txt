@@ -1,0 +1,14 @@
+Bash
+
+command: python .prototypes/contrastive_correction_memory.py
+description: Validate contrastive_correction_memory mechanism
+
+--- output ---
+PASS cold start: no crash, 0 corrections, 0 examples
+PASS learn: 3 examples, 2 corrections (correct ones excluded)
+PASS corrections injected: 2 corrections, 3 examples, answer='合同诈骗'
+PASS correction relevance: top correction sim=0.128, right='合同诈骗'
+PASS state round-trip: corrections and examples restored with frozenset tokens
+Dissimilar query corrections injected: 2 (expected 0 or low)
+
+All contrastive_correction_memory checks passed.

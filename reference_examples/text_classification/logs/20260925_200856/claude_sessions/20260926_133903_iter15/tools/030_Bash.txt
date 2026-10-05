@@ -1,0 +1,37 @@
+Bash
+
+command:
+cat "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\adaptive_tokenizer_confusion_memory.py" | head -30
+
+description: Check adaptive_tokenizer_confusion_memory imports/structure
+
+--- output ---
+"""Adaptive-Tokenizer Confusion Disambiguation Memory.
+
+Combines the confusion-matrix retrieval of confusion_disambiguation_memory with a
+language-adaptive tokenizer that routes to character bigrams for CJK text and to
+word tokens for ASCII/Latin text.
+
+Problem identified in iter6: a single tokenizer cannot be optimal for all scripts.
+Bigrams fix near-zero similarity on CJK inputs but degrade English retrieval where
+word tokens are better calibrated. This system detects the script of each text at
+tokenization time and applies the right strategy automatically, avoiding the
+accuracy trade-off that forced ngram_confusion_memory to sacrifice English datasets
+in order to fix CJK similarity.
+
+Retrieval algorithm (same as confusion_disambiguation_memory):
+1. Score all stored examples with adaptive Jaccard against the query.
+2. Identify confusion targets from the top-3 candidate labels.
+3. Inject one disambiguation example per confused label (round-robin, 2 rounds).
+4. Fill remaining budget with similarity-ranked examples.
+"""
+
+import json
+import re
+from collections import defaultdict
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.

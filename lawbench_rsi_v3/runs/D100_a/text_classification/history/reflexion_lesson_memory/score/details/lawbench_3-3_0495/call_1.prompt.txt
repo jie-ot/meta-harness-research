@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- If the factual scenario describes fraud that is carried out through the creation, signing, or performance of a contract (e.g., false representation of a business role, fictitious project, or fabricate
+- If the facts describe more than one distinct illegal act or more than one category of the same offense (e.g., multiple types of tickets being sold), list every applicable charge separated by semicolon
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:商丘市梁园区人民检察院指控，2012年11月1日夜，被告人郭某向商丘市梁园区的张某某（已判刑）出售价值人民币51万元的假冒中华等品牌卷烟，让陈某某（已判刑）驾驶五菱面包车自漯河市舞阳县北舞渡镇出发，将价值人民币51万元的假冒中华等品牌香烟运输至商丘市，在高速出口被公安干警查获。公诉机关向法庭提供了被告人供述、证人证言、鉴定意见、有关物证、书证等相关证据，认为被告人郭某的行为已触犯《中华人民共和国刑法》××之规定，构成××，请求依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

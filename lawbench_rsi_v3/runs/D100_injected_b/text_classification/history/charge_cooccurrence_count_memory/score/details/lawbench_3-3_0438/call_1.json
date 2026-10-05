@@ -1,0 +1,72 @@
+{
+  "call_id": "9c5675ebd9934381a1f0f1c964031639",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791129030-zhxuyp6aIiEC5Jb9srES",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The facts describe that the defendant paid someone to help him obtain a falsified VAT ordinary invoice (增值税普通发票) with a total amount of 1,257,814.95 RMB. This constitutes the crime of issuing false tax invoices, which under Chinese criminal law is charged as “虚开发票罪”. No other criminal conduct (e.g., robbery, theft, illegal possession of firearms, etc.) is present in the facts. Therefore the only appropriate charge is 虚开发票.\",\n  \"final_answer\": \"[罪名]虚开发票<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine charges based on facts. The case: Wang Moujia contracted a construction group for external wall insulation. To settle payment, he paid 37,000 RMB to have someone help him falsify a VAT ordinary invoice (增值税普通发票) for Dalian city, issued to a certain company (某建筑五金有限公司). The invoice amount total 1,257,814.95 RMB. The invoice is fake (different from company's printed invoices). He later voluntarily reported.\n\nThus the crime is \"虚开发票\" i.e., illegal issuance of false invoices, which is a crime of \"非法制造、买卖、使用发票\" or \"虚开发票\" under Chinese criminal law. The label used in prior examples: For fake documents, they used \"伪造、变造、买卖国家机关公文、证件、印章\". But that is for forging state documents. For tax invoices, the charge is \"非法制造、买卖、使用发票\" or \"虚开发票\". Need to see label list from prior examples. We have only seen labels: \"强制猥亵、侮辱妇女\", \"出售、购买、运输假币\", \"猥亵儿童\", \"非法持有、私藏枪支、弹药;盗窃\", \"伪造、变造、买卖国家机关公文、证件、印章\". So they use Chinese phrase for each crime.\n\nThus for false VAT invoice, likely \"虚开发票\" or \"非法制造、买卖、使用发票\". Which label is used in dataset? Not given. Need to infer from typical Chinese criminal law categories. The crime of \"虚开发票\" is under \"税务犯罪\". The official charge name: \"虚开发票罪\". So label likely \"虚开发票\". Let's assume.\n\nAny other charges? He paid 37,000 to have someone help him. That's bribery? No, it's paying for false invoice. No other crimes like fraud? The false invoice used to claim tax deduction? The description: to settle engineering payment, he used false invoice. That's tax fraud. So charge: \"虚开发票\". Possibly also \"诈骗\" if he defrauded the tax authority, but not indicated.\n\nThus answer: [罪名]虚开发票<eoa>\n\nReturn JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "reasoning": "We need to determine charges based on facts. The case: Wang Moujia contracted a construction group for external wall insulation. To settle payment, he paid 37,000 RMB to have someone help him falsify a VAT ordinary invoice (增值税普通发票) for Dalian city, issued to a certain company (某建筑五金有限公司). The invoice amount total 1,257,814.95 RMB. The invoice is fake (different from company's printed invoices). He later voluntarily reported.\n\nThus the crime is \"虚开发票\" i.e., illegal issuance of false invoices, which is a crime of \"非法制造、买卖、使用发票\" or \"虚开发票\" under Chinese criminal law. The label used in prior examples: For fake documents, they used \"伪造、变造、买卖国家机关公文、证件、印章\". But that is for forging state documents. For tax invoices, the charge is \"非法制造、买卖、使用发票\" or \"虚开发票\". Need to see label list from prior examples. We have only seen labels: \"强制猥亵、侮辱妇女\", \"出售、购买、运输假币\", \"猥亵儿童\", \"非法持有、私藏枪支、弹药;盗窃\", \"伪造、变造、买卖国家机关公文、证件、印章\". So they use Chinese phrase for each crime.\n\nThus for false VAT invoice, likely \"虚开发票\" or \"非法制造、买卖、使用发票\". Which label is used in dataset? Not given. Need to infer from typical Chinese criminal law categories. The crime of \"虚开发票\" is under \"税务犯罪\". The official charge name: \"虚开发票罪\". So label likely \"虚开发票\". Let's assume.\n\nAny other charges? He paid 37,000 to have someone help him. That's bribery? No, it's paying for false invoice. No other crimes like fraud? The false invoice used to claim tax deduction? The description: to settle engineering payment, he used false invoice. That's tax fraud. So charge: \"虚开发票\". Possibly also \"诈骗\" if he defrauded the tax authority, but not indicated.\n\nThus answer: [罪名]虚开发票<eoa>\n\nReturn JSON with reasoning and final answer.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine charges based on facts. The case: Wang Moujia contracted a construction group for external wall insulation. To settle payment, he paid 37,000 RMB to have someone help him falsify a VAT ordinary invoice (增值税普通发票) for Dalian city, issued to a certain company (某建筑五金有限公司). The invoice amount total 1,257,814.95 RMB. The invoice is fake (different from company's printed invoices). He later voluntarily reported.\n\nThus the crime is \"虚开发票\" i.e., illegal issuance of false invoices, which is a crime of \"非法制造、买卖、使用发票\" or \"虚开发票\" under Chinese criminal law. The label used in prior examples: For fake documents, they used \"伪造、变造、买卖国家机关公文、证件、印章\". But that is for forging state documents. For tax invoices, the charge is \"非法制造、买卖、使用发票\" or \"虚开发票\". Need to see label list from prior examples. We have only seen labels: \"强制猥亵、侮辱妇女\", \"出售、购买、运输假币\", \"猥亵儿童\", \"非法持有、私藏枪支、弹药;盗窃\", \"伪造、变造、买卖国家机关公文、证件、印章\". So they use Chinese phrase for each crime.\n\nThus for false VAT invoice, likely \"虚开发票\" or \"非法制造、买卖、使用发票\". Which label is used in dataset? Not given. Need to infer from typical Chinese criminal law categories. The crime of \"虚开发票\" is under \"税务犯罪\". The official charge name: \"虚开发票罪\". So label likely \"虚开发票\". Let's assume.\n\nAny other charges? He paid 37,000 to have someone help him. That's bribery? No, it's paying for false invoice. No other crimes like fraud? The false invoice used to claim tax deduction? The description: to settle engineering payment, he used false invoice. That's tax fraud. So charge: \"虚开发票\". Possibly also \"诈骗\" if he defrauded the tax authority, but not indicated.\n\nThus answer: [罪名]虚开发票<eoa>\n\nReturn JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": "We need to determine charges based on facts. The case: Wang Moujia contracted a construction group for external wall insulation. To settle payment, he paid 37,000 RMB to have someone help him falsify a VAT ordinary invoice (增值税普通发票) for Dalian city, issued to a certain company (某建筑五金有限公司). The invoice amount total 1,257,814.95 RMB. The invoice is fake (different from company's printed invoices). He later voluntarily reported.\n\nThus the crime is \"虚开发票\" i.e., illegal issuance of false invoices, which is a crime of \"非法制造、买卖、使用发票\" or \"虚开发票\" under Chinese criminal law. The label used in prior examples: For fake documents, they used \"伪造、变造、买卖国家机关公文、证件、印章\". But that is for forging state documents. For tax invoices, the charge is \"非法制造、买卖、使用发票\" or \"虚开发票\". Need to see label list from prior examples. We have only seen labels: \"强制猥亵、侮辱妇女\", \"出售、购买、运输假币\", \"猥亵儿童\", \"非法持有、私藏枪支、弹药;盗窃\", \"伪造、变造、买卖国家机关公文、证件、印章\". So they use Chinese phrase for each crime.\n\nThus for false VAT invoice, likely \"虚开发票\" or \"非法制造、买卖、使用发票\". Which label is used in dataset? Not given. Need to infer from typical Chinese criminal law categories. The crime of \"虚开发票\" is under \"税务犯罪\". The official charge name: \"虚开发票罪\". So label likely \"虚开发票\". Let's assume.\n\nAny other charges? He paid 37,000 to have someone help him. That's bribery? No, it's paying for false invoice. No other crimes like fraud? The false invoice used to claim tax deduction? The description: to settle engineering payment, he used false invoice. That's tax fraud. So charge: \"虚开发票\". Possibly also \"诈骗\" if he defrauded the tax authority, but not indicated.\n\nThus answer: [罪名]虚开发票<eoa>\n\nReturn JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 630,
+      "prompt_tokens": 1966,
+      "total_tokens": 2596,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 550,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00026,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00026,
+        "upstream_inference_prompt_cost": 8.788858321870702e-05,
+        "upstream_inference_completions_cost": 0.00017211141678129298
+      }
+    }
+  },
+  "raw_response_missing": false
+}

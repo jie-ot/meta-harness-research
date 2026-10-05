@@ -1,0 +1,218 @@
+Write: C:/tmp/proto_prompt_arch.py
+
+content:
+"""Prototype: contrastive section header prompt architecture.
+Tests whether separating disambiguation examples into an explicit section
+produces a meaningfully different prompt structure vs the flat list.
+"""
+import json, re, sys
+from collections import defaultdict
+
+# ---- minimal stubs ---------------------------------------------------
+def _has_cjk(text):
+    return bool(re.search(r'[一-鿿぀-ゟ゠-ヿ＀-￯]', text))
+
+def _tokenize_word(text):
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+def _tokenize_bigram(text):
+    t = re.sub(r'\s+', ' ', text.strip())
+    if len(t) < 2:
+        return frozenset([t]) if t else frozenset()
+    return frozenset(t[i:i+2] for i in range(len(t)-1))
+
+def _tok(text):
+    return _tokenize_bigram(text) if _has_cjk(text) else _tokenize_word(text)
+
+def jaccard(a, b):
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+# ---- variant A: flat list (current baseline) -------------------------
+FLAT_TMPL = """Solve the problem below based on the examples provided.
+
+{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Follow the patterns shown in the examples above
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+# ---- variant B: split sections ---------------------------------------
+SPLIT_TMPL = """Solve the problem below based on the examples provided.
+
+{regular_section}
+
+{disambig_section}
+**Problem:**
+{input}
+
+**Instructions:**
+- Follow the patterns shown in the examples above
+- Pay special attention to the disambiguation examples if present
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+DISAMBIG_HEADER = """**Disambiguation — these inputs look similar but have different answers:**
+"""
+
+# ---- load real examples from log ------------------------------------
+LOG = ("D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/"
+       "reference_examples/text_classification/logs/20260925_200856/"
+       "LawBench/adaptive_tokenizer_confusion_memory/gpt-oss-120b/log.jsonl")
+
+examples = []
+steps = []
+with open(LOG) as f:
+    for line in f:
+        obj = json.loads(line)
+        if obj['type'] == 'checkpoint' and obj['step'] < 30:
+            state = json.loads(obj['memory_state'])
+            examples = []
+            for ex in state['examples']:
+                ex2 = dict(ex)
+                ex2['tokens'] = frozenset(ex2.get('tokens', []))
+                examples.append(ex2)
+        if obj['type'] == 'step' and obj['step'] >= 20:
+            steps.append(obj)
+
+print(f"Loaded {len(examples)} examples, {len(steps)} query steps")
+
+# ---- test variant B prompt construction with 5 sample queries -------
+MAX_CHARS = 30000
+TOP_CANDS = 3
+DISAMBIG_ROUNDS = 2
+
+confusion = defaultdict(lambda: defaultdict(int))
+# build a synthetic confusion from the steps we have
+for s in steps[:10]:
+    if not s['ok']:
+        pred = s['pred']
+        tgt = s['tgt']
+        confusion[pred][tgt] += 1
+
+def get_disambig_targets(top_labels):
+    label_set = set(top_labels)
+    counts = defaultdict(int)
+    for lbl in top_labels:
+        for actual, cnt in confusion.get(lbl, {}).items():
+            if actual not in label_set:
+                counts[actual] += cnt
+    return sorted(counts, key=lambda x: -counts[x])
+
+def build_prompt_flat(query_raw, query_full):
+    q_tok = _tok(query_raw)
+    ranked = sorted(enumerate(examples),
+                    key=lambda ie: (jaccard(q_tok, ie[1]['tokens']), ie[0]),
+                    reverse=True)
+    top_labels = [examples[i]['target'] for i, _ in ranked[:TOP_CANDS]]
+    confused_with = get_disambig_targets(top_labels)
+
+    parts = []
+    used = set()
+    total = 0
+
+    def try_add(idx, ex):
+        nonlocal total
+        if idx in used: return False
+        q = ex.get('raw_question', ex['input'])
+        part = f"Q: {q}\nA: {ex['target']}"
+        if total + len(part) + 2 > MAX_CHARS: return False
+        parts.append(part)
+        used.add(idx)
+        total += len(part) + 2
+        return True
+
+    if confused_with:
+        disambig_needed = set(confused_with[:TOP_CANDS])
+        per_label = defaultdict(list)
+        for score, (i, ex) in zip([jaccard(q_tok, e['tokens']) for _, e in ranked], ranked):
+            if ex['target'] in disambig_needed:
+                per_label[ex['target']].append((score, i, ex))
+        for _ in range(DISAMBIG_ROUNDS):
+            for lbl in confused_with[:TOP_CANDS]:
+                for score, i, ex in per_label.get(lbl, []):
+                    if i not in used:
+                        try_add(i, ex)
+                        break
+
+    for i, ex in ranked:
+        if total >= MAX_CHARS: break
+        try_add(i, ex)
+
+    examples_section = "\n\n".join(parts)
+    return FLAT_TMPL.format(examples_section=examples_section, input=query_full), len(parts)
+
+def build_prompt_split(query_raw, query_full):
+    q_tok = _tok(query_raw)
+    ranked = sorted(enumerate(examples),
+                    key=lambda ie: (jaccard(q_tok, ie[1]['tokens']), ie[0]),
+                    reverse=True)
+    top_labels = [examples[i]['target'] for i, _ in ranked[:TOP_CANDS]]
+    confused_with = get_disambig_targets(top_labels)
+
+    disambig_parts = []
+    regular_parts = []
+    used = set()
+    total = 0
+
+    def try_add_to(lst, idx, ex):
+        nonlocal total
+        if idx in used: return False
+        q = ex.get('raw_question', ex['input'])
+        part = f"Q: {q}\nA: {ex['target']}"
+        if total + len(part) + 2 > MAX_CHARS: return False
+        lst.append(part)
+        used.add(idx)
+        total += len(part) + 2
+        return True
+
+    if confused_with:
+        disambig_needed = set(confused_with[:TOP_CANDS])
+        per_label = defaultdict(list)
+        for i, ex in ranked:
+            if ex['target'] in disambig_needed:
+                s = jaccard(q_tok, ex['tokens'])
+                per_label[ex['target']].append((s, i, ex))
+        for _ in range(DISAMBIG_ROUNDS):
+            for lbl in confused_with[:TOP_CANDS]:
+                for s, i, ex in per_label.get(lbl, []):
+                    if i not in used:
+                        try_add_to(disambig_parts, i, ex)
+                        break
+
+    for i, ex in ranked:
+        if total >= MAX_CHARS: break
+        try_add_to(regular_parts, i, ex)
+
+    reg_sec = "**Examples:**\n\n" + "\n\n".join(regular_parts) if regular_parts else ""
+    dis_sec = (DISAMBIG_HEADER + "\n\n".join(disambig_parts) + "\n\n") if disambig_parts else ""
+    return SPLIT_TMPL.format(regular_section=reg_sec,
+                              disambig_section=dis_sec,
+                              input=query_full), len(regular_parts), len(disambig_parts)
+
+# Test on a few queries
+for step in steps[:3]:
+    query_full = step['input_preview'][:300]
+    query_raw = query_full  # approximate
+    pf, nf = build_prompt_flat(query_raw, query_full)
+    ps, nr, nd = build_prompt_split(query_raw, query_full)
+    print(f"\nQuery (first 80 chars): {query_raw[:80]}")
+    print(f"  Flat: {nf} examples, prompt len={len(pf)}")
+    print(f"  Split: {nr} regular + {nd} disambig, prompt len={len(ps)}")
+    # Show the disambig section if present
+    if nd > 0:
+        start = ps.find("Disambiguation")
+        print(f"  Disambig section preview: {ps[start:start+200]}")
+
+print("\nVariant B: Split section prompt structure verified OK")
+
+
+
+--- output ---
+File created successfully at: C:/tmp/proto_prompt_arch.py (file state is current in your context — no need to Read it back)

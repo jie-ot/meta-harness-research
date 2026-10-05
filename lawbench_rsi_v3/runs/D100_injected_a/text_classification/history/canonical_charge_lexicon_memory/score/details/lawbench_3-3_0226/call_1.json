@@ -1,0 +1,72 @@
+{
+  "call_id": "f860e7fdf6884df0987a01cb7a026c0e",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791128572-fGNddOpxPgPjyt50xDX8",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant harvested poppy fruits and planted them on his own farmland. Poppy is a narcotic raw plant, and its cultivation without authorization is prohibited. This conduct matches the statutory offense '非法种植毒品原植物' in the provided lexicon. No other listed offenses are applicable.\",\n  \"final_answer\": \"[罪名]非法种植毒品原植物<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate charge(s) from lexicon for the fact: planting poppy (罂粟) which is a narcotic plant. The lexicon includes \"非法种植毒品原植物\" (illegal cultivation of drug raw plants). The list includes \"非法种植毒品原植物\". Indeed that matches. Also possibly \"非法持有、私藏枪支、弹药\" etc not relevant. So charge: 非法种植毒品原植物.\n\nCheck lexicon: \"非法种植毒品原植物\". Yes.\n\nThus answer: [罪名]非法种植毒品原植物<eoa>\n\nWe need format: - Single: [罪名]非法种植毒品原植物<eoa>\n\nAdd reasoning in JSON? The instruction says output JSON with \"reasoning\" and \"final_answer\". Actually the example shows just final answer? The user gave format: \"格式示例： - 单个罪名: [罪名]盗窃<eoa>\" So we should output that. The meta instruction says: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"}? The user didn't ask for JSON, but the system message says to output that JSON? The last line: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"} is part of the prompt? It seems they want that format. The user says: \"请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" So we need to provide reasoning then final answer. Could output reasoning then final answer line. Probably follow the JSON format they gave. Provide reasoning and final answer.\n\nThus:\n\n{\n \"reasoning\": \"The defendant harvested poppy fruits and cultivated them, which is illegal cultivation of narcotic raw plants under Chinese criminal law. The lexicon includes the charge '非法种植毒品原植物', which matches. No other listed offenses apply.\",\n \"final_answer\": \"[罪名]非法种植毒品原植物<eoa>\"\n}\n\n",
+          "provider_specific_fields": {
+            "reasoning": "We need to determine appropriate charge(s) from lexicon for the fact: planting poppy (罂粟) which is a narcotic plant. The lexicon includes \"非法种植毒品原植物\" (illegal cultivation of drug raw plants). The list includes \"非法种植毒品原植物\". Indeed that matches. Also possibly \"非法持有、私藏枪支、弹药\" etc not relevant. So charge: 非法种植毒品原植物.\n\nCheck lexicon: \"非法种植毒品原植物\". Yes.\n\nThus answer: [罪名]非法种植毒品原植物<eoa>\n\nWe need format: - Single: [罪名]非法种植毒品原植物<eoa>\n\nAdd reasoning in JSON? The instruction says output JSON with \"reasoning\" and \"final_answer\". Actually the example shows just final answer? The user gave format: \"格式示例： - 单个罪名: [罪名]盗窃<eoa>\" So we should output that. The meta instruction says: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"}? The user didn't ask for JSON, but the system message says to output that JSON? The last line: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"} is part of the prompt? It seems they want that format. The user says: \"请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" So we need to provide reasoning then final answer. Could output reasoning then final answer line. Probably follow the JSON format they gave. Provide reasoning and final answer.\n\nThus:\n\n{\n \"reasoning\": \"The defendant harvested poppy fruits and cultivated them, which is illegal cultivation of narcotic raw plants under Chinese criminal law. The lexicon includes the charge '非法种植毒品原植物', which matches. No other listed offenses apply.\",\n \"final_answer\": \"[罪名]非法种植毒品原植物<eoa>\"\n}\n\n",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate charge(s) from lexicon for the fact: planting poppy (罂粟) which is a narcotic plant. The lexicon includes \"非法种植毒品原植物\" (illegal cultivation of drug raw plants). The list includes \"非法种植毒品原植物\". Indeed that matches. Also possibly \"非法持有、私藏枪支、弹药\" etc not relevant. So charge: 非法种植毒品原植物.\n\nCheck lexicon: \"非法种植毒品原植物\". Yes.\n\nThus answer: [罪名]非法种植毒品原植物<eoa>\n\nWe need format: - Single: [罪名]非法种植毒品原植物<eoa>\n\nAdd reasoning in JSON? The instruction says output JSON with \"reasoning\" and \"final_answer\". Actually the example shows just final answer? The user gave format: \"格式示例： - 单个罪名: [罪名]盗窃<eoa>\" So we should output that. The meta instruction says: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"}? The user didn't ask for JSON, but the system message says to output that JSON? The last line: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"} is part of the prompt? It seems they want that format. The user says: \"请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" So we need to provide reasoning then final answer. Could output reasoning then final answer line. Probably follow the JSON format they gave. Provide reasoning and final answer.\n\nThus:\n\n{\n \"reasoning\": \"The defendant harvested poppy fruits and cultivated them, which is illegal cultivation of narcotic raw plants under Chinese criminal law. The lexicon includes the charge '非法种植毒品原植物', which matches. No other listed offenses apply.\",\n \"final_answer\": \"[罪名]非法种植毒品原植物<eoa>\"\n}\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": "We need to determine appropriate charge(s) from lexicon for the fact: planting poppy (罂粟) which is a narcotic plant. The lexicon includes \"非法种植毒品原植物\" (illegal cultivation of drug raw plants). The list includes \"非法种植毒品原植物\". Indeed that matches. Also possibly \"非法持有、私藏枪支、弹药\" etc not relevant. So charge: 非法种植毒品原植物.\n\nCheck lexicon: \"非法种植毒品原植物\". Yes.\n\nThus answer: [罪名]非法种植毒品原植物<eoa>\n\nWe need format: - Single: [罪名]非法种植毒品原植物<eoa>\n\nAdd reasoning in JSON? The instruction says output JSON with \"reasoning\" and \"final_answer\". Actually the example shows just final answer? The user gave format: \"格式示例： - 单个罪名: [罪名]盗窃<eoa>\" So we should output that. The meta instruction says: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"}? The user didn't ask for JSON, but the system message says to output that JSON? The last line: {\"reasoning\": \"[brief reasoning]\", \"final_answer\": \"[罪名]<charge(s)><eoa>\"} is part of the prompt? It seems they want that format. The user says: \"请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" So we need to provide reasoning then final answer. Could output reasoning then final answer line. Probably follow the JSON format they gave. Provide reasoning and final answer.\n\nThus:\n\n{\n \"reasoning\": \"The defendant harvested poppy fruits and cultivated them, which is illegal cultivation of narcotic raw plants under Chinese criminal law. The lexicon includes the charge '非法种植毒品原植物', which matches. No other listed offenses apply.\",\n \"final_answer\": \"[罪名]非法种植毒品原植物<eoa>\"\n}\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 536,
+      "prompt_tokens": 1752,
+      "total_tokens": 2288,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 445,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00014368,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00014368,
+        "upstream_inference_prompt_cost": 5.256e-05,
+        "upstream_inference_completions_cost": 9.112e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

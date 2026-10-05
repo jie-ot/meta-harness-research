@@ -1,0 +1,29 @@
+Write: logs\20260925_200856\pending_eval.json
+
+content:
+{
+  "iteration": 6,
+  "candidates": [
+    {
+      "name": "ngram_confusion_memory",
+      "file": "agents/ngram_confusion_memory.py",
+      "hypothesis": "Replacing the ASCII word tokenizer in confusion_disambiguation_memory with character bigrams will raise LawBench accuracy above 34% (the mmr_memory frontier) while keeping Symptom2Disease at 90%, because bigrams give meaningful non-zero similarity scores for non-ASCII text whereas word tokens reduce to ~4 numerals per example and make retrieval indistinguishable from random.",
+      "axis": "exploitation",
+      "base_system": "confusion_disambiguation_memory",
+      "components": ["bigram_tokenizer", "language_agnostic_retrieval", "confusion_matrix", "disambiguation_phase", "similarity_fill"]
+    },
+    {
+      "name": "label_grouped_memory",
+      "file": "agents/label_grouped_memory.py",
+      "hypothesis": "Organising retrieved examples into per-label sections in the prompt (grouped by answer) will outperform the flat Q/A list used by all prior systems, because explicit label-boundary structure lets the model compare across categories rather than interpolate from a sequence of loosely ordered examples — particularly on tasks with many similar-looking inputs that map to different labels.",
+      "axis": "exploration",
+      "base_system": "similarity_retrieval_memory",
+      "components": ["bigram_tokenizer", "language_agnostic_retrieval", "label_grouped_prompt", "prompt_architecture_axis", "section_headers"]
+    }
+  ]
+}
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\pending_eval.json (file state is current in your context — no need to Read it back)

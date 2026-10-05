@@ -1,0 +1,294 @@
+Write: .prototypes\charge_cooccurrence_count_memory.py
+
+content:
+"""Prototype B v2: charge co-occurrence graph + cardinality planning.
+
+No file/network I/O. Literals copied from visible traces.
+
+Defects found by v1 and fixed here:
+  D1 expand() returns COMPANIONS only -- assertions must compare seeds+companions.
+  D2 mask_slots() overcounted: in "触犯《刑法》××之规定，应当以××追究" two separate
+     mask runs denote ONE charge slot (statute citation + charge name). The correct
+     structural signal is a MAXIMAL GROUP of '××' tokens joined by enumeration
+     separators (、;；,，) -- that is a genuine multi-charge enumeration.
+  D3 seeds from the union of 2 retrieved examples over-generate; use top-1 plus a
+     margin-gated runner-up.
+
+Core claim to falsify:
+  Targets co-occur non-randomly. A co-occurrence graph over observed target sets
+  repairs UNDER-generation (the dominant cardinality error) by adding attested
+  companions, while the mask-group signal supplies the count budget. Closed
+  neighbourhoods and singletons must NOT be inflated.
+"""
+
+import re
+from collections import defaultdict
+
+STRONG_SEPS = [";", "；", ",", "，"]
+WEAK_SEPS = ["、"]
+
+
+def split_strong(text):
+    for sep in STRONG_SEPS:
+        if sep in text:
+            return [p.strip() for p in text.split(sep) if p.strip()]
+    return [text.strip()] if text.strip() else []
+
+
+# ----------------------------------------------------------------------------
+# Literal training target sets (repeats included so support thresholds are
+# actually exercised -- real training data has repeats too).
+# ----------------------------------------------------------------------------
+TRAIN_TARGETS = [
+    "受贿;滥用职权",
+    "受贿;滥用职权",
+    "受贿;贪污",
+    "贪污;挪用公款",
+    "贪污;挪用公款",
+    "贪污;挪用公款",
+    "盗窃;掩饰、隐瞒犯罪所得、犯罪所得收益",
+    "盗窃;诈骗",
+    "盗窃;诈骗",
+    "盗窃",
+    "盗窃",
+    "盗窃",
+    "非法持有、私藏枪支、弹药;故意伤害;聚众斗殴",
+    "故意伤害;故意毁坏财物",
+    "故意伤害;寻衅滋事",
+    "开设赌场;赌博",
+    "开设赌场;赌博",
+    "诈骗;合同诈骗",
+    "非法采矿;污染环境",
+    "破坏电力设备",
+    "破坏电力设备",
+    "非法种植毒品原植物",
+    "失火",
+    "拐骗儿童",
+    "盗伐林木",
+    "非法拘禁;敲诈勒索",
+]
+
+
+def build_graph(targets):
+    g = defaultdict(lambda: defaultdict(int))
+    counts = defaultdict(int)
+    for t in targets:
+        parts = sorted(set(split_strong(t)))
+        for a in parts:
+            counts[a] += 1
+            for b in parts:
+                if a != b:
+                    g[a][b] += 1
+    return g, counts
+
+
+GRAPH, COUNTS = build_graph(TRAIN_TARGETS)
+
+
+def expand(seeds, graph, counts, min_support=2, ratio=0.4):
+    """One-hop expansion: add attested companions of the seed set."""
+    seeds = list(dict.fromkeys(seeds))
+    seedset = set(seeds)
+    votes = defaultdict(int)
+    for s in seeds:
+        for other, c in graph.get(s, {}).items():
+            if other not in seedset:
+                votes[other] += c
+    out = []
+    for other, v in votes.items():
+        if v < min_support:
+            continue
+        reinforced = sum(1 for s in seeds if graph.get(s, {}).get(other, 0) >= 1)
+        dominant = any(
+            graph.get(s, {}).get(other, 0) / max(1, counts[s]) >= ratio
+            for s in seeds
+        )
+        if reinforced >= 2 or dominant:
+            out.append((v, other))
+    out.sort(key=lambda x: (-x[0], x[1]))
+    return [o for _, o in out]
+
+
+# ----------------------------------------------------------------------------
+# Mask-group cardinality signal (fixed)
+# ----------------------------------------------------------------------------
+SEP_CLASS = "、;；,，"
+
+
+def mask_slots(text):
+    """Largest enumeration group of blanked charge slots in any clause.
+
+    A group is a maximal run of '××' tokens joined only by enumeration
+    separators. Two masks separated by narrative text are NOT a group.
+    """
+    best = 0
+    for clause in re.split(r"[。\n]", text):
+        for group in re.findall(
+            r"×{2,}(?:\s*[" + SEP_CLASS + r"]\s*×{2,})*", clause
+        ):
+            n = len(re.findall(r"×{2,}", group))
+            if n > best:
+                best = n
+    return best
+
+
+class FakeLLM:
+    def __init__(self, rules):
+        self.rules = rules
+        self.calls = 0
+
+    def __call__(self, prompt):
+        self.calls += 1
+        for key, val in self.rules:
+            if key in prompt:
+                return val
+        return '{"reasoning": "n/a", "final_answer": "seeds"}'
+
+
+print("=== Graph construction ===")
+print("nodes:", len(GRAPH), "| edges:", sum(len(v) for v in GRAPH.values()) // 2)
+for k in ["受贿", "盗窃", "故意伤害", "破坏电力设备", "非法种植毒品原植物"]:
+    print(f"  {k} (count={COUNTS[k]}): {dict(GRAPH.get(k, {}))}")
+
+SCEN = [
+    (["受贿", "滥用职权"], "受贿;滥用职权", "both seeds present, closed-ish"),
+    (["故意伤害"], "故意伤害;故意毁坏财物", "singleton, dominant companion"),
+    (["盗窃"], "盗窃", "closed neighbourhood -> must NOT inflate"),
+    (["破坏电力设备"], "破坏电力设备", "singleton, no attested companion -> must NOT inflate"),
+    (["非法种植毒品原植物"], "非法种植毒品原植物", "no neighbourhood -> must NOT inflate"),
+    (["贪污", "挪用公款"], "贪污;挪用公款", "mutual pair, stable"),
+    (["开设赌场"], "开设赌场;赌博", "singleton, dominant companion"),
+]
+
+print()
+print("=== S1 variant comparison (seeds + companions vs expected) ===")
+for min_support, ratio in [(1, 0.3), (2, 0.4), (2, 0.5), (3, 0.5)]:
+    bad = 0
+    for seeds, exp, _ in SCEN:
+        got = seeds + expand(seeds, GRAPH, COUNTS, min_support, ratio)
+        if sorted(set(got)) != sorted(split_strong(exp)):
+            bad += 1
+    print(f"min_support={min_support} ratio={ratio}: {bad}/{len(SCEN)} scenarios differ")
+
+print()
+print("=== Chosen variant: min_support=2, ratio=0.4 ===")
+fails = 0
+for seeds, exp, why in SCEN:
+    got = seeds + expand(seeds, GRAPH, COUNTS, 2, 0.4)
+    ok = sorted(set(got)) == sorted(split_strong(exp))
+    fails += 0 if ok else 1
+    print(f"{'PASS' if ok else 'FAIL'}  {str(seeds):28s} -> {got}   ({why})")
+
+print()
+print("=== S2 mask-group cardinality (v1 overcount fixed) ===")
+MASK_CASES = [
+    ("指控被告单位通辽市某商业广场有限公司、被告人沙某某的行为触犯了《中华人民共和国刑法》××之规定，应当以××追究其刑事责任。", 1),
+    ("被告人郭某的行为触犯了《中华人民共和国刑法》××之规定，构成××。郭某是从犯，根据《中华人民共和国刑法》××的规定，应减轻处罚。", 1),
+    ("公诉机关认为，被告人李某的行为已构成××，并提出判处××至一年六个月的量刑建议。", 1),
+    ("事实:被告人以××手段实施××、××行为，触犯了《中华人民共和国刑法》××、××之规定。", 2),
+    ("对被告人应以××;××追究刑事责任。", 2),
+    ("被告人盗窃路灯电缆线，共盗得电缆线约210米。", 0),
+]
+mask_fails = 0
+for text, exp in MASK_CASES:
+    got = mask_slots(text)
+    ok = got == exp
+    mask_fails += 0 if ok else 1
+    print(f"{'PASS' if ok else 'FAIL'}  expected {exp} got {got}  :: {text[:36]}...")
+
+print()
+print("=== End-to-end: retrieve -> seeds -> plan -> expand -> canonicalise ===")
+
+LEXICON_UNITS = set()
+for _t in TRAIN_TARGETS:
+    for _u in split_strong(_t):
+        LEXICON_UNITS.add(_u)
+
+
+class ProtoB:
+    def __init__(self, llm):
+        self.llm = llm
+        self.examples = []
+        self.graph = defaultdict(lambda: defaultdict(int))
+        self.counts = defaultdict(int)
+
+    def learn_from_batch(self, batch_results):
+        for r in batch_results:
+            self.examples.append({
+                "input": r["input"],
+                "target": r["ground_truth"],
+                "raw": r.get("raw_question", r["input"]),
+            })
+            parts = sorted(set(split_strong(r["ground_truth"])))
+            for a in parts:
+                self.counts[a] += 1
+                for b in parts:
+                    if a != b:
+                        self.graph[a][b] += 1
+
+    @staticmethod
+    def _sim(a, b):
+        def grams(s):
+            s = "".join(s.split())
+            return set(s[i:i + 3] for i in range(len(s) - 2)) or ({s} if s else set())
+        A, B = grams(a), grams(b)
+        if not A or not B:
+            return 0.0
+        return 2 * len(A & B) / (len(A) + len(B))
+
+    def predict(self, input):
+        ranked = sorted(
+            self.examples,
+            key=lambda ex: (-self._sim(input, ex["raw"]), ex["target"]),
+        )
+        if not ranked:
+            return [], {"seeds": [], "slots": 0}
+        seeds = split_strong(ranked[0]["target"])
+        # margin-gated runner-up: only add if nearly as similar
+        if len(ranked) > 1 and self._sim(input, ranked[1]["raw"]) >= 0.5 * self._sim(input, ranked[0]["raw"]):
+            for u in split_strong(ranked[1]["target"]):
+                if u not in seeds:
+                    seeds.append(u)
+        companions = expand(seeds, self.graph, self.counts, 2, 0.4)
+        final = list(seeds)
+        slots = mask_slots(input)
+        if slots > 0:
+            for c in companions:
+                if len(final) >= slots:
+                    break
+                final.append(c)
+            final = final[:slots]
+        return final, {"seeds": seeds, "slots": slots, "companions": companions}
+
+
+fake = FakeLLM([("seeds", '{"reasoning": "n/a", "final_answer": "seeds"}')])
+b = ProtoB(fake)
+b.learn_from_batch([
+    {"input": "Q1", "ground_truth": "受贿;滥用职权", "raw_question": "被告人利用职务便利收受贿赂并为他人谋取利益"},
+    {"input": "Q2", "ground_truth": "故意伤害;故意毁坏财物", "raw_question": "被告人殴打他人并毁坏财物"},
+    {"input": "Q3", "ground_truth": "盗窃", "raw_question": "被告人窃取他人财物"},
+    {"input": "Q4", "ground_truth": "开设赌场;赌博", "raw_question": "被告人开设赌场聚众赌博"},
+])
+E2E = [
+    ("事实:被告人利用职务便利收受贿赂，并为他人谋取利益，其行为触犯了《中华人民共和国刑法》××、××之规定。", 2),
+    ("事实:被告人殴打他人，并毁坏财物。", 0),
+    ("事实:被告人窃取他人财物，数额较大。", 0),
+]
+e2e_ok = True
+for q, exp_slots in E2E:
+    labels, meta = b.predict(q)
+    flag = "" if meta["slots"] == exp_slots else "  <-- slot mismatch"
+    if meta["slots"] != exp_slots:
+        e2e_ok = False
+    print(f"  slots={meta['slots']} seeds={meta['seeds']} companions={meta['companions']} -> {labels}{flag}")
+
+print()
+if fails == 0 and mask_fails == 0 and e2e_ok:
+    print("PROTOTYPE B OK: graph expansion is safe, mask-group cardinality is exact")
+else:
+    print(f"PROTOTYPE B REVIEW: expand_fails={fails} mask_fails={mask_fails} e2e_ok={e2e_ok}")
+
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\.prototypes\charge_cooccurrence_count_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

@@ -1,0 +1,72 @@
+{
+  "call_id": "8dbfeb08492e4864871910a07563fb8e",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791023718-UwxA7pR9gbxzxodFjNQI",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The defendant used others' ID cards to book train tickets via phone and then sold the tickets at a higher price for profit. This conduct constitutes the specific crime of ticket scalping, which under Chinese criminal law is defined as the offense of selling train tickets illegally (倒卖车票). No other crimes are indicated in the facts.\",\n  \"final_answer\": \"[罪名]倒卖车票<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the crime(s) based on facts. The case: using other people's ID to book train tickets via phone, then selling tickets at higher price. This is illegal ticket selling, which is a form of \"非法倒卖车票\" maybe \"倒卖车票\" which is a crime under Chinese law: \"倒卖车票罪\" (ticket scalping). The examples: we have not seen a label for that yet. Need to infer from pattern of labels used in examples. Look at previous examples: they use labels like \"非法狩猎\", \"组织、领导传销活动\", \"非法吸收公众存款\", \"开设赌场\", \"抢夺\", \"保险诈骗\", \"合同诈骗\", \"盗窃;侵占\", \"挪用公款\", \"非法捕捞水产品\", \"容留他人吸毒\", \"非法组织卖血\", \"冒充军人招摇撞骗\", \"非法占用农用地\", \"重大责任事故\", \"非法拘禁\", \"伪造、变造居民身份证\", \"非法侵入住宅\", \"放火\", \"破坏计算机信息系统\", \"生产、销售假药\", \"非法占用耕地\", etc.\n\nWe need label for ticket scalping. Possibly \"倒卖车票\". In Chinese criminal law, the crime is \"倒卖车票罪\". The label likely \"倒卖车票\". Check if any example includes \"倒卖\" maybe not. But we must use exact official charge label as shown in examples. Since no example for this, we need to guess the label format. The examples use Chinese terms without \"罪\" sometimes. For example \"非法狩猎\" (no \"罪\"). \"组织、领导传销活动\" (no \"罪\"). \"非法吸收公众存款\". \"开设赌场\". \"抢夺\". \"保险诈骗\". \"合同诈骗\". \"盗窃;侵占\". \"挪用公款\". \"非法捕捞水产品\". \"容留他人吸毒\". \"非法组织卖血\". \"冒充军人招摇撞骗\". \"非法占用农用地\". \"重大责任事故\". \"非法拘禁\". \"伪造、变造居民身份证\". \"非法侵入住宅\". \"放火\". \"破坏计算机信息系统\". \"生产、销售假药\". \"非法占用耕地\". \"贪污\". \"集资诈骗\". \"伪造、变造居民身份证\". \"盗窃;传授犯罪方法\". \"非法占用农用地\". \"非法占用耕地\". \"非法占用农用地\". \"非法占用耕地\". \"非法占用农用地\". Many are short.\n\nThus for ticket scalping, likely \"倒卖车票\". Should we include \"罪\"? In examples they omit \"罪\". So \"倒卖车票\". Possibly \"倒卖车票罪\" but they omit \"罪\". So \"倒卖车票\". Let's output that.\n\nCheck if any other crime like \"诈骗\" could apply? He sold tickets at higher price, but the act is illegal ticket scalping, not fraud because the tickets are genuine, just reselling. The law: \"倒卖车票罪\" is a specific offense. So answer: [罪名]倒卖车票<eoa>\n\nReturn JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the crime(s) based on facts. The case: using other people's ID to book train tickets via phone, then selling tickets at higher price. This is illegal ticket selling, which is a form of \"非法倒卖车票\" maybe \"倒卖车票\" which is a crime under Chinese law: \"倒卖车票罪\" (ticket scalping). The examples: we have not seen a label for that yet. Need to infer from pattern of labels used in examples. Look at previous examples: they use labels like \"非法狩猎\", \"组织、领导传销活动\", \"非法吸收公众存款\", \"开设赌场\", \"抢夺\", \"保险诈骗\", \"合同诈骗\", \"盗窃;侵占\", \"挪用公款\", \"非法捕捞水产品\", \"容留他人吸毒\", \"非法组织卖血\", \"冒充军人招摇撞骗\", \"非法占用农用地\", \"重大责任事故\", \"非法拘禁\", \"伪造、变造居民身份证\", \"非法侵入住宅\", \"放火\", \"破坏计算机信息系统\", \"生产、销售假药\", \"非法占用耕地\", etc.\n\nWe need label for ticket scalping. Possibly \"倒卖车票\". In Chinese criminal law, the crime is \"倒卖车票罪\". The label likely \"倒卖车票\". Check if any example includes \"倒卖\" maybe not. But we must use exact official charge label as shown in examples. Since no example for this, we need to guess the label format. The examples use Chinese terms without \"罪\" sometimes. For example \"非法狩猎\" (no \"罪\"). \"组织、领导传销活动\" (no \"罪\"). \"非法吸收公众存款\". \"开设赌场\". \"抢夺\". \"保险诈骗\". \"合同诈骗\". \"盗窃;侵占\". \"挪用公款\". \"非法捕捞水产品\". \"容留他人吸毒\". \"非法组织卖血\". \"冒充军人招摇撞骗\". \"非法占用农用地\". \"重大责任事故\". \"非法拘禁\". \"伪造、变造居民身份证\". \"非法侵入住宅\". \"放火\". \"破坏计算机信息系统\". \"生产、销售假药\". \"非法占用耕地\". \"贪污\". \"集资诈骗\". \"伪造、变造居民身份证\". \"盗窃;传授犯罪方法\". \"非法占用农用地\". \"非法占用耕地\". \"非法占用农用地\". \"非法占用耕地\". \"非法占用农用地\". Many are short.\n\nThus for ticket scalping, likely \"倒卖车票\". Should we include \"罪\"? In examples they omit \"罪\". So \"倒卖车票\". Possibly \"倒卖车票罪\" but they omit \"罪\". So \"倒卖车票\". Let's output that.\n\nCheck if any other crime like \"诈骗\" could apply? He sold tickets at higher price, but the act is illegal ticket scalping, not fraud because the tickets are genuine, just reselling. The law: \"倒卖车票罪\" is a specific offense. So answer: [罪名]倒卖车票<eoa>\n\nReturn JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to determine the crime(s) based on facts. The case: using other people's ID to book train tickets via phone, then selling tickets at higher price. This is illegal ticket selling, which is a form of \"非法倒卖车票\" maybe \"倒卖车票\" which is a crime under Chinese law: \"倒卖车票罪\" (ticket scalping). The examples: we have not seen a label for that yet. Need to infer from pattern of labels used in examples. Look at previous examples: they use labels like \"非法狩猎\", \"组织、领导传销活动\", \"非法吸收公众存款\", \"开设赌场\", \"抢夺\", \"保险诈骗\", \"合同诈骗\", \"盗窃;侵占\", \"挪用公款\", \"非法捕捞水产品\", \"容留他人吸毒\", \"非法组织卖血\", \"冒充军人招摇撞骗\", \"非法占用农用地\", \"重大责任事故\", \"非法拘禁\", \"伪造、变造居民身份证\", \"非法侵入住宅\", \"放火\", \"破坏计算机信息系统\", \"生产、销售假药\", \"非法占用耕地\", etc.\n\nWe need label for ticket scalping. Possibly \"倒卖车票\". In Chinese criminal law, the crime is \"倒卖车票罪\". The label likely \"倒卖车票\". Check if any example includes \"倒卖\" maybe not. But we must use exact official charge label as shown in examples. Since no example for this, we need to guess the label format. The examples use Chinese terms without \"罪\" sometimes. For example \"非法狩猎\" (no \"罪\"). \"组织、领导传销活动\" (no \"罪\"). \"非法吸收公众存款\". \"开设赌场\". \"抢夺\". \"保险诈骗\". \"合同诈骗\". \"盗窃;侵占\". \"挪用公款\". \"非法捕捞水产品\". \"容留他人吸毒\". \"非法组织卖血\". \"冒充军人招摇撞骗\". \"非法占用农用地\". \"重大责任事故\". \"非法拘禁\". \"伪造、变造居民身份证\". \"非法侵入住宅\". \"放火\". \"破坏计算机信息系统\". \"生产、销售假药\". \"非法占用耕地\". \"贪污\". \"集资诈骗\". \"伪造、变造居民身份证\". \"盗窃;传授犯罪方法\". \"非法占用农用地\". \"非法占用耕地\". \"非法占用农用地\". \"非法占用耕地\". \"非法占用农用地\". Many are short.\n\nThus for ticket scalping, likely \"倒卖车票\". Should we include \"罪\"? In examples they omit \"罪\". So \"倒卖车票\". Possibly \"倒卖车票罪\" but they omit \"罪\". So \"倒卖车票\". Let's output that.\n\nCheck if any other crime like \"诈骗\" could apply? He sold tickets at higher price, but the act is illegal ticket scalping, not fraud because the tickets are genuine, just reselling. The law: \"倒卖车票罪\" is a specific offense. So answer: [罪名]倒卖车票<eoa>\n\nReturn JSON with reasoning and final answer.",
+            "reasoning_content": "We need to determine the crime(s) based on facts. The case: using other people's ID to book train tickets via phone, then selling tickets at higher price. This is illegal ticket selling, which is a form of \"非法倒卖车票\" maybe \"倒卖车票\" which is a crime under Chinese law: \"倒卖车票罪\" (ticket scalping). The examples: we have not seen a label for that yet. Need to infer from pattern of labels used in examples. Look at previous examples: they use labels like \"非法狩猎\", \"组织、领导传销活动\", \"非法吸收公众存款\", \"开设赌场\", \"抢夺\", \"保险诈骗\", \"合同诈骗\", \"盗窃;侵占\", \"挪用公款\", \"非法捕捞水产品\", \"容留他人吸毒\", \"非法组织卖血\", \"冒充军人招摇撞骗\", \"非法占用农用地\", \"重大责任事故\", \"非法拘禁\", \"伪造、变造居民身份证\", \"非法侵入住宅\", \"放火\", \"破坏计算机信息系统\", \"生产、销售假药\", \"非法占用耕地\", etc.\n\nWe need label for ticket scalping. Possibly \"倒卖车票\". In Chinese criminal law, the crime is \"倒卖车票罪\". The label likely \"倒卖车票\". Check if any example includes \"倒卖\" maybe not. But we must use exact official charge label as shown in examples. Since no example for this, we need to guess the label format. The examples use Chinese terms without \"罪\" sometimes. For example \"非法狩猎\" (no \"罪\"). \"组织、领导传销活动\" (no \"罪\"). \"非法吸收公众存款\". \"开设赌场\". \"抢夺\". \"保险诈骗\". \"合同诈骗\". \"盗窃;侵占\". \"挪用公款\". \"非法捕捞水产品\". \"容留他人吸毒\". \"非法组织卖血\". \"冒充军人招摇撞骗\". \"非法占用农用地\". \"重大责任事故\". \"非法拘禁\". \"伪造、变造居民身份证\". \"非法侵入住宅\". \"放火\". \"破坏计算机信息系统\". \"生产、销售假药\". \"非法占用耕地\". \"贪污\". \"集资诈骗\". \"伪造、变造居民身份证\". \"盗窃;传授犯罪方法\". \"非法占用农用地\". \"非法占用耕地\". \"非法占用农用地\". \"非法占用耕地\". \"非法占用农用地\". Many are short.\n\nThus for ticket scalping, likely \"倒卖车票\". Should we include \"罪\"? In examples they omit \"罪\". So \"倒卖车票\". Possibly \"倒卖车票罪\" but they omit \"罪\". So \"倒卖车票\". Let's output that.\n\nCheck if any other crime like \"诈骗\" could apply? He sold tickets at higher price, but the act is illegal ticket scalping, not fraud because the tickets are genuine, just reselling. The law: \"倒卖车票罪\" is a specific offense. So answer: [罪名]倒卖车票<eoa>\n\nReturn JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 819,
+      "prompt_tokens": 24621,
+      "total_tokens": 25440,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 744,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.001050207,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.001050207,
+        "upstream_inference_prompt_cost": 0.000910977,
+        "upstream_inference_completions_cost": 0.00013923
+      }
+    }
+  },
+  "raw_response_missing": false
+}

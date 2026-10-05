@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the facts describe the manufacturing or sale of food, health products, or supplements that contain prohibited or harmful substances (e.g., prescription‑drug ingredients), classify the offense as 
+- When the illegal act involves selling or distributing a product that is regulated as a food, health product, or other non‑pharmaceutical item (even if it contains active drug ingredients), charge unde
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the defendant unintentionally introduces a hazardous or toxic substance into food or drink, resulting in poisoning or death, the appropriate charge is ‘过失投放危险物质’, not charges related to manufactu
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:北京市丰台区人民检察院指控：
+2013年6月至2014年6月间，被告人方×伙同张×（另案处理），在本市丰台区北大地1里2号楼×号其经营的成人用品店内，非法对外销售含有有毒、有害成分的性保健品。2014年6月9日，北京市公安局丰台分局丰台镇派出所民警在其成人用品店内当场起获尚未销售的“性欲伟哥”、“金枪不倒”等五种性保健品共计八盒。经鉴定，上述性保健品中均含有西药成分西地那非。被告人方×于2014年6月9日向北京市公安局丰台分局丰台镇派出所投案。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

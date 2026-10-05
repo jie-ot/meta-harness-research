@@ -1,0 +1,72 @@
+{
+  "call_id": "6d6a39c8fa93483ea45035fd1c30abdc",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791026177-H6jaQ7XGNQvDyOpnj0lK",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"被告人宋某持钢管殴打被害人陈某甲，致其伤情为重伤并评定为六级伤残，符合《刑法》关于故意伤害罪的构成要件；随后又持钢管打砸陈某甲店铺内的财物，行为具有寻衅滋事的性质，且公诉机关已指控其构成寻衅滋事罪。因此应当以故意伤害罪和寻衅滋事罪两项罪名定罪。\",\n  \"final_answer\": \"[罪名]故意伤害罪;寻衅滋事罪<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the crime(s) based on facts. The facts: assault with steel pipe causing heavy injury (level 6 disability) and property damage (value 2609.78). The prosecution says \"构成了××、寻衅滋事罪\". Likely the crimes are \"故意伤害罪\" (intentional injury) and \"寻衅滋事罪\". However also property damage could be \"故意毁坏财物罪\". But they mention \"寻衅滋事罪\". In Chinese criminal law, causing heavy injury with a weapon is intentional injury. Also property damage may be covered under \"故意毁坏财物罪\". But the prosecution may charge both intentional injury and public order offense (寻衅滋事). The question: we must output the crime(s) as per the facts. The examples show they output the crime(s) exactly as in the answer line. For example earlier they gave \"伪造、变造、买卖国家机关公文、证件、印章\". That is a list of crimes separated by \"、\". In other examples they output \"非国家工作人员受贿\". For multiple crimes they separate with \";\". The format: [罪名]xxx;yyy<eoa>. So we need to decide if multiple crimes. The text says \"构成了××、寻衅滋事罪\". So there are two crimes: one unspecified (likely intentional injury) and \"寻衅滋事罪\". So we should output \"故意伤害罪;寻衅滋事罪\". Use semicolon separation. Ensure correct Chinese official naming: \"故意伤害罪\". Yes.\n\nThus final answer: [罪名]故意伤害罪;寻衅滋事罪<eoa>.\n\nNow produce JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the crime(s) based on facts. The facts: assault with steel pipe causing heavy injury (level 6 disability) and property damage (value 2609.78). The prosecution says \"构成了××、寻衅滋事罪\". Likely the crimes are \"故意伤害罪\" (intentional injury) and \"寻衅滋事罪\". However also property damage could be \"故意毁坏财物罪\". But they mention \"寻衅滋事罪\". In Chinese criminal law, causing heavy injury with a weapon is intentional injury. Also property damage may be covered under \"故意毁坏财物罪\". But the prosecution may charge both intentional injury and public order offense (寻衅滋事). The question: we must output the crime(s) as per the facts. The examples show they output the crime(s) exactly as in the answer line. For example earlier they gave \"伪造、变造、买卖国家机关公文、证件、印章\". That is a list of crimes separated by \"、\". In other examples they output \"非国家工作人员受贿\". For multiple crimes they separate with \";\". The format: [罪名]xxx;yyy<eoa>. So we need to decide if multiple crimes. The text says \"构成了××、寻衅滋事罪\". So there are two crimes: one unspecified (likely intentional injury) and \"寻衅滋事罪\". So we should output \"故意伤害罪;寻衅滋事罪\". Use semicolon separation. Ensure correct Chinese official naming: \"故意伤害罪\". Yes.\n\nThus final answer: [罪名]故意伤害罪;寻衅滋事罪<eoa>.\n\nNow produce JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to determine the crime(s) based on facts. The facts: assault with steel pipe causing heavy injury (level 6 disability) and property damage (value 2609.78). The prosecution says \"构成了××、寻衅滋事罪\". Likely the crimes are \"故意伤害罪\" (intentional injury) and \"寻衅滋事罪\". However also property damage could be \"故意毁坏财物罪\". But they mention \"寻衅滋事罪\". In Chinese criminal law, causing heavy injury with a weapon is intentional injury. Also property damage may be covered under \"故意毁坏财物罪\". But the prosecution may charge both intentional injury and public order offense (寻衅滋事). The question: we must output the crime(s) as per the facts. The examples show they output the crime(s) exactly as in the answer line. For example earlier they gave \"伪造、变造、买卖国家机关公文、证件、印章\". That is a list of crimes separated by \"、\". In other examples they output \"非国家工作人员受贿\". For multiple crimes they separate with \";\". The format: [罪名]xxx;yyy<eoa>. So we need to decide if multiple crimes. The text says \"构成了××、寻衅滋事罪\". So there are two crimes: one unspecified (likely intentional injury) and \"寻衅滋事罪\". So we should output \"故意伤害罪;寻衅滋事罪\". Use semicolon separation. Ensure correct Chinese official naming: \"故意伤害罪\". Yes.\n\nThus final answer: [罪名]故意伤害罪;寻衅滋事罪<eoa>.\n\nNow produce JSON with reasoning and final answer.",
+            "reasoning_content": "We need to determine the crime(s) based on facts. The facts: assault with steel pipe causing heavy injury (level 6 disability) and property damage (value 2609.78). The prosecution says \"构成了××、寻衅滋事罪\". Likely the crimes are \"故意伤害罪\" (intentional injury) and \"寻衅滋事罪\". However also property damage could be \"故意毁坏财物罪\". But they mention \"寻衅滋事罪\". In Chinese criminal law, causing heavy injury with a weapon is intentional injury. Also property damage may be covered under \"故意毁坏财物罪\". But the prosecution may charge both intentional injury and public order offense (寻衅滋事). The question: we must output the crime(s) as per the facts. The examples show they output the crime(s) exactly as in the answer line. For example earlier they gave \"伪造、变造、买卖国家机关公文、证件、印章\". That is a list of crimes separated by \"、\". In other examples they output \"非国家工作人员受贿\". For multiple crimes they separate with \";\". The format: [罪名]xxx;yyy<eoa>. So we need to decide if multiple crimes. The text says \"构成了××、寻衅滋事罪\". So there are two crimes: one unspecified (likely intentional injury) and \"寻衅滋事罪\". So we should output \"故意伤害罪;寻衅滋事罪\". Use semicolon separation. Ensure correct Chinese official naming: \"故意伤害罪\". Yes.\n\nThus final answer: [罪名]故意伤害罪;寻衅滋事罪<eoa>.\n\nNow produce JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 542,
+      "prompt_tokens": 2913,
+      "total_tokens": 3455,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 406,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00076215,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00076215,
+        "upstream_inference_prompt_cost": 0.00043695,
+        "upstream_inference_completions_cost": 0.0003252
+      }
+    }
+  },
+  "raw_response_missing": false
+}

@@ -1,0 +1,242 @@
+Grep
+
+-C: 6
+-n: True
+output_mode: content
+path:
+D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_a\text_classification\meta_harness.py
+
+pattern: pending_eval|candidates|hypothesis|base_system|components
+
+--- output ---
+32-CONFIG_PATH = EVOLVE_DIR / "config.yaml"
+33-AGENTS_DIR = EVOLVE_DIR / "agents"
+34-BASELINE_FILES = {"__init__.py", "no_memory.py", "fewshot_memory.py", "fewshot_all.py"}
+35-
+36-# These are updated per-run if --run-name is set
+37-LOGS_DIR = EVOLVE_DIR / "logs"
+38:PENDING_EVAL = LOGS_DIR / "pending_eval.json"
+39-FRONTIER_VAL = LOGS_DIR / "frontier_val.json"
+40-EVOLUTION_SUMMARY = LOGS_DIR / "evolution_summary.jsonl"
+41-RESULTS_DIR = LOGS_DIR / "results"
+42-FINALIZED = LOGS_DIR / "finalized.json"
+43-
+44-PROPOSER_ALLOWED_TOOLS = [
+--
+175-            "Both must introduce a mechanism change, using the supplied framework and injected LLM.\n"
+176-            "Read evolution_summary.jsonl, frontier_val.json, config.yaml, and allowed history/. "
+177-            "Read the listed diagnostics.jsonl files for complete item inputs, predictions, targets and was_correct. "
+178-            "These compact views reference separate details/ files with complete actual prompts, responses and metadata. "
+179-            "Read long files in small line ranges. Full original traces and calls.jsonl are also preserved. "
+180-            "Training records, score/diagnostics.jsonl and feedback/diagnostics.jsonl are the only permitted empirical feedback. "
+181:            "There are 100 fixed score items; only their exact-match correct count ranks candidates. "
+182-            "D0 still has training and score traces. Extra feedback is diagnostic and never changes ranking.\n"
+183-            "Do not change D, k=2, the data, evaluator, framework, model parameters, or an existing candidate. "
+184-            "Do not execute evaluations, make network/API requests, inspect credentials or other directories, "
+185-            "or read any external test data/results. The controller performs all training and evaluation.\n"
+186-            "Read examples with file tools. Prototype core logic with a fake LLM in .prototypes/<name>.py; "
+187-            "allowed shell command: python .prototypes/<name>.py. Use literals from visible examples. "
+188-            "The shell allows no external I/O, imports of os/sys/pathlib, or extra model calls. "
+189-            "Then create agents/<new_name>.py. Execute a final import/mechanism check in "
+190:            ".prototypes/<new_name>.py for each candidate. Never overwrite existing candidates. "
+191:            "Write pending_eval.json with iteration, candidates in A/B order, and the original metadata schema. "
+192-            "Use reports/ for short diagnosis. Stay within this run's working directory.\n"
+193-            "Existing empirical files (use these exact paths with Read/Grep; chunk long files):\n"
+194-            + pilot_context.get("history_index", "history/<candidate>/train/log.jsonl and history/<candidate>/score/score_traces.jsonl") + "\n"
+195-        )
+196-    return (
+197-        f"Run iteration {iteration} of the evolution loop. There are {num_datasets} datasets.\n\n"
+198-        f"## Run directories\n"
+199-        f"All logs and results for this run are under `{LOGS_DIR}/`.\n"
+200-        f"- `{EVOLUTION_SUMMARY}` — past results\n"
+201-        f"- `{FRONTIER_VAL}` — frontier\n"
+202-        f"- `{LOGS_DIR / 'reports'}/` — post-eval reports\n"
+203:        f"- Write pending_eval.json to: `{PENDING_EVAL}`"
+204-    )
+205-
+206-
+207-def count_iterations_from_summary():
+208-    """Highest iteration number in evolution_summary.jsonl (for resume)."""
+209-    if not EVOLUTION_SUMMARY.exists():
+--
+217-        except json.JSONDecodeError:
+218-            continue
+219-    return max_iter
+220-
+221-
+222-def propose_claude(task_prompt, iteration, timeout=2400):
+223:    """Return (candidates_written, proposer_cost_usd)."""
+224-    os.environ.pop("CLAUDECODE", None)
+225-    # Strip API key so claude CLI uses subscription auth (avoids rate limits)
+226-    saved_key = os.environ.pop("ANTHROPIC_API_KEY", None)
+227-    result = claude_wrapper.run(
+228-        prompt=task_prompt,
+229-        model="claude-opus-5-5-code",
+--
+247-        return False, cost
+248-    result.show()
+249-    print(f"  proposer cost (reported): ${cost:.4f}")
+250-    return PENDING_EVAL.exists(), cost
+251-
+252-
+253:def validate_candidates(candidates):
+254:    """Import-check each candidate. Returns list of valid candidates."""
+255-    valid = []
+256:    for c in candidates:
+257-        name = c["name"]
+258-        result = run_cmd(
+259-            [
+260-                "uv",
+261-                "run",
+262-                "python",
+--
+276-                print(f"      {_dim(detail)}")
+277-    return valid
+278-
+279-
+280-def update_evolution_summary(
+281-    iteration,
+282:    candidates,
+283-    val_scores,
+284-    propose_time=None,
+285-    bench_time=None,
+286-    wall_time=None,
+287-    propose_cost_usd=None,
+288-    solver_costs=None,
+--
+294-        else {}
+295-    )
+296-    pareto = frontier.get("_pareto", [])
+297-    best_val = pareto[0].get("val_accuracy", 0) if pareto else 0
+298-
+299-    with open(EVOLUTION_SUMMARY, "a", encoding="utf-8") as f:
+300:        for i, c in enumerate(candidates):
+301-            name = c["name"]
+302-            avg_val = val_scores.get(name, 0)
+303-            row = {
+304-                "iteration": iteration,
+305-                "system": name,
+306-                "avg_val": round(avg_val, 1),
+307-                "axis": c.get("axis", "?"),
+308:                "hypothesis": c.get("hypothesis", ""),
+309-                "delta": round(avg_val - best_val, 1) if best_val else None,
+310-                "outcome": f"{avg_val:.1f}% ({avg_val - best_val:+.1f})"
+311-                if avg_val > 0
+312-                else "failed",
+313-            }
+314:            if "components" in c:
+315:                row["components"] = c["components"]
+316-            if i == 0 and wall_time is not None:
+317-                row["timing_s"] = {
+318-                    "propose": round(propose_time, 1),
+319-                    "bench": round(bench_time, 1),
+320-                    "wall": round(wall_time, 1),
+321-                }
+--
+474-    # Isolate run outputs under run-name subdirs
+475-    if args.run_name:
+476-        run_name = args.run_name
+477-    else:
+478-        run_name = datetime.now().strftime("%Y%m%d_%H%M%S")
+479-    LOGS_DIR = EVOLVE_DIR / "logs" / run_name
+480:    PENDING_EVAL = LOGS_DIR / "pending_eval.json"
+481-    FRONTIER_VAL = LOGS_DIR / "frontier_val.json"
+482-    EVOLUTION_SUMMARY = LOGS_DIR / "evolution_summary.jsonl"
+483-    RESULTS_DIR = LOGS_DIR / "results"
+484-    FINALIZED = LOGS_DIR / "finalized.json"
+485-
+486-    LOGS_DIR.mkdir(parents=True, exist_ok=True)
+--
+590-
+591-        if PENDING_EVAL.exists():
+592-            PENDING_EVAL.unlink()
+593-
+594-        # Propose
+595-        propose_start = time.time()
+596:        print(f"  {_ts()} {_cyan('proposing')} new candidates...", flush=True)
+597-        ok, propose_cost = propose_claude(
+598-            task_prompt, iteration, timeout=args.propose_timeout
+599-        )
+600-        propose_time = time.time() - propose_start
+601-
+602-        if not ok:
+603-            print(
+604:                f"  {_red('FAIL')} proposer returned no candidates after {_elapsed(propose_time)}"
+605-            )
+606-            continue
+607-
+608:        candidates = json.loads(PENDING_EVAL.read_text(encoding="utf-8")).get(
+609:            "candidates", []
+610-        )
+611-        print(
+612:            f"  {_ts()} proposed {len(candidates)} candidate(s) in {_elapsed(propose_time)}"
+613-        )
+614:        for ci, c in enumerate(candidates):
+615:            hyp = c.get("hypothesis", "")
+616-            print(f"    {ci + 1}. {_bold(c['name'])}: {hyp[:80]}")
+617-
+618-        # Validate
+619:        print(f"  {_ts()} {_cyan('validating')} {len(candidates)} candidate(s)...")
+620:        valid_candidates = validate_candidates(candidates)
+621-
+622:        if not valid_candidates:
+623-            print(
+624:                f"  {_red('0 valid')} out of {len(candidates)} candidates, skipping iteration"
+625-            )
+626-            update_evolution_summary(
+627-                iteration,
+628:                candidates,
+629-                {},
+630-                propose_time=propose_time,
+631-                propose_cost_usd=propose_cost,
+632-            )
+633-            continue
+634-        print(
+635:            f"  {_green(f'{len(valid_candidates)} valid')} out of {len(candidates)} candidates"
+636-        )
+637-
+638-        # Benchmark
+639-        bench_start = time.time()
+640-        print(
+641:            f"  {_ts()} {_cyan('benchmarking')} {len(valid_candidates)} system(s) x {len(datasets)} datasets"
+642-        )
+643:        for ci, c in enumerate(valid_candidates):
+644-            if _interrupted:
+645-                break
+646-            name = c["name"]
+647-            print(
+648:                f"    [{ci + 1}/{len(valid_candidates)}] {_bold(name)}...", flush=True
+649-            )
+650-            t0 = time.time()
+651-            result = run_benchmark(["--memory", name])
+652-            elapsed = time.time() - t0
+653-            if result.returncode != 0:
+654-                print(f"      {_red('FAIL')} benchmark crashed ({_elapsed(elapsed)})")
+--
+662-        run_benchmark(["--frontier", "--model", model_short])
+663-
+664-        # Compute scores and show results
+665-        val_scores = {}
+666-        solver_costs = {}
+667-        results = load_results(LOGS_DIR, "val.json")
+668:        for c in valid_candidates:
+669-            name = c["name"]
+670-            accs = [
+671-                results[k]["accuracy"] * 100
+672-                for ds in datasets
+673-                for k in [(model_short, ds, name)]
+674-                if k in results and results[k].get("accuracy") is not None
+--
+695-                f"delta={delta_colored}  solver_cost=${solver_costs[name]:.4f}"
+696-            )
+697-
+698-        wall_time = time.time() - iter_start
+699-        update_evolution_summary(
+700-            iteration,
+701:            valid_candidates,
+702-            val_scores,
+703-            propose_time=propose_time,
+704-            bench_time=bench_time,
+705-            wall_time=wall_time,
+706-            propose_cost_usd=propose_cost,
+707-            solver_costs=solver_costs,

@@ -1,0 +1,72 @@
+{
+  "call_id": "a854f69b4e594903912e6e8a0bd857de",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791043033-8g6v5Zfk2ovtdC1x6SAC",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"陈某利用其在旅行社负责人的职务便利，将多家旅行社支付给其公司的旅游团费用挪作个人消费，构成利用职务上的便利侵占公司资金的行为。该行为符合《刑法》关于职务侵占（在本题库中对应的标签为‘挪用公款’）的要件。案件中已归还全部挪用款项并取得谅解，未涉及其他犯罪行为。\",\n  \"final_answer\": \"[罪名]挪用公款<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate crime(s) based on facts. The case: Chen misappropriated travel agency funds (tour group fees) for personal use, i.e., embezzlement (挪用公款) but he is an employee of a private company, not a public official. The crime is \"挪用公款\" (embezzlement of public funds) applies to state funds? Actually \"挪用公款罪\" is for public funds. For private funds, it's \"职务侵占罪\" (embezzlement by a person in a position of trust). In Chinese criminal law, \"职务侵占罪\" is for misappropriation of public or private funds by a person in a position of trust (e.g., staff of a company). The examples: earlier they had \"挪用公款\" for a school cashier misusing public funds. For private company, they used \"挪用公款\"? Actually example: \"王3某在担任上海市松江区车墩学校出纳、报账员期间，利用其负责学校报账、领取和保管备用金以及收取、保管学校门面房租金的职务便利，先后10余次挪用公款共计人民币332，600元\". That's public school, so public funds. For private, they used \"职务侵占\". Not in examples. But we need to map to the label list used in dataset. The possible labels from examples: 诈骗;聚众扰乱公共场所秩序、交通秩序;合同诈骗;危险物品肇事;对非国家工作人员行贿;出售、购买、运输假币;强制猥亵、侮辱妇女;非法获取公民个人信息;贷款诈骗;非法种植毒品原植物;破坏计算机信息系统;破坏广播电视设施、公用电信设施;盗窃;诬告陷害;诈骗 (again);过失以危险方法危害公共安全;单位行贿;行贿;非法持有、私藏枪支、弹药;危险驾驶;故意毁坏财物;非法获取国家秘密;徇私舞弊不移交刑事案件;容留他人吸毒;玩忽职守;非法持有毒品;赌博;开设赌场;单位受贿;信用卡诈骗;故意伤害;虐待;放火;爆炸;非国家工作人员受贿;受贿;贪污;非法持有公民个人信息? Actually we have \"非法获取公民个人信息\". Also \"非法获取国家秘密\". Also \"非法持有、私藏枪支、弹药\". Also \"非法持有毒品\". Also \"非法种植毒品原植物\". Also \"非法持有、私藏枪支、弹药\". Also \"非法持有公民个人信息\"? Not needed.\n\nWe need to see if there is a label for \"职务侵占\". Not in list. Could be \"挪用公款\" used for both? But example for private not present. However the dataset may map \"职务侵占\" to \"挪用公款\". Let's check other examples: \"贷款诈骗\" is separate. \"诈骗\" is generic. \"合同诈骗\". \"挪用公款\" appears only for public school case. But maybe they also use \"挪用公款\" for private? Not sure.\n\nThe crime: misappropriation of funds entrusted to a travel agency (private). This is \"职务侵占罪\". The label likely \"挪用公款\" is not correct. Could be \"挪用公款\" is the only label for embezzlement. But they have \"挪用公款\" as a label. So we may output that.\n\nAlso there is \"受贿\" etc. Not relevant.\n\nThus answer: [罪名]挪用公款<eoa>\n\nCheck if any other crimes: He returned money, got forgiveness, community correction. No other crimes.\n\nThus final answer.\n\n",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to determine appropriate crime(s) based on facts. The case: Chen misappropriated travel agency funds (tour group fees) for personal use, i.e., embezzlement (挪用公款) but he is an employee of a private company, not a public official. The crime is \"挪用公款\" (embezzlement of public funds) applies to state funds? Actually \"挪用公款罪\" is for public funds. For private funds, it's \"职务侵占罪\" (embezzlement by a person in a position of trust). In Chinese criminal law, \"职务侵占罪\" is for misappropriation of public or private funds by a person in a position of trust (e.g., staff of a company). The examples: earlier they had \"挪用公款\" for a school cashier misusing public funds. For private company, they used \"挪用公款\"? Actually example: \"王3某在担任上海市松江区车墩学校出纳、报账员期间，利用其负责学校报账、领取和保管备用金以及收取、保管学校门面房租金的职务便利，先后10余次挪用公款共计人民币332，600元\". That's public school, so public funds. For private, they used \"职务侵占\". Not in examples. But we need to map to the label list used in dataset. The possible labels from examples: 诈骗;聚众扰乱公共场所秩序、交通秩序;合同诈骗;危险物品肇事;对非国家工作人员行贿;出售、购买、运输假币;强制猥亵、侮辱妇女;非法获取公民个人信息;贷款诈骗;非法种植毒品原植物;破坏计算机信息系统;破坏广播电视设施、公用电信设施;盗窃;诬告陷害;诈骗 (again);过失以危险方法危害公共安全;单位行贿;行贿;非法持有、私藏枪支、弹药;危险驾驶;故意毁坏财物;非法获取国家秘密;徇私舞弊不移交刑事案件;容留他人吸毒;玩忽职守;非法持有毒品;赌博;开设赌场;单位受贿;信用卡诈骗;故意伤害;虐待;放火;爆炸;非国家工作人员受贿;受贿;贪污;非法持有公民个人信息? Actually we have \"非法获取公民个人信息\". Also \"非法获取国家秘密\". Also \"非法持有、私藏枪支、弹药\". Also \"非法持有毒品\". Also \"非法种植毒品原植物\". Also \"非法持有、私藏枪支、弹药\". Also \"非法持有公民个人信息\"? Not needed.\n\nWe need to see if there is a label for \"职务侵占\". Not in list. Could be \"挪用公款\" used for both? But example for private not present. However the dataset may map \"职务侵占\" to \"挪用公款\". Let's check other examples: \"贷款诈骗\" is separate. \"诈骗\" is generic. \"合同诈骗\". \"挪用公款\" appears only for public school case. But maybe they also use \"挪用公款\" for private? Not sure.\n\nThe crime: misappropriation of funds entrusted to a travel agency (private). This is \"职务侵占罪\". The label likely \"挪用公款\" is not correct. Could be \"挪用公款\" is the only label for embezzlement. But they have \"挪用公款\" as a label. So we may output that.\n\nAlso there is \"受贿\" etc. Not relevant.\n\nThus answer: [罪名]挪用公款<eoa>\n\nCheck if any other crimes: He returned money, got forgiveness, community correction. No other crimes.\n\nThus final answer.\n\n",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate crime(s) based on facts. The case: Chen misappropriated travel agency funds (tour group fees) for personal use, i.e., embezzlement (挪用公款) but he is an employee of a private company, not a public official. The crime is \"挪用公款\" (embezzlement of public funds) applies to state funds? Actually \"挪用公款罪\" is for public funds. For private funds, it's \"职务侵占罪\" (embezzlement by a person in a position of trust). In Chinese criminal law, \"职务侵占罪\" is for misappropriation of public or private funds by a person in a position of trust (e.g., staff of a company). The examples: earlier they had \"挪用公款\" for a school cashier misusing public funds. For private company, they used \"挪用公款\"? Actually example: \"王3某在担任上海市松江区车墩学校出纳、报账员期间，利用其负责学校报账、领取和保管备用金以及收取、保管学校门面房租金的职务便利，先后10余次挪用公款共计人民币332，600元\". That's public school, so public funds. For private, they used \"职务侵占\". Not in examples. But we need to map to the label list used in dataset. The possible labels from examples: 诈骗;聚众扰乱公共场所秩序、交通秩序;合同诈骗;危险物品肇事;对非国家工作人员行贿;出售、购买、运输假币;强制猥亵、侮辱妇女;非法获取公民个人信息;贷款诈骗;非法种植毒品原植物;破坏计算机信息系统;破坏广播电视设施、公用电信设施;盗窃;诬告陷害;诈骗 (again);过失以危险方法危害公共安全;单位行贿;行贿;非法持有、私藏枪支、弹药;危险驾驶;故意毁坏财物;非法获取国家秘密;徇私舞弊不移交刑事案件;容留他人吸毒;玩忽职守;非法持有毒品;赌博;开设赌场;单位受贿;信用卡诈骗;故意伤害;虐待;放火;爆炸;非国家工作人员受贿;受贿;贪污;非法持有公民个人信息? Actually we have \"非法获取公民个人信息\". Also \"非法获取国家秘密\". Also \"非法持有、私藏枪支、弹药\". Also \"非法持有毒品\". Also \"非法种植毒品原植物\". Also \"非法持有、私藏枪支、弹药\". Also \"非法持有公民个人信息\"? Not needed.\n\nWe need to see if there is a label for \"职务侵占\". Not in list. Could be \"挪用公款\" used for both? But example for private not present. However the dataset may map \"职务侵占\" to \"挪用公款\". Let's check other examples: \"贷款诈骗\" is separate. \"诈骗\" is generic. \"合同诈骗\". \"挪用公款\" appears only for public school case. But maybe they also use \"挪用公款\" for private? Not sure.\n\nThe crime: misappropriation of funds entrusted to a travel agency (private). This is \"职务侵占罪\". The label likely \"挪用公款\" is not correct. Could be \"挪用公款\" is the only label for embezzlement. But they have \"挪用公款\" as a label. So we may output that.\n\nAlso there is \"受贿\" etc. Not relevant.\n\nThus answer: [罪名]挪用公款<eoa>\n\nCheck if any other crimes: He returned money, got forgiveness, community correction. No other crimes.\n\nThus final answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to determine appropriate crime(s) based on facts. The case: Chen misappropriated travel agency funds (tour group fees) for personal use, i.e., embezzlement (挪用公款) but he is an employee of a private company, not a public official. The crime is \"挪用公款\" (embezzlement of public funds) applies to state funds? Actually \"挪用公款罪\" is for public funds. For private funds, it's \"职务侵占罪\" (embezzlement by a person in a position of trust). In Chinese criminal law, \"职务侵占罪\" is for misappropriation of public or private funds by a person in a position of trust (e.g., staff of a company). The examples: earlier they had \"挪用公款\" for a school cashier misusing public funds. For private company, they used \"挪用公款\"? Actually example: \"王3某在担任上海市松江区车墩学校出纳、报账员期间，利用其负责学校报账、领取和保管备用金以及收取、保管学校门面房租金的职务便利，先后10余次挪用公款共计人民币332，600元\". That's public school, so public funds. For private, they used \"职务侵占\". Not in examples. But we need to map to the label list used in dataset. The possible labels from examples: 诈骗;聚众扰乱公共场所秩序、交通秩序;合同诈骗;危险物品肇事;对非国家工作人员行贿;出售、购买、运输假币;强制猥亵、侮辱妇女;非法获取公民个人信息;贷款诈骗;非法种植毒品原植物;破坏计算机信息系统;破坏广播电视设施、公用电信设施;盗窃;诬告陷害;诈骗 (again);过失以危险方法危害公共安全;单位行贿;行贿;非法持有、私藏枪支、弹药;危险驾驶;故意毁坏财物;非法获取国家秘密;徇私舞弊不移交刑事案件;容留他人吸毒;玩忽职守;非法持有毒品;赌博;开设赌场;单位受贿;信用卡诈骗;故意伤害;虐待;放火;爆炸;非国家工作人员受贿;受贿;贪污;非法持有公民个人信息? Actually we have \"非法获取公民个人信息\". Also \"非法获取国家秘密\". Also \"非法持有、私藏枪支、弹药\". Also \"非法持有毒品\". Also \"非法种植毒品原植物\". Also \"非法持有、私藏枪支、弹药\". Also \"非法持有公民个人信息\"? Not needed.\n\nWe need to see if there is a label for \"职务侵占\". Not in list. Could be \"挪用公款\" used for both? But example for private not present. However the dataset may map \"职务侵占\" to \"挪用公款\". Let's check other examples: \"贷款诈骗\" is separate. \"诈骗\" is generic. \"合同诈骗\". \"挪用公款\" appears only for public school case. But maybe they also use \"挪用公款\" for private? Not sure.\n\nThe crime: misappropriation of funds entrusted to a travel agency (private). This is \"职务侵占罪\". The label likely \"挪用公款\" is not correct. Could be \"挪用公款\" is the only label for embezzlement. But they have \"挪用公款\" as a label. So we may output that.\n\nAlso there is \"受贿\" etc. Not relevant.\n\nThus answer: [罪名]挪用公款<eoa>\n\nCheck if any other crimes: He returned money, got forgiveness, community correction. No other crimes.\n\nThus final answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 1011,
+      "prompt_tokens": 21291,
+      "total_tokens": 22302,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 909,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.001235,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.001235,
+        "upstream_inference_prompt_cost": 0.0009572269075817882,
+        "upstream_inference_completions_cost": 0.00027777309241821185
+      }
+    }
+  },
+  "raw_response_missing": false
+}

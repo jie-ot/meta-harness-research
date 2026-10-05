@@ -1,0 +1,58 @@
+Bash
+
+command:
+python "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D0_a\text_classification\.prototypes\cooccurrence_scaffold_memory.py"
+
+description: Final mechanism check for Candidate B (co-occurrence scaffold)
+
+--- output ---
+============================================================
+PROTOTYPE B: Charge Co-occurrence Scaffold Memory
+============================================================
+
+Stored 7 examples; graph nodes: 7
+Multi-charge training cases: 4
+  持有伪造的发票: 虚开增值税专用发票、用于骗取出口退税、抵扣税款发票(1x)
+  故意伤害: 故意毁坏财物(1x), 聚众扰乱社会秩序(1x)
+  故意毁坏财物: 故意伤害(1x)
+  聚众扰乱社会秩序: 故意伤害(1x)
+  虚开增值税专用发票、用于骗取出口退税、抵扣税款发票: 持有伪造的发票(1x)
+  诈骗: 非法获取公民个人信息(1x)
+  非法获取公民个人信息: 诈骗(1x)
+
+--- primary charge inference ---
+  assault_and_property         primary='故意伤害' companions=['故意毁坏财物', '聚众扰乱社会秩序']
+  vat_fraud_and_fake_invoice   primary='虚开增值税专用发票、用于骗取出口退税、抵扣税款发票' companions=['持有伪造的发票']
+  assault_and_public_order     primary='故意伤害' companions=['故意毁坏财物', '聚众扰乱社会秩序']
+  single_charge_control        primary='破坏电力设备' companions=[]
+
+--- v1_scaffold_only ---
+  OK  assault_and_property         pred='故意伤害;故意毁坏财物'
+  OK  vat_fraud_and_fake_invoice   pred='虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;持有伪造的发票'
+  MISS assault_and_public_order     pred='诈骗;聚众扰乱社会秩序'
+       expected='故意伤害;聚众扰乱社会秩序'
+  OK  single_charge_control        pred='破坏电力设备'
+
+--- v2_scaffold+examples ---
+  OK  assault_and_property         pred='故意伤害;故意毁坏财物'
+  OK  vat_fraud_and_fake_invoice   pred='虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;持有伪造的发票'
+  MISS assault_and_public_order     pred='诈骗;聚众扰乱社会秩序'
+       expected='故意伤害;聚众扰乱社会秩序'
+  OK  single_charge_control        pred='破坏电力设备'
+
+--- v3_examples_only(baseline) ---
+  MISS assault_and_property         pred='故意伤害'
+       expected='故意伤害;故意毁坏财物'
+  MISS vat_fraud_and_fake_invoice   pred='虚开增值税专用发票、用于骗取出口退税、抵扣税款发票'
+       expected='虚开增值税专用发票、用于骗取出口退税、抵扣税款发票;持有伪造的发票'
+  MISS assault_and_public_order     pred='诈骗'
+       expected='故意伤害;聚众扰乱社会秩序'
+  OK  single_charge_control        pred='破坏电力设备'
+
+--- Summary ---
+  v1_scaffold_only             3/4
+  v2_scaffold+examples         3/4
+  v3_examples_only(baseline)   1/4
+
+WINNER: v2 (scaffold + examples)
+PROTOTYPE B: PASS

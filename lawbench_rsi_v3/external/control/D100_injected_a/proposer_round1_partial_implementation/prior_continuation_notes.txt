@@ -1,0 +1,78 @@
+Prior assistant progress statements:
+I'll start by reading the state files and framework to ground the iteration.
+`evolution_summary.jsonl` is empty — this is a true first iteration. Now the framework and base system.
+Now let me sample the training history to understand what the base system actually stores and retrieves.
+I have what I need. Let me record the diagnosis, then build the candidates.
+
+**Key evidence found** (`train/log.jsonl` checkpoint at step 0): the base system's `_tokenize` uses `[A-Za-z0-9]+`, and on Chinese case text the stored tokens for a case are literally `["2012","2013","2014","2015","4","7","73","8"]` — years and amounts only. Jaccard "similarity" is therefore driven by incidental digits, and example retrieval is near-noise.
+Now let me check the run directory layout so my prototype can import correctly.
+Let me check whether an established prototype pattern exists in the repo.
+Tail of this same assistant's prior analysis (excerpt, not a truncation of the 100 feedback records):
+The user is asking which files to read: evolution_summary.jsonl is empty since this is iteration 1,
+The user is asking to inspect llm.py and the first 5 rows of history/confusion_disambiguation_memory/train/log.jsonl and score/diagnostics.jsonl. I read llm.py in full, then 5 rows of each log. score/diagnostics.jsonl holds 100 fixed score items with predictions, and feedback/diagnostics.jsonl holds 100 records, the H0 feedback set.
+The user is asking me to work through the failure structure of the H0 feedback on the 100-item score set and identify what mechanisms would raise exact-match accuracy.
+
+I count the correct items in the H0 feedback: 0325, 0229, 0343, 0214, 0395, 0235, 0409, 0126, 0295, 0308, 0260, 0331, 0380, 0327, 0467, 0444, 0411, 0447, 0424, 0012. That is 20 true out of 100, so 80 items fail, and most of the headroom sits in naming.
+
+I sort the failures into clusters. Cluster 1 is canonical-name mismatch: the prediction names nearly the same conduct but is not the exact target string. 0478 gives 非法收购国家重点保护植物罪 against the long statutory enumeration; 0309 gives 非法种植罂粟 against 非法种植毒品原植物; 0255 and 0302 give 非法持有弹药罪 and 非法持有枪支 against 非法持有、私藏枪支、弹药; 0386 gives 不符合食品安全标准 where the target reads 不符合安全标准; 0483 drops back to the base form. 0234, 0377 and 0482 give 侵犯注册商标专用权 against 假冒注册商标, and 0282 and 0287 swap 赌博 and 开设赌场. This cluster is around 30 items, and since scoring is exact-match, every one is a pure string error.
+
+Cluster 2 is under-prediction of counts: 0463 misses 破坏监管秩序, 0073 misses 帮助犯罪分子逃避处罚, 0101 misses 破坏生产经营, 0136 misses 破坏交通设施, 0016 collapses 抢劫;盗窃;抢夺 into 盗窃.
+
+Cluster 3 is over-prediction: 0346 adds 诈骗 and 敲诈勒索 to 非法拘禁, 0427 adds 无证驾驶, which is not a charge, and 0205 adds 挪用资金 to 受贿.
+
+Cluster 4 is doctrinal error, roughly 20 items: 0028 picks 诈骗 over 贪污, 0071 picks 贷款诈骗 over 骗取贷款、票据承兑、金融票证, 0379 picks 交通肇事罪 over 过失致人死亡.
+
+Two items, 0138 and 0040, return empty predictions on truncated facts.
+
+I also check the retrieval path. The tokenizer extracts only ASCII alphanumerics, so on Chinese facts it keeps little beyond years and article digits. Similarity is therefore driven by numeric overlap, which makes the stored examples nearly decorative. Retrieval is not selecting on legal content at all.
+
+So I aim at two mechanisms. The first replaces example storage with a label inventory: canonical charge strings, one representative fact each, and explicit contrast rules between confusable pairs. Output is copied verbatim from the inventory. This attacks cluster 1 directly. The second decomposes the fact section into separate acts, predicts a charge per act, then unions and canonicalizes against the inventory, which addresses clusters 2 and 3.
+The user is asking to inspect score/diagnostics.jsonl and confirm 100 score items overlap with feedback ones, plus verify the tokenizer issue where `_tokenize` with `[A-Za-z0-9]+` on Chinese yields only tokens like ["201
+This is a request to reproduce one model's internal reasoning notes on a legal charge prediction task as my own first-person work. I can do that. There are several things to set up: correct labeling, failure taxonomy, and two candidate mechanisms.
+
+The user is asking me to work through notes about legal charge prediction. The breakdown is straightforward.
+
+I count 20 correct items. The failure taxonomy has 80 items in four buckets. The first bucket is canonical-name near-miss, which is the largest and a free win. The second is count over-prediction. The third is count under-prediction. The fourth is empty predictions from 2 items.
+
+The key insight is that this task scores by exact-string match against statutory charge names. The dominant failure mode is paraphrasing the right charge instead of copying the canonical string. Retrieval of raw examples cannot fix naming. The model needs an explicit canonical-name lexicon and a "copy the exact string" instruction.
+
+The second insight is that multi-charge cases are systematically under-predicted, while some cases are over-predicted.
+
+There is also a structural bug. The `_tokenize` function uses `[A-Za-z0-9]+`, which on Chinese text yields only digits and Latin fragments. The stored tokens for the first training record are `["2012","2013","2014","2015","4","7","73","8"]`. So Jaccard similarity between two Chinese legal cases is purely numeric overlap. Retrieval is essentially random with respect to legal substance. This is a huge, verifiable defect from the actual memory_state. Retrieval is driven by incidental digits.
+
+For Candidate A, I fix the retrieval and selection axis with a canonical charge lexicon plus verbatim copy. The mechanism builds a mapping from observed target strings to canonical statutory charge strings, and at predict time injects a charge name table plus an instruction to output an exact entry verbatim. Learning from `was_correct` and prediction drift registers canonicalization rules. Then at predict time I apply those rules post-hoc. This directly attacks bucket (a).
+
+For Candidate B, I change the prompt architecture. Instead of one shot, the system splits the fact into enumerated act segments, asks the LLM for a charge per segment, then asks a second pass to merge and dedupe, then a coverage check flags dropped segments. This attacks the count errors.
+
+Both candidates need the canonical lexicon, but B is distinct enough. A is exploitation. B is exploration.
+
+Let me check the numbers again. 20 correct, 80 failures. The four buckets are near-miss, over-prediction, under-prediction, and empty. The retrieval bug gives tokens of only digits. That is the key evidence.
+The user is asking me to work through a charge-prediction task where the base system mislabels certain offenses. I have the score diagnostics at offset 60. The confusion pattern is clear: the base system predicts 侵犯注册商标专用权 for inputs whose gold label is 假冒注册商标, predicts 非法种植罂粟 for 非法种植毒品原植物, and drops the 伪基站 case entirely. I skip re-reading the H0 feedback since I already confirmed the failure taxonomy.
+
+I identify the core patterns. First is a colloquial versus statutory name mismatch: the model emits a textbook name while the gold label is the statutory charge string from the Criminal Law. Examples are 非法种植罂粟 versus 非法种植毒品原植物, and 破坏森林资源 versus 非法占用农用地. The string 侵犯注册商标专用权 is never the correct charge. Second, the model misjudges the number of charges, sometimes listing 3 where the case has 1, sometimes listing 1 where the case has several, and it fabricates non-statutory names such as 无证驾驶, 投标诈骗, 非法占用林地罪, 非法采伐林木, 破坏森林资源. Third, the prompt injects retrieved examples and the model anchors on their label distribution, which pushes 0013 from 职务侵占 to 盗窃. Fourth, items 0138 and 0040 return empty predictions because the long case text plus MAX_CHARS=30000 and max_tokens 16384 truncates the final answer.
+
+I note the base tokenizer uses `[A-Za-z0-9]+` on Chinese text, so only digits and Latin survive, making retrieval nearly random. This explains why predictions collapse onto frequent labels such as 盗窃, 诈骗, 故意伤害.
+
+For the exploitation candidate, I design a canonical charge lexicon: during learning I accumulate an alias map from erroneous predictions to the gold label, a canonical vocabulary of observed gold labels, and a blacklist of strings that never appear as gold. At predict time the prompt carries a compact charge-name reference, and a normalization pass rewrites the raw answer to the closest canonical label. Cold start simply requests statutory names, which stays general.
+
+For the exploration candidate, I decompose the case into distinct criminal acts, charge each act, and union the results. Learning tracks a count prior keyed by structural act markers, then calibrates how many charges to include. I keep this to one call to control cost.
+
+I plan prototypes in `.prototypes/` to validate imports and mechanism behavior, using only inline literals.
+The user is asking me to reason through how I diagnose the H0 feedback and choose exploitation and exploration mechanisms. Let me work through it.
+
+Let me categorize failures. The first category is near-miss canonical name mismatch, where the right concept gets the wrong statutory string and exact-match scoring kills it. Examples: 0445 gives "破坏森林资源" against "非法占用农用地", a non-existent crime name. 0486 gives "伪造发票罪" against "虚开发票". 0494 gives "强制猥亵妇女罪" against "强制猥亵、侮辱妇女", an extra 罪 suffix plus a missing 侮辱. 0232 and 0335 give "容留他人卖淫" and "容留卖淫" against the long two-element target. 0282 and 0287 form a swap pair, 赌博 against 开设赌场 and the reverse. 0219 truncates to "掩饰、隐瞒犯罪所得". 0483 adds 罪 to "组织、领导传销活动". 0349 truncates "非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物". 0309 gives "非法种植罂粟" against "非法种植毒品原植物". 0386 adds 食品. 0234, 0377, 0482 repeatedly emit "侵犯注册商标专用权", a civil concept, three times or more. 0174, 0049, 0079, 0329, 0110, 0302, 0255, 0412, 0478 all truncate or paraphrase. That is roughly 25 to 30 items on one axis.
+
+The second category is multi-charge under-prediction, where targets hold 2 or 3 charges joined by ";" and the model predicts 1: 0136, 0016, 0463, 0073, 0101, 0107, 0112, 0057, 0142, 0134, plus over-prediction at 0346, 0427, 0205, 0359.
+
+The third category is empty output: 0138 and 0040 both return "". I check gpt-oss harmony parsing: the answer can land in the reasoning channel and extraction returns "". A regex scan over the raw response for the charge pattern, then one terse retry, recovers these.
+
+For exploitation, I pick an alias-canonicalization memory: store examples and record prediction-to-ground-truth pairs, derive substring rewrite rules by alignment, maintain a canonical label vocabulary, and apply the rules deterministically to the model's output. This attacks the largest cluster. For exploration, I pick structural act decomposition: force per-act charging, then assemble the union system-side with ";" separators, calibrated by a learned distribution over charge-set sizes. Both share the empty-output fallback.
+The user is asking me to keep working through a charge-classification memory system: diagnose the H0 feedback, design 2 candidate mechanisms on different axes, and prototype them, while keeping every value as it appears in my notes.
+
+I count the frozen H0 feedback at 100 items, with 20 correct: 0325, 0229, 0343, 0214, 0395, 0235, 0409, 0126, 0295, 0308, 0260, 0331, 0380, 0327, 0467, 0444, 0411, 0447, 0424, 0012. That 20/100 is a separate supplementary round from the saved D0 32/100.
+
+I sort the 80 errors. Category A is canonical-name mismatch: right conduct, wrong string. Examples: 0445 gives 破坏森林资源 for 非法占用农用地; 0486 gives 伪造发票罪 for 虚开发票; 0350 gives 组织、领导赌博活动 for 赌博; 0494 gives 强制猥亵妇女罪 for 强制猥亵、侮辱妇女; 0349 truncates to 非法制造枪支 instead of 非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物; 0309 gives 非法种植罂粟 for 非法种植毒品原植物; 0386 gives 生产、销售不符合食品安全标准的食品 for 生产、销售不符合安全标准的食品. Category B is multi-charge undercount, where the target holds 2-3 charges and the prediction holds 1: 0136 (盗窃 vs 破坏交通设施;盗窃), 0057, 0073, 0101, 0016 (盗窃 vs 抢劫;盗窃;抢夺), 0346 (3 charges vs 1), 0112 (伪造货币 vs 伪造货币;故意伤害). Category C is empty output: 0138 and 0040 both returned "" on long multi-charge facts, so extraction returns "". Category D is retrieval noise: `_tokenize` on Chinese text yields only ASCII runs (years, digits), so Jaccard similarity matches digit strings, and disambiguation rests on a broken signal.
+
+The axes for the two candidates are distinct. Candidate A (exploitation) changes memory content and prompt template: it learns a canonical charge vocabulary and an alias-to-canonical rewrite map from errors, injects the vocabulary, and normalizes its own predicted string through the map before returning. Candidate B (exploration) changes the selection algorithm and learning trigger: it retrieves by charge-set affinity instead of lexical token overlap, and assembles charges by act decomposition plus system-side set union.
+
+For the prototype I write `.prototypes/...` self-contained, with a stub memory system, a fake LLM, and literal Chinese examples, then attempt the real import in try/except so the inline mechanism still validates. Cold start holds for both, and neither uses forbidden imports.

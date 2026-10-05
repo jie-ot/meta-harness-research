@@ -1,0 +1,29 @@
+dataset:
+  num_train: 200
+  num_val: 100
+  num_test: 100
+  overrides:
+    LawBench:
+      num_train: 200
+      num_val: 100
+      num_test: 100
+inner_loop:
+  mode: online
+  num_epochs: 1
+  temperature: 0.0
+  eval_interval: 0
+  batch_size: 1
+  seed: 42
+models:
+- model: openrouter/openai/gpt-oss-120b
+benchmark:
+  seeds:
+  - 42
+  concurrency: 16
+datasets:
+- LawBench
+memory_systems:
+  baselines:
+  - no_memory
+  - fewshot_all
+  proposed: []

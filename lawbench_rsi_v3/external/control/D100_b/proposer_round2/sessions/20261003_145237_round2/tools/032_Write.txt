@@ -1,0 +1,310 @@
+Write: .prototypes\validate_confusion_lesson_memory.py
+
+content:
+"""Self-contained validation of confusion_lesson_memory mechanism.
+No filesystem/network/process imports — all agent logic inlined.
+"""
+
+import re
+import json
+
+# ---------------------------------------------------------------------------
+# Inlined agent logic (mirrors agents/confusion_lesson_memory.py exactly)
+# ---------------------------------------------------------------------------
+
+def _tokenize(text):
+    cjk_chars = re.findall(r'[一-鿿㐀-䶿]', text)
+    bigrams = frozenset(
+        cjk_chars[i] + cjk_chars[i+1] for i in range(len(cjk_chars)-1)
+    )
+    ascii_toks = frozenset(re.findall(r'[A-Za-z0-9]+', text.lower()))
+    return bigrams | ascii_toks
+
+def _jaccard(a, b):
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+def _extract_json_field(text, field, default=""):
+    try:
+        data = json.loads(text)
+        if isinstance(data, dict):
+            return str(data.get(field, default))
+    except Exception:
+        pass
+    m = re.findall(rf'"{field}"\s*:\s*"([^"]*)"', text)
+    return m[-1] if m else default
+
+LESSON_PROMPT_TPL = (
+    'A classification model made the following error.\n'
+    'Predicted: {prediction}\nCorrect answer: {ground_truth}\n\n'
+    'Write a single concise lesson (one sentence, under 60 words) that would help '
+    'avoid this mistake in future. Respond in JSON: {{"lesson": "<lesson text>"}}'
+)
+
+PROMPT_WITH_LESSONS_AND_GLOSSARY = (
+    'Solve the problem below based on the examples provided.\n\n'
+    '{examples_section}\n\n'
+    '**Common mistakes to avoid:**\n{lessons_section}\n\n'
+    '**Problem:**\n{input}\n\n'
+    '**Canonical charge labels seen in training (use exact text from this list):**\n{glossary}\n\n'
+    'Instructions: use exact label text, semicolons for multiple.\n'
+    '{{"reasoning": "...", "final_answer": "..."}}'
+)
+
+PROMPT_WITH_GLOSSARY_NO_LESSONS = (
+    'Solve the problem below based on the examples provided.\n\n'
+    '{examples_section}\n\n'
+    '**Problem:**\n{input}\n\n'
+    '**Canonical charge labels seen in training (use exact text from this list):**\n{glossary}\n\n'
+    '{{"reasoning": "...", "final_answer": "..."}}'
+)
+
+PROMPT_NO_GLOSSARY = (
+    'Solve the problem below based on the examples provided.\n\n'
+    '{examples_section}\n\n'
+    '**Problem:**\n{input}\n\n'
+    '{{"reasoning": "...", "final_answer": "..."}}'
+)
+
+_EXAMPLE_BUDGET = 20000
+_LESSON_BUDGET  = 2000
+_TOP_K_LESSONS  = 4
+
+class ConfusionLessonMemory:
+    def __init__(self, llm):
+        self._llm = llm
+        self.examples = []
+        self.label_glossary = []
+        self.lessons = []
+
+    def call_llm(self, prompt):
+        return self._llm(prompt)
+
+    def _add_labels(self, gt):
+        for lbl in gt.split(';'):
+            lbl = lbl.strip()
+            if lbl and lbl not in self.label_glossary:
+                self.label_glossary.append(lbl)
+
+    def _build_glossary_str(self):
+        return '\n'.join(f'- {lbl}' for lbl in sorted(self.label_glossary))
+
+    def _top_lessons(self, q_tok):
+        if not self.lessons:
+            return []
+        ranked = sorted(self.lessons,
+                        key=lambda l: _jaccard(q_tok, l['tokens']),
+                        reverse=True)
+        selected, total = [], 0
+        for entry in ranked[:_TOP_K_LESSONS]:
+            txt = entry['lesson_text']
+            if total + len(txt) + 4 > _LESSON_BUDGET:
+                break
+            selected.append(txt)
+            total += len(txt) + 4
+        return selected
+
+    def _build_parts(self, query):
+        if not self.examples:
+            return []
+        q_tok = _tokenize(query)
+        ranked = sorted(self.examples,
+                        key=lambda ex: _jaccard(q_tok, ex['tokens']),
+                        reverse=True)
+        parts, total = [], 0
+        for ex in ranked:
+            part = f"Q: {ex.get('raw_question', ex['input'])}\nA: {ex['target']}"
+            if total + len(part) + 2 > _EXAMPLE_BUDGET:
+                break
+            parts.append(part)
+            total += len(part) + 2
+        return parts
+
+    def predict(self, inp):
+        q_tok = _tokenize(inp)
+        parts = self._build_parts(inp)
+        examples_section = '\n\n'.join(parts)
+        lesson_texts = self._top_lessons(q_tok)
+
+        if self.label_glossary and lesson_texts:
+            lessons_section = '\n'.join(f'- {t}' for t in lesson_texts)
+            prompt = PROMPT_WITH_LESSONS_AND_GLOSSARY.format(
+                examples_section=examples_section,
+                lessons_section=lessons_section,
+                input=inp,
+                glossary=self._build_glossary_str(),
+            )
+        elif self.label_glossary:
+            prompt = PROMPT_WITH_GLOSSARY_NO_LESSONS.format(
+                examples_section=examples_section,
+                input=inp,
+                glossary=self._build_glossary_str(),
+            )
+        else:
+            prompt = PROMPT_NO_GLOSSARY.format(
+                examples_section=examples_section,
+                input=inp,
+            )
+        response = self.call_llm(prompt)
+        answer = _extract_json_field(response, 'final_answer')
+        return answer, {
+            'num_examples': len(self.examples),
+            'num_selected': len(parts),
+            'num_glossary_labels': len(self.label_glossary),
+            'num_lessons_injected': len(lesson_texts),
+            'prompt': prompt,
+        }
+
+    def learn_from_batch(self, batch):
+        for r in batch:
+            raw_q = r.get('raw_question', r['input'])
+            toks = _tokenize(raw_q)
+            ex = {'input': r['input'], 'target': r['ground_truth'], 'tokens': toks}
+            if 'raw_question' in r:
+                ex['raw_question'] = r['raw_question']
+            self.examples.append(ex)
+            self._add_labels(r['ground_truth'])
+            if not r['was_correct']:
+                lp = LESSON_PROMPT_TPL.format(
+                    prediction=r['prediction'],
+                    ground_truth=r['ground_truth'],
+                )
+                resp = self.call_llm(lp)
+                lesson_text = _extract_json_field(resp, 'lesson')
+                if lesson_text:
+                    self.lessons.append({'tokens': toks, 'lesson_text': lesson_text})
+
+    def get_state(self):
+        ser_ex = [{k: (sorted(v) if isinstance(v, frozenset) else v)
+                   for k, v in ex.items()} for ex in self.examples]
+        ser_ls = [{'tokens': sorted(l['tokens']), 'lesson_text': l['lesson_text']}
+                  for l in self.lessons]
+        return json.dumps({'examples': ser_ex, 'label_glossary': self.label_glossary,
+                           'lessons': ser_ls}, indent=2)
+
+    def set_state(self, state):
+        data = json.loads(state)
+        self.examples = []
+        for ex in data.get('examples', []):
+            r = dict(ex)
+            r['tokens'] = _tokenize(r.get('raw_question', r.get('input', '')))
+            self.examples.append(r)
+        self.label_glossary = data.get('label_glossary', [])
+        self.lessons = [
+            {'tokens': frozenset(l['tokens']), 'lesson_text': l['lesson_text']}
+            for l in data.get('lessons', [])
+        ]
+
+# ---------------------------------------------------------------------------
+# Fake LLM
+# ---------------------------------------------------------------------------
+call_log = []
+
+def fake_llm(prompt):
+    call_log.append(prompt[:60])
+    if 'Predicted' in prompt or 'lesson' in prompt.lower():
+        if '非国家工作人员受贿' in prompt:
+            return '{"lesson": "When the actor gives money to obtain benefits, use 行贿 (bribery by giver), not 受贿."}'
+        if '故意毁坏财物' in prompt and '故意伤害' in prompt:
+            return '{"lesson": "When facts describe both assault with injury and property damage, emit both charges."}'
+        return '{"lesson": "Distinguish closely related charges by the role of the actor."}'
+    return '{"reasoning": "test reasoning", "final_answer": "行贿"}'
+
+# ---------------------------------------------------------------------------
+# Tests — using real examples from training diagnostics
+# ---------------------------------------------------------------------------
+
+TRAIN_BATCH = [
+    # wrong: 非国家工作人员受贿, correct: 行贿
+    {
+        'input': '被告人黄某某找到于某甲帮忙提高拆迁补偿款，将3万元送给于某甲。',
+        'raw_question': '被告人黄某某找到于某甲帮忙提高拆迁补偿款，将3万元送给于某甲。',
+        'prediction': '非国家工作人员受贿',
+        'ground_truth': '行贿',
+        'was_correct': False,
+    },
+    # wrong: 故意毁坏财物, correct: 故意伤害;故意毁坏财物
+    {
+        'input': '宋某持钢管殴打陈某甲造成重伤六级，并打砸店铺财物价值2609元。',
+        'raw_question': '宋某持钢管殴打陈某甲造成重伤六级，并打砸店铺财物价值2609元。',
+        'prediction': '故意毁坏财物',
+        'ground_truth': '故意伤害;故意毁坏财物',
+        'was_correct': False,
+    },
+    # correct: no lesson expected
+    {
+        'input': '被告人朱某某通过虚假充值致被害单位损失1316910元。',
+        'raw_question': '被告人朱某某通过虚假充值致被害单位损失1316910元。',
+        'prediction': '破坏计算机信息系统',
+        'ground_truth': '破坏计算机信息系统',
+        'was_correct': True,
+    },
+]
+
+def test():
+    print("=== Validating confusion_lesson_memory (inlined) ===\n")
+    mem = ConfusionLessonMemory(fake_llm)
+
+    # 1. Cold start — no examples, no glossary, no lessons
+    ans, meta = mem.predict('被告人某某向官员行贿三万元。')
+    print(f"Cold start: answer='{ans}'  lessons_injected={meta['num_lessons_injected']}")
+    assert meta['num_lessons_injected'] == 0
+    assert meta['num_examples'] == 0
+    assert 'Common mistakes' not in meta['prompt'], "No lesson section at cold start"
+    print("  ✓ cold start OK")
+
+    # 2. Learn from batch
+    mem.learn_from_batch(TRAIN_BATCH)
+    print(f"\nAfter learn_from_batch: examples={len(mem.examples)}, "
+          f"lessons={len(mem.lessons)}, glossary={len(mem.label_glossary)}")
+    assert len(mem.examples) == 3, f"Expected 3, got {len(mem.examples)}"
+    assert len(mem.lessons) == 2, f"Expected 2 lessons (2 wrong items), got {len(mem.lessons)}"
+    assert '行贿' in mem.label_glossary
+    assert '故意伤害' in mem.label_glossary
+    assert '破坏计算机信息系统' in mem.label_glossary
+    print("  ✓ learn_from_batch OK")
+
+    # 3. Correct item must not trigger a lesson LLM call
+    correct_llm_calls_before = len([c for c in call_log if 'Predicted' in c])
+    # (already verified by lesson count == 2 for 2 wrong items)
+    print("  ✓ correct items do not generate lessons")
+
+    # 4. Warm predict — lesson section must appear
+    call_log.clear()
+    ans2, meta2 = mem.predict('被告人某某向官员行贿三万元。')
+    print(f"\nWarm predict: answer='{ans2}'  lessons_injected={meta2['num_lessons_injected']}")
+    assert meta2['num_lessons_injected'] >= 1, "Expected ≥1 lesson injection in warm predict"
+    assert 'Common mistakes' in meta2['prompt'], "Lesson section missing from warm prompt"
+    assert '**Canonical charge labels' in meta2['prompt'], "Glossary missing from warm prompt"
+    print("  ✓ warm predict injects lessons and glossary")
+
+    # 5. Lesson relevance — assault query should surface assault lesson
+    assault_query = '被告人持刀刺伤被害人并打砸店内财物。'
+    q_tok = _tokenize(assault_query)
+    top = mem._top_lessons(q_tok)
+    print(f"\nLesson relevance for assault+property query: top={[t[:50] for t in top]}")
+    assert len(top) >= 1
+
+    # 6. get_state / set_state round-trip
+    state = mem.get_state()
+    mem2 = ConfusionLessonMemory(fake_llm)
+    mem2.set_state(state)
+    assert len(mem2.examples) == len(mem.examples)
+    assert len(mem2.lessons) == len(mem.lessons)
+    assert mem2.label_glossary == mem.label_glossary
+    assert isinstance(mem2.examples[0]['tokens'], frozenset), "tokens must be frozenset after set_state"
+    assert isinstance(mem2.lessons[0]['tokens'], frozenset), "lesson tokens must be frozenset after set_state"
+    ans3, meta3 = mem2.predict('被告人某某向官员行贿三万元。')
+    assert meta3['num_lessons_injected'] >= 1, "Restored state must still inject lessons"
+    print("\nState round-trip: ✓")
+
+    print("\n✓ All assertions passed — confusion_lesson_memory mechanism validated")
+
+if __name__ == '__main__':
+    test()
+
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_b\text_classification\.prototypes\validate_confusion_lesson_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

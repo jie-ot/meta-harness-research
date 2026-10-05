@@ -1,0 +1,72 @@
+{
+  "call_id": "63abeab866fa458bb76c67253ab0b8b5",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791018780-DH8HUuVPE61Zgle37Xlz",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the facts describe a public official who leverages personal influence to obtain money, label the crime as \\\"利用影响力受贿\\\"; when a corporate or other organization offers money or other benefits to obtain a project or favor, label it as \\\"单位行贿\\\" and avoid the generic tags \\\"受贿\\\", \\\"行贿\\\" or \\\"对单位行贿\\\".\",\n  \"keywords\": [\n    \"利用影响力受贿\",\n    \"单位行贿\",\n    \"受贿\",\n    \"行贿\",\n    \"对单位行贿\",\n    \"利用影响力\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a correction rule to avoid the classification error. The AI incorrectly predicted \"受贿;行贞;对单位行贿\". The correct answer is \"单位行贿;利用影响力受贿\". So the error is mixing up categories: they used \"受贿\" (receiving bribe) and \"行贿\" (giving bribe) and \"对单位行贿\" (bribery to a unit). The correct classification distinguishes \"利用影响力受贿\" (using influence to receive bribe) and \"单位行贿\" (unit bribery). So the rule: When the fact pattern involves a public official using influence to obtain bribes for personal gain, classify as \"利用影响力受贿\". When the act is a corporation or unit offering bribes to obtain a project, classify as \"单位行贿\". Avoid generic \"受贿\" or \"行贿\". So rule: Identify the subject (individual vs unit) and the nature (using influence vs offering bribe). Keywords: \"利用影响力\", \"受贿\", \"单位行贿\", \"行贿\", \"对单位行贿\", \"受贿;行贿\". Provide JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a correction rule to avoid the classification error. The AI incorrectly predicted \"受贿;行贞;对单位行贿\". The correct answer is \"单位行贿;利用影响力受贿\". So the error is mixing up categories: they used \"受贿\" (receiving bribe) and \"行贿\" (giving bribe) and \"对单位行贿\" (bribery to a unit). The correct classification distinguishes \"利用影响力受贿\" (using influence to receive bribe) and \"单位行贿\" (unit bribery). So the rule: When the fact pattern involves a public official using influence to obtain bribes for personal gain, classify as \"利用影响力受贿\". When the act is a corporation or unit offering bribes to obtain a project, classify as \"单位行贿\". Avoid generic \"受贿\" or \"行贿\". So rule: Identify the subject (individual vs unit) and the nature (using influence vs offering bribe). Keywords: \"利用影响力\", \"受贿\", \"单位行贿\", \"行贿\", \"对单位行贿\", \"受贿;行贿\". Provide JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a correction rule to avoid the classification error. The AI incorrectly predicted \"受贿;行贞;对单位行贿\". The correct answer is \"单位行贿;利用影响力受贿\". So the error is mixing up categories: they used \"受贿\" (receiving bribe) and \"行贿\" (giving bribe) and \"对单位行贿\" (bribery to a unit). The correct classification distinguishes \"利用影响力受贿\" (using influence to receive bribe) and \"单位行贿\" (unit bribery). So the rule: When the fact pattern involves a public official using influence to obtain bribes for personal gain, classify as \"利用影响力受贿\". When the act is a corporation or unit offering bribes to obtain a project, classify as \"单位行贿\". Avoid generic \"受贿\" or \"行贿\". So rule: Identify the subject (individual vs unit) and the nature (using influence vs offering bribe). Keywords: \"利用影响力\", \"受贿\", \"单位行贿\", \"行贿\", \"对单位行贿\", \"受贿;行贿\". Provide JSON.",
+            "reasoning_content": "We need to produce a correction rule to avoid the classification error. The AI incorrectly predicted \"受贿;行贞;对单位行贿\". The correct answer is \"单位行贿;利用影响力受贿\". So the error is mixing up categories: they used \"受贿\" (receiving bribe) and \"行贿\" (giving bribe) and \"对单位行贿\" (bribery to a unit). The correct classification distinguishes \"利用影响力受贿\" (using influence to receive bribe) and \"单位行贿\" (unit bribery). So the rule: When the fact pattern involves a public official using influence to obtain bribes for personal gain, classify as \"利用影响力受贿\". When the act is a corporation or unit offering bribes to obtain a project, classify as \"单位行贿\". Avoid generic \"受贿\" or \"行贿\". So rule: Identify the subject (individual vs unit) and the nature (using influence vs offering bribe). Keywords: \"利用影响力\", \"受贿\", \"单位行贿\", \"行贿\", \"对单位行贿\", \"受贿;行贿\". Provide JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 408,
+      "prompt_tokens": 683,
+      "total_tokens": 1091,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 265,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 9.4631e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 9.4631e-05,
+        "upstream_inference_prompt_cost": 2.5271e-05,
+        "upstream_inference_completions_cost": 6.936e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

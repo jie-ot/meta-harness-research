@@ -1,0 +1,27 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- If the facts only describe forging, altering, or selling state‑issued documents or certificates and do not contain any separate act of deceiving another party for financial gain, assign only the forge
+- If the factual description mentions that the defendant recruited or organized others to provide blood for payment or profit (e.g., ‘有偿献血’, ‘招募’, ‘组织’), the correct charge is ‘非法组织卖血’ rather than the g
+- When a public official’s conduct involves (1) the illegal receipt of money or valuables in exchange for using official power, and (2) the abuse of that power to approve actions that cause state loss, 
+- When the factual description involves possession of controlled substances (e.g., heroin, cocaine) and cites violation of drug control laws, always label the offense as “非法持有毒品” rather than the generic
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控，被告人聂某自2012年4月15日开始在宝安区福永街道塘尾社区24区5巷12号自己经营的美宜佳便利店门口贩卖盗版光碟谋取非法利益。至2012年5月21日11时30分许，公安机关根据群众的举报将正在贩卖光碟的被告人聂某抓获，当场扣押光碟1900张(经宝安区音像制品鉴定委员会鉴定，均为盗版光碟)。经查，被告人聂某先后5次从广东省东莞市虎门镇一个综合批发市场以1.65元的价格购买盗版光碟一批(共3500至4000张)，然后在摆摊位以4至5元人民币的价格进行销售。公诉机关当庭出示了被告人供述、证人证言、书证物证、现场勘查笔录及照片、鉴定结论等，以证明其指控的事实。公诉机关认为，被告人聂某无视国家法律，以营利为目的，未经著作权人许可，发行其作品，其行为触犯了《中华人民共和国刑法》××，犯罪事实清楚，证据确实充分，应当以××追究其刑事责任。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

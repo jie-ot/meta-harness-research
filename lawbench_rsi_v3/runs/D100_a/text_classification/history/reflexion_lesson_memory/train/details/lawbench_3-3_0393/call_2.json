@@ -1,0 +1,72 @@
+{
+  "call_id": "7d63cce9a9e7485c90d36894038dbf23",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791018705-BMFS3ddIBMXYUxD2HByX",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"When the facts describe manufacturing or distributing drugs that are counterfeit, adulterated, or otherwise not meeting legal standards (i.e., ‘假药’), the appropriate charge is “生产、销售假药” rather than the generic “非法生产药品”.\",\n  \"keywords\": [\n    \"假药\",\n    \"生产假药\",\n    \"销售假药\",\n    \"未取得批准的药品\",\n    \"无生产许可证\",\n    \"牟利\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with a rule to prevent classification error: The AI incorrectly labeled the crime as \"非法生产药品\" (illegal production of drugs) whereas correct answer is \"生产、销售假药\" (production and sale of counterfeit drugs). The error likely stems from not distinguishing between illegal production of unapproved drugs vs. production/sale of counterfeit (fake) drugs. The rule should ensure that when facts involve unlicensed production and sale of counterfeit drugs, the correct charge is \"生产、销售假药\" rather than generic \"非法生产药品\". So rule: If the conduct involves manufacturing or selling drugs that are counterfeit, adulterated, or not meeting standards, and the case mentions \"假药\" or \"未取得批准的药品\" used for profit, then charge is \"生产、销售假药\". Keywords: \"假药\", \"未取得批准\", \"生产假药\", \"销售假药\", \"制药设备\", \"药原材料\", \"无生产许可证\", \"牟利\". Provide 3-6.\n\nLet's craft JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with a rule to prevent classification error: The AI incorrectly labeled the crime as \"非法生产药品\" (illegal production of drugs) whereas correct answer is \"生产、销售假药\" (production and sale of counterfeit drugs). The error likely stems from not distinguishing between illegal production of unapproved drugs vs. production/sale of counterfeit (fake) drugs. The rule should ensure that when facts involve unlicensed production and sale of counterfeit drugs, the correct charge is \"生产、销售假药\" rather than generic \"非法生产药品\". So rule: If the conduct involves manufacturing or selling drugs that are counterfeit, adulterated, or not meeting standards, and the case mentions \"假药\" or \"未取得批准的药品\" used for profit, then charge is \"生产、销售假药\". Keywords: \"假药\", \"未取得批准\", \"生产假药\", \"销售假药\", \"制药设备\", \"药原材料\", \"无生产许可证\", \"牟利\". Provide 3-6.\n\nLet's craft JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with a rule to prevent classification error: The AI incorrectly labeled the crime as \"非法生产药品\" (illegal production of drugs) whereas correct answer is \"生产、销售假药\" (production and sale of counterfeit drugs). The error likely stems from not distinguishing between illegal production of unapproved drugs vs. production/sale of counterfeit (fake) drugs. The rule should ensure that when facts involve unlicensed production and sale of counterfeit drugs, the correct charge is \"生产、销售假药\" rather than generic \"非法生产药品\". So rule: If the conduct involves manufacturing or selling drugs that are counterfeit, adulterated, or not meeting standards, and the case mentions \"假药\" or \"未取得批准的药品\" used for profit, then charge is \"生产、销售假药\". Keywords: \"假药\", \"未取得批准\", \"生产假药\", \"销售假药\", \"制药设备\", \"药原材料\", \"无生产许可证\", \"牟利\". Provide 3-6.\n\nLet's craft JSON.",
+            "reasoning_content": "We need to produce a JSON with a rule to prevent classification error: The AI incorrectly labeled the crime as \"非法生产药品\" (illegal production of drugs) whereas correct answer is \"生产、销售假药\" (production and sale of counterfeit drugs). The error likely stems from not distinguishing between illegal production of unapproved drugs vs. production/sale of counterfeit (fake) drugs. The rule should ensure that when facts involve unlicensed production and sale of counterfeit drugs, the correct charge is \"生产、销售假药\" rather than generic \"非法生产药品\". So rule: If the conduct involves manufacturing or selling drugs that are counterfeit, adulterated, or not meeting standards, and the case mentions \"假药\" or \"未取得批准的药品\" used for profit, then charge is \"生产、销售假药\". Keywords: \"假药\", \"未取得批准\", \"生产假药\", \"销售假药\", \"制药设备\", \"药原材料\", \"无生产许可证\", \"牟利\". Provide 3-6.\n\nLet's craft JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 334,
+      "prompt_tokens": 440,
+      "total_tokens": 774,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 268,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0001055,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0001055,
+        "upstream_inference_prompt_cost": 2.2e-05,
+        "upstream_inference_completions_cost": 8.35e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

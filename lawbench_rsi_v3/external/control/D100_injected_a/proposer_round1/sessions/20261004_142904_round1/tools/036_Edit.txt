@@ -1,0 +1,59 @@
+Edit: .prototypes\act_decomposition_union_memory.py
+
+replace_all: False
+old_string:
+    def _expected_size(self, n_acts):
+        row = self.size_by_acts.get(n_acts)
+        if row and sum(row.values()) >= self.MIN_BUCKET_OBS:
+            return max(row.items(), key=lambda kv: (kv[1], -kv[0]))[0]
+        if self.size_obs >= 10 and self.global_sizes:
+            return max(self.global_sizes.items(), key=lambda kv: (kv[1], -kv[0]))[0]
+        return None
+
+    def _calibrate(self, charges, n_acts, grounded):
+        if not charges:
+            return []
+        kept = [c for c in charges if not (self.spurious.get(c, 0) >= 2 and c not in self.confirmed)]
+        if not kept:
+            kept = list(charges)
+        expected = self._expected_size(n_acts)
+        floor = 1 if expected is None else max(1, min(grounded, expected))
+        while len(kept) > floor and len(kept) > 1:
+            idx = max(
+                range(len(kept)),
+                key=lambda i: (self.spurious.get(kept[i], 0), 1 if kept[i] not in self.confirmed else 0),
+            )
+            kept.pop(idx)
+        return kept
+
+new_string:
+    def _expected_size(self, n_acts):
+        # Only the matching bucket is consulted, and only once it has enough
+        # observations. No global fallback: pooling single-act and multi-act facts
+        # would trim multi-act answers down to the single-charge majority.
+        row = self.size_by_acts.get(n_acts)
+        if row and sum(row.values()) >= self.MIN_BUCKET_OBS:
+            return max(row.items(), key=lambda kv: (kv[1], -kv[0]))[0]
+        return None
+
+    def _calibrate(self, charges, n_acts, grounded):
+        if not charges:
+            return []
+        kept = [c for c in charges if not (self.spurious.get(c, 0) >= 2 and c not in self.confirmed)]
+        if not kept:
+            kept = list(charges)
+        expected = self._expected_size(n_acts)
+        if expected is None:
+            return kept
+        floor = max(1, min(grounded, expected))
+        while len(kept) > floor and len(kept) > 1:
+            idx = max(
+                range(len(kept)),
+                key=lambda i: (self.spurious.get(kept[i], 0), 1 if kept[i] not in self.confirmed else 0),
+            )
+            kept.pop(idx)
+        return kept
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_a\text_classification\.prototypes\act_decomposition_union_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

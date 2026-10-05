@@ -1,0 +1,43 @@
+Bash
+
+command: python .prototypes/charge_cooccurrence_count_memory.py
+description: Re-run prototype B after expectation correction
+
+--- output ---
+=== Graph construction ===
+nodes: 19 | edges: 14
+  受贿 (count=3): {'滥用职权': 2, '贪污': 1}
+  盗窃 (count=6): {'掩饰、隐瞒犯罪所得、犯罪所得收益': 1, '诈骗': 2}
+  故意伤害 (count=3): {'聚众斗殴': 1, '非法持有、私藏枪支、弹药': 1, '故意毁坏财物': 1, '寻衅滋事': 1}
+  破坏电力设备 (count=2): {}
+  非法种植毒品原植物 (count=1): {}
+
+=== S1 variant comparison (seeds + companions vs expected) ===
+min_support=1 ratio=0.3: 3/7 scenarios differ
+min_support=2 ratio=0.4: 0/7 scenarios differ
+min_support=2 ratio=0.5: 0/7 scenarios differ
+min_support=3 ratio=0.5: 1/7 scenarios differ
+
+=== Chosen variant: min_support=2, ratio=0.4 ===
+PASS  ['受贿', '滥用职权']               -> ['受贿', '滥用职权']   (both seeds present, closed-ish)
+PASS  ['故意伤害']                     -> ['故意伤害']   (weak companions (support=1) -> must NOT inflate)
+PASS  ['盗窃']                       -> ['盗窃']   (closed neighbourhood -> must NOT inflate)
+PASS  ['破坏电力设备']                   -> ['破坏电力设备']   (singleton, no attested companion -> must NOT inflate)
+PASS  ['非法种植毒品原植物']                -> ['非法种植毒品原植物']   (no neighbourhood -> must NOT inflate)
+PASS  ['贪污', '挪用公款']               -> ['贪污', '挪用公款']   (mutual pair, stable)
+PASS  ['开设赌场']                     -> ['开设赌场', '赌博']   (singleton, dominant companion)
+
+=== S2 mask-group cardinality (v1 overcount fixed) ===
+PASS  expected 1 got 1  :: 指控被告单位通辽市某商业广场有限公司、被告人沙某某的行为触犯了《中华人民...
+PASS  expected 1 got 1  :: 被告人郭某的行为触犯了《中华人民共和国刑法》××之规定，构成××。郭某是...
+PASS  expected 1 got 1  :: 公诉机关认为，被告人李某的行为已构成××，并提出判处××至一年六个月的量...
+PASS  expected 2 got 2  :: 事实:被告人以××手段实施××、××行为，触犯了《中华人民共和国刑法》×...
+PASS  expected 2 got 2  :: 对被告人应以××;××追究刑事责任。...
+PASS  expected 0 got 0  :: 被告人盗窃路灯电缆线，共盗得电缆线约210米。...
+
+=== End-to-end: retrieve -> seeds -> plan -> expand -> canonicalise ===
+  slots=2 seeds=['受贿', '滥用职权'] companions=[] -> ['受贿', '滥用职权']
+  slots=0 seeds=['故意伤害', '故意毁坏财物'] companions=[] -> ['故意伤害', '故意毁坏财物']
+  slots=0 seeds=['盗窃'] companions=[] -> ['盗窃']
+
+PROTOTYPE B OK: graph expansion is safe, mask-group cardinality is exact

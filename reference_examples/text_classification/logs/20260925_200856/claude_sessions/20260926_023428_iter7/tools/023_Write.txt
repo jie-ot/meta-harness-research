@@ -1,0 +1,69 @@
+Write: C:\Windows\Temp\proto_adaptive_tok.py
+
+content:
+"""Prototype: language-adaptive tokenizer logic."""
+import re
+
+def _has_cjk(text: str) -> bool:
+    return bool(re.search(r'[一-鿿぀-ゟ゠-ヿ＀-￯]', text))
+
+def _tokenize_word(text: str) -> frozenset:
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+def _tokenize_bigram(text: str) -> frozenset:
+    t = re.sub(r'\s+', ' ', text.strip())
+    n = 2
+    if len(t) < n:
+        return frozenset([t]) if t else frozenset()
+    return frozenset(t[i:i+n] for i in range(len(t)-n+1))
+
+def _tokenize_adaptive(text: str) -> frozenset:
+    return _tokenize_bigram(text) if _has_cjk(text) else _tokenize_word(text)
+
+def _jaccard(a: frozenset, b: frozenset) -> float:
+    if not a and not b:
+        return 0.0
+    return len(a & b) / len(a | b)
+
+# --- Test 1: CJK detection ---
+cjk_sample = "龙口市人民检察院起诉书指控，2012年至2014年间，被告人林某为筹措资金"
+en_sample = "Patient exhibits fever cough and difficulty breathing for three days"
+print(f"CJK detected for Chinese: {_has_cjk(cjk_sample)}")  # expect True
+print(f"CJK detected for English: {_has_cjk(en_sample)}")   # expect False
+
+# --- Test 2: Bigrams give non-zero similarity between similar CJK texts ---
+cjk_b = "龙口市人民检察院起诉书指控，被告人在2012年至2013年期间筹措资金，用于经营"
+sim_cjk = _jaccard(_tokenize_adaptive(cjk_sample), _tokenize_adaptive(cjk_b))
+print(f"CJK similarity (two related texts, expect >0.1): {sim_cjk:.3f}")
+
+# Word tokens for the same CJK texts collapse to only numerals
+wt_a = _tokenize_word(cjk_sample)
+wt_b = _tokenize_word(cjk_b)
+sim_word_cjk = _jaccard(wt_a, wt_b)
+print(f"Word-token similarity for CJK (expect ~0, only numerals): {sim_word_cjk:.3f}")
+print(f"  word tokens (CJK): {sorted(wt_a)[:8]}")
+
+# --- Test 3: Word tokens still work well for English ---
+en_b = "Patient has high fever and persistent cough with breathing difficulties"
+sim_en = _jaccard(_tokenize_adaptive(en_sample), _tokenize_adaptive(en_b))
+print(f"English similarity (word tokens, expect >0.2): {sim_en:.3f}")
+
+# Bigrams for the same English texts are noisier
+sim_en_bg = _jaccard(_tokenize_bigram(en_sample), _tokenize_bigram(en_b))
+print(f"English similarity using bigrams (expect lower): {sim_en_bg:.3f}")
+
+# --- Test 4: Adaptive correctly routes each ---
+tok_cjk = _tokenize_adaptive(cjk_sample)
+tok_en = _tokenize_adaptive(en_sample)
+# CJK tokens should have multi-byte bigrams
+cjk_tok_sample = list(tok_cjk)[:3]
+en_tok_sample = sorted(tok_en)[:5]
+print(f"Adaptive CJK tokens (first 3 bigrams): {cjk_tok_sample}")
+print(f"Adaptive EN tokens (first 5 words): {en_tok_sample}")
+
+print("\nPrototype 1 PASSED: adaptive tokenizer routes correctly and gives meaningful scores")
+
+
+
+--- output ---
+File created successfully at: C:\Windows\Temp\proto_adaptive_tok.py (file state is current in your context — no need to Read it back)

@@ -1,0 +1,29 @@
+Write: logs\20260925_200856\pending_eval.json
+
+content:
+{
+  "iteration": 2,
+  "candidates": [
+    {
+      "name": "label_balanced_memory",
+      "file": "agents/label_balanced_memory.py",
+      "hypothesis": "Round-robin selection across per-label buckets will match or exceed fewshot_all accuracy because it guarantees full label coverage at any char budget, whereas recency-based selection systematically under-represents labels that appear early or infrequently in training.",
+      "axis": "exploitation",
+      "base_system": "fewshot_all",
+      "components": ["label_balanced_selection", "round_robin", "coverage_maximization"]
+    },
+    {
+      "name": "similarity_retrieval_memory",
+      "file": "agents/similarity_retrieval_memory.py",
+      "hypothesis": "Ranking stored examples by Jaccard token similarity to the current query at predict time will outperform recency-based selection on tasks with structured or domain-specific vocabulary (e.g. chemistry, legal), because more topically similar demonstrations improve answer quality more than recency does.",
+      "axis": "exploration",
+      "base_system": "fewshot_all",
+      "components": ["jaccard_similarity", "query_time_retrieval", "token_overlap_ranking"]
+    }
+  ]
+}
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\pending_eval.json (file state is current in your context — no need to Read it back)

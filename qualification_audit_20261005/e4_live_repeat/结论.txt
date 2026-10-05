@@ -1,0 +1,10 @@
+E4最终状态：因第三个正式turn失败而停止，未重试；实验不完整
+
+严格顺序实际覆盖：第一遍manifest索引0、1完成，索引2发出但失败；索引3–19未发；第二遍20题均未发。不是按结果挑选的子集。
+请求总数3；完成并可评分2；失败缺失1；未发送37。完成的两题均正确，因此第一遍已完成prefix准确率2/2=100%，但覆盖仅2/20=10%，不能当作完整第一遍准确率。第二遍accuracy缺失。
+CC/CW/WC/WW与label flip均缺失，因为没有任何题完成两遍。
+已知token覆盖2/3个turn：input=61057，output=547，reasoning=393，total=61604，cachedInput=3200。三个turn可见耗时合计=51.531秒。
+失败题lawbench_3-3_0027：收到error通知，随后turn/completed status=failed；无最终文本、无token usage，故标missing，不计作错误。logger未保存error payload，根因细节不可恢复。
+7天额度从首条前11%剩余到失败题后仍显示11%；未触发2%阈值，停止原因是turn失败。整数显示不代表零成本。
+三次均gpt-5.6-sol/max、不同ephemeral thread、同wrapper哈希、同锁定prompt，工具item为0；无重试、替换模型、训练、candidate生成或client结果缓存。第二个完成turn报告3200 cached input token，属于provider输入缓存记录。
+原代码、memory、manifest、score及20个prompt哈希均未变。不给方差、显著性、最优停止轮数或完整重复性结论。

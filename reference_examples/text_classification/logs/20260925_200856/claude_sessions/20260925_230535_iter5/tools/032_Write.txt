@@ -1,0 +1,29 @@
+Write: logs\20260925_200856\pending_eval.json
+
+content:
+{
+  "iteration": 5,
+  "candidates": [
+    {
+      "name": "confusion_mmr_memory",
+      "file": "agents/confusion_mmr_memory.py",
+      "hypothesis": "Replacing the similarity-rank fill phase in confusion_disambiguation_memory with MMR fill will recover LawBench accuracy (34%+) while preserving the Symptom2Disease gain (90%), because the MMR redundancy penalty restores the diversity signal that pure similarity-rank fill loses after the disambiguation phase inserts topically similar boundary examples.",
+      "axis": "exploitation",
+      "base_system": "confusion_disambiguation_memory + mmr_memory",
+      "components": ["confusion_matrix", "disambiguation_phase", "mmr_fill", "redundancy_penalty", "learning_trigger_axis"]
+    },
+    {
+      "name": "difficulty_weighted_mmr_memory",
+      "file": "agents/difficulty_weighted_mmr_memory.py",
+      "hypothesis": "Applying a continuous per-label difficulty boost (error_rate * beta) directly inside the MMR relevance term will outperform plain mmr_memory and confusion_disambiguation_memory because it surfaces hard-to-predict labels through a graded unified scoring pass rather than binary slot reservation, producing better coverage of high-error labels across all datasets.",
+      "axis": "exploration",
+      "base_system": "mmr_memory",
+      "components": ["per_label_error_rate", "difficulty_boost", "mmr_fill", "unified_scoring", "learning_trigger_axis"]
+    }
+  ]
+}
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\pending_eval.json (file state is current in your context — no need to Read it back)

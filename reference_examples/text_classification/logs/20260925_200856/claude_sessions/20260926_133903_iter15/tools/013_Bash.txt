@@ -1,0 +1,29 @@
+Bash
+
+command:
+python -c "
+import json
+log = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/LawBench/decayed_confusion_memory/gpt-oss-120b/log.jsonl'
+lines = open(log, encoding='utf-8').readlines()
+# Show structure of first entry
+d = json.loads(lines[0])
+print('Keys:', list(d.keys()))
+print(json.dumps(d, ensure_ascii=False, indent=2)[:1000])
+"
+
+
+description: Inspect raw structure of LawBench log entry
+
+--- output ---
+Keys: ['type', 't', 'dataset', 'memory', 'model', 'seed', 'mode', 'num_epochs', 'start_time']
+{
+  "type": "meta",
+  "t": 0.0,
+  "dataset": "LawBench",
+  "memory": "decayed_confusion_memory",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "seed": 42,
+  "mode": "online",
+  "num_epochs": null,
+  "start_time": "2026-09-26T19:09:27.378666"
+}

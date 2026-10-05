@@ -1,0 +1,72 @@
+{
+  "call_id": "5f152f62dae346ddb20c4d33686b216a",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791028000-2mhEaDxx0hKScopups9w",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"lesson\": \"- 当事实中出现“入户”但未提及盗窃行为时，判定为《非法侵入住宅》而非《入户盗窃》；只有在同时出现“盗窃”“抢劫”等财产侵占词汇时才使用《入户盗窃》。\\n- 若事实仅描述“开设赌场”或“组织赌博”，而未出现“开设赌场罪”字样，则应采用更通用的《赌博》罪名；只有出现《开设赌场罪》法条或明确的组织、管理赌场行为时才使用该罪名。\\n- 当事实提到具体的医疗行为（如“节育手术”“胎儿性别鉴定”等），应以《非法进行节育手术》《非法进行胎儿性别鉴定》等专门罪名取代宽泛的《非法行医》；只有在仅描述未取得执业资格的诊疗活动时才使用《非法行医》。\\n- 对于印章类犯罪，若事实列出“伪造、变造、买卖公司印章”，应统一归为《伪造公司、企业、事业单位、人民团体印章》这一法定罪名，避免拆分为多个独立罪名或加入未出现的罪名。\\n- 当案件摘要或起诉书明确标注了主罪名（如“公诉机关指控：贪污”），即使事实中出现其他可能的犯罪行为，也应优先采用起诉书列明的罪名；仅在起诉书未列明时才根据事实推断其他罪名。\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model misidentifies specific crime names, often picks overly specific or wrong category. Issues: misinterpretation of phrasing, overgeneralization, ignoring context like \"公诉机关指控\" vs \"经审理查明\". Also confusion between similar crimes (e.g., illegal intrusion vs entry theft). Also mixing multiple crimes incorrectly, adding extra crimes not in fact. Also using generic terms vs specific statutory terms.\n\nWe need to base rules on observable signals in facts: presence of \"指控\", \"查明\", \"检察院\", \"人民检察院\", \"法院\", etc. Also presence of specific terms like \"入户\", \"开设赌场\", \"非法行医\", \"胎儿性别鉴定\". The model sometimes picks the phrase directly as crime, but correct answer may be a statutory term.\n\nThus rules:\n\n1. When fact contains phrase \"入户盗窃\" but the statutory crime is \"非法侵入住宅\" (if the act is intrusion without theft), need to map to correct statutory term based on presence/absence of theft element.\n\n2. If fact mentions \"开设赌场\" but no mention of gambling operation specifics, the correct crime is \"赌博\" (or \"开设赌场罪\"? Actually correct answer is \"赌博\". So rule: differentiate between the act of operating a casino vs the crime of gambling; use the broader crime if only gambling activity is described.\n\n3. When the fact includes \"非法行医\" but also mentions \"节育手术\", the correct crime is \"非法进行节育手术\" rather than generic illegal medical practice. So rule: pay attention to specific medical procedure mentioned.\n\n4. When multiple crime terms appear in fact (e.g., \"伪造、变造、买卖公司印章\"), the correct charge is the specific statutory phrase \"伪造公司、企业、事业单位、人民团体印章\" not a list of separate crimes; avoid adding extra crimes not explicitly in fact.\n\n5. When fact includes \"非法获取社会保险金\" and \"职务侵占\", but the prosecution is for \"贪污\", the rule: prioritize the charge that the prosecution explicitly states (e.g., \"贪污\") over inferred crimes; rely on the heading or summary of the case.\n\nAlso rule about using the \"公诉机关指控\" line as the authoritative charge.\n\nWe need up to 5 rules, concise, based on observable signals.\n\nLet's craft JSON with \"lesson\": \"- 规律1\\n- 规律2\\n- ...\"",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model misidentifies specific crime names, often picks overly specific or wrong category. Issues: misinterpretation of phrasing, overgeneralization, ignoring context like \"公诉机关指控\" vs \"经审理查明\". Also confusion between similar crimes (e.g., illegal intrusion vs entry theft). Also mixing multiple crimes incorrectly, adding extra crimes not in fact. Also using generic terms vs specific statutory terms.\n\nWe need to base rules on observable signals in facts: presence of \"指控\", \"查明\", \"检察院\", \"人民检察院\", \"法院\", etc. Also presence of specific terms like \"入户\", \"开设赌场\", \"非法行医\", \"胎儿性别鉴定\". The model sometimes picks the phrase directly as crime, but correct answer may be a statutory term.\n\nThus rules:\n\n1. When fact contains phrase \"入户盗窃\" but the statutory crime is \"非法侵入住宅\" (if the act is intrusion without theft), need to map to correct statutory term based on presence/absence of theft element.\n\n2. If fact mentions \"开设赌场\" but no mention of gambling operation specifics, the correct crime is \"赌博\" (or \"开设赌场罪\"? Actually correct answer is \"赌博\". So rule: differentiate between the act of operating a casino vs the crime of gambling; use the broader crime if only gambling activity is described.\n\n3. When the fact includes \"非法行医\" but also mentions \"节育手术\", the correct crime is \"非法进行节育手术\" rather than generic illegal medical practice. So rule: pay attention to specific medical procedure mentioned.\n\n4. When multiple crime terms appear in fact (e.g., \"伪造、变造、买卖公司印章\"), the correct charge is the specific statutory phrase \"伪造公司、企业、事业单位、人民团体印章\" not a list of separate crimes; avoid adding extra crimes not explicitly in fact.\n\n5. When fact includes \"非法获取社会保险金\" and \"职务侵占\", but the prosecution is for \"贪污\", the rule: prioritize the charge that the prosecution explicitly states (e.g., \"贪污\") over inferred crimes; rely on the heading or summary of the case.\n\nAlso rule about using the \"公诉机关指控\" line as the authoritative charge.\n\nWe need up to 5 rules, concise, based on observable signals.\n\nLet's craft JSON with \"lesson\": \"- 规律1\\n- 规律2\\n- ...\"",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model misidentifies specific crime names, often picks overly specific or wrong category. Issues: misinterpretation of phrasing, overgeneralization, ignoring context like \"公诉机关指控\" vs \"经审理查明\". Also confusion between similar crimes (e.g., illegal intrusion vs entry theft). Also mixing multiple crimes incorrectly, adding extra crimes not in fact. Also using generic terms vs specific statutory terms.\n\nWe need to base rules on observable signals in facts: presence of \"指控\", \"查明\", \"检察院\", \"人民检察院\", \"法院\", etc. Also presence of specific terms like \"入户\", \"开设赌场\", \"非法行医\", \"胎儿性别鉴定\". The model sometimes picks the phrase directly as crime, but correct answer may be a statutory term.\n\nThus rules:\n\n1. When fact contains phrase \"入户盗窃\" but the statutory crime is \"非法侵入住宅\" (if the act is intrusion without theft), need to map to correct statutory term based on presence/absence of theft element.\n\n2. If fact mentions \"开设赌场\" but no mention of gambling operation specifics, the correct crime is \"赌博\" (or \"开设赌场罪\"? Actually correct answer is \"赌博\". So rule: differentiate between the act of operating a casino vs the crime of gambling; use the broader crime if only gambling activity is described.\n\n3. When the fact includes \"非法行医\" but also mentions \"节育手术\", the correct crime is \"非法进行节育手术\" rather than generic illegal medical practice. So rule: pay attention to specific medical procedure mentioned.\n\n4. When multiple crime terms appear in fact (e.g., \"伪造、变造、买卖公司印章\"), the correct charge is the specific statutory phrase \"伪造公司、企业、事业单位、人民团体印章\" not a list of separate crimes; avoid adding extra crimes not explicitly in fact.\n\n5. When fact includes \"非法获取社会保险金\" and \"职务侵占\", but the prosecution is for \"贪污\", the rule: prioritize the charge that the prosecution explicitly states (e.g., \"贪污\") over inferred crimes; rely on the heading or summary of the case.\n\nAlso rule about using the \"公诉机关指控\" line as the authoritative charge.\n\nWe need up to 5 rules, concise, based on observable signals.\n\nLet's craft JSON with \"lesson\": \"- 规律1\\n- 规律2\\n- ...\"",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to produce up to 5 concise rules to avoid similar errors. Based on observed errors: model misidentifies specific crime names, often picks overly specific or wrong category. Issues: misinterpretation of phrasing, overgeneralization, ignoring context like \"公诉机关指控\" vs \"经审理查明\". Also confusion between similar crimes (e.g., illegal intrusion vs entry theft). Also mixing multiple crimes incorrectly, adding extra crimes not in fact. Also using generic terms vs specific statutory terms.\n\nWe need to base rules on observable signals in facts: presence of \"指控\", \"查明\", \"检察院\", \"人民检察院\", \"法院\", etc. Also presence of specific terms like \"入户\", \"开设赌场\", \"非法行医\", \"胎儿性别鉴定\". The model sometimes picks the phrase directly as crime, but correct answer may be a statutory term.\n\nThus rules:\n\n1. When fact contains phrase \"入户盗窃\" but the statutory crime is \"非法侵入住宅\" (if the act is intrusion without theft), need to map to correct statutory term based on presence/absence of theft element.\n\n2. If fact mentions \"开设赌场\" but no mention of gambling operation specifics, the correct crime is \"赌博\" (or \"开设赌场罪\"? Actually correct answer is \"赌博\". So rule: differentiate between the act of operating a casino vs the crime of gambling; use the broader crime if only gambling activity is described.\n\n3. When the fact includes \"非法行医\" but also mentions \"节育手术\", the correct crime is \"非法进行节育手术\" rather than generic illegal medical practice. So rule: pay attention to specific medical procedure mentioned.\n\n4. When multiple crime terms appear in fact (e.g., \"伪造、变造、买卖公司印章\"), the correct charge is the specific statutory phrase \"伪造公司、企业、事业单位、人民团体印章\" not a list of separate crimes; avoid adding extra crimes not explicitly in fact.\n\n5. When fact includes \"非法获取社会保险金\" and \"职务侵占\", but the prosecution is for \"贪污\", the rule: prioritize the charge that the prosecution explicitly states (e.g., \"贪污\") over inferred crimes; rely on the heading or summary of the case.\n\nAlso rule about using the \"公诉机关指控\" line as the authoritative charge.\n\nWe need up to 5 rules, concise, based on observable signals.\n\nLet's craft JSON with \"lesson\": \"- 规律1\\n- 规律2\\n- ...\""
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 916,
+      "prompt_tokens": 938,
+      "total_tokens": 1854,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 637,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0002759,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0002759,
+        "upstream_inference_prompt_cost": 4.69e-05,
+        "upstream_inference_completions_cost": 0.000229
+      }
+    }
+  },
+  "raw_response_missing": false
+}

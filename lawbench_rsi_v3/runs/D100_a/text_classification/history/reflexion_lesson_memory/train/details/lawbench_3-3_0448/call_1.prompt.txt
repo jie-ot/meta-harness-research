@@ -1,0 +1,30 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the charge, output only the crime name without appending the suffix “罪”, matching exactly the term used in the legal classification.
+- If the facts only describe forging, altering, or selling state‑issued documents or certificates and do not contain any separate act of deceiving another party for financial gain, assign only the forge
+- When a public official’s conduct involves (1) the illegal receipt of money or valuables in exchange for using official power, and (2) the abuse of that power to approve actions that cause state loss, 
+- When the factual description contains multiple distinct illegal actions (e.g., fraud and any form of prostitution‑related conduct), list every applicable crime separated by semicolons rather than sele
+- When the defendant’s conduct primarily involves unauthorized remote locking, erasing, or otherwise disabling computer or mobile device functions—causing the device to become unusable—classify the act 
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控：
+1.2015年5月1日6时许，被告人何某在肇庆市西江北路水果市场内，偷走了被害人李某一辆蓝色重骑牌三轮摩托车（发动机号：1500203959，车架号：LSNHAJ2A3F0003959）。破案后，该车被追回，经鉴定价值4500元。
+2.2015年4月9日5时许，被告人何某在肇庆市矶西路江南副产品批发市场门口，偷走了被害人罗某斌一辆红色大运牌三轮摩托车（发动机号：C1267620，车架号：2C1528130）。
+3.2015年5月份的一天，被告人何某在肇庆市端州区城东公园旁从一名男子手中购买了一辆黑色雅马哈牌摩托车（车牌号码：粤HWV900）。购买后，被告人何某为防止原车主认出该车，将该车车架及轮毂喷成黄色。经查实，该车是被害人伍某明于2014年1月10日左右在高要市南岸镇南兴四路出租屋被盗的摩托车，价值4200元。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

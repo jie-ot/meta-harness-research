@@ -1,0 +1,26 @@
+An AI classifier made an error on this case. Generate a compact correction lesson.
+
+**Correct label:** 盗伐林木
+**Wrong prediction:** [罪名]非法采伐、毁坏森林资源<eoa>
+**Case facts (excerpt):**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控：
+2013年10月至2014年2月间，被告人林某乙擅自砍伐柳州市柳北区长塘镇梳庄村“屋背岭”上属于长塘镇梳庄村桥头组集体所有的马尾松。经柳州市世丰林业勘测设计有限责任公司查验，长塘镇梳庄村“屋背岭”林区被砍伐的树种为马尾松，立木蓄积量为10.35立方米。
+公诉机关认为，被告人林某乙的行为构成××，提请本院依法惩处。
+被告人林某乙称其砍了树是事实，但没有起诉书指控的这么多，其只用柴刀砍了10几棵松树，用电锯锯的树不是自己砍的，请求法院查清事实，对其公正判决。
+
+
+Write a lesson that:
+1. States the KEY distinguishing feature that determines the correct label
+2. Explains what makes this different from "[罪名]非法采伐、毁坏森林资源<eoa>"
+3. Gives a brief rule a classifier can apply to future cases
+
+Respond only in JSON:
+{"lesson": "<one to three sentences, in the same language as the case facts>", "final_answer": "盗伐林木"}

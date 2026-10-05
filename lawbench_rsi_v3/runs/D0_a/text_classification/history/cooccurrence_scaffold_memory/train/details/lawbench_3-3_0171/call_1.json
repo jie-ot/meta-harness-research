@@ -1,0 +1,72 @@
+{
+  "call_id": "869fc709bab146daa37ed57c387899bc",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791028714-osL63NmYsNUxosbWM2hp",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The facts describe that the unit received a kickback (bribe) and the director personally benefited, which constitutes bribery (受贿). The director also drove while intoxicated and caused a traffic collision, which is criminalized as dangerous driving (危险驾驶). No other companion charges are supported by the facts.\",\n  \"final_answer\": \"[罪名]受贿;危险驾驶<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine charges. Primary charge likely 受贿 (bribery). Also dangerous driving (醉酒驾驶) which is a traffic offense: maybe “危险驾驶罪” (dangerous driving) or “酒后驾驶” is a traffic violation, but criminal charge is “危险驾驶罪” under Chinese criminal law for causing accident? Actually drunk driving causing accident may be “危险驾驶罪” (dangerous driving) if causing serious consequences. Here there is a crash but no mention of injury. Still they mention “醉酒驾驶机动车” which is a violation, but criminal charge is “危险驾驶罪”. So include that.\n\nAlso unit bribery: unit receiving bribes is “单位受贿罪”. The person as unit responsible also “受贿罪”. So companion charge list includes 滥用职权 (but not present). So we include 受贿;单位受贿;危险驾驶. Need exact labels: In examples they used \"受贿\" for bribery, \"非国家工作人员受贿\" for non-state. For unit they used \"受贿\" and \"滥用职权\". For unit bribery they might use \"受贿罪\" but label is just \"受贿\". For unit they might use \"受贿\" as well? In earlier example: first case they gave answer \"受贿;滥用职权\". That case was about a public official receiving bribes and also abusing power. So they used \"受贿\". For unit they might also use \"受贿\". But they mention \"被告单位教研中心...构成××\". Likely \"单位受贿罪\". However label maybe \"受贿\". Not sure. In dataset, they may have separate label \"受贿\" for individuals and \"单位受贿\" for units. Need to infer from prior examples: No example of unit bribery. So we guess they want \"受贿\". But also include \"危险驾驶\". The label for dangerous driving likely \"危险驾驶\". In examples they used \"危险驾驶\" for dangerous driving? Not seen. They used \"放火\" for arson, \"抢夺\" for robbery, etc. So \"危险驾驶\" seems plausible.\n\nThus final answer: [罪名]受贿;危险驾驶<eoa>\n\nReturn JSON.",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine charges. Primary charge likely 受贿 (bribery). Also dangerous driving (醉酒驾驶) which is a traffic offense: maybe “危险驾驶罪” (dangerous driving) or “酒后驾驶” is a traffic violation, but criminal charge is “危险驾驶罪” under Chinese criminal law for causing accident? Actually drunk driving causing accident may be “危险驾驶罪” (dangerous driving) if causing serious consequences. Here there is a crash but no mention of injury. Still they mention “醉酒驾驶机动车” which is a violation, but criminal charge is “危险驾驶罪”. So include that.\n\nAlso unit bribery: unit receiving bribes is “单位受贿罪”. The person as unit responsible also “受贿罪”. So companion charge list includes 滥用职权 (but not present). So we include 受贿;单位受贿;危险驾驶. Need exact labels: In examples they used \"受贿\" for bribery, \"非国家工作人员受贿\" for non-state. For unit they used \"受贿\" and \"滥用职权\". For unit bribery they might use \"受贿罪\" but label is just \"受贿\". For unit they might use \"受贿\" as well? In earlier example: first case they gave answer \"受贿;滥用职权\". That case was about a public official receiving bribes and also abusing power. So they used \"受贿\". For unit they might also use \"受贿\". But they mention \"被告单位教研中心...构成××\". Likely \"单位受贿罪\". However label maybe \"受贿\". Not sure. In dataset, they may have separate label \"受贿\" for individuals and \"单位受贿\" for units. Need to infer from prior examples: No example of unit bribery. So we guess they want \"受贿\". But also include \"危险驾驶\". The label for dangerous driving likely \"危险驾驶\". In examples they used \"危险驾驶\" for dangerous driving? Not seen. They used \"放火\" for arson, \"抢夺\" for robbery, etc. So \"危险驾驶\" seems plausible.\n\nThus final answer: [罪名]受贿;危险驾驶<eoa>\n\nReturn JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine charges. Primary charge likely 受贿 (bribery). Also dangerous driving (醉酒驾驶) which is a traffic offense: maybe “危险驾驶罪” (dangerous driving) or “酒后驾驶” is a traffic violation, but criminal charge is “危险驾驶罪” under Chinese criminal law for causing accident? Actually drunk driving causing accident may be “危险驾驶罪” (dangerous driving) if causing serious consequences. Here there is a crash but no mention of injury. Still they mention “醉酒驾驶机动车” which is a violation, but criminal charge is “危险驾驶罪”. So include that.\n\nAlso unit bribery: unit receiving bribes is “单位受贿罪”. The person as unit responsible also “受贿罪”. So companion charge list includes 滥用职权 (but not present). So we include 受贿;单位受贿;危险驾驶. Need exact labels: In examples they used \"受贿\" for bribery, \"非国家工作人员受贿\" for non-state. For unit they used \"受贿\" and \"滥用职权\". For unit bribery they might use \"受贿罪\" but label is just \"受贿\". For unit they might use \"受贿\" as well? In earlier example: first case they gave answer \"受贿;滥用职权\". That case was about a public official receiving bribes and also abusing power. So they used \"受贿\". For unit they might also use \"受贿\". But they mention \"被告单位教研中心...构成××\". Likely \"单位受贿罪\". However label maybe \"受贿\". Not sure. In dataset, they may have separate label \"受贿\" for individuals and \"单位受贿\" for units. Need to infer from prior examples: No example of unit bribery. So we guess they want \"受贿\". But also include \"危险驾驶\". The label for dangerous driving likely \"危险驾驶\". In examples they used \"危险驾驶\" for dangerous driving? Not seen. They used \"放火\" for arson, \"抢夺\" for robbery, etc. So \"危险驾驶\" seems plausible.\n\nThus final answer: [罪名]受贿;危险驾驶<eoa>\n\nReturn JSON.",
+            "refusal": null,
+            "reasoning_content": "We need to determine charges. Primary charge likely 受贿 (bribery). Also dangerous driving (醉酒驾驶) which is a traffic offense: maybe “危险驾驶罪” (dangerous driving) or “酒后驾驶” is a traffic violation, but criminal charge is “危险驾驶罪” under Chinese criminal law for causing accident? Actually drunk driving causing accident may be “危险驾驶罪” (dangerous driving) if causing serious consequences. Here there is a crash but no mention of injury. Still they mention “醉酒驾驶机动车” which is a violation, but criminal charge is “危险驾驶罪”. So include that.\n\nAlso unit bribery: unit receiving bribes is “单位受贿罪”. The person as unit responsible also “受贿罪”. So companion charge list includes 滥用职权 (but not present). So we include 受贿;单位受贿;危险驾驶. Need exact labels: In examples they used \"受贿\" for bribery, \"非国家工作人员受贿\" for non-state. For unit they used \"受贿\" and \"滥用职权\". For unit bribery they might use \"受贿罪\" but label is just \"受贿\". For unit they might use \"受贿\" as well? In earlier example: first case they gave answer \"受贿;滥用职权\". That case was about a public official receiving bribes and also abusing power. So they used \"受贿\". For unit they might also use \"受贿\". But they mention \"被告单位教研中心...构成××\". Likely \"单位受贿罪\". However label maybe \"受贿\". Not sure. In dataset, they may have separate label \"受贿\" for individuals and \"单位受贿\" for units. Need to infer from prior examples: No example of unit bribery. So we guess they want \"受贿\". But also include \"危险驾驶\". The label for dangerous driving likely \"危险驾驶\". In examples they used \"危险驾驶\" for dangerous driving? Not seen. They used \"放火\" for arson, \"抢夺\" for robbery, etc. So \"危险驾驶\" seems plausible.\n\nThus final answer: [罪名]受贿;危险驾驶<eoa>\n\nReturn JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 590,
+      "prompt_tokens": 17467,
+      "total_tokens": 18057,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 492,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00306255,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00306255,
+        "upstream_inference_prompt_cost": 0.00262005,
+        "upstream_inference_completions_cost": 0.0004425
+      }
+    }
+  },
+  "raw_response_missing": false
+}

@@ -1,0 +1,32 @@
+Bash
+
+command:
+cd "D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification" && uv run python proto_iter12.py 2>&1
+
+description: Run prototype comparison script from project directory
+
+--- output ---
+LawBench steps: 200,  USPTO steps: 50
+LawBench avg tok len: 159.4,  USPTO avg tok len: 26.3
+  LawBench: min=104 p25=158 med=160 p75=163 max=168
+  USPTO: min=23 p25=26 med=26 p75=27 max=29
+
+=== LawBench (test steps 150-200) ===
+  baseline                         rank@found= 16.6  MRR=0.064  found=14/50
+  unified γ=0.2                    rank@found= 17.1  MRR=0.053  found=14/50
+  unified γ=0.4                    rank@found= 17.1  MRR=0.053  found=14/50
+  unified γ=0.6                    rank@found= 17.1  MRR=0.053  found=14/50
+  len-norm b=0.3                   rank@found= 17.5  MRR=0.040  found=14/50
+  len-norm b=0.5                   rank@found= 17.7  MRR=0.033  found=14/50
+  len-norm b=0.75                  rank@found= 17.6  MRR=0.032  found=14/50
+
+=== USPTO (test steps 40-60) ===
+  baseline                         rank@found=  inf  MRR=0.000  found=0/10
+  unified γ=0.3                    rank@found=  inf  MRR=0.000  found=0/10
+  len-norm b=0.5                   rank@found=  inf  MRR=0.000  found=0/10
+  len-norm b=0.75                  rank@found=  inf  MRR=0.000  found=0/10
+
+=== How distinct are unified scores from baseline? ===
+  Examples that moved >2 positions (unified vs baseline, query 0):
+
+Done.

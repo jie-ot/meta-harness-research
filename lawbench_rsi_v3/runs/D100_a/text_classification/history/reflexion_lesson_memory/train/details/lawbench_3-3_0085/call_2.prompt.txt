@@ -1,0 +1,23 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控：2016年10月23日，被告人杨1某驾驶浙椒渔76093渔船（三无船舶）在东海禁渔区使用最小网目尺寸为9mm的禁用网具从事单拖捕捞作业，共捕获渔获物12250公斤，非法获利人民币10500元。同月26日6时许，该船在东海203海区（禁渔区）实施捕捞作业时被台州市海洋与渔业局执法人员查获。
+2017年5月5日，被告人杨1某被抓获。
+
+
+Wrong prediction: [罪名]非法捕捞水产资源<eoa>
+Correct answer: 非法捕捞水产品
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

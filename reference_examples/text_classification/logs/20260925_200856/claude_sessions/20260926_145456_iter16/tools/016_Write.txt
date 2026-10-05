@@ -1,0 +1,67 @@
+Write: agents\hard_buffer_memory.py
+
+content:
+"""Hard-Example Buffer Memory.
+
+Augments the decayed_confusion_memory general pool with a structurally separate
+bounded FIFO buffer of error examples.
+
+Problem with confusion-based systems: the confusion matrix is a sparse count over
+label pairs — it records *which* labels are confused but stores no retrievable text
+for the confused cases.  Examples of confusable inputs are sitting in the general
+pool but are retrieved only if they happen to be similar to the current query; there
+is no mechanism that preferentially surfaces examples that the model historically
+mis-predicted.
+
+Fix: every example where was_correct=False is also appended to a bounded hard
+buffer (max HARD_BUFFER_SIZE entries, FIFO eviction).  At predict time, score
+hard-buffer examples against the query with adaptive Jaccard and inject the top
+HARD_SLOTS examples that exceed HARD_SIM_THRESHOLD similarity before filling the
+rest of the context from the general pool.  The similarity gate prevents injecting
+unrelated error examples that would dilute context quality.
+
+This differs from utility_weighted_memory (which applied per-example outcome scores
+to general-pool retrieval) because errors are held in a physically separate pool with
+independent eviction; it differs from contrastive_error_memory (which stored explicit
+wrong/correct pairs) because the prompt structure is unchanged — only the retrieval
+source differs.
+
+Memory-structure axis D + selection-algorithm axis C.
+"""
+
+import json
+import re
+from typing import Any
+
+from ..llm import LLMCallable
+from ..memory_system import MemorySystem, extract_json_field
+
+PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+
+{examples_section}
+
+**Problem:**
+{input}
+
+**Instructions:**
+- Follow the patterns shown in the examples above
+- Respond in JSON format
+
+{{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}}"""
+
+MAX_CHARS = 30000
+_HARD_BUFFER_SIZE = 60   # maximum error examples retained (FIFO eviction)
+_HARD_SLOTS = 3          # max hard-buffer examples injected per query
+_HARD_SIM_THRESHOLD = 0.10  # minimum Jaccard similarity to inject a hard example
+
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+_WRAPPER_RE = re.compile(r'^\s*\[[^\]]*\]|<eoa>\s*$|\[[^\]]*\]\s*$', re.IGNORECASE)
+
+
+def _has_cjk(text: str) -> bool:
+    return bool(_CJK_RE.search(text))
+
+
+
+--- output ---
+File created successfully at: D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/agents/hard_buffer_memory.py (file state is current in your context — no need to Read it back)

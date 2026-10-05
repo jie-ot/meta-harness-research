@@ -1,0 +1,29 @@
+Write: logs\20260925_200856\pending_eval.json
+
+content:
+{
+  "iteration": 12,
+  "candidates": [
+    {
+      "name": "anchor_recency_confusion_memory",
+      "file": "agents/anchor_recency_confusion_memory.py",
+      "hypothesis": "Replacing the unbounded flat pool with an anchor dict (one example per label, always updated to most recent) plus a bounded recency window (80 examples) will improve LawBench accuracy by ensuring all 116 labels are always represented in the pool, while the frontier's unbounded pool (~200+ examples after training) under-represents late-arriving labels.",
+      "axis": "exploitation",
+      "base_system": "adaptive_tokenizer_confusion_memory",
+      "components": ["anchor_pool", "recency_window", "confusion_disambiguation", "adaptive_jaccard"]
+    },
+    {
+      "name": "discriminative_similarity_memory",
+      "file": "agents/discriminative_similarity_memory.py",
+      "hypothesis": "Replacing flat Jaccard with label-discriminativeness-weighted Jaccard — where w(t) = 1/num_distinct_labels_containing_t — will improve retrieval precision on tasks with many labels and shared boilerplate tokens, because tokens exclusive to one or two labels will dominate the similarity score while tokens spread across all labels will be down-weighted.",
+      "axis": "exploration",
+      "base_system": "adaptive_tokenizer_confusion_memory",
+      "components": ["discriminative_weighting", "token_label_index", "confusion_disambiguation", "adaptive_jaccard"]
+    }
+  ]
+}
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\pending_eval.json (file state is current in your context — no need to Read it back)

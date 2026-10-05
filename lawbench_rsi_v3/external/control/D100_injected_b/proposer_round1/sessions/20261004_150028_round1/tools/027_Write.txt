@@ -1,0 +1,269 @@
+Write: .prototypes\charge_cooccurrence_count_memory.py
+
+content:
+"""Prototype B: charge co-occurrence graph + cardinality planning.
+
+No file/network I/O. Literals copied from visible traces.
+
+Core claim to falsify:
+  Targets co-occur non-randomly. Building a co-occurrence graph from observed
+  target sets lets us (a) plan the charge COUNT from the case structure and
+  (b) expand a retrieved seed label set to the graph's typical companion
+  charges -- repairing under-generation (which is the dominant cardinality
+  error in the traces) without inflating singletons.
+
+Two signals are tested independently:
+  S1 graph expansion   -- companions with count / seed_count >= threshold
+  S2 mask-run cardinality -- the '××' mask runs in the indictment mark blanked
+     charge slots; the max mask-run count in a clause bounds the charge count.
+"""
+
+from collections import defaultdict
+
+SEPS = [";", "；", ",", "，", "、"]
+
+
+def split_labels(text):
+    for sep in SEPS:
+        if sep in text:
+            return [p.strip() for p in text.split(sep) if p.strip()]
+    return [text.strip()] if text.strip() else []
+
+
+# ----------------------------------------------------------------------------
+# Literal training targets observed in the traces (target sets, not singletons)
+# ----------------------------------------------------------------------------
+TRAIN_TARGETS = [
+    "非法持有、私藏枪支、弹药;故意伤害;聚众斗殴",
+    "故意伤害;故意毁坏财物",
+    "盗窃;掩饰、隐瞒犯罪所得、犯罪所得收益",
+    "受贿;滥用职权",
+    "受贿;贪污",
+    "贪污;挪用公款",
+    "盗窃;诈骗",
+    "盗窃;掩饰、隐瞒犯罪所得",
+    "非法采矿;污染环境",
+    "非法制造、买卖、运输、储存危险物质;非法经营",
+    "开设赌场;赌博",
+    "诈骗;合同诈骗",
+    "故意伤害;寻衅滋事",
+    "非法拘禁;敲诈勒索",
+    "破坏电力设备;盗窃",
+    "非法种植毒品原植物",
+    "失火",
+    "拐骗儿童",
+    "盗伐林木",
+]
+
+
+def build_graph(targets):
+    """Undirected weighted co-occurrence graph over label parts."""
+    g = defaultdict(lambda: defaultdict(int))
+    for t in targets:
+        parts = sorted(set(split_labels(t)))
+        for a in parts:
+            for b in parts:
+                if a != b:
+                    g[a][b] += 1
+    return g
+
+
+GRAPH = build_graph(TRAIN_TARGETS)
+COUNTS = defaultdict(int)
+for _t in TRAIN_TARGETS:
+    for _p in sorted(set(split_labels(_t))):
+        COUNTS[_p] += 1
+
+
+def expand(seeds, graph, min_support=2, ratio=0.5):
+    """One-hop expansion: add companions that co-occur with MULTIPLE seeds
+    or that dominate one seed's neighbourhood."""
+    seeds = list(dict.fromkeys(seeds))
+    seedset = set(seeds)
+    votes = defaultdict(int)
+    for s in seeds:
+        for other, c in graph.get(s, {}).items():
+            if other not in seedset:
+                votes[other] += c
+    out = []
+    for other, v in votes.items():
+        # companion must be attested at least min_support times
+        if v < min_support:
+            continue
+        # and either reinforced by 2+ seeds, or dominant for a seed
+        reinforced = sum(
+            1 for s in seeds if graph.get(s, {}).get(other, 0) >= 1
+        )
+        dominant = any(
+            graph.get(s, {}).get(other, 0) / max(1, COUNTS[s]) >= ratio
+            for s in seeds
+        )
+        if reinforced >= 2 or dominant:
+            out.append((v, other))
+    out.sort(key=lambda x: (-x[0], x[1]))
+    return [o for _, o in out]
+
+
+# ----------------------------------------------------------------------------
+# Mask-run cardinality signal
+# ----------------------------------------------------------------------------
+def mask_slots(text):
+    """Count blanked charge slots: the longest unbroken run of '××' tokens,
+    i.e. how many charge names appear inline in one enumeration."""
+    import re
+    total = 0
+    for clause in re.split(r"[。；;\n]", text):
+        n = len(re.findall(r"×{2,}", clause))
+        if n > total:
+            total = n
+    return total
+
+
+# ----------------------------------------------------------------------------
+# Fake LLM
+# ----------------------------------------------------------------------------
+class FakeLLM:
+    def __init__(self, mapping):
+        self.mapping = mapping
+        self.calls = 0
+
+    def __call__(self, prompt):
+        self.calls += 1
+        for key, val in self.mapping.items():
+            if key in prompt:
+                return val
+        return '{"reasoning": "n/a", "final_answer": "seeds"}'
+
+
+print("=== Graph construction ===")
+print("nodes:", len(GRAPH))
+for k in ["受贿", "盗窃", "故意伤害", "破坏电力设备", "非法种植毒品原植物"]:
+    print(f"  {k}: {dict(GRAPH.get(k, {}))}")
+
+print()
+print("=== S1 variant comparison: expansion thresholds ===")
+SCEN = [
+    (["受贿", "滥用职权"], "受贿;滥用职权", "both seeds already present"),
+    (["故意伤害"], "故意伤害;故意毁坏财物", "singleton seed, strong companion"),
+    (["盗窃"], "盗窃", "closed neighbourhood -> must NOT inflate"),
+    (["破坏电力设备"], "破坏电力设备", "singleton, no support>=2 -> must NOT inflate"),
+    (["贪污", "挪用公款"], "贪污;挪用公款", "mutual pair, stable"),
+    (["开设赌场", "赌博"], "开设赌场;赌博", "mutual pair, stable"),
+]
+for min_support, ratio in [(1, 0.3), (2, 0.5), (3, 0.6)]:
+    bad = 0
+    for seeds, exp, _ in SCEN:
+        got = expand(seeds, GRAPH, min_support, ratio)
+        if sorted(got) != sorted(split_labels(exp)):
+            bad += 1
+    print(f"min_support={min_support} ratio={ratio}: {bad}/{len(SCEN)} scenarios differ")
+
+print()
+print("=== Chosen variant: min_support=2, ratio=0.5 ===")
+fails = 0
+for seeds, exp, why in SCEN:
+    got = expand(seeds, GRAPH, 2, 0.5)
+    ok = sorted(got) == sorted(split_labels(exp))
+    fails += 0 if ok else 1
+    print(f"{'PASS' if ok else 'FAIL'}  {seeds} -> {got}   ({why})")
+
+print()
+print("=== S2 mask-run cardinality ===")
+MASK_CASES = [
+    ("指控被告单位通辽市某商业广场有限公司、被告人沙某某的行为触犯了《中华人民共和国刑法》××之规定，应当以××追究其刑事责任。", 1),
+    ("被告人郭某的行为触犯了《中华人民共和国刑法》××之规定，构成××。郭某是从犯，根据《中华人民共和国刑法》××的规定，应当从轻处罚。", 1),
+    ("公诉机关认为，被告人李某的行为已构成××，并提出判处××至一年六个月的量刑建议。", 1),
+    ("事实:被告人以××手段实施××、××行为，触犯了《中华人民共和国刑法》××、××之规定。", 2),
+    ("对被告人应以××;××追究刑事责任。", 2),
+    ("被告人盗窃路灯电缆线，共盗得电缆线约210米。", 0),
+]
+for text, exp in MASK_CASES:
+    got = mask_slots(text)
+    print(f"{'PASS' if got == exp else 'FAIL'}  expected {exp} got {got}  :: {text[:34]}...")
+
+print()
+print("=== End-to-end: retrieve -> plan count -> LLM arbitrate -> expand ===")
+
+
+class ProtoB:
+    def __init__(self, llm):
+        self.llm = llm
+        self.examples = []
+        self.graph = defaultdict(lambda: defaultdict(int))
+        self.counts = defaultdict(int)
+
+    def learn_from_batch(self, batch_results):
+        for r in batch_results:
+            self.examples.append({
+                "input": r["input"],
+                "target": r["ground_truth"],
+                "raw": r.get("raw_question", r["input"]),
+            })
+            parts = sorted(set(split_labels(r["ground_truth"])))
+            for a in parts:
+                self.counts[a] += 1
+                for b in parts:
+                    if a != b:
+                        self.graph[a][b] += 1
+
+    def predict(self, input):
+        # seeds: union of the labels of the top-2 retrieved examples
+        ranked = sorted(
+            self.examples,
+            key=lambda ex: -self._sim(input, ex["raw"]),
+        )[:2]
+        seeds = []
+        for ex in ranked:
+            for p in split_labels(ex["target"]):
+                if p not in seeds:
+                    seeds.append(p)
+        slots = mask_slots(input)
+        # budget: graph expansion may not exceed the planned slot count
+        planned = max(slots, 1)
+        seedset = set(seeds)
+        voted = expand(seeds, self.graph, 2, 0.5)
+        final = list(seeds)
+        for cand in voted:
+            if len(final) >= planned and planned > 0 and slots > 0:
+                break
+            final.append(cand)
+        final = final[:planned] if slots > 0 else final
+        prompt = f"seeds={final}"
+        return final, {"seeds": seeds, "slots": slots, "planned": planned}
+
+    @staticmethod
+    def _sim(a, b):
+        # char-trigram overlap as a cheap general similarity
+        def grams(s):
+            s = "".join(s.split())
+            return set(s[i:i + 3] for i in range(len(s) - 2)) or {s}
+        A, B = grams(a), grams(b)
+        return 2 * len(A & B) / max(1, len(A) + len(B))
+
+
+fake = FakeLLM({"seeds=": '{"reasoning": "n/a", "final_answer": "seeds"}'})
+b = ProtoB(fake)
+b.learn_from_batch([
+    {"input": "疑似受贿事实：被告人利用职务便利收受贿赂，并滥用职权", "ground_truth": "受贿;滥用职权"},
+    {"input": "故意伤害事实", "ground_truth": "故意伤害;故意毁坏财物"},
+    {"input": "盗窃事实", "ground_truth": "盗窃"},
+    {"input": "开设赌场事实", "ground_truth": "开设赌场;赌博"},
+])
+for q in [
+    "事实:被告人利用职务便利收受贿赂，并滥用职权为他人谋利。",
+    "事实:被告人故意伤害他人身体，并故意毁坏财物，构成××。",
+    "事实:被告人盗窃他人财物，数额较大。",
+]:
+    labels, meta = b.predict(q)
+    print(f"  slots={meta['slots']} seeds={meta['seeds']} -> {labels}")
+
+print()
+if fails == 0:
+    print("PROTOTYPE B OK: graph expansion and mask cardinality behave as predicted")
+else:
+    print(f"PROTOTYPE B REVIEW: {fails} expansion scenario(s) differ")
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_b\text_classification\.prototypes\charge_cooccurrence_count_memory.py (file state is current in your context — no need to Read it back)

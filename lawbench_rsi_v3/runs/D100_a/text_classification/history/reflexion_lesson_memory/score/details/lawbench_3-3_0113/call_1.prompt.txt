@@ -1,0 +1,33 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When the facts describe a defendant’s role in a scheme that withdraws money from victims’ bank or credit‑card accounts, classify the conduct under the specific statutory offenses of fraud (诈骗) and, if
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- When the facts show that the defendant only provided shelter, assistance, or concealment for drug offenders and did not personally produce, possess, or traffic the narcotics, classify the offense as 窝
+- If the factual description indicates that the offender used their official position or entrusted authority to appropriate property for personal gain, rather than physically taking or stealthily removi
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:晋江市人民检察院指控：
+2016年7月，被告人王1某通过互联网了解到一网民为“忠义侯”（另案处理）的男子以人民币（币种，下同）150-500元不等的价格在收购他人信用卡。被告人王1某为了能够迅速地取得他人信用卡并出售给其上游“忠义侯”以牟取非法利益，遂编造当事人只要按要求提供本人身份证复印件、银行卡、电话卡以及两寸照片等材料，就能够通过刷流水办理银行贷款并以贷款额度10%-30%不等的比例取得报酬的不实事实，并将上述业务模式统称为“背黑贷”在网上公开发布。嗣后，被告人陈2某通过互联网获悉到王1某发布的上述业务信息，并将“背黑贷”业务进一步介绍给被告人于某以及姜某、“王姓女子”（均另案处理），后唆使于某以及姜某、“王姓女子”招募不特定人员按照“背黑贷”业务的要求办理信用卡。
+2016年9月中下旬，受陈2某的诱导于某遂找了董某、王某1等11人每人均办理1张中国银行卡、1张建行卡、1张农行卡，共计33张信用卡；姜某及“王姓女子”遂找到了王某2、赵劝、肖某等40人每人均办理1张中国银行卡、1张建行卡、1张农行卡，共计120张信用卡。之后，于某伙同姜某及“王姓女子”将上述51人共计153张信用卡连同开户人身份证复印件、2寸照片、电话卡一并交给陈2某，再由陈2某通过“顺丰”快递将上述153张信用卡以及所有关联材料邮寄给王1某，获得报酬。
+2016年10月20日，居住在晋江市的蔡某被他人以冒用公检法人员要求协助调查的名义，并通过其名下一开户行在中国农业银行股份有限公司晋江市东石支行卡号为62×××18的农业银行卡，诈骗走1689530元。上述被骗资金，其中1笔金额为9990元的赃款汇入户名为董某账号为62×××03中国银行卡，1笔金额为9990元的赃款汇入户名为董某账号为62×××93中国建设银行卡。董某的上述两张信用卡均是于某以办理“背黑贷”业务为由，非法获得董某的信用卡再将涉案信用卡通过陈2某转交给王1某，最终由王1某出售给其上游“忠义侯”。
+2016年10月31日，侦查员在内蒙古自治区巴林左旗抓获于某，并从其处扣押一注有“董某130××××5718”的办卡登记单据。2016年11月1日，侦查员在于某的帮助下，于内蒙古巴林右旗顺利抓捕到陈2某。2016年11月9日，侦查员在山东省临沂市兰山区公安分局的协助下，于该局银雀山派出所抓获到王1某，并从其处扣押到工商银行卡23张、农业银行卡5张、中国银行卡2张、建设银行卡1张，招商银行卡配套身份证复印件、电话卡、密码器、写有密码的纸条共28套，联通电话卡8张，上述扣押到的信用卡均非来自陈2某提供。
+综上，王1某涉嫌收买、非法提供他人信用卡信息资料不少于153张，又涉嫌非法收买他人信用卡信息59张；陈2某涉嫌收买、非法提供他人信用卡信息资料不少于153张；于某涉嫌收买、非法提供他人信用卡信息资料33张。
+公诉机关提供了物证、书证、证人证言、辨认笔录及被告人在侦查阶段的供述等证据予以证明。据此，公诉机关认为，被告人王1某伙同被告人陈2某、于某收买、非法提供他人信用卡信息，数额巨大，应以收买、非法提供他人信用卡信息罪追究其刑事责任。于某到案后，协助公安机关抓捕其他犯罪分子，构成立功，可以从轻处罚；王1某、陈2某、于某归案后如实供述自己的罪行，是坦白，可以从轻处罚。据此，提请本院依照《中华人民共和国刑法》××××、××××、××、××××之规定予以惩处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

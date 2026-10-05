@@ -1,0 +1,1 @@
+I'll start by reading the run's state files and the framework to ground the analysis.Shell operators are blocked — I'll use the file tools instead.The glob path form is being rejected — let me try relative paths from the working directory.Prompt is too long

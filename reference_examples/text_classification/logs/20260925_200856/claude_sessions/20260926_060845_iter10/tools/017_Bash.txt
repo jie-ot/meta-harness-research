@@ -1,0 +1,148 @@
+Bash
+
+command:
+python -c "
+# Prototype 1: late-positioned confusion examples
+# Test the ordering logic: fill similarity first, append confusion last
+
+examples = [
+    {'input': f'q{i}', 'target': f'label_{i%4}', 'tokens': frozenset(f'q{i} word'.split())} 
+    for i in range(20)
+]
+confusion = {'label_0': {'label_1': 3, 'label_2': 1}, 'label_1': {'label_0': 2}}
+
+import re
+from collections import defaultdict
+
+def jaccard(a, b):
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+MAX_CHARS = 500  # small for test
+
+def build_parts_old(query, examples, confusion):
+    '''Confusion first, then fill (current approach)'''
+    q_tok = frozenset(re.findall(r'[A-Za-z0-9]+', query.lower()))
+    ranked = sorted(enumerate(examples), key=lambda x: jaccard(q_tok, x[1]['tokens']), reverse=True)
+    
+    # get confusion targets for top-3 candidate labels
+    top_labels = [examples[idx]['target'] for idx, _ in ranked[:3]]
+    counts = defaultdict(int)
+    for lbl in top_labels:
+        for actual, cnt in confusion.get(lbl, {}).items():
+            if actual not in top_labels:
+                counts[actual] += cnt
+    confused_with = sorted(counts, key=lambda x: -counts[x])[:3]
+    
+    parts = []
+    used = set()
+    total = 0
+    
+    # inject confusion examples FIRST
+    if confused_with:
+        per_label = defaultdict(list)
+        for idx, ex in ranked:
+            if ex['target'] in confused_with:
+                per_label[ex['target']].append((idx, ex))
+        for _ in range(2):
+            for lbl in confused_with:
+                for idx, ex in per_label[lbl]:
+                    if idx not in used:
+                        p = f'Q: {ex[\"input\"]}\nA: {ex[\"target\"]}'
+                        if total + len(p) + 2 <= MAX_CHARS:
+                            parts.append(p); used.add(idx); total += len(p)+2; break
+    
+    for idx, ex in ranked:
+        if total >= MAX_CHARS: break
+        if idx not in used:
+            p = f'Q: {ex[\"input\"]}\nA: {ex[\"target\"]}'
+            if total + len(p) + 2 <= MAX_CHARS:
+                parts.append(p); used.add(idx); total += len(p)+2
+    
+    return parts
+
+def build_parts_new(query, examples, confusion):
+    '''Fill first, append confusion LAST (new approach)'''
+    q_tok = frozenset(re.findall(r'[A-Za-z0-9]+', query.lower()))
+    ranked = sorted(enumerate(examples), key=lambda x: jaccard(q_tok, x[1]['tokens']), reverse=True)
+    
+    top_labels = [examples[idx]['target'] for idx, _ in ranked[:3]]
+    counts = defaultdict(int)
+    for lbl in top_labels:
+        for actual, cnt in confusion.get(lbl, {}).items():
+            if actual not in top_labels:
+                counts[actual] += cnt
+    confused_with = sorted(counts, key=lambda x: -counts[x])[:3]
+    
+    # estimate confusion slot reservation
+    confusion_reserve = 0
+    if confused_with:
+        per_label = defaultdict(list)
+        for idx, ex in ranked:
+            if ex['target'] in confused_with:
+                per_label[ex['target']].append((idx, ex))
+        # estimate size of up to 2 rounds * 3 labels confusion examples
+        sampled = []
+        for _ in range(2):
+            for lbl in confused_with:
+                for idx, ex in per_label[lbl]:
+                    if idx not in {i for i,_ in sampled}:
+                        sampled.append((idx, ex)); break
+        confusion_reserve = sum(len(f'Q: {ex[\"input\"]}\nA: {ex[\"target\"]}') + 2 for _, ex in sampled)
+    
+    fill_budget = MAX_CHARS - confusion_reserve
+    fill_parts = []
+    fill_used = set()
+    fill_total = 0
+    for idx, ex in ranked:
+        if fill_total >= fill_budget: break
+        p = f'Q: {ex[\"input\"]}\nA: {ex[\"target\"]}'
+        if fill_total + len(p) + 2 <= fill_budget:
+            fill_parts.append(p); fill_used.add(idx); fill_total += len(p)+2
+    
+    # now collect confusion examples
+    confusion_parts = []
+    if confused_with:
+        per_label = defaultdict(list)
+        for idx, ex in ranked:
+            if ex['target'] in confused_with:
+                per_label[ex['target']].append((idx, ex))
+        total_c = 0
+        for _ in range(2):
+            for lbl in confused_with:
+                for idx, ex in per_label[lbl]:
+                    if idx not in fill_used and idx not in {id(p) for p in confusion_parts}:
+                        p = f'Q: {ex[\"input\"]}\nA: {ex[\"target\"]}'
+                        if fill_total + total_c + len(p) + 2 <= MAX_CHARS:
+                            confusion_parts.append(p); fill_used.add(idx); total_c += len(p)+2; break
+    
+    return fill_parts + confusion_parts  # confusion at END
+
+# Test
+query = 'q0 word some'
+parts_old = build_parts_old(query, examples, confusion)
+parts_new = build_parts_new(query, examples, confusion)
+
+print(f'Old ordering ({len(parts_old)} parts): first={parts_old[0][:30]!r} | last={parts_old[-1][:30]!r}')
+print(f'New ordering ({len(parts_new)} parts): first={parts_new[0][:30]!r} | last={parts_new[-1][:30]!r}')
+
+# Check that confusion targets (label_1, label_2) appear at end in new
+def last_confusion_idx(parts, confused_labels):
+    for i in range(len(parts)-1, -1, -1):
+        for lbl in confused_labels:
+            if lbl in parts[i]:
+                return i
+    return -1
+
+print(f'Last confusion example index (old): {last_confusion_idx(parts_old, [\"label_1\", \"label_2\"])} / {len(parts_old)-1}')
+print(f'Last confusion example index (new): {last_confusion_idx(parts_new, [\"label_1\", \"label_2\"])} / {len(parts_new)-1}')
+"
+
+
+description: Prototype 1: test late-positioned confusion ordering logic
+
+--- output ---
+Old ordering (20 parts): first='Q: q0\nA: label_0' | last='Q: q19\nA: label_3'
+New ordering (20 parts): first='Q: q0\nA: label_0' | last='Q: q19\nA: label_3'
+Last confusion example index (old): 18 / 19
+Last confusion example index (new): 18 / 19

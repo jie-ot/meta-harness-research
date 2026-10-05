@@ -1,0 +1,28 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- If the case facts describe the illegal acquisition, transport, or sale of goods that constitute smuggling (e.g., mention of ‘走私’, ‘普通货物’, ‘物品’, customs violations, or illicit trade) in addition to a t
+- When the defendant's conduct consists of swapping genuine cash for counterfeit money in order to take the victim's property, the appropriate charges are theft (盗窃) and possession/use of counterfeit mo
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- When the case facts and legal provisions cite multiple distinct offenses (e.g., both “走私珍贵动物” and “走私珍贵动物制品”), list each offense separately rather than merging them into a single combined charge.
+- When the facts describe cutting or felling forest trees without a logging permit, the correct statutory charge is the specific offense “滥伐林木”, not a generic term like “非法采伐森林木材”.
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控，2016年2月，被告人李2某明知原木炭系国家禁止进出口的货物，仍从河南省济源市采购原木炭，并伪报品名委托他人向天津海关申报出口。同年2月22日，涉案货物被天津海关查获。经鉴定，涉案货物已经炭化，其原材料为木材，重22.6吨。同年2月24日，被告人李2某被天津海关缉私局查获归案。
+就起诉书指控的上述事实，公诉人当庭宣读和出示了证人证言、立案决定书、海关货物查验记录及报关单等书证、物证鉴定书、物证照片等证据材料。据此，公诉机关指控被告人李2某的行为触犯《中华人民共和国刑法》××××的规定，应当以走私国家禁止进出口的货物罪追究刑事责任。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

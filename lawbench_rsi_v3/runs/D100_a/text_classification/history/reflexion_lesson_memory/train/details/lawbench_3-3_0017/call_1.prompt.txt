@@ -1,0 +1,33 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces
+- When the case facts explicitly describe criminal conduct (e.g., illegal transfer of land use rights, intentional injury), the model must identify and list the corresponding statutory offenses instead 
+- If the case facts describe the creation or use of a forged company/enterprise/organization seal to impersonate that entity and obtain money, charge the offense of 伪造公司、企业、事业单位、人民团体印章 rather than contr
+- When the factual description involves the use of false documents or misrepresentation to conclude a contract and obtain money, classify the offense as the specific type of fraud (e.g., 合同诈骗) rather th
+- When the facts describe a traffic accident caused by dangerous driving and subsequent actions of providing false statements or concealment to protect the driver, charge the underlying dangerous drivin
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，（一）盗窃部分
+1、2015年10月14日凌晨2时许，被告人俞某预谋实施盗窃后，窜至本区成洲工业区9号区新禾楼三楼即被害单位某某公司，采用砸破窗户进入该公司后，利用先前在上述公司工作时掌握的支付宝账户及密码，将公司账户里的人民币94000元（以下币种均为人民币）转到被告人俞某事先准备好的“吴某”的支付宝账户。嗣后，被告人俞某怕事情败露，于同月14日、15日将上述赃款退回上述公司账户。
+2、2016年1月2日16时许，被告人俞某预谋实施盗窃后，在本区泉秀路乌洲安置房A某室的租房内，利用本人手机及电脑，将被害单位某某公司的营业执照、法人身份证、修改密码、绑定手机号申请书等材料电子扫描件提供给支付宝客服，修改了上述公司支付宝账号的相关信息后，将公司账户里的200000元转到被告人俞某事先准备好的“吴某”的支付宝账户。嗣后，被告人俞某怕事情败露，于2016年1月4日陆续将上述赃款退回被害单位账户。
+（二）伪造居民身份证件部份
+2015年11月，被告人俞某预谋伪造居民身份证件以提高转账额度及申请小额贷款后，先后二次在市区中心客运站附近的路边，与制贩假证人员联系后，提供其本人的相片、资金及“吴某”的身份信息要求制贩假证人员为其伪造二张姓名为“吴某”的虚假居民身份证。
+案发后，被害单位立即报警。公安机关于2016年2月16日电话传唤被告人俞某，俞到案后如实供述上述盗窃的犯罪事实，并带领公安机关到泉秀路乌洲安置房A某室的租房提取作案工具。公安机关在上租房内提取、扣押了作案工具诺基亚手机1部、银行U盾1个、电脑主机1台及二张姓名为“吴某”的居民身份证。嗣后，被告人俞某如实供述其伪造居民身份证的犯罪事实。经公安部门查明，上述居民身份证系伪造的居民身份证。案发后，被害单位法定代表人陈某对被告人俞某的上述盗窃行为表示谅解。
+上述事实，被告人俞某在开庭审理过程中亦无异议，且有被害人的陈述、证人陈某、吴某的证言及辨认被告人俞某的辨认笔录，涉案支付宝账号的注册信息、被告人俞某辨认作案地点的辨认笔录、被害单位营业执照、涉案支付宝交易明细截图、谅解书，电脑资料截图，泉某（2016）居证鉴别第01号鉴别居民身份证证明书，公安机关出具的抓获经过、受案登记表、工作说明、户籍证明等证据证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

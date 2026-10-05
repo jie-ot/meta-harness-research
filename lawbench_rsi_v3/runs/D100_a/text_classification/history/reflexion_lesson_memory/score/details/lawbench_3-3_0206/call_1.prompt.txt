@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When the facts describe a production‑safety accident in which the defendant’s failure to implement required safety measures directly caused a death, the correct charge is the crime of ‘重大责任事故’ rather 
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- When extracting the crime name, output the exact statutory offense term (e.g., “行贿”) without adding descriptive prefixes or qualifiers such as “对国家工作人员”。
+- When the facts describe a person performing any medical diagnosis, treatment, or related procedure without a valid medical license, classify the conduct under the statutory offense of “非法行医” rather th
+- When the facts describe manufacturing or distributing drugs that are counterfeit, adulterated, or otherwise not meeting legal standards (i.e., ‘假药’), the appropriate charge is “生产、销售假药” rather than th
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明：2013年12月初，被告人武某以个人名义承建位于句容市经济开发区的江苏中某投资有限公司新能源科技产业园厂房施工工程。后被告人武某在未办理施工许可证、未进行安全报监的情况下，擅自组织工人施工，并安排无资质人员实施高支模搭设等特种作业。2014年2月27日晚，被告人武某在安全生产设施不符合国家规定的情况下，组织工人对工地5#厂房施工，因搭设的高支模刚度严重不足，在进行混凝土浇注时高支模发生坍塌，致使正在厂房顶层进行作业的被害人范某某跌落地面，并被坍塌的高支模和混凝土掩埋，至次日17时被挖出，经医生现场确认死亡。经司法鉴定，被害人范某某系窒息死亡。
+事发后，被告人武某主动报警，并组织人员积极抢救被害人，到案后如实供述了自己的罪行。案发后，被告人武某已赔偿被害人近亲属全部经济损失，并取得了被害人近亲属谅解。
+对上述事实，被告人武某及其辩护人章某在开庭审理过程中均无异议，且有被告人武某的供述；证人许某某、文某某、沈某某、戴某某、王某某、孙某某、赵某甲、赵某乙等人的证言；书证人口信息表、接处警工作登记表、归案情况说明、事故责任认定报告、工程施工许可证办理指南、工程安全管理办法、江苏省建筑施工特种作业人员管理暂行办法、赔偿协议、收条、谅解书；法医学尸体检验意见书及现场照片等证据予以证实，足以认定。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

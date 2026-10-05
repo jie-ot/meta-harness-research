@@ -1,0 +1,72 @@
+{
+  "call_id": "7b8c14c586bd464f832070461b5c4098",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791028138-aA8xOpLvfUjXd5qN0SvB",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"事实中明确记载被告人尹某将受害人谢某非法拘禁至指定住所，并对其实施殴打致轻微伤。非法拘禁属于《刑法》规定的‘非法拘禁’罪，殴打致伤属于‘故意伤害’罪。两项行为均构成独立的犯罪，应分别列出。\",\n  \"final_answer\": \"[罪名]非法拘禁;故意伤害<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the crime(s) from facts. Fact: illegal detention (非法拘禁) of a person, causing light injury. So crime is \"非法拘禁罪\". In Chinese criminal law, the term is \"非法拘禁罪\". Also possibly \"故意伤害罪\" if injury inflicted? They beat causing light injury. The fact says they beat to light injury. The primary charge likely illegal detention. Could also include \"故意伤害罪\" (intentional injury). But examples: In similar case earlier, they gave \"容留他人吸毒\" for container. For illegal detention, they likely output \"非法拘禁\". Need to match exact phrase used in law. The key rule: use exact phrase from fact if appears. Fact says \"非法拘禁\". So output that.\n\nIf multiple crimes: illegal detention and causing injury (故意伤害). But does the fact mention \"打至轻微伤\" which is injury. Usually illegal detention causing injury may be considered as \"非法拘禁罪\" with aggravating factor, not separate. However sometimes they charge both illegal detention and intentional injury. The problem statement: \"公诉机关并提供了相应的证据，认为被告人尹某的行为触犯了《中华人民共和国刑法》××××、××之规定，构成××\". Not explicit. We need to list crimes present. The fact includes illegal detention and assault causing injury. So likely two crimes: \"非法拘禁罪;故意伤害罪\". Need to ensure format: [罪名]非法拘禁罪;故意伤害罪<eoa>\n\nCheck rule: use exact terms from fact. Fact uses \"非法拘禁\". Not \"非法拘禁罪\". But examples: they output \"容留他人吸毒\" (without \"罪\"). So they output the phrase without \"罪\". In examples: \"容留他人吸毒\" not \"容留他人吸毒罪\". Also \"盗窃\" not \"盗窃罪\". So we should output \"非法拘禁\" and \"故意伤害\". Use exactly those terms. So final answer: [罪名]非法拘禁;故意伤害<eoa>\n\nCheck if any other crimes: maybe \"敲诈勒索\"? They kidnapped to get debt. But the act is illegal detention to force debt. Could be \"非法拘禁\" only. The beating causing injury could be \"故意伤害\". I'd include both.\n\nThus final JSON with reasoning and final answer.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning": "We need to determine the crime(s) from facts. Fact: illegal detention (非法拘禁) of a person, causing light injury. So crime is \"非法拘禁罪\". In Chinese criminal law, the term is \"非法拘禁罪\". Also possibly \"故意伤害罪\" if injury inflicted? They beat causing light injury. The fact says they beat to light injury. The primary charge likely illegal detention. Could also include \"故意伤害罪\" (intentional injury). But examples: In similar case earlier, they gave \"容留他人吸毒\" for container. For illegal detention, they likely output \"非法拘禁\". Need to match exact phrase used in law. The key rule: use exact phrase from fact if appears. Fact says \"非法拘禁\". So output that.\n\nIf multiple crimes: illegal detention and causing injury (故意伤害). But does the fact mention \"打至轻微伤\" which is injury. Usually illegal detention causing injury may be considered as \"非法拘禁罪\" with aggravating factor, not separate. However sometimes they charge both illegal detention and intentional injury. The problem statement: \"公诉机关并提供了相应的证据，认为被告人尹某的行为触犯了《中华人民共和国刑法》××××、××之规定，构成××\". Not explicit. We need to list crimes present. The fact includes illegal detention and assault causing injury. So likely two crimes: \"非法拘禁罪;故意伤害罪\". Need to ensure format: [罪名]非法拘禁罪;故意伤害罪<eoa>\n\nCheck rule: use exact terms from fact. Fact uses \"非法拘禁\". Not \"非法拘禁罪\". But examples: they output \"容留他人吸毒\" (without \"罪\"). So they output the phrase without \"罪\". In examples: \"容留他人吸毒\" not \"容留他人吸毒罪\". Also \"盗窃\" not \"盗窃罪\". So we should output \"非法拘禁\" and \"故意伤害\". Use exactly those terms. So final answer: [罪名]非法拘禁;故意伤害<eoa>\n\nCheck if any other crimes: maybe \"敲诈勒索\"? They kidnapped to get debt. But the act is illegal detention to force debt. Could be \"非法拘禁\" only. The beating causing injury could be \"故意伤害\". I'd include both.\n\nThus final JSON with reasoning and final answer.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the crime(s) from facts. Fact: illegal detention (非法拘禁) of a person, causing light injury. So crime is \"非法拘禁罪\". In Chinese criminal law, the term is \"非法拘禁罪\". Also possibly \"故意伤害罪\" if injury inflicted? They beat causing light injury. The fact says they beat to light injury. The primary charge likely illegal detention. Could also include \"故意伤害罪\" (intentional injury). But examples: In similar case earlier, they gave \"容留他人吸毒\" for container. For illegal detention, they likely output \"非法拘禁\". Need to match exact phrase used in law. The key rule: use exact phrase from fact if appears. Fact says \"非法拘禁\". So output that.\n\nIf multiple crimes: illegal detention and causing injury (故意伤害). But does the fact mention \"打至轻微伤\" which is injury. Usually illegal detention causing injury may be considered as \"非法拘禁罪\" with aggravating factor, not separate. However sometimes they charge both illegal detention and intentional injury. The problem statement: \"公诉机关并提供了相应的证据，认为被告人尹某的行为触犯了《中华人民共和国刑法》××××、××之规定，构成××\". Not explicit. We need to list crimes present. The fact includes illegal detention and assault causing injury. So likely two crimes: \"非法拘禁罪;故意伤害罪\". Need to ensure format: [罪名]非法拘禁罪;故意伤害罪<eoa>\n\nCheck rule: use exact terms from fact. Fact uses \"非法拘禁\". Not \"非法拘禁罪\". But examples: they output \"容留他人吸毒\" (without \"罪\"). So they output the phrase without \"罪\". In examples: \"容留他人吸毒\" not \"容留他人吸毒罪\". Also \"盗窃\" not \"盗窃罪\". So we should output \"非法拘禁\" and \"故意伤害\". Use exactly those terms. So final answer: [罪名]非法拘禁;故意伤害<eoa>\n\nCheck if any other crimes: maybe \"敲诈勒索\"? They kidnapped to get debt. But the act is illegal detention to force debt. Could be \"非法拘禁\" only. The beating causing injury could be \"故意伤害\". I'd include both.\n\nThus final JSON with reasoning and final answer.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning_content": "We need to determine the crime(s) from facts. Fact: illegal detention (非法拘禁) of a person, causing light injury. So crime is \"非法拘禁罪\". In Chinese criminal law, the term is \"非法拘禁罪\". Also possibly \"故意伤害罪\" if injury inflicted? They beat causing light injury. The fact says they beat to light injury. The primary charge likely illegal detention. Could also include \"故意伤害罪\" (intentional injury). But examples: In similar case earlier, they gave \"容留他人吸毒\" for container. For illegal detention, they likely output \"非法拘禁\". Need to match exact phrase used in law. The key rule: use exact phrase from fact if appears. Fact says \"非法拘禁\". So output that.\n\nIf multiple crimes: illegal detention and causing injury (故意伤害). But does the fact mention \"打至轻微伤\" which is injury. Usually illegal detention causing injury may be considered as \"非法拘禁罪\" with aggravating factor, not separate. However sometimes they charge both illegal detention and intentional injury. The problem statement: \"公诉机关并提供了相应的证据，认为被告人尹某的行为触犯了《中华人民共和国刑法》××××、××之规定，构成××\". Not explicit. We need to list crimes present. The fact includes illegal detention and assault causing injury. So likely two crimes: \"非法拘禁罪;故意伤害罪\". Need to ensure format: [罪名]非法拘禁罪;故意伤害罪<eoa>\n\nCheck rule: use exact terms from fact. Fact uses \"非法拘禁\". Not \"非法拘禁罪\". But examples: they output \"容留他人吸毒\" (without \"罪\"). So they output the phrase without \"罪\". In examples: \"容留他人吸毒\" not \"容留他人吸毒罪\". Also \"盗窃\" not \"盗窃罪\". So we should output \"非法拘禁\" and \"故意伤害\". Use exactly those terms. So final answer: [罪名]非法拘禁;故意伤害<eoa>\n\nCheck if any other crimes: maybe \"敲诈勒索\"? They kidnapped to get debt. But the act is illegal detention to force debt. Could be \"非法拘禁\" only. The beating causing injury could be \"故意伤害\". I'd include both.\n\nThus final JSON with reasoning and final answer."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 649,
+      "prompt_tokens": 5110,
+      "total_tokens": 5759,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 646,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00027012,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00027012,
+        "upstream_inference_prompt_cost": 0.0001533,
+        "upstream_inference_completions_cost": 0.00011682
+      }
+    }
+  },
+  "raw_response_missing": false
+}

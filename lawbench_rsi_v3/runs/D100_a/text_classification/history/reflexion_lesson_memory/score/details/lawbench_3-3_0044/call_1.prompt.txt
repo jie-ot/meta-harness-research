@@ -1,0 +1,29 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- Only list multiple crimes when the factual circumstances independently satisfy the statutory elements of each distinct offense; if the conduct is fully covered by a single crime (e.g., illegal detenti
+- If the factual description or prosecution statement references more than one distinct criminal conduct (e.g., multiple offenses, additional charges, or the need for concurrent sentencing), output all 
+- When the factual description references multiple distinct fraud categories (e.g.,票据,信用卡,合同,网络、电信等), list each specific fraud charge separately (separated by semicolons) instead of using the generic te
+- When the factual scenario involves a defendant biting or otherwise assaulting a police officer while resisting law‑enforcement duties, charge only 妨害公务 (obstruction of official duties) unless there is
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:图们市人民检察院指控：2015年2月7日16时30分许，被告人王2某、顾某在图们市某家常菜馆内喝酒时，因琐事与刘某发生口角，并互相殴打。当日18时09分，被害人刘某在公安机关接受调查时，因身体不适被送至图们市人民医院就诊，同日20时25分抢救无效死亡。经鉴定，刘某因与他人争吵、厮打致冠心病急性发作猝死，且死亡与外伤（争吵、厮打）存在因果关系；刘某双侧鼻骨粉碎性骨折，评定为轻伤二级。
+对指控的上述事实，公诉机关当庭宣读和出示了书证、证人证言、被告人的供述、鉴定意见、辨认笔录及辨认照片、视听资料等证据。
+公诉机关认为，被告人王2某、顾某共同故意伤害他人身体致人死亡，其行为已触犯了《中华人民共和国刑法》××××、××××之规定，犯罪事实清楚，证据确实充分，应当以故意伤害罪追究其刑事责任。被告人王2某在刑罚执行完毕后，在五年以内再犯应当判处××以上刑罚之罪，系累犯，依照《中华人民共和国刑罚》××××之规定，应当从重处罚。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

@@ -1,0 +1,72 @@
+{
+  "call_id": "761cb8b9cfe643cabcfff62e84f5316c",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791035062-taL9t1OvH8EmT4Axh1YL",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"The facts describe that the defendant used violence and threats to obstruct police officers from performing their duties. This matches the crime of obstructing public officials in the performance of their duties, which is defined as 妨害公务 under Chinese criminal law. No other companion charges are supported by the facts.\",\n  \"final_answer\": \"[罪名]妨害公务<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine the charge(s) for the given case.\n\nFacts: \"介休市人民检察院指控，被告人张某以暴力、威胁等方法阻碍介休市交警大队民警依法执行公务，其行为触犯了《刑法》××之规定，构成××，应追究其刑事责任。\"\n\nSo the crime is obstruction of public officials performing duties, i.e., \"阻碍公务\" which is a crime under Chinese Criminal Law: \"妨害公务罪\". The typical label is \"妨害公务\". In the dataset, they may have a label like \"阻碍公务\" or \"妨害公务\". Let's see from examples: We have not seen any example of that charge. But typical Chinese criminal law: Article 277 (妨害公务罪). The label likely \"妨害公务\". The instruction: Use the EXACT official label — do not append or drop characters. We need to guess the label used in dataset. Look at other labels: They are Chinese terms like \"诈骗\", \"组织、强迫、引诱、容留、介绍卖淫\", \"引诱、容留、介绍卖淫\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"拐卖妇女、儿童\", \"失火\", \"容留他人吸毒\", \"非法吸收公众存款\", \"违法发放贷款\", \"非国家工作人员受贿\", \"过失致人死亡;破坏生产经营\", \"爆炸\", \"走私珍贵动物、珍贵动物制品\", \"受贿;滥用职权\", \"强制猥亵、侮辱妇女\", \"组织、领导传销活动\", \"故意伤害;编造、故意传播虚假恐怖信息\", \"聚众扰乱公共场所秩序、交通秩序\", \"赌博;开设赌场\", \"放火\", \"抢夺\", \"贪污\", \"非法持有毒品\", \"非法组织卖血\", \"拐骗儿童\", \"侵犯著作权\", \"故意毁坏财物\", \"非法持有、私藏枪支、弹药\", \"非法持有枪支、弹药\", \"非法持有、私藏枪支、弹药\" etc.\n\nWe haven't seen \"妨害公务\" yet. But likely the label is \"妨害公务\". Let's check if any similar label appears: In the list of companion charges, there is \"聚众扰乱公共场所秩序、交通秩序\". That's a different one. So we just output the charge.\n\nThus final answer: [罪名]妨害公务<eoa>\n\nReturn JSON with reasoning and final answer.\n\n",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine the charge(s) for the given case.\n\nFacts: \"介休市人民检察院指控，被告人张某以暴力、威胁等方法阻碍介休市交警大队民警依法执行公务，其行为触犯了《刑法》××之规定，构成××，应追究其刑事责任。\"\n\nSo the crime is obstruction of public officials performing duties, i.e., \"阻碍公务\" which is a crime under Chinese Criminal Law: \"妨害公务罪\". The typical label is \"妨害公务\". In the dataset, they may have a label like \"阻碍公务\" or \"妨害公务\". Let's see from examples: We have not seen any example of that charge. But typical Chinese criminal law: Article 277 (妨害公务罪). The label likely \"妨害公务\". The instruction: Use the EXACT official label — do not append or drop characters. We need to guess the label used in dataset. Look at other labels: They are Chinese terms like \"诈骗\", \"组织、强迫、引诱、容留、介绍卖淫\", \"引诱、容留、介绍卖淫\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"拐卖妇女、儿童\", \"失火\", \"容留他人吸毒\", \"非法吸收公众存款\", \"违法发放贷款\", \"非国家工作人员受贿\", \"过失致人死亡;破坏生产经营\", \"爆炸\", \"走私珍贵动物、珍贵动物制品\", \"受贿;滥用职权\", \"强制猥亵、侮辱妇女\", \"组织、领导传销活动\", \"故意伤害;编造、故意传播虚假恐怖信息\", \"聚众扰乱公共场所秩序、交通秩序\", \"赌博;开设赌场\", \"放火\", \"抢夺\", \"贪污\", \"非法持有毒品\", \"非法组织卖血\", \"拐骗儿童\", \"侵犯著作权\", \"故意毁坏财物\", \"非法持有、私藏枪支、弹药\", \"非法持有枪支、弹药\", \"非法持有、私藏枪支、弹药\" etc.\n\nWe haven't seen \"妨害公务\" yet. But likely the label is \"妨害公务\". Let's check if any similar label appears: In the list of companion charges, there is \"聚众扰乱公共场所秩序、交通秩序\". That's a different one. So we just output the charge.\n\nThus final answer: [罪名]妨害公务<eoa>\n\nReturn JSON with reasoning and final answer.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine the charge(s) for the given case.\n\nFacts: \"介休市人民检察院指控，被告人张某以暴力、威胁等方法阻碍介休市交警大队民警依法执行公务，其行为触犯了《刑法》××之规定，构成××，应追究其刑事责任。\"\n\nSo the crime is obstruction of public officials performing duties, i.e., \"阻碍公务\" which is a crime under Chinese Criminal Law: \"妨害公务罪\". The typical label is \"妨害公务\". In the dataset, they may have a label like \"阻碍公务\" or \"妨害公务\". Let's see from examples: We have not seen any example of that charge. But typical Chinese criminal law: Article 277 (妨害公务罪). The label likely \"妨害公务\". The instruction: Use the EXACT official label — do not append or drop characters. We need to guess the label used in dataset. Look at other labels: They are Chinese terms like \"诈骗\", \"组织、强迫、引诱、容留、介绍卖淫\", \"引诱、容留、介绍卖淫\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"拐卖妇女、儿童\", \"失火\", \"容留他人吸毒\", \"非法吸收公众存款\", \"违法发放贷款\", \"非国家工作人员受贿\", \"过失致人死亡;破坏生产经营\", \"爆炸\", \"走私珍贵动物、珍贵动物制品\", \"受贿;滥用职权\", \"强制猥亵、侮辱妇女\", \"组织、领导传销活动\", \"故意伤害;编造、故意传播虚假恐怖信息\", \"聚众扰乱公共场所秩序、交通秩序\", \"赌博;开设赌场\", \"放火\", \"抢夺\", \"贪污\", \"非法持有毒品\", \"非法组织卖血\", \"拐骗儿童\", \"侵犯著作权\", \"故意毁坏财物\", \"非法持有、私藏枪支、弹药\", \"非法持有枪支、弹药\", \"非法持有、私藏枪支、弹药\" etc.\n\nWe haven't seen \"妨害公务\" yet. But likely the label is \"妨害公务\". Let's check if any similar label appears: In the list of companion charges, there is \"聚众扰乱公共场所秩序、交通秩序\". That's a different one. So we just output the charge.\n\nThus final answer: [罪名]妨害公务<eoa>\n\nReturn JSON with reasoning and final answer.\n\n",
+            "refusal": null,
+            "reasoning_content": "We need to determine the charge(s) for the given case.\n\nFacts: \"介休市人民检察院指控，被告人张某以暴力、威胁等方法阻碍介休市交警大队民警依法执行公务，其行为触犯了《刑法》××之规定，构成××，应追究其刑事责任。\"\n\nSo the crime is obstruction of public officials performing duties, i.e., \"阻碍公务\" which is a crime under Chinese Criminal Law: \"妨害公务罪\". The typical label is \"妨害公务\". In the dataset, they may have a label like \"阻碍公务\" or \"妨害公务\". Let's see from examples: We have not seen any example of that charge. But typical Chinese criminal law: Article 277 (妨害公务罪). The label likely \"妨害公务\". The instruction: Use the EXACT official label — do not append or drop characters. We need to guess the label used in dataset. Look at other labels: They are Chinese terms like \"诈骗\", \"组织、强迫、引诱、容留、介绍卖淫\", \"引诱、容留、介绍卖淫\", \"伪造、变造、买卖国家机关公文、证件、印章\", \"拐卖妇女、儿童\", \"失火\", \"容留他人吸毒\", \"非法吸收公众存款\", \"违法发放贷款\", \"非国家工作人员受贿\", \"过失致人死亡;破坏生产经营\", \"爆炸\", \"走私珍贵动物、珍贵动物制品\", \"受贿;滥用职权\", \"强制猥亵、侮辱妇女\", \"组织、领导传销活动\", \"故意伤害;编造、故意传播虚假恐怖信息\", \"聚众扰乱公共场所秩序、交通秩序\", \"赌博;开设赌场\", \"放火\", \"抢夺\", \"贪污\", \"非法持有毒品\", \"非法组织卖血\", \"拐骗儿童\", \"侵犯著作权\", \"故意毁坏财物\", \"非法持有、私藏枪支、弹药\", \"非法持有枪支、弹药\", \"非法持有、私藏枪支、弹药\" etc.\n\nWe haven't seen \"妨害公务\" yet. But likely the label is \"妨害公务\". Let's check if any similar label appears: In the list of companion charges, there is \"聚众扰乱公共场所秩序、交通秩序\". That's a different one. So we just output the charge.\n\nThus final answer: [罪名]妨害公务<eoa>\n\nReturn JSON with reasoning and final answer.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 691,
+      "prompt_tokens": 23612,
+      "total_tokens": 24303,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 604,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00082583,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00082583,
+        "upstream_inference_prompt_cost": 0.00070836,
+        "upstream_inference_completions_cost": 0.00011747
+      }
+    }
+  },
+  "raw_response_missing": false
+}

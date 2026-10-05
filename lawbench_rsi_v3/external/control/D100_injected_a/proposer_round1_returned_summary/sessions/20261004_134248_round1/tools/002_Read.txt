@@ -1,0 +1,275 @@
+Read: .prototypes\canonical_charge_lexicon_memory.py
+
+
+--- output ---
+1	"""Prototype + validation for canonical_charge_lexicon_memory (Candidate A).
+2	
+3	Part 1 exercises the core mechanism inline with a fake LLM using literals taken
+4	from the frozen feedback view. Part 2 imports the real agent module and re-runs
+5	the mechanism check through the MemorySystem interface.
+6	
+7	Mechanism under test: the model emits a plausible charge *concept* under a
+8	non-statutory *name*. Scoring is exact string match, so a correct concept with a
+9	wrong string scores zero. This system keeps an inventory of exact statutory
+10	strings seen as ground truth, learns deterministic rewrite rules from each
+11	(prediction, ground_truth) pair, and normalizes its own output into an inventory
+12	member before returning it.
+13	"""
+14	
+15	import json
+16	import re
+17	from collections import defaultdict
+18	
+19	# --------------------------------------------------------------------------
+20	# Inline mechanism (mirrors the candidate, kept import-free so Part 1 runs
+21	# standalone)
+22	# --------------------------------------------------------------------------
+23	
+24	
+25	def _clean(s: str) -> str:
+26	    return re.sub(r"\s+", "", s or "")
+27	
+28	
+29	def _split_charges(s: str) -> list:
+30	    """Split on ';' only. '、' is part of statutory names and must not split."""
+31	    return [p.strip() for p in re.split(r"[;；]", s or "") if p.strip()]
+32	
+33	
+34	def _extract_payload(s: str) -> str:
+35	    m = re.search(r"\[罪名\](.*?)(?:<eoa>|$)", s or "", re.S)
+36	    return m.group(1).strip() if m else (s or "").strip()
+37	
+38	
+39	def _bigrams(s: str) -> frozenset:
+40	    s = _clean(s)
+41	    if not s:
+42	        return frozenset()
+43	    if len(s) == 1:
+44	        return frozenset([s])
+45	    return frozenset(s[i : i + 2] for i in range(len(s) - 1))
+46	
+47	
+48	def _sim(a: str, b: str) -> float:
+49	    A, B = _bigrams(a), _bigrams(b)
+50	    if not A or not B:
+51	        return 0.0
+52	    return len(A & B) / len(A | B)
+53	
+54	
+55	class Canonicalizer:
+56	    """Learned inventory + rewrite rules. Deterministic; no LLM involved.
+57	
+58	    Two rule layers, tested as variants below:
+59	      V1 similarity-only alignment (the naive design that MISSes 开设赌场 -> 赌博)
+60	      V2 + verbatim whole-payload rules (no similarity required)
+61	      V3 + verbatim preferred over lexicon hit (adopted)
+62	    """
+63	
+64	    def __init__(self, use_payload_rules: bool = False, payload_first: bool = False) -> None:
+65	        self.inventory = {}          # canonical string -> times seen as ground truth
+66	        self.alias = defaultdict(dict)  # observed part -> {canonical part: count}
+67	        self.payload = defaultdict(dict)  # whole observed payload -> {truth payload: count}
+68	        self.use_payload_rules = use_payload_rules
+69	        self.payload_first = payload_first
+70	
+71	    def observe_truth(self, truth: str) -> None:
+72	        for t in _split_charges(_extract_payload(truth)):
+73	            t = _clean(t)
+74	            if t:
+75	                self.inventory[t] = self.inventory.get(t, 0) + 1
+76	
+77	    def learn(self, pred: str, truth: str) -> None:
+78	        """Record the literal rewrite, then align parts when counts agree."""
+79	        pred_payload = _clean(_extract_payload(pred))
+80	        truth_payload = _clean(_extract_payload(truth))
+81	        if self.use_payload_rules and pred_payload and pred_payload != truth_payload:
+82	            self.payload[pred_payload][truth_payload] = (
+83	                self.payload[pred_payload].get(truth_payload, 0) + 1
+84	            )
+85	        parts = _split_charges(_extract_payload(pred))
+86	        truths = [_clean(t) for t in _split_charges(_extract_payload(truth))]
+87	        for p in parts:
+88	            p = _clean(p)
+89	            if not p:
+90	                continue
+91	            best, best_s = None, 0.0
+92	            for t in truths:
+93	                s = _sim(p, t)
+94	                if s > best_s:
+95	                    best, best_s = t, s
+96	            if best and best != p:
+97	                self.alias[p][best] = self.alias[p].get(best, 0) + 1
+98	
+99	    def _best(self, cand: str, threshold: float) -> str:
+100	        best, best_s = cand, threshold
+101	        for t in self.inventory:
+102	            s = _sim(cand, t)
+103	            if s > best_s:
+104	                best, best_s = t, s
+105	        return best
+106	
+107	    def canonical(self, cand: str) -> str:
+108	        c = _clean(_extract_payload(cand))
+109	        if not c:
+110	            return ""
+111	        # V3 ordering: the stored rewrite beats a bare inventory hit, because a
+112	        # verbatim repeat of the same wrong string is the strongest evidence.
+113	        if self.payload_first and c in self.payload and self.payload[c]:
+114	            return max(self.payload[c].items(), key=lambda kv: kv[1])[0]
+115	        if c in self.inventory:
+116	            return c
+117	        if c in self.payload and self.payload[c]:
+118	            return max(self.payload[c].items(), key=lambda kv: kv[1])[0]
+119	        # 1. learned exact alias
+120	        if c in self.alias and self.alias[c]:
+121	            return max(self.alias[c].items(), key=lambda kv: kv[1])[0]
+122	        # 2. generic Chinese convention: the label field drops the "罪" suffix
+123	        if c.endswith("罪") and c[:-1] in self.inventory:
+124	            return c[:-1]
+125	        # 3. containment (statutory enumerations get truncated by the model)
+126	        contained = [t for t in self.inventory if c in t or t in c]
+127	        if contained:
+128	            return max(contained, key=len)
+129	        # 4. fuzzy fallback, conservative threshold
+130	        return self._best(c, 0.6)
+131	
+132	    def normalize(self, answer: str) -> str:
+133	        out, seen = [], set()
+134	        for p in _split_charges(_extract_payload(answer)):
+135	            c = self.canonical(p)
+136	            if c and c not in seen:
+137	                seen.add(c)
+138	                out.append(c)
+139	        return ";".join(out)
+140	
+141	
+142	# --------------------------------------------------------------------------
+143	# Part 1: exercise the mechanism with a fake LLM and feedback literals
+144	# --------------------------------------------------------------------------
+145	
+146	CASES = [
+147	    # (item_id, model's raw answer, ground truth)
+148	    ("lawbench_3-3_0003", "[罪名]故意毁坏财物罪<eoa>", "故意毁坏财物"),
+149	    ("lawbench_3-3_0234", "[罪名]侵犯注册商标专用权罪<eoa>", "假冒注册商标"),
+150	    ("lawbench_3-3_0482", "[罪名]侵犯注册商标专用权<eoa>", "销售假冒注册商标的商品"),
+151	    ("lawbench_3-3_0309", "[罪名]非法种植罂粟<eoa>", "非法种植毒品原植物"),
+152	    ("lawbench_3-3_0349", "[罪名]非法制造枪支<eoa>",
+153	     "非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物"),
+154	    ("lawbench_3-3_0329", "[罪名]滥伐林木<eoa>", "盗伐林木"),
+155	    ("lawbench_3-3_0287", "[罪名]开设赌场<eoa>", "赌博"),
+156	]
+157	
+158	
+159	def _run_variant(name: str, use_payload: bool, payload_first: bool) -> tuple[int, "Canonicalizer"]:
+160	    cz = Canonicalizer(use_payload_rules=use_payload, payload_first=payload_first)
+161	    for _iid, pred, truth in CASES:
+162	        cz.observe_truth(truth)
+163	        cz.learn(pred, truth)
+164	    hits = sum(1 for _iid, pred, truth in CASES if cz.normalize(pred) == truth)
+165	    print(f"variant {name}: {hits}/{len(CASES)} exact")
+166	    return hits, cz
+167	
+168	
+169	def part1() -> bool:
+170	    # Variant comparison before settling on the shipped ordering.
+171	    v1_hits, _v1 = _run_variant("V1 similarity-only", False, False)
+172	    v2_hits, _v2 = _run_variant("V2 +verbatim payload", True, False)
+173	    v3_hits, cz = _run_variant("V3 verbatim-first (adopted)", True, True)
+174	    assert v3_hits >= v2_hits >= v1_hits, "variant ladder must not regress"
+175	
+176	    print("inventory size:", len(cz.inventory))
+177	    print("payload rules:", {k: dict(v) for k, v in cz.payload.items()})
+178	    print("learned aliases:", {k: dict(v) for k, v in cz.alias.items()})
+179	
+180	    ok = True
+181	    # Learned-alias rules must fire even when fuzzy similarity alone would not.
+182	    for iid, pred, truth in CASES:
+183	        got = cz.normalize(pred)
+184	        hit = got == truth
+185	        ok &= hit
+186	        print(f"  {iid}: {pred} -> {got!r} target={truth!r} {'OK' if hit else 'MISS'}")
+187	
+188	    # Cold start (empty inventory) must be a no-op, never a crash.
+189	    cold = Canonicalizer()
+190	    assert cold.normalize("[罪名]盗窃<eoa>") == "盗窃", "cold start must pass through"
+191	    # ';' separated multi-charge preserved; '、' inside a name never split.
+192	    multi = cz.normalize("[罪名]虚开发票;盗窃<eoa>")
+193	    print("  multi-charge passthrough:", repr(multi))
+194	    stat = cz.canonical("非法制造枪支")
+195	    print("  enumeration truncation:", repr(stat))
+196	    assert "、" in stat, "comma inside a statutory enumeration must survive"
+197	
+198	    print("PART 1:", "ALL OK" if ok else "SOME MISSES")
+199	    return ok
+200	
+201	
+202	# --------------------------------------------------------------------------
+203	# Part 2: import the real candidate and re-check through the interface
+204	# --------------------------------------------------------------------------
+205	
+206	TRIED_REAL_IMPORT = None
+207	
+208	
+209	def part2() -> None:
+210	    global TRIED_REAL_IMPORT
+211	    try:
+212	        from text_classification.agents.canonical_charge_lexicon_memory import (  # noqa: E402
+213	            CanonicalChargeLexiconMemory,
+214	        )
+215	    except Exception as exc:  # pragma: no cover - environment dependent
+216	        TRIED_REAL_IMPORT = f"import failed: {type(exc).__name__}: {exc}"
+217	        print("PART 2 skipped —", TRIED_REAL_IMPORT)
+218	        return
+219	    TRIED_REAL_IMPORT = "ok"
+220	
+221	    seen_prompts = []
+222	
+223	    def fake_llm(prompt: str) -> str:
+224	        seen_prompts.append(prompt)
+225	        # Mimic the base model's habit: a correct concept under a wrong name,
+226	        # plus the empty-output failure on a long fact.
+227	        if "第二起" in prompt or len(prompt) > 60000:
+228	            return json.dumps({"reasoning": "...", "final_answer": ""})
+229	        return json.dumps({"reasoning": "x", "final_answer": "[罪名]侵犯注册商标专用权罪<eoa>"})
+230	
+231	    mem = CanonicalChargeLexiconMemory(fake_llm)
+232	
+233	    # Cold start must work with empty memory.
+234	    ans, meta = mem.predict("事实：被告人某甲盗窃他人财物。")
+235	    assert isinstance(ans, str), "predict must return a string answer"
+236	    print("cold-start answer:", repr(ans), "| meta keys:", sorted(meta)[:4])
+237	
+238	    # Learn a batch, then confirm the learned rewrite reaches the output path.
+239	    batch = [
+240	        {"input": "事实：某甲销售假冒注册商标的商品。", "prediction": "[罪名]侵犯注册商标专用权罪<eoa>",
+241	         "ground_truth": "假冒注册商标", "was_correct": False, "metadata": {}},
+242	        {"input": "事实：某乙故意毁坏他人财物。", "prediction": "[罪名]故意毁坏财物罪<eoa>",
+243	         "ground_truth": "故意毁坏财物", "was_correct": False, "metadata": {}},
+244	    ]
+245	    mem.learn_from_batch(batch)
+246	    ans2, meta2 = mem.predict("事实：某甲销售假冒某注册商标的手袋。")
+247	    print("post-learning answer:", repr(ans2))
+248	    assert ans2 == "假冒注册商标", f"learned alias did not rewrite output: {ans2!r}"
+249	
+250	    # Inventory must be injected into the prompt.
+251	    assert any("假冒注册商标" in p for p in seen_prompts), "inventory not injected"
+252	    # Empty output must trigger exactly one terse retry and still return a string.
+253	    n_before = len(seen_prompts)
+254	    ans3, meta3 = mem.predict("第二起 事实：" + "很长的事实描述。" * 4000)
+255	    print("empty-output path:", repr(ans3), "| calls:", len(seen_prompts) - n_before)
+256	
+257	    # State round-trip.
+258	    state = mem.get_state()
+259	    mem2 = CanonicalChargeLexiconMemory(fake_llm)
+260	    mem2.set_state(state)
+261	    assert mem2.predict("事实：某甲销售假冒某注册商标的手袋。")[0] == "假冒注册商标", "state round-trip lost rules"
+262	    print("state round-trip OK | state bytes:", len(state))
+263	    print("PART 2: OK")
+264	
+265	
+266	if __name__ == "__main__":
+267	    p1 = part1()
+268	    part2()
+269	    print("REAL IMPORT:", TRIED_REAL_IMPORT)
+270	    print("RESULT:", "PASS" if p1 else "PART1_MISSES")
+271	

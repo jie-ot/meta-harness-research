@@ -1,0 +1,64 @@
+Edit: agents\difficulty_sorted_memory.py
+
+replace_all: False
+old_string:
+"""Temporally-Decayed Confusion Memory.
+
+Extends adaptive_tokenizer_confusion_memory with one structural change to the
+learning strategy (axis E): confusion counts decay exponentially after each
+training step, so the confusion matrix reflects the model's *current* error
+patterns rather than its entire accumulated history.
+
+Problem with the baseline: confusion counts are monotonically increasing integers.
+A label pair confused heavily early in training (when the model had few examples)
+accumulates a large count that permanently dominates disambiguation slot selection,
+even after the model has seen dozens of corrective examples and stopped making
+that mistake. The disambiguation phase keeps injecting examples for a boundary
+the model no longer needs.
+
+Fix: after each learn_from_batch call, multiply every existing confusion count by
+DECAY_FACTOR (< 1). New error events are added with weight 1.0. Counts that decay
+below a threshold are pruned to keep the matrix sparse. This gives recent errors
+higher relative weight without requiring explicit timestamps.
+
+Retrieval algorithm is identical to adaptive_tokenizer_confusion_memory (two-phase:
+confusion slots then similarity fill) so any delta is attributable purely to the
+decay mechanism. Also includes the prediction-normalization fix.
+"""
+
+new_string:
+"""Difficulty-Sorted Prompt Memory.
+
+Extends decayed_confusion_memory with a novel prompt-ordering mechanism (axis A):
+after the standard two-phase retrieval, the selected examples are re-ordered
+before formatting so that examples whose labels are most frequently the *true*
+label in confusion-matrix errors appear LAST in the prompt — immediately before
+the question.
+
+Why this might help: transformer attention exhibits a recency bias, meaning
+positions close to the generation boundary exert disproportionately strong
+influence on the prediction.  In the standard system, selection order determines
+prompt order, so the highest-similarity example (which is often a generic
+representative of a common label) ends up first and the rare disambiguation
+example ends up last by accident.  By sorting ascending on confusion-target
+affinity we deliberately push the examples the model most needs for
+disambiguation to the position where they have maximal influence — right above
+the question — while leaving easy/unambiguous examples earlier.
+
+Sort key: confusion column affinity of the example's label = sum of all
+confusion counts where that label is the ground-truth (the model predicted
+something else but this was correct).  High affinity ↔ label is frequently
+mis-predicted ↔ disambiguation examples for this label are most valuable near
+the question.
+
+Cold start: all affinities are 0, so stable sort preserves the original
+similarity order exactly — no cold-start regression.
+
+Everything else (retrieval, decay, normalisation, adaptive tokenizer) is
+identical to decayed_confusion_memory.  Any accuracy delta is attributable
+purely to the ordering change.
+"""
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\agents\difficulty_sorted_memory.py has been updated successfully.

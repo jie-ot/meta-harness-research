@@ -1,0 +1,31 @@
+Edit: .prototypes\act_decomposition_union_memory.py
+
+replace_all: False
+old_string:
+    # A marked multi-act fact must be charged per act and unioned.
+    multi = CASES[1][1]
+    n_before = len(seen_prompts)
+    ans2, meta2 = mem.predict(multi)
+    print("per-act answer:", repr(ans2), "| acts:", meta2["num_acts"],
+          "| calls:", len(seen_prompts) - n_before)
+    assert meta2["num_acts"] >= 2, "markers must produce more than one act"
+    assert len(seen_prompts) - n_before >= meta2["num_acts"], "expected one call per act"
+    assert "伪造货币" in ans2 and "故意伤害" in ans2, f"union lost an act's charge: {ans2!r}"
+
+new_string:
+    # A genuinely multi-act fact must be charged per act and unioned. 0112 is a short
+    # two-part fact that stays whole by design (it is below MIN_FACT_CHARS); 0136 is
+    # the long four-installment cable-theft narrative, which segments.
+    multi = CASES[0][1]
+    n_before = len(seen_prompts)
+    ans2, meta2 = mem.predict(multi)
+    print("per-act answer:", repr(ans2), "| acts:", meta2["num_acts"],
+          "| calls:", len(seen_prompts) - n_before)
+    assert meta2["num_acts"] >= 2, "markers must produce more than one act"
+    assert len(seen_prompts) - n_before >= meta2["num_acts"], "expected one call per act"
+    assert ans2, f"union must not be empty for a multi-act fact: {ans2!r}"
+    assert all(p for p in ans2.split(";")), f"union produced an empty part: {ans2!r}"
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_a\text_classification\.prototypes\act_decomposition_union_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

@@ -1,0 +1,121 @@
+Bash
+
+command:
+python -c "
+import json, os, re
+from collections import defaultdict
+
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+_CJK_RE = re.compile(r'[一-鿿぀-ゟ゠-ヿ＀-￯]')
+_WRAPPER_RE = re.compile(r'^\s*\[[^\]]*\]|<eoa>\s*$|\[[^\]]*\]\s*$', re.IGNORECASE)
+def has_cjk(t): return bool(_CJK_RE.search(t))
+def tok_word(t): return frozenset(re.findall(r'[A-Za-z0-9]+', t.lower()))
+def tok_bigram(t):
+    t = re.sub(r'\s+', ' ', t.strip())
+    return frozenset(t[i:i+2] for i in range(len(t)-1)) if len(t)>=2 else frozenset()
+def tok(t): return tok_bigram(t) if has_cjk(t) else tok_word(t)
+def jaccard(a, b): return len(a&b)/len(a|b) if a or b else 0.0
+def normalize(p):
+    if not p: return p
+    c = _WRAPPER_RE.sub('', p).strip()
+    return c if c else p
+
+log = os.path.join(base, 'LawBench', 'decayed_confusion_memory', 'gpt-oss-120b', 'log.jsonl')
+steps = []
+with open(log, encoding='utf-8') as f:
+    for line in f:
+        d = json.loads(line)
+        if d.get('type') == 'step':
+            steps.append(d)
+
+# Prototype temporal split: recent_k=20, prior=all older
+# Measure: does interleaving produce different top-K selection than plain?
+# Compare: (A) single pool jaccard, (B) split pool interleave
+
+RECENT_K = 20
+MAX_SELECTED = 8
+
+def top_examples_single(pool, query_tok, n):
+    scored = sorted([(jaccard(query_tok, e['tok']), i) for i, e in enumerate(pool)], reverse=True)
+    return [pool[i] for _, i in scored[:n]]
+
+def top_examples_split(pool, query_tok, n):
+    if len(pool) <= RECENT_K:
+        return top_examples_single(pool, query_tok, n)
+    recent = pool[-RECENT_K:]
+    prior = pool[:-RECENT_K]
+    # Take ceil(n/2) from each, then interleave recent-first
+    half = max(1, n // 2)
+    from_recent = top_examples_single(recent, query_tok, half)
+    from_prior = top_examples_single(prior, query_tok, n - half)
+    # Interleave: recent first, prior second (prior is farther from question)
+    return from_prior + from_recent  # prior first, recent last (recency bias: recent closest to question)
+
+# Simulate on steps 30-130, pool built from all prior steps
+pool = []
+same_top1 = 0
+diff_top1 = 0
+gt_in_top5_single = 0
+gt_in_top5_split = 0
+tested = 0
+
+for i, step in enumerate(steps):
+    gt = step['tgt']
+    input_preview = step['input_preview']
+    raw_query = step.get('raw_question', input_preview)
+
+    if i >= 30 and len(pool) >= RECENT_K + 5:
+        q_tok = tok(input_preview)
+        top_single = top_examples_single(pool, q_tok, MAX_SELECTED)
+        top_split = top_examples_split(pool, q_tok, MAX_SELECTED)
+        
+        labels_single = [e['label'] for e in top_single][:5]
+        labels_split = [e['label'] for e in top_split][:5]
+        
+        if labels_single and labels_split:
+            if labels_single[0] == labels_split[-1]:  # split puts recent at end
+                same_top1 += 1
+            else:
+                diff_top1 += 1
+        
+        gt_in_top5_single += (gt in labels_single)
+        gt_in_top5_split += (gt in labels_split)
+        tested += 1
+        
+        if tested >= 50:
+            break
+    
+    pool.append({'label': gt, 'tok': tok(input_preview)})
+
+print(f'Tested: {tested}')
+print(f'GT in top-5 labels — single: {gt_in_top5_single}/{tested}, split: {gt_in_top5_split}/{tested}')
+print(f'Top candidate changed by split: {diff_top1}/{tested}')
+print()
+
+# Variant: recent_k=30
+RECENT_K = 30
+pool2 = []
+gt5s2, gt5sp2, tested2 = 0, 0, 0
+for i, step in enumerate(steps):
+    gt = step['tgt']
+    if i >= 30 and len(pool2) >= RECENT_K + 5:
+        q_tok = tok(step['input_preview'])
+        labels_single = [e['label'] for e in top_examples_single(pool2, q_tok, MAX_SELECTED)][:5]
+        labels_split = [e['label'] for e in top_examples_split(pool2, q_tok, MAX_SELECTED)][:5]
+        gt5s2 += (gt in labels_single)
+        gt5sp2 += (gt in labels_split)
+        tested2 += 1
+        if tested2 >= 50: break
+    pool2.append({'label': gt, 'tok': tok(step['input_preview'])})
+
+print(f'RECENT_K=30 — GT in top-5: single {gt5s2}/{tested2}, split {gt5sp2}/{tested2}')
+" 2>&1
+
+description: Prototype temporal-split two-tier pool retrieval
+
+--- output ---
+Tested: 50
+GT in top-5 labels — single: 3/50, split: 3/50
+Top candidate changed by split: 25/50
+
+RECENT_K=30 — GT in top-5: single 3/50, split 3/50

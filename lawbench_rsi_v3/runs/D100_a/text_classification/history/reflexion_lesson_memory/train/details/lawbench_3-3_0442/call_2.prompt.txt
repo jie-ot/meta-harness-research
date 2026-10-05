@@ -1,0 +1,24 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:浙江省宁波市镇海区人民检察院指控：
+2014年7月，被告人徐某甲无施工资质承包宁波华一包装有限公司流水线车间排气楼改造工程，在施工期间，被告人徐某甲作为施工承包人，对高处作业安全防护措施不重视，违反国家生产区域高处作业安全管理规定，明知其雇佣的作业人员违章作业不加制止，导致该工程施工期间存在安全隐患。同月23日下午15时40分左右，作业人员王某等人在离地约7米的车间屋顶施工时，被告人徐某甲未按照高处作业安全管理规定督促作业人员佩戴安全防护用具，并采取安全防护措施，且事先未对王某等作业人员进行针对性的安全教育和培训，导致发生王某施工时从屋顶高处坠落经医院抢救无效于当天死亡的生产安全责任事故。经鉴定，被害人王某符合高坠死亡。经调查认定，被告人徐某甲对事故发生负有直接责任。
+案发后，被告人徐某甲能自动投案并如实供述自己的犯罪事实。本案的民事赔偿已经协商解决并履行完毕。
+
+
+Wrong prediction: [罪名]非法经营;违反安全生产管理规定致人死亡<eoa>
+Correct answer: 重大责任事故
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

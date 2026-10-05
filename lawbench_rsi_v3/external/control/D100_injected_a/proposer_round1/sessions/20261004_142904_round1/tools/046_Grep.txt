@@ -1,0 +1,28 @@
+Grep
+
+-n: True
+output_mode: content
+path:
+D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_a\text_classification\agents\confusion_disambiguation_memory.py
+
+pattern: def |class |_tokenize|PROMPT
+
+--- output ---
+32:PROMPT_TEMPLATE = """Solve the problem below based on the examples provided.
+52:def _tokenize(text: str) -> frozenset[str]:
+56:def _jaccard(a: frozenset[str], b: frozenset[str]) -> float:
+62:class ConfusionDisambiguationMemory(MemorySystem):
+65:    def __init__(self, llm: LLMCallable):
+76:    def _scored(self, query: str) -> list[tuple[float, int, dict]]:
+78:        q_tok = _tokenize(query)
+86:    def _confusion_targets_for(self, labels: list[str]) -> list[str]:
+103:    def _build_parts(self, query: str) -> list[str]:
+118:        def try_add(idx: int, ex: dict) -> bool:
+163:    def predict(self, input: str) -> tuple[str, dict[str, Any]]:
+166:        prompt = PROMPT_TEMPLATE.format(
+181:    def learn_from_batch(self, batch_results: list[dict[str, Any]]) -> None:
+187:                "tokens": _tokenize(raw_q),
+200:    def get_context_length(self) -> int:
+203:    def get_state(self) -> str:
+215:    def set_state(self, state: str) -> None:
+224:                restored["tokens"] = _tokenize(raw_q)

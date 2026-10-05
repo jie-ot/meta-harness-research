@@ -1,0 +1,72 @@
+{
+  "call_id": "1b8028c565ab4e10adc4a09f093b1059",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791042091-j5bDAlRBC1TOLllRo15K",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\"lesson\":\"Only assign the label that directly matches the described conduct; distinguish intentional injury (故意伤害) from abuse of a supervised person (虐待被监管人) and avoid adding extra charges not explicitly indicated.\"}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce JSON with lesson. The error: predicted both \"故意伤害;虐待被监管人\" but correct is only \"虐待被监管人\". So the model incorrectly added \"故意伤害\". Need to distinguish that \"故意伤害\" is a different crime (intentional injury) whereas \"虐待被监管人\" is abuse of a supervised person. The lesson: ensure to only assign labels that are explicitly present in the text; avoid adding related but distinct offenses unless evidence. So lesson: differentiate between intentional injury and abuse of supervised person; only select the specific charge mentioned. Under 60 words. Provide JSON.",
+          "provider_specific_fields": {
+            "reasoning": "We need to produce JSON with lesson. The error: predicted both \"故意伤害;虐待被监管人\" but correct is only \"虐待被监管人\". So the model incorrectly added \"故意伤害\". Need to distinguish that \"故意伤害\" is a different crime (intentional injury) whereas \"虐待被监管人\" is abuse of a supervised person. The lesson: ensure to only assign labels that are explicitly present in the text; avoid adding related but distinct offenses unless evidence. So lesson: differentiate between intentional injury and abuse of supervised person; only select the specific charge mentioned. Under 60 words. Provide JSON.",
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce JSON with lesson. The error: predicted both \"故意伤害;虐待被监管人\" but correct is only \"虐待被监管人\". So the model incorrectly added \"故意伤害\". Need to distinguish that \"故意伤害\" is a different crime (intentional injury) whereas \"虐待被监管人\" is abuse of a supervised person. The lesson: ensure to only assign labels that are explicitly present in the text; avoid adding related but distinct offenses unless evidence. So lesson: differentiate between intentional injury and abuse of supervised person; only select the specific charge mentioned. Under 60 words. Provide JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning_content": "We need to produce JSON with lesson. The error: predicted both \"故意伤害;虐待被监管人\" but correct is only \"虐待被监管人\". So the model incorrectly added \"故意伤害\". Need to distinguish that \"故意伤害\" is a different crime (intentional injury) whereas \"虐待被监管人\" is abuse of a supervised person. The lesson: ensure to only assign labels that are explicitly present in the text; avoid adding related but distinct offenses unless evidence. So lesson: differentiate between intentional injury and abuse of supervised person; only select the specific charge mentioned. Under 60 words. Provide JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 190,
+      "prompt_tokens": 171,
+      "total_tokens": 361,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 0,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 4.1857e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 4.1857e-05,
+        "upstream_inference_prompt_cost": 6.327e-06,
+        "upstream_inference_completions_cost": 3.553e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

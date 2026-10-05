@@ -15,6 +15,7 @@ import signal
 import subprocess
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from pathlib import Path
 
@@ -22,6 +23,10 @@ import yaml
 
 import claude_wrapper
 from benchmark import get_model_short_name, load_results
+
+# Child processes inherit this. It does not change this interpreter's default
+# encoding, so file I/O below still passes encoding="utf-8" explicitly.
+os.environ["PYTHONUTF8"] = "1"
 
 EVOLVE_DIR = Path(__file__).parent
 CONFIG_PATH = EVOLVE_DIR / "config.yaml"
@@ -98,6 +103,27 @@ def _pct(val):
     return _red(s)
 
 
+def _configure_stdio() -> None:
+    """Let progress lines print on a GBK Windows console."""
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is None:
+            continue
+        try:
+            reconfigure(encoding="utf-8", errors="replace")
+        except (OSError, ValueError):
+            pass
+
+
+def _process_tail(result, limit: int = 2000) -> str:
+    """Return the end of a failed child process's output, where the error is."""
+    chunks = []
+    for text in (result.stdout, result.stderr):
+        if text and text.strip():
+            chunks.append(text.strip()[-limit:])
+    return "\n".join(chunks)
+
+
 def _handle_signal(signum, frame):
     global _interrupted
     _interrupted = True
@@ -108,7 +134,13 @@ def run_cmd(cmd, timeout=7200, cwd=None):
     """Wraps subprocess.run; returns CompletedProcess with returncode=124 on timeout."""
     try:
         return subprocess.run(
-            cmd, cwd=cwd, timeout=timeout, capture_output=True, text=True
+            cmd,
+            cwd=cwd,
+            timeout=timeout,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
         )
     except subprocess.TimeoutExpired:
         return subprocess.CompletedProcess(
@@ -151,7 +183,7 @@ def count_iterations_from_summary():
     if not EVOLUTION_SUMMARY.exists():
         return 0
     max_iter = 0
-    for line in EVOLUTION_SUMMARY.read_text().strip().split("\n"):
+    for line in EVOLUTION_SUMMARY.read_text(encoding="utf-8").strip().split("\n"):
         if not line.strip():
             continue
         try:
@@ -162,31 +194,34 @@ def count_iterations_from_summary():
 
 
 def propose_claude(task_prompt, iteration, timeout=2400):
-    """Returns True if candidates were produced (pending_eval.json exists)."""
+    """Return (candidates_written, proposer_cost_usd)."""
     os.environ.pop("CLAUDECODE", None)
     # Strip API key so claude CLI uses subscription auth (avoids rate limits)
     saved_key = os.environ.pop("ANTHROPIC_API_KEY", None)
     result = claude_wrapper.run(
         prompt=task_prompt,
-        model="opus",
+        model="claude-opus-5-5-code",
         allowed_tools=PROPOSER_ALLOWED_TOOLS,
         skills=[str(EVOLVE_DIR / ".claude/skills/meta-harness")],
         cwd=str(EVOLVE_DIR),
         log_dir=str(LOGS_DIR / "claude_sessions"),
         name=f"iter{iteration}",
         timeout_seconds=timeout,
-        effort="max",
+        effort="high",
     )
     # Restore API key
     if saved_key:
         os.environ["ANTHROPIC_API_KEY"] = saved_key
+    cost = float(result.cost_usd or 0.0)
     if result.exit_code != 0:
         print(f"  {_red('proposer failed')} exit={result.exit_code}")
         if result.stderr:
             print(f"  {_dim(result.stderr[:500])}")
-        return False
+        print(f"  proposer cost (reported): ${cost:.4f}")
+        return False, cost
     result.show()
-    return PENDING_EVAL.exists()
+    print(f"  proposer cost (reported): ${cost:.4f}")
+    return PENDING_EVAL.exists(), cost
 
 
 def validate_candidates(candidates):
@@ -210,8 +245,9 @@ def validate_candidates(candidates):
             valid.append(c)
         else:
             print(f"    {_red('FAIL')} {name}")
-            if result.stderr:
-                print(f"      {_dim(result.stderr[:200])}")
+            detail = _process_tail(result, limit=500)
+            if detail:
+                print(f"      {_dim(detail)}")
     return valid
 
 
@@ -222,13 +258,19 @@ def update_evolution_summary(
     propose_time=None,
     bench_time=None,
     wall_time=None,
+    propose_cost_usd=None,
+    solver_costs=None,
 ):
     """Append one JSONL row per candidate to evolution_summary.jsonl."""
-    frontier = json.loads(FRONTIER_VAL.read_text()) if FRONTIER_VAL.exists() else {}
+    frontier = (
+        json.loads(FRONTIER_VAL.read_text(encoding="utf-8"))
+        if FRONTIER_VAL.exists()
+        else {}
+    )
     pareto = frontier.get("_pareto", [])
     best_val = pareto[0].get("val_accuracy", 0) if pareto else 0
 
-    with open(EVOLUTION_SUMMARY, "a") as f:
+    with open(EVOLUTION_SUMMARY, "a", encoding="utf-8") as f:
         for i, c in enumerate(candidates):
             name = c["name"]
             avg_val = val_scores.get(name, 0)
@@ -251,6 +293,10 @@ def update_evolution_summary(
                     "bench": round(bench_time, 1),
                     "wall": round(wall_time, 1),
                 }
+            if i == 0 and propose_cost_usd is not None:
+                row["propose_cost_usd"] = round(propose_cost_usd, 6)
+            if solver_costs and name in solver_costs:
+                row["solver_cost_usd"] = round(solver_costs[name], 6)
             f.write(json.dumps(row) + "\n")
 
 
@@ -283,14 +329,21 @@ def fresh_start():
     print(f"  {_green('Fresh start')}: cleared generated agents and log files")
 
 
-def finalize_run(baselines, datasets, model_short):
+def finalize_run(
+    baselines,
+    datasets,
+    model_short,
+    *,
+    all_systems=False,
+    harness_concurrency=1,
+):
     """Evaluate test once, after freezing this run against further evolution."""
     if not FRONTIER_VAL.exists():
         print(f"ERROR: no validation frontier for run at {LOGS_DIR}")
         raise SystemExit(1)
 
     if FINALIZED.exists():
-        state = json.loads(FINALIZED.read_text())
+        state = json.loads(FINALIZED.read_text(encoding="utf-8"))
         if state.get("status") == "complete":
             print(f"Run already finalized: {LOGS_DIR.name}")
             result = run_benchmark(["--results", "--test"])
@@ -298,14 +351,23 @@ def finalize_run(baselines, datasets, model_short):
                 print(result.stdout)
             return
 
-    frontier = json.loads(FRONTIER_VAL.read_text())
-    pareto = frontier.get("_pareto", [])
-    test_systems = set(baselines)
-    test_systems.update(entry["system"] for entry in pareto)
-    for key, value in frontier.items():
-        if not key.startswith("_") and isinstance(value, dict):
-            if "best_system" in value:
-                test_systems.add(value["best_system"])
+    if all_systems:
+        test_systems = set(baselines)
+        for line in EVOLUTION_SUMMARY.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            row = json.loads(line)
+            if row.get("system"):
+                test_systems.add(row["system"])
+    else:
+        frontier = json.loads(FRONTIER_VAL.read_text(encoding="utf-8"))
+        pareto = frontier.get("_pareto", [])
+        test_systems = set(baselines)
+        test_systems.update(entry["system"] for entry in pareto)
+        for key, value in frontier.items():
+            if not key.startswith("_") and isinstance(value, dict):
+                if "best_system" in value:
+                    test_systems.add(value["best_system"])
 
     FINALIZED.write_text(
         json.dumps(
@@ -313,17 +375,27 @@ def finalize_run(baselines, datasets, model_short):
                 "status": "in_progress",
                 "started_at": datetime.now().isoformat(),
                 "systems": sorted(test_systems),
+                "all_systems": all_systems,
+                "harness_concurrency": harness_concurrency,
             },
             indent=2,
-        )
+        ),
+        encoding="utf-8",
     )
 
     print(f"\n{_ts()} {_bold('Phase Final: Test evaluation')}")
     failed = False
-    for name in sorted(test_systems):
+
+    def evaluate_one(name):
         print(f"  {_ts()} test eval: {_bold(name)}", flush=True)
-        result = run_benchmark(["--memory", name, "--test"])
-        if result.returncode != 0:
+        return name, run_benchmark(["--memory", name, "--test"])
+
+    with ThreadPoolExecutor(max_workers=max(1, harness_concurrency)) as executor:
+        futures = [executor.submit(evaluate_one, name) for name in sorted(test_systems)]
+        for future in as_completed(futures):
+            name, result = future.result()
+            if result.returncode == 0:
+                continue
             failed = True
             print(f"    {_red('FAIL')} {name} test eval failed")
 
@@ -350,10 +422,10 @@ def finalize_run(baselines, datasets, model_short):
         print("Test finalization incomplete. Fix failures, then rerun --test.")
         raise SystemExit(1)
 
-    state = json.loads(FINALIZED.read_text())
+    state = json.loads(FINALIZED.read_text(encoding="utf-8"))
     state["status"] = "complete"
     state["completed_at"] = datetime.now().isoformat()
-    FINALIZED.write_text(json.dumps(state, indent=2))
+    FINALIZED.write_text(json.dumps(state, indent=2), encoding="utf-8")
     print(f"\n{_ts()} {_bold('Test finalization complete.')}")
 
 
@@ -361,7 +433,8 @@ def run_evolve(args):
     global LOGS_DIR, PENDING_EVAL, FRONTIER_VAL, EVOLUTION_SUMMARY
     global RESULTS_DIR, FINALIZED
 
-    with open(CONFIG_PATH) as f:
+    _configure_stdio()
+    with open(CONFIG_PATH, encoding="utf-8") as f:
         cfg = yaml.safe_load(f)
     datasets = cfg["datasets"]
 
@@ -389,12 +462,18 @@ def run_evolve(args):
 
     baselines = cfg["memory_systems"]["baselines"]
     if args.test:
-        finalize_run(baselines, datasets, model_short)
+        finalize_run(
+            baselines,
+            datasets,
+            model_short,
+            all_systems=args.test_all,
+            harness_concurrency=args.test_harness_concurrency,
+        )
         return
 
     if (
         FINALIZED.exists()
-        and json.loads(FINALIZED.read_text()).get("status") == "complete"
+        and json.loads(FINALIZED.read_text(encoding="utf-8")).get("status") == "complete"
     ):
         print(
             f"ERROR: run '{run_name}' is finalized; use a new --run-name to continue evolution"
@@ -421,7 +500,10 @@ def run_evolve(args):
             result = run_benchmark(["--memory", bl])
             elapsed = time.time() - t0
             if result.returncode != 0:
-                print(f"    {_red('FAIL')} {bl}: {result.stderr[:200]}")
+                print(f"    {_red('FAIL')} {bl} ({_elapsed(elapsed)})")
+                detail = _process_tail(result)
+                if detail:
+                    print(detail)
             else:
                 print(f"    {_green('OK')} ({_elapsed(elapsed)})")
 
@@ -438,7 +520,19 @@ def run_evolve(args):
             ]
             if accs:
                 avg = sum(accs) / len(accs)
-                print(f"    {_bold(bl)}: avg_val={_pct(avg)}")
+                covered = [
+                    ds
+                    for ds in datasets
+                    if (model_short, ds, bl) in results
+                    and results[(model_short, ds, bl)].get("accuracy") is not None
+                ]
+                cost = sum(
+                    float(results[(model_short, ds, bl)].get("estimated_cost_usd") or 0.0)
+                    for ds in covered
+                )
+                print(
+                    f"    {_bold(bl)}: avg_val={_pct(avg)}  solver_cost=${cost:.4f}"
+                )
 
     # ── Phase 1..N: Evolution ──────────────────────────────────
     start_iteration = count_iterations_from_summary() + 1
@@ -451,7 +545,11 @@ def run_evolve(args):
         iter_start = time.time()
 
         # Show frontier status
-        frontier = json.loads(FRONTIER_VAL.read_text()) if FRONTIER_VAL.exists() else {}
+        frontier = (
+            json.loads(FRONTIER_VAL.read_text(encoding="utf-8"))
+            if FRONTIER_VAL.exists()
+            else {}
+        )
         pareto = frontier.get("_pareto", [])
         best_val = pareto[0].get("val_accuracy", 0) if pareto else 0
         best_sys = pareto[0].get("system", "none") if pareto else "none"
@@ -470,7 +568,9 @@ def run_evolve(args):
         # Propose
         propose_start = time.time()
         print(f"  {_ts()} {_cyan('proposing')} new candidates...", flush=True)
-        ok = propose_claude(task_prompt, iteration, timeout=args.propose_timeout)
+        ok, propose_cost = propose_claude(
+            task_prompt, iteration, timeout=args.propose_timeout
+        )
         propose_time = time.time() - propose_start
 
         if not ok:
@@ -479,7 +579,9 @@ def run_evolve(args):
             )
             continue
 
-        candidates = json.loads(PENDING_EVAL.read_text()).get("candidates", [])
+        candidates = json.loads(PENDING_EVAL.read_text(encoding="utf-8")).get(
+            "candidates", []
+        )
         print(
             f"  {_ts()} proposed {len(candidates)} candidate(s) in {_elapsed(propose_time)}"
         )
@@ -496,7 +598,11 @@ def run_evolve(args):
                 f"  {_red('0 valid')} out of {len(candidates)} candidates, skipping iteration"
             )
             update_evolution_summary(
-                iteration, candidates, {}, propose_time=propose_time
+                iteration,
+                candidates,
+                {},
+                propose_time=propose_time,
+                propose_cost_usd=propose_cost,
             )
             continue
         print(
@@ -520,6 +626,9 @@ def run_evolve(args):
             elapsed = time.time() - t0
             if result.returncode != 0:
                 print(f"      {_red('FAIL')} benchmark crashed ({_elapsed(elapsed)})")
+                detail = _process_tail(result)
+                if detail:
+                    print(detail)
             else:
                 print(f"      {_green('OK')} ({_elapsed(elapsed)})")
         bench_time = time.time() - bench_start
@@ -528,6 +637,7 @@ def run_evolve(args):
 
         # Compute scores and show results
         val_scores = {}
+        solver_costs = {}
         results = load_results(LOGS_DIR, "val.json")
         for c in valid_candidates:
             name = c["name"]
@@ -537,6 +647,15 @@ def run_evolve(args):
                 for k in [(model_short, ds, name)]
                 if k in results and results[k].get("accuracy") is not None
             ]
+            covered = [
+                (model_short, ds, name)
+                for ds in datasets
+                if (model_short, ds, name) in results
+                and results[(model_short, ds, name)].get("accuracy") is not None
+            ]
+            solver_costs[name] = sum(
+                float(results[key].get("estimated_cost_usd") or 0.0) for key in covered
+            )
             val_scores[name] = sum(accs) / len(accs) if accs else 0
             delta = val_scores[name] - (best_val * 100 if best_val <= 1 else best_val)
             delta_str = f"{delta:+.1f}"
@@ -546,7 +665,8 @@ def run_evolve(args):
                 else (_red(delta_str) if delta < 0 else _dim(delta_str))
             )
             print(
-                f"    {_bold(name)}: avg_val={_pct(val_scores[name])}  delta={delta_colored}"
+                f"    {_bold(name)}: avg_val={_pct(val_scores[name])}  "
+                f"delta={delta_colored}  solver_cost=${solver_costs[name]:.4f}"
             )
 
         wall_time = time.time() - iter_start
@@ -557,6 +677,8 @@ def run_evolve(args):
             propose_time=propose_time,
             bench_time=bench_time,
             wall_time=wall_time,
+            propose_cost_usd=propose_cost,
+            solver_costs=solver_costs,
         )
 
         # Show iteration summary
@@ -582,7 +704,7 @@ def run_evolve(args):
 def main():
     parser = argparse.ArgumentParser(description="Evolution loop for memory systems")
     parser.add_argument("--iterations", type=int, default=20)
-    with open(CONFIG_PATH) as f:
+    with open(CONFIG_PATH, encoding="utf-8") as f:
         _cfg = yaml.safe_load(f)
     _default_model = _cfg["models"][0]["model"] if _cfg.get("models") else None
     parser.add_argument(
@@ -613,12 +735,27 @@ def main():
         action="store_true",
         help="Finalize an existing named run with one held-out test evaluation",
     )
+    parser.add_argument(
+        "--test-all",
+        action="store_true",
+        help="With --test, evaluate baselines and every candidate in evolution_summary.jsonl",
+    )
+    parser.add_argument(
+        "--test-harness-concurrency",
+        type=int,
+        default=1,
+        help="Number of harness test sweeps to run concurrently (default: 1)",
+    )
     args = parser.parse_args()
 
     if args.test and not args.run_name:
         parser.error("--test requires --run-name")
     if args.test and args.fresh:
         parser.error("--test cannot be combined with --fresh")
+    if args.test_all and not args.test:
+        parser.error("--test-all requires --test")
+    if args.test_harness_concurrency < 1:
+        parser.error("--test-harness-concurrency must be at least 1")
 
     signal.signal(signal.SIGINT, _handle_signal)
     signal.signal(signal.SIGTERM, _handle_signal)

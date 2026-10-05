@@ -1,0 +1,52 @@
+Edit: agents\act_decomposition_union_memory.py
+
+replace_all: False
+old_string:
+        union: list[str] = []
+        for parts in per_act:
+            for c in parts:
+                if c not in union:
+                    union.append(c)
+        kept = self._calibrate(union, len(acts))
+        answer = _wrap(";".join(kept)) if kept else ""
+
+        return answer, {
+            "full_response": "\n".join(responses),
+            "num_acts": len(acts),
+            "per_act": per_act,
+            "union": union,
+            "kept": kept,
+            "expected_size": self._expected_size(len(acts)),
+            "retries": retries,
+            "num_spurious": len(self.spurious),
+            "size_observations": self._size_obs,
+        }
+
+new_string:
+        union: list[str] = []
+        grounded = 0
+        for parts in per_act:
+            if parts:
+                grounded += 1
+            for c in parts:
+                if c not in union:
+                    union.append(c)
+        kept = self._calibrate(union, len(acts), grounded)
+        answer = _wrap(";".join(kept)) if kept else ""
+
+        return answer, {
+            "full_response": "\n".join(responses),
+            "num_acts": len(acts),
+            "per_act": per_act,
+            "union": union,
+            "kept": kept,
+            "grounded_acts": grounded,
+            "expected_size": self._expected_size(len(acts)),
+            "retries": retries,
+            "num_spurious": len(self.spurious),
+            "size_observations": self._size_obs,
+        }
+
+
+--- output ---
+The file D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\lawbench_rsi_v3\runs\D100_injected_a\text_classification\agents\act_decomposition_union_memory.py has been updated successfully. (file state is current in your context — no need to Read it back)

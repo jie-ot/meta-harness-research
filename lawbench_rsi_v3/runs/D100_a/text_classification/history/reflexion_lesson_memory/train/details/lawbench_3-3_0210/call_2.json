@@ -1,0 +1,72 @@
+{
+  "call_id": "024cfeffd57a4152a4fecbf616886e9a",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791017674-XWl0mtBHEaEreVGKpd9B",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"Within the [罪名]…<eoa> tags, output only the plain offense names (e.g., “非法吸收公众存款”, “妨害作证”) without appending the character “罪”, separating multiple offenses with a single semicolon and no extra spaces.\",\n  \"keywords\": [\n    \"罪名标签\",\n    \"省略‘罪’后缀\",\n    \"分号分隔\",\n    \"格式要求\",\n    \"犯罪名称\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a correction rule to prevent the AI from misordering or misformatting the answer? The wrong prediction: \"[罪名]妨害作证罪;非法吸收公众存款罪<eoa>\" The correct answer: \"非法吸收公众存款;妨害作证\". So the error: ordering of crimes? The correct answer expects crimes without the \"罪\" suffix and in a specific order? The instruction: \"请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" The format: single: [罪名]盗窃<eoa>; multiple: [罪名]盗窃;诈骗<eoa>. So they want list of crime names without \"罪\" suffix? In example they show \"盗窃;诈骗\". So the AI incorrectly added \"罪\" after each crime and also maybe order? The correct answer: \"非法吸收公众存款;妨害作证\". So rule: Do not append the character \"罪\" to each crime name; list crimes separated by semicolons; maintain order based on legal significance? The error: including \"罪\" suffix. So rule: When outputting crimes, omit the suffix \"罪\" and ensure they are plain crime names.\n\nKeywords: \"罪名\", \"输出\", \"结尾\", \"包含‘罪’\", \"分号\", \"格式\". Provide JSON.\n\nLet's craft rule: \"When generating the answer, list the crime names inside the [罪名]…<eoa> tags exactly as the plain statutory offense names without the trailing character ‘罪’, separated by semicolons, and do not include any extra characters or spaces.\"\n\nKeywords: \"罪名标签\", \"省略‘罪’后缀\", \"分号分隔\", \"格式要求\", \"犯罪名称\". Provide JSON.\n\n",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a correction rule to prevent the AI from misordering or misformatting the answer? The wrong prediction: \"[罪名]妨害作证罪;非法吸收公众存款罪<eoa>\" The correct answer: \"非法吸收公众存款;妨害作证\". So the error: ordering of crimes? The correct answer expects crimes without the \"罪\" suffix and in a specific order? The instruction: \"请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" The format: single: [罪名]盗窃<eoa>; multiple: [罪名]盗窃;诈骗<eoa>. So they want list of crime names without \"罪\" suffix? In example they show \"盗窃;诈骗\". So the AI incorrectly added \"罪\" after each crime and also maybe order? The correct answer: \"非法吸收公众存款;妨害作证\". So rule: Do not append the character \"罪\" to each crime name; list crimes separated by semicolons; maintain order based on legal significance? The error: including \"罪\" suffix. So rule: When outputting crimes, omit the suffix \"罪\" and ensure they are plain crime names.\n\nKeywords: \"罪名\", \"输出\", \"结尾\", \"包含‘罪’\", \"分号\", \"格式\". Provide JSON.\n\nLet's craft rule: \"When generating the answer, list the crime names inside the [罪名]…<eoa> tags exactly as the plain statutory offense names without the trailing character ‘罪’, separated by semicolons, and do not include any extra characters or spaces.\"\n\nKeywords: \"罪名标签\", \"省略‘罪’后缀\", \"分号分隔\", \"格式要求\", \"犯罪名称\". Provide JSON.\n\n",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a correction rule to prevent the AI from misordering or misformatting the answer? The wrong prediction: \"[罪名]妨害作证罪;非法吸收公众存款罪<eoa>\" The correct answer: \"非法吸收公众存款;妨害作证\". So the error: ordering of crimes? The correct answer expects crimes without the \"罪\" suffix and in a specific order? The instruction: \"请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" The format: single: [罪名]盗窃<eoa>; multiple: [罪名]盗窃;诈骗<eoa>. So they want list of crime names without \"罪\" suffix? In example they show \"盗窃;诈骗\". So the AI incorrectly added \"罪\" after each crime and also maybe order? The correct answer: \"非法吸收公众存款;妨害作证\". So rule: Do not append the character \"罪\" to each crime name; list crimes separated by semicolons; maintain order based on legal significance? The error: including \"罪\" suffix. So rule: When outputting crimes, omit the suffix \"罪\" and ensure they are plain crime names.\n\nKeywords: \"罪名\", \"输出\", \"结尾\", \"包含‘罪’\", \"分号\", \"格式\". Provide JSON.\n\nLet's craft rule: \"When generating the answer, list the crime names inside the [罪名]…<eoa> tags exactly as the plain statutory offense names without the trailing character ‘罪’, separated by semicolons, and do not include any extra characters or spaces.\"\n\nKeywords: \"罪名标签\", \"省略‘罪’后缀\", \"分号分隔\", \"格式要求\", \"犯罪名称\". Provide JSON.\n\n",
+            "reasoning_content": "We need to produce a correction rule to prevent the AI from misordering or misformatting the answer? The wrong prediction: \"[罪名]妨害作证罪;非法吸收公众存款罪<eoa>\" The correct answer: \"非法吸收公众存款;妨害作证\". So the error: ordering of crimes? The correct answer expects crimes without the \"罪\" suffix and in a specific order? The instruction: \"请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。\" The format: single: [罪名]盗窃<eoa>; multiple: [罪名]盗窃;诈骗<eoa>. So they want list of crime names without \"罪\" suffix? In example they show \"盗窃;诈骗\". So the AI incorrectly added \"罪\" after each crime and also maybe order? The correct answer: \"非法吸收公众存款;妨害作证\". So rule: Do not append the character \"罪\" to each crime name; list crimes separated by semicolons; maintain order based on legal significance? The error: including \"罪\" suffix. So rule: When outputting crimes, omit the suffix \"罪\" and ensure they are plain crime names.\n\nKeywords: \"罪名\", \"输出\", \"结尾\", \"包含‘罪’\", \"分号\", \"格式\". Provide JSON.\n\nLet's craft rule: \"When generating the answer, list the crime names inside the [罪名]…<eoa> tags exactly as the plain statutory offense names without the trailing character ‘罪’, separated by semicolons, and do not include any extra characters or spaces.\"\n\nKeywords: \"罪名标签\", \"省略‘罪’后缀\", \"分号分隔\", \"格式要求\", \"犯罪名称\". Provide JSON.\n\n"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 504,
+      "prompt_tokens": 685,
+      "total_tokens": 1189,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 413,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.0001675,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.0001675,
+        "upstream_inference_prompt_cost": 3.047476759628154e-05,
+        "upstream_inference_completions_cost": 0.00013702523240371846
+      }
+    }
+  },
+  "raw_response_missing": false
+}

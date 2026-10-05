@@ -1,0 +1,35 @@
+Solve the classification problem below.
+
+**Correction rules (apply where relevant):**
+- When listing the crime name(s) between the [罪名] and <eoa> tags, output only the statutory offense name without appending the character “罪”.
+- Label the offense as '赌博' unless the factual description explicitly meets the statutory elements of '组织赌博' (e.g., the defendant organized, operated, or managed a gambling venue as defined by law).
+- When the facts describe the creation, alteration, or commercial transaction of forged state‑issued documents, certificates, or official seals, the charge must list all applicable offenses: 伪造、变造、以及买卖（
+- If the factual description indicates that the defendant established, operated, or maintained a venue or equipment specifically for gambling (e.g., opening a game hall, installing gambling machines, ru
+- When extracting the crime name, output the exact statutory offense term (e.g., “行贿”) without adding descriptive prefixes or qualifiers such as “对国家工作人员”。
+
+
+**Problem:**
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控：一、寻衅滋事
+1、2014年3月11日23时许，被告人柯某某在揭阳市揭东区“XX酒吧”因怀疑该酒吧服务员谢某甲曾举报其吸毒，遂用拳头对谢某甲进行殴打。案发后，经鉴定，谢某甲伤情未达鉴定标准。
+2、2014年6月3日23时许，被告人柯某某在揭阳市揭东区XY皇庭因认为朋友江某乙（绰号“老补”）被周某甲（揭东区云路镇人）误会，遂趁周某甲不备，突然冲上去从后面殴打周某甲背部1下。
+3、2014年7月26日20时许，被告人柯某某因觉得江某甲很讨厌，遂伙同江某丙驾乘1辆女庄摩托车窜至揭阳市揭东区江某甲住家门口，对江某甲进行殴打，经法医鉴定，江某甲身体损伤程度属轻微伤。
+二、开设赌场
+1、2014年2月20日开始，被告人柯某某在揭阳市揭东区寨前一灰埕以“鱼虾蟹”方式设赌，自己负责摇骰子和赔食钱，赌注人民币（下同）5元起点，每盘板面100元左右，每次参赌人数5人左右。至2014年2月21日17时许，该赌场被公安机关查获，现场扣押“鱼虾蟹”赌具1副，赌资340元。
+2、2014年4月16日开始，被告人柯某某在揭阳市揭东区一灰埕前以“鱼虾蟹”方式设赌，自己负责摇骰子和赔食钱，赌注没有设限，随人下注，参赌人数约七八人。至2014年4月17日14时许，该赌场被公安机关查获，现场扣押“鱼虾蟹”赌具1副，赌资210元。
+公诉机关向法庭提供了被害人陈述，证人证言，辨认笔录及照片，现场勘查材料，法医学人体损伤程度鉴定书以及被告人柯某某的供述等相关证据。
+公诉机关认为，被告人柯某某无视国家法律，多次随意殴打他人，情节恶劣；以“鱼虾蟹”方式设赌，应当寻衅滋事、××追究其刑事责任。请依法判处。
+
+
+**Instructions:**
+- Apply any relevant rules listed above
+- Respond in JSON format
+
+{"reasoning": "[your reasoning]", "final_answer": "[your answer]"}

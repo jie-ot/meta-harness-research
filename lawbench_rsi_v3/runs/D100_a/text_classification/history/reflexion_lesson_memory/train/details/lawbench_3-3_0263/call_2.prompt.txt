@@ -1,0 +1,24 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:公诉机关指控：2014年11月份的一天，被告人刘某以人民币50元的价格购买了一枚假的“连云港市赣榆区教育局”的印章。
+2015年5月21日，被告人刘某主动到案并如实供述了全部犯罪事实。
+公诉机关向法庭出示了被告人刘某的供述与辩解、物证、书证等相关证据，以证实指控被告人刘某犯买卖国家机关印章罪成立，提请本院依据《中华人民共和国刑法》××××之规定处罚，被告人刘某归案后如实供述自己的犯罪事实，根据《中华人民共和国刑法》××××的规定，可以从轻处罚。
+
+
+Wrong prediction: [罪名]买卖国家机关印章<eoa>
+Correct answer: 伪造、变造、买卖国家机关公文、证件、印章
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

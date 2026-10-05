@@ -1,0 +1,27 @@
+Bash
+
+command:
+powershell -Command "cd 'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification'; uv run python C:\tmp\proto_compound2.py"
+
+description: Run compound-label v2 prototype
+
+--- output ---
+Missed components: {'销售假冒注册商标的商品': 1.0, '组织、领导传销活动': 1.0, '非法持有枪支': 1.0, '强奸': 1.0, '组织卖淫': 1.0, '走私贵重金属': 1.0, '走私普通货物、物品': 1.0, '信用卡诈骗': 1.0, '非法经营': 1.0}
+
+Scores (sim + alpha * log(1 + overlap)):
+  组织卖淫;强迫卖淫                       sim=0.40  overlap=1.0  final=0.608
+  非法经营                            sim=0.30  overlap=1.0  final=0.508
+  诈骗;信用卡诈骗                        sim=0.60  overlap=1.0  final=0.808
+  故意伤害                            sim=0.70  overlap=0.0  final=0.700
+  非法持有枪支                          sim=0.25  overlap=1.0  final=0.458
+  走私贵重金属                          sim=0.20  overlap=1.0  final=0.408
+  销售假冒注册商标的商品                     sim=0.15  overlap=1.0  final=0.358
+
+Ranked:
+  1. 诈骗;信用卡诈骗
+  2. 故意伤害
+  3. 组织卖淫;强迫卖淫
+  4. 非法经营
+  5. 非法持有枪支
+  6. 走私贵重金属
+  7. 销售假冒注册商标的商品

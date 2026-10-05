@@ -1,0 +1,216 @@
+Bash
+
+command:
+cat > /tmp/proto_reaction_cluster.py << 'PROTO'
+"""
+Prototype: reaction-type cluster retrieval for USPTO.
+Extract the reaction category tag from any position in the input,
+group stored examples by tag, retrieve within the same tag first.
+"""
+import json, re
+from collections import defaultdict
+
+def _extract_category_tag(text):
+    """Extract a short category tag from anywhere in the input text.
+    Tries common patterns: 'the reaction type is X', 'category: X', etc.
+    Returns lowercased tag or empty string if not found.
+    """
+    # Pattern 1: 'reaction type is <value>'
+    m = re.search(r'reaction type is ([^.\n<]+)', text, re.IGNORECASE)
+    if m:
+        return m.group(1).strip().lower()
+    # Pattern 2: 'category: <value>' or 'type: <value>' on its own line
+    m = re.search(r'(?:^|\n)(?:category|type|class|task):\s*([^\n]+)', text, re.IGNORECASE)
+    if m:
+        return m.group(1).strip().lower()
+    # No tag found
+    return ''
+
+def _has_cjk(text):
+    return bool(re.search(r'[一-鿿぀-ゟ゠-ヿ＀-￯]', text))
+
+def _tokenize_adaptive(text):
+    if _has_cjk(text):
+        t = re.sub(r'\s+', ' ', text.strip())
+        return frozenset(t[i:i+2] for i in range(len(t)-1)) if len(t) >= 2 else frozenset()
+    return frozenset(re.findall(r"[A-Za-z0-9]+", text.lower()))
+
+def _jaccard(a, b):
+    if not a and not b: return 0.0
+    return len(a & b) / len(a | b)
+
+# Load USPTO memory
+mem_path = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/USPTO/decayed_confusion_memory/gpt-oss-120b/memory.json'
+mem = json.load(open(mem_path, encoding='utf-8'))
+log_path = 'D:/我的文件/华中科技大学/李老师课题组研究工作/meta-harness/reference_examples/text_classification/logs/20260925_200856/USPTO/decayed_confusion_memory/gpt-oss-120b/log.jsonl'
+steps = [json.loads(l) for l in open(log_path, encoding='utf-8') if json.loads(l).get('type')=='step']
+
+# Build examples with category tags extracted from full input
+examples_raw = []
+for ex in mem['examples']:
+    restored = dict(ex)
+    if isinstance(restored.get('tokens'), list):
+        restored['tokens'] = frozenset(restored['tokens'])
+    else:
+        raw_q = restored.get('raw_question', restored.get('input', ''))
+        restored['tokens'] = _tokenize_adaptive(raw_q)
+    # Extract category from full input
+    full_input = restored.get('raw_question', restored.get('input', ''))
+    restored['category_tag'] = _extract_category_tag(full_input)
+    examples_raw.append(restored)
+
+# Show tag distribution
+tags = defaultdict(int)
+for ex in examples_raw:
+    tags[ex['category_tag']] += 1
+print("Category tag distribution:")
+for t, c in sorted(tags.items(), key=lambda x: -x[1])[:15]:
+    print(f"  {repr(t)}: {c}")
+
+# Load log step inputs (these are input_preview, not full input)
+# But for steps, we can get the full input from the step record or approximation
+# Let's check if log has full input
+sample = steps[5] if len(steps) > 5 else steps[0]
+print(f"\nSample step keys: {list(sample.keys())}")
+print(f"input_preview ({len(sample.get('input_preview',''))} chars): {repr(sample.get('input_preview','')[:200])}")
+
+# The log's input_preview is truncated. But the memory examples have full input.
+# At predict time, the memory system receives the FULL input string.
+# So the tag extraction works from full input at predict time.
+# For this prototype, let's check what the log has.
+
+# Check if steps have full input or just preview
+print(f"\nChecking if steps have full input stored:")
+for s in steps[:3]:
+    ip = s.get('input_preview', '')
+    tag = _extract_category_tag(ip)
+    print(f"  step {s['step']}: preview_len={len(ip)}, extracted_tag={repr(tag)}")
+
+# The predict method receives the full input (not truncated)
+# So let's simulate using memory examples as both pool and queries
+# (since their full input IS available)
+print("\nSimulating cluster retrieval with full inputs from memory:")
+
+def get_top_k_clustered_v2(query_full, pool, k=5, min_cluster_size=1):
+    tag = _extract_category_tag(query_full)
+    q_tok = _tokenize_adaptive(query_full)
+    
+    if tag:
+        primary = [ex for ex in pool if ex['category_tag'] == tag]
+        other = [ex for ex in pool if ex['category_tag'] != tag]
+    else:
+        primary = pool
+        other = []
+    
+    def score(ex):
+        return _jaccard(q_tok, ex['tokens'])
+    
+    selected = []
+    used = set()
+    
+    # Fill from primary pool first (same category)
+    primary_scored = sorted(primary, key=lambda ex: -score(ex))
+    for ex in primary_scored:
+        if len(selected) >= k: break
+        idx = id(ex)
+        if idx not in used:
+            selected.append(ex)
+            used.add(idx)
+    
+    # Fill remainder from other categories by similarity
+    other_scored = sorted(other, key=lambda ex: -score(ex))
+    for ex in other_scored:
+        if len(selected) >= k: break
+        idx = id(ex)
+        if idx not in used:
+            selected.append(ex)
+            used.add(idx)
+    
+    return selected
+
+def get_top_k_flat(query, pool, k=5):
+    q_tok = _tokenize_adaptive(query)
+    scored = sorted(pool, key=lambda ex: -_jaccard(q_tok, ex['tokens']))
+    return scored[:k]
+
+# Evaluate using memory examples as both pool and query proxy
+# (simulate leave-one-out: query vs all other examples)
+cluster_hits = 0
+flat_hits = 0
+total = 0
+
+for i, qex in enumerate(examples_raw):
+    pool = [ex for j, ex in enumerate(examples_raw) if j != i]
+    query_full = qex.get('raw_question', qex.get('input', ''))
+    target = qex['target']
+    
+    top_clust = get_top_k_clustered_v2(query_full, pool, k=5)
+    top_flat = get_top_k_flat(query_full, pool, k=5)
+    
+    if target in [ex['target'] for ex in top_clust]:
+        cluster_hits += 1
+    if target in [ex['target'] for ex in top_flat]:
+        flat_hits += 1
+    total += 1
+
+print(f"\nLeave-one-out top-5 hit rate:")
+print(f"  Flat similarity: {flat_hits}/{total} = {flat_hits/total*100:.1f}%")
+print(f"  Cluster-first:   {cluster_hits}/{total} = {cluster_hits/total*100:.1f}%")
+
+# Also show same-tag hit (does same category example appear in top-5?)
+same_tag_hits = 0
+for i, qex in enumerate(examples_raw):
+    pool = [ex for j, ex in enumerate(examples_raw) if j != i]
+    query_full = qex.get('raw_question', qex.get('input', ''))
+    tag = qex['category_tag']
+    same_tag_exs = [ex for ex in pool if ex['category_tag'] == tag]
+    print(f"  category={repr(tag)}, same-tag pool={len(same_tag_exs)}")
+    break
+
+print(f"\nSame-category pool sizes:")
+for tag, cnt in sorted(tags.items(), key=lambda x: -x[1]):
+    print(f"  {repr(tag)}: {cnt}")
+PROTO
+python /tmp/proto_reaction_cluster.py
+
+description: Prototype reaction-type cluster retrieval with full input extraction
+
+--- output ---
+Category tag distribution:
+  'protections': 5
+  'c-c bond formation': 5
+  'deprotections': 5
+  'reductions': 5
+  'heterocycle formation': 5
+  'oxidations': 5
+  'functional group addition (fga)': 5
+  'functional group interconversion (fgi)': 5
+  'heteroatom alkylation and arylation': 5
+  'acylation and related processes': 5
+
+Sample step keys: ['type', 't', 'step', 'input_preview', 'pred', 'tgt', 'ok', 'prompt_len', 'prompt_hash']
+input_preview (200 chars): 'You are an expert organic chemist specializing in retrosynthesis analysis.\n\nRetrosynthesis Problem:\nContext: The reaction type is Deprotections.\nInput: C[C@@H]1C[C@H](NC(=O)OC(C)(C)C)C(=O)N1CC(=O)O\nAn'
+
+Checking if steps have full input stored:
+  step 0: preview_len=200, extracted_tag='protections'
+  step 1: preview_len=200, extracted_tag='c-c bond formation'
+  step 2: preview_len=200, extracted_tag='deprotections'
+
+Simulating cluster retrieval with full inputs from memory:
+
+Leave-one-out top-5 hit rate:
+  Flat similarity: 0/50 = 0.0%
+  Cluster-first:   0/50 = 0.0%
+  category='protections', same-tag pool=4
+
+Same-category pool sizes:
+  'protections': 5
+  'c-c bond formation': 5
+  'deprotections': 5
+  'reductions': 5
+  'heterocycle formation': 5
+  'oxidations': 5
+  'functional group addition (fga)': 5
+  'functional group interconversion (fgi)': 5
+  'heteroatom alkylation and arylation': 5
+  'acylation and related processes': 5

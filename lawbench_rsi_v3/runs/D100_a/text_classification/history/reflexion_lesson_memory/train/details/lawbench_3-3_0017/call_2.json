@@ -1,0 +1,72 @@
+{
+  "call_id": "324f8b8732024ed5a2ebed96dd582f1e",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791018265-8xmhrjrOkvII61awOEWD",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"rule\": \"If the facts describe that the defendant both forged and altered (or otherwise changed) a resident identity card, the charge must include both terms ‘伪造’ and ‘变造’ (e.g., ‘伪造、变造居民身份证’).\",\n  \"keywords\": [\n    \"伪造居民身份证\",\n    \"变造居民身份证\",\n    \"伪造并变造\",\n    \"身份证件伪造\",\n    \"伪造居民身份证件以提高转账额度\"\n  ]\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to produce a JSON with a rule that prevents the classification error. The error: The AI predicted \"盗窃;伪造居民身份证\" but correct answer is \"盗窃;伪造、变造居民身份证\". So the error is missing \"变造\" (i.e., not including \"变造\" when the crime includes both forging and altering identity documents). The rule should ensure that when the facts involve both forging and altering (伪造、变造) of ID documents, the charge should include both terms. So rule: If the factual description mentions \"伪造居民身份证件\" and also actions like \"改动、变更、变造\" or \"使用伪造的身份证件\" etc., then include both \"伪造\" and \"变造\" in the charge. Keywords: \"伪造居民身份证\", \"变造\", \"身份证件\", \"伪造、变造\", \"伪造并变造\", \"伪造居民身份证件以提高转账额度\". Provide JSON.\n\nLet's craft: {\"rule\":\"When the factual description indicates that the defendant both forged and altered (or changed) a resident identity card, the charge must list both '伪造' and '变造' (e.g., '伪造、变造居民身份证').\",\"keywords\":[\"伪造居民身份证\",\"变造居民身份证\",\"伪造并变造\",\"身份证件伪造\",\"伪造居民身份证件以提高转账额度\"]}",
+          "provider_specific_fields": {
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to produce a JSON with a rule that prevents the classification error. The error: The AI predicted \"盗窃;伪造居民身份证\" but correct answer is \"盗窃;伪造、变造居民身份证\". So the error is missing \"变造\" (i.e., not including \"变造\" when the crime includes both forging and altering identity documents). The rule should ensure that when the facts involve both forging and altering (伪造、变造) of ID documents, the charge should include both terms. So rule: If the factual description mentions \"伪造居民身份证件\" and also actions like \"改动、变更、变造\" or \"使用伪造的身份证件\" etc., then include both \"伪造\" and \"变造\" in the charge. Keywords: \"伪造居民身份证\", \"变造\", \"身份证件\", \"伪造、变造\", \"伪造并变造\", \"伪造居民身份证件以提高转账额度\". Provide JSON.\n\nLet's craft: {\"rule\":\"When the factual description indicates that the defendant both forged and altered (or changed) a resident identity card, the charge must list both '伪造' and '变造' (e.g., '伪造、变造居民身份证').\",\"keywords\":[\"伪造居民身份证\",\"变造居民身份证\",\"伪造并变造\",\"身份证件伪造\",\"伪造居民身份证件以提高转账额度\"]}",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "refusal": null,
+            "reasoning": "We need to produce a JSON with a rule that prevents the classification error. The error: The AI predicted \"盗窃;伪造居民身份证\" but correct answer is \"盗窃;伪造、变造居民身份证\". So the error is missing \"变造\" (i.e., not including \"变造\" when the crime includes both forging and altering identity documents). The rule should ensure that when the facts involve both forging and altering (伪造、变造) of ID documents, the charge should include both terms. So rule: If the factual description mentions \"伪造居民身份证件\" and also actions like \"改动、变更、变造\" or \"使用伪造的身份证件\" etc., then include both \"伪造\" and \"变造\" in the charge. Keywords: \"伪造居民身份证\", \"变造\", \"身份证件\", \"伪造、变造\", \"伪造并变造\", \"伪造居民身份证件以提高转账额度\". Provide JSON.\n\nLet's craft: {\"rule\":\"When the factual description indicates that the defendant both forged and altered (or changed) a resident identity card, the charge must list both '伪造' and '变造' (e.g., '伪造、变造居民身份证').\",\"keywords\":[\"伪造居民身份证\",\"变造居民身份证\",\"伪造并变造\",\"身份证件伪造\",\"伪造居民身份证件以提高转账额度\"]}",
+            "reasoning_content": "We need to produce a JSON with a rule that prevents the classification error. The error: The AI predicted \"盗窃;伪造居民身份证\" but correct answer is \"盗窃;伪造、变造居民身份证\". So the error is missing \"变造\" (i.e., not including \"变造\" when the crime includes both forging and altering identity documents). The rule should ensure that when the facts involve both forging and altering (伪造、变造) of ID documents, the charge should include both terms. So rule: If the factual description mentions \"伪造居民身份证件\" and also actions like \"改动、变更、变造\" or \"使用伪造的身份证件\" etc., then include both \"伪造\" and \"变造\" in the charge. Keywords: \"伪造居民身份证\", \"变造\", \"身份证件\", \"伪造、变造\", \"伪造并变造\", \"伪造居民身份证件以提高转账额度\". Provide JSON.\n\nLet's craft: {\"rule\":\"When the factual description indicates that the defendant both forged and altered (or changed) a resident identity card, the charge must list both '伪造' and '变造' (e.g., '伪造、变造居民身份证').\",\"keywords\":[\"伪造居民身份证\",\"变造居民身份证\",\"伪造并变造\",\"身份证件伪造\",\"伪造居民身份证件以提高转账额度\"]}"
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 439,
+      "prompt_tokens": 651,
+      "total_tokens": 1090,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 322,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 64,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 9.416e-05,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 9.416e-05,
+        "upstream_inference_prompt_cost": 1.953e-05,
+        "upstream_inference_completions_cost": 7.463e-05
+      }
+    }
+  },
+  "raw_response_missing": false
+}

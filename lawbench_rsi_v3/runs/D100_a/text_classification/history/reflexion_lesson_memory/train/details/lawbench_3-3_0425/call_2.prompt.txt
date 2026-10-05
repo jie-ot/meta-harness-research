@@ -1,0 +1,24 @@
+An AI made a classification error. Write a concise correction rule.
+
+Case facts (excerpt, first 600 chars):
+请你模拟法官依据下面事实给出罪名。请先进行推理分析，然后将最终答案写在[罪名]和<eoa>之间。
+
+格式示例：
+- 单个罪名: [罪名]盗窃<eoa>
+- 多个罪名: [罪名]盗窃;诈骗<eoa>
+
+
+## 案件事实
+事实:经审理查明，2015年五六月间，被告人高某经王某（已判刑）介绍、联系，在江苏省沛县朱寨镇，以12000余元的价格出售给郭某（已判刑）总面额10万元的百元面值假币。
+另查明，被告人高某在侦查机关退赃12000元。
+上述事实，被告人高某在开庭审理过程中亦无异议，且有证人刘某、王某、郭某等人的证言，中国人民银行货币真伪鉴定书、假人民币没收收据，本院（2015）丰刑初字第0788号刑事判决书，丰县公安局关于本案的发破案报告、到案经过、辨认笔录、搜查笔录、扣押决定书、扣押清单、查获的假币照片、徐州市暂扣款物专用收据及被告人高某的户籍信息证明等证据证实，足以认定。
+
+
+Wrong prediction: [罪名]非法买卖假币<eoa>
+Correct answer: 出售、购买、运输假币
+
+Write one general rule (1-2 sentences) that would prevent this class of error.
+Also list 3-6 keyword phrases that identify when the rule applies.
+Respond only in JSON:
+
+{"rule": "...", "keywords": ["kw1", "kw2", ...]}

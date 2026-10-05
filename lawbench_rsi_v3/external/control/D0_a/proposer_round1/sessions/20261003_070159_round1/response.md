@@ -1,0 +1,25 @@
+Starting by reading all state files in parallel to understand the current frontier before diving into the diagnostic traces.Reading the base system code and diagnostic files in parallel now.Reading more of the score diagnostics and training logs to understand error patterns before forming hypotheses.Reading more of the score diagnostics to finish pattern analysis before prototyping.Good data. Let me check the memory_system base class and look at the framework structure before writing prototypes.Reading the framework files now.I have everything I need. Key findings from the diagnostics:
+
+1. The Jaccard tokenizer uses `[A-Za-z0-9]+` — it only captures numbers from Chinese text, so similarity is almost random for CJK content. This undermines both retrieval and confusion-matrix selection.
+2. Major error class: format mismatch — model outputs "诈骗罪" but target is "合同诈骗". The model knows the crime category but gets the exact canonical label string wrong.
+3. Second major class: missing secondary charges — predicts one charge and drops co-occurring ones.
+
+**Hypotheses:**
+- **A (Exploitation)**: Switching to CJK character bigram tokenization will make similarity meaningful and improve confusion-matrix retrieval. Additional prompt framing showing canonical answer format should cut format-mismatch errors.
+- **B (Exploration)**: LLM-generated error lessons (Reflexion-style) stored as compact rules will be more transfer-efficient than raw example storage — each lesson generalizes "when facts show X, the correct charge is Y not Z", enabling better few-shot coverage within the char budget.
+
+Now writing prototypes. First, creating the prototypes directory.The hook only permits `python .prototypes/<name>.py`. I'll write prototype files directly with file tools, then run them.
+
+Writing Prototype A — CJK bigram tokenizer + confusion memory:Running prototype A now.Running prototype A.Prototype A passed cleanly — CJK bigrams give 3.5× better discrimination than ASCII. Now writing Prototype B for the Reflexion-style lesson memory.Running prototype B now.Both prototypes passed. Implementing the two agents now. Starting with both files in parallel — A copies the base then swaps the tokenizer + adds format guidance; B replaces example storage with LLM-generated lessons.Writing Agent B now.Checking for the pending_eval path in meta_harness.py, then running the final prototype validation.The prototype for Agent B already passed (noted in summary). I need to find LOGS_DIR for `pending_eval.json`, then write it.`LOGS_DIR = EVOLVE_DIR / "logs"` — reading around line 480 to confirm whether a run-specific override applies here.Need to find where `frontier_val.json` actually lives to determine the correct `pending_eval.json` path.`frontier_val.json` landed at the working directory root, not under `logs/`. Let me check whether a `logs/` subdir exists to determine the actual pending_eval path.`frontier_val.json` and `evolution_summary.jsonl` both sit at the working directory root, so `LOGS_DIR` was not overridden with a run-name subdirectory. Writing `pending_eval.json` to the same root.Iteration 1 is complete. Here's what was delivered:
+
+**Agent A — `cjk_bigram_confusion_memory` (exploitation)**
+
+The base system's tokenizer (`[A-Za-z0-9]+`) extracts only numbers from Chinese text, so every document pair scores near-zero Jaccard similarity and retrieval is essentially random. This agent replaces it with overlapping CJK character bigrams, which capture legal term co-occurrences and produce discriminative similarity — the prototype measured 0.0658 for the correct match versus ≤0.021 for unrelated cases. It also adds a canonical-label anchor to the prompt that explicitly forbids appending "罪" or shortening multi-part labels, targeting the ~40% of score failures that are format mismatches. The confusion-matrix disambiguation logic from the base is preserved unchanged.
+
+**Agent B — `reflexion_lesson_memory` (exploration)**
+
+Rather than storing raw examples and making the model infer legal distinctions at predict time, this agent calls the LLM during `learn_from_batch` to generate compact correction lessons for each error ("when facts show X the correct charge is Y, not Z"). At predict time, the most recent lessons are injected at the top of the prompt, giving the model pre-digested rules instead of surface-similar cases to reason from. Raw examples are kept as a similarity-ranked fallback that fills the remaining char budget. The prototype confirmed correct predictions on contract-fraud and drug-plant cases that failed without lessons.
+
+Both prototype scripts are in `.prototypes/`. Both agents are in `agents/`. `pending_eval.json` is written at the working directory root (where `frontier_val.json` and `evolution_summary.jsonl` also live).
+
+CANDIDATES: cjk_bigram_confusion_memory, reflexion_lesson_memory

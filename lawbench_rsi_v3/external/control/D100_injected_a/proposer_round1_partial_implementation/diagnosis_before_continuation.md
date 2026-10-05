@@ -1,0 +1,33 @@
+# Iteration 1 diagnosis — H0 (frozen 100-item feedback, 20/100 exact-match)
+
+Scoring is exact string match against a statutory charge name. 80 items fail. Grouping by cause:
+
+**A. Canonical-name mismatch (~26 items), the dominant bucket.**
+Right conduct, wrong string. Examples: 0445 `破坏森林资源` vs `非法占用农用地`; 0486 `伪造发票罪` vs `虚开发票`;
+0494 `强制猥亵妇女罪` vs `强制猥亵、侮辱妇女`; 0349 truncates `非法制造枪支` vs `非法制造、买卖、运输、邮寄、储存枪支、弹药、爆炸物`;
+0309 `非法种植罂粟` vs `非法种植毒品原植物`; 0386 inserts `食品` into `生产、销售不符合安全标准的食品`;
+0219 `掩饰、隐瞒犯罪所得` vs `掩饰、隐瞒犯罪所得、犯罪所得收益`; 0234/0377/0482 all emit the civil-law term
+`侵犯注册商标专用权` against `假冒注册商标`; 0478/0255/0302/0412 truncate statutory enumerations; 0282/0287 swap `赌博`/`开设赌场`.
+Train view confirms the same at step 2: `故意毁坏财物罪` vs `故意毁坏财物`. Candidate A addresses this.
+
+**B. Multi-charge undercount (~8 items).** Targets hold 2–3 charges, prediction holds 1:
+0136 (`盗窃` vs `破坏交通设施;盗窃`), 0057, 0073, 0101, 0016 (`盗窃` vs `抢劫;盗窃;抢夺`), 0112 (`伪造货币` vs `伪造货币;故意伤害`).
+The single-pass prompt collapses all acts into one label. Candidate B addresses this.
+
+**C. Over-prediction (~4 items).** 0346 adds `诈骗;敲诈勒索` to `非法拘禁`; 0427 adds non-statutory `无证驾驶`;
+0205 adds `挪用资金` to `受贿`. Charge-set size is uncalibrated in both directions — also Candidate B.
+
+**D. Empty output (2 items).** 0138, 0040 return `""` on long multi-charge facts; long prompts push the answer into the
+truncated reasoning channel. Both candidates shorten the injected prompt and add one terse retry.
+
+**Retrieval is not selecting on legal content.** `_tokenize` uses `[A-Za-z0-9]+`, so on Chinese facts stored tokens are
+years and amounts only (e.g. `["2012","2013","2014","2015","4","7","73","8"]`). Jaccard "similarity" is numeric overlap,
+so injected examples are near-noise and predictions collapse onto frequent labels (`盗窃`, `诈骗`, `故意伤害`).
+Neither candidate relies on that signal: A carries a lexicon instead of examples, B segments the fact itself.
+
+## Candidates
+- **A (exploitation)** `canonical_charge_lexicon_memory` — accumulate an exact statutory-string inventory from observed
+  ground truths plus learned prediction→truth rewrite rules; inject the inventory; deterministically normalize the
+  model's answer into an inventory member. Attacks bucket A, the largest.
+- **B (exploration)** `act_decomposition_union_memory` — split the fact into acts on structural markers, charge each act
+  in its own call, assemble the union system-side with learned charge-set-size calibration. Attacks buckets B and C.

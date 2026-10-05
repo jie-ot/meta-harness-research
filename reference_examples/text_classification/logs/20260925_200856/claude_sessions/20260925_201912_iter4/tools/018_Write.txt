@@ -1,0 +1,31 @@
+Write: logs\20260925_200856\reports\iter3_report.md
+
+content:
+# Iteration 3 Report
+
+## What changed
+- **label_champion_memory**: per-label champion selection (best Jaccard match per label) then similarity-ranked fill. Combines label coverage from iter2's label_balanced with the relevance focus from similarity_retrieval.
+- **mmr_memory**: greedy Maximum Marginal Relevance (λ=0.6), penalising redundancy against already-selected examples at each step without explicit label bookkeeping.
+
+## Results vs frontier
+| Dataset | label_champion | mmr_memory | prev best |
+|---------|---------------|------------|-----------|
+| USPTO | 26.7% | — | 26.7% (label_balanced) |
+| Symptom2Disease | 88.0% | — | 88.0% (similarity_retrieval) |
+| LawBench | — | 34.0% | 34.0% (similarity_retrieval) |
+| **avg_val** | **46.2% (+0.0)** | **45.8% (-0.4)** | 45.6% |
+
+## Why the plateau
+Iterations 2 and 3 all varied axis C (selection algorithm). Jaccard similarity is the ceiling here: all four variants (plain similarity, balanced, champion, MMR) saturate the same ~45-46% band because they all draw from the same token-overlap signal and the same flat Q/A prompt format. Champion slightly edges MMR because explicit label coverage beats probabilistic diversity for tasks with many rare classes and sparse training data.
+
+MMR's slight regression vs plain similarity suggests that for these datasets, the redundancy penalty in MMR removes genuinely useful near-duplicate examples that reinforce correct labels.
+
+## Takeaway for future iterations
+Axis C is exhausted for Jaccard-based retrieval. The next lever is axis A (prompt template) or axis E (learning trigger). Specifically:
+- The prompt never communicates the full label space — the model only sees labels present in the few examples that fit in context.
+- `learn_from_batch` exposes `prediction` and `was_correct`, enabling confusion-matrix tracking — no iteration has used this signal yet.
+
+
+
+--- output ---
+File created successfully at: D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856\reports\iter3_report.md (file state is current in your context — no need to Read it back)

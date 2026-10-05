@@ -1,0 +1,29 @@
+Bash
+
+command:
+python -c "
+import os, json
+base = r'D:\我的文件\华中科技大学\李老师课题组研究工作\meta-harness\reference_examples\text_classification\logs\20260925_200856'
+# Check decayed_confusion_memory (the other tier-1 system)
+for ds in ['USPTO', 'Symptom2Disease', 'LawBench']:
+    for sys in ['decayed_confusion_memory', 'adaptive_tokenizer_confusion_memory']:
+        p = os.path.join(base, ds, sys)
+        if os.path.exists(p):
+            models = os.listdir(p)
+            for m in models:
+                vp = os.path.join(p, m, 'val.json')
+                if os.path.exists(vp):
+                    with open(vp) as f: v = json.load(f)
+                    print(f'{ds}/{sys}: {v.get(\"accuracy\",\"?\")}')
+"
+
+
+description: Check val accuracy for top frontier systems per dataset
+
+--- output ---
+USPTO/decayed_confusion_memory: 0.26666666666666666
+USPTO/adaptive_tokenizer_confusion_memory: 0.26666666666666666
+Symptom2Disease/decayed_confusion_memory: 0.9
+Symptom2Disease/adaptive_tokenizer_confusion_memory: 0.9
+LawBench/decayed_confusion_memory: 0.4
+LawBench/adaptive_tokenizer_confusion_memory: 0.38

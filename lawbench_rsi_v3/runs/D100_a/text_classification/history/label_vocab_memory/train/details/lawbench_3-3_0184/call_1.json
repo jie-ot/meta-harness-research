@@ -1,0 +1,72 @@
+{
+  "call_id": "b31f5e14e5e041e78be4961cd71ee998",
+  "model": "openrouter/openai/gpt-oss-120b",
+  "system_prompt": "Reasoning: medium",
+  "parameters": {
+    "temperature": 0.0,
+    "max_tokens": 16384
+  },
+  "raw_response": {
+    "id": "gen-1791041077-0Nfxu1Vx0icYwRVyVpH8",
+    "model": "openai/gpt-oss-120b",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "message": {
+          "content": "{\n  \"reasoning\": \"被告人在早餐店误将有毒的亚硝酸盐颗粒当作白糖使用，导致13人中毒并致1人死亡。其行为属于对食品安全的严重疏忽，构成生产、销售不符合安全标准的食品；同时因过失导致他人死亡，符合过失致人死亡的罪名。\",\n  \"final_answer\": \"[罪名]生产、销售不符合安全标准的食品;过失致人死亡<eoa>\"\n}",
+          "role": "assistant",
+          "tool_calls": null,
+          "function_call": null,
+          "reasoning_content": "We need to determine appropriate crime(s) from list.\n\nFacts: A breakfast shop owner mistakenly used a bag of pale yellow particles (likely sodium nitrite?) as sugar, causing 13 people to get sick, one death due to nitrite poisoning. He didn't intend to poison; it was a mistake. Could be \"重大责任事故\" (major responsibility accident) or \"过失致人死亡\". The list includes \"过失致人死亡\" (negligent causing death). Also \"重大责任事故\" is used for accidents with major responsibility, like industrial accidents, traffic accidents, etc. In earlier examples, \"重大责任事故\" used for forklift accident causing death, and for construction accident causing death. Here it's a food safety incident causing death due to negligence. Could be \"过失致人死亡\". Also \"食品安全\" not in list. There's \"生产、销售不符合安全标准的食品\" (production/sale of unsafe food) but not exactly. There's \"生产、销售伪劣产品\" etc. Not in list. There's \"生产、销售假药\". Not relevant.\n\nThe act: He mistakenly used a harmful substance as sugar. Could be \"过失致人死亡\". Also \"重大责任事故\" maybe appropriate if the accident is considered major. In examples, \"重大责任事故\" used for forklift accident, construction accident, etc. The list includes \"重大责任事故\". So we need to decide which label(s) apply.\n\nThe scenario: He didn't have a license for forklift, but here it's a food service. The cause is negligence (mistaking). The death is due to negligence. So \"过失致人死亡\" is appropriate. Also maybe \"食品安全\" not in list. Could also be \"生产、销售不符合安全标准的食品\" but not in list. There's \"生产、销售伪劣产品\" but not exactly. The list includes \"生产、销售不符合安全标准的食品\". Yes, that is present: \"生产、销售不符合安全标准的食品\". That could apply: He sold food that didn't meet safety standards (containing nitrite). However the act was accidental, not intentional. The crime of producing/selling unsafe food may be strict liability. So could be both \"生产、销售不符合安全标准的食品\" and \"过失致人死亡\". But examples didn't combine both. In earlier examples, they used \"失火\" for fire, \"重大责任事故\" for accidents. For food poisoning, maybe \"生产、销售不符合安全标准的食品\". Let's see if any example of food poisoning appears. Not in given examples. But list includes that crime.\n\nThus likely answer: \"生产、销售不符合安全标准的食品;过失致人死亡\". However need to check if \"过失致人死亡\" is separate from \"重大责任事故\". The list includes both. In earlier example with forklift accident, they used \"重大责任事故\". That case involved death due to negligence. So maybe they prefer \"重大责任事故\". But that term is used for accidents causing death, often in workplace. Here it's a food service accident. Could still be \"重大责任事故\". But the list includes \"过失致人死亡\". Which is more specific.\n\nGiven the pattern, they might choose \"过失致人死亡\". Let's choose that alone? The question: \"请你模拟法官依据下面事实给出罪名\". Could be multiple. I'd include both \"生产、销售不符合安全标准的食品\" and \"过失致人死亡\". But is \"生产、销售不符合安全标准的食品\" applicable if he didn't intend? The law may still hold. I'd include both.\n\nThus final answer: [罪名]生产、销售不符合安全标准的食品;过失致人死亡<eoa>\n\nReturn JSON.",
+          "provider_specific_fields": {
+            "refusal": null,
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "We need to determine appropriate crime(s) from list.\n\nFacts: A breakfast shop owner mistakenly used a bag of pale yellow particles (likely sodium nitrite?) as sugar, causing 13 people to get sick, one death due to nitrite poisoning. He didn't intend to poison; it was a mistake. Could be \"重大责任事故\" (major responsibility accident) or \"过失致人死亡\". The list includes \"过失致人死亡\" (negligent causing death). Also \"重大责任事故\" is used for accidents with major responsibility, like industrial accidents, traffic accidents, etc. In earlier examples, \"重大责任事故\" used for forklift accident causing death, and for construction accident causing death. Here it's a food safety incident causing death due to negligence. Could be \"过失致人死亡\". Also \"食品安全\" not in list. There's \"生产、销售不符合安全标准的食品\" (production/sale of unsafe food) but not exactly. There's \"生产、销售伪劣产品\" etc. Not in list. There's \"生产、销售假药\". Not relevant.\n\nThe act: He mistakenly used a harmful substance as sugar. Could be \"过失致人死亡\". Also \"重大责任事故\" maybe appropriate if the accident is considered major. In examples, \"重大责任事故\" used for forklift accident, construction accident, etc. The list includes \"重大责任事故\". So we need to decide which label(s) apply.\n\nThe scenario: He didn't have a license for forklift, but here it's a food service. The cause is negligence (mistaking). The death is due to negligence. So \"过失致人死亡\" is appropriate. Also maybe \"食品安全\" not in list. Could also be \"生产、销售不符合安全标准的食品\" but not in list. There's \"生产、销售伪劣产品\" but not exactly. The list includes \"生产、销售不符合安全标准的食品\". Yes, that is present: \"生产、销售不符合安全标准的食品\". That could apply: He sold food that didn't meet safety standards (containing nitrite). However the act was accidental, not intentional. The crime of producing/selling unsafe food may be strict liability. So could be both \"生产、销售不符合安全标准的食品\" and \"过失致人死亡\". But examples didn't combine both. In earlier examples, they used \"失火\" for fire, \"重大责任事故\" for accidents. For food poisoning, maybe \"生产、销售不符合安全标准的食品\". Let's see if any example of food poisoning appears. Not in given examples. But list includes that crime.\n\nThus likely answer: \"生产、销售不符合安全标准的食品;过失致人死亡\". However need to check if \"过失致人死亡\" is separate from \"重大责任事故\". The list includes both. In earlier example with forklift accident, they used \"重大责任事故\". That case involved death due to negligence. So maybe they prefer \"重大责任事故\". But that term is used for accidents causing death, often in workplace. Here it's a food service accident. Could still be \"重大责任事故\". But the list includes \"过失致人死亡\". Which is more specific.\n\nGiven the pattern, they might choose \"过失致人死亡\". Let's choose that alone? The question: \"请你模拟法官依据下面事实给出罪名\". Could be multiple. I'd include both \"生产、销售不符合安全标准的食品\" and \"过失致人死亡\". But is \"生产、销售不符合安全标准的食品\" applicable if he didn't intend? The law may still hold. I'd include both.\n\nThus final answer: [罪名]生产、销售不符合安全标准的食品;过失致人死亡<eoa>\n\nReturn JSON.",
+                "format": "unknown",
+                "index": 0
+              }
+            ],
+            "reasoning": "We need to determine appropriate crime(s) from list.\n\nFacts: A breakfast shop owner mistakenly used a bag of pale yellow particles (likely sodium nitrite?) as sugar, causing 13 people to get sick, one death due to nitrite poisoning. He didn't intend to poison; it was a mistake. Could be \"重大责任事故\" (major responsibility accident) or \"过失致人死亡\". The list includes \"过失致人死亡\" (negligent causing death). Also \"重大责任事故\" is used for accidents with major responsibility, like industrial accidents, traffic accidents, etc. In earlier examples, \"重大责任事故\" used for forklift accident causing death, and for construction accident causing death. Here it's a food safety incident causing death due to negligence. Could be \"过失致人死亡\". Also \"食品安全\" not in list. There's \"生产、销售不符合安全标准的食品\" (production/sale of unsafe food) but not exactly. There's \"生产、销售伪劣产品\" etc. Not in list. There's \"生产、销售假药\". Not relevant.\n\nThe act: He mistakenly used a harmful substance as sugar. Could be \"过失致人死亡\". Also \"重大责任事故\" maybe appropriate if the accident is considered major. In examples, \"重大责任事故\" used for forklift accident, construction accident, etc. The list includes \"重大责任事故\". So we need to decide which label(s) apply.\n\nThe scenario: He didn't have a license for forklift, but here it's a food service. The cause is negligence (mistaking). The death is due to negligence. So \"过失致人死亡\" is appropriate. Also maybe \"食品安全\" not in list. Could also be \"生产、销售不符合安全标准的食品\" but not in list. There's \"生产、销售伪劣产品\" but not exactly. The list includes \"生产、销售不符合安全标准的食品\". Yes, that is present: \"生产、销售不符合安全标准的食品\". That could apply: He sold food that didn't meet safety standards (containing nitrite). However the act was accidental, not intentional. The crime of producing/selling unsafe food may be strict liability. So could be both \"生产、销售不符合安全标准的食品\" and \"过失致人死亡\". But examples didn't combine both. In earlier examples, they used \"失火\" for fire, \"重大责任事故\" for accidents. For food poisoning, maybe \"生产、销售不符合安全标准的食品\". Let's see if any example of food poisoning appears. Not in given examples. But list includes that crime.\n\nThus likely answer: \"生产、销售不符合安全标准的食品;过失致人死亡\". However need to check if \"过失致人死亡\" is separate from \"重大责任事故\". The list includes both. In earlier example with forklift accident, they used \"重大责任事故\". That case involved death due to negligence. So maybe they prefer \"重大责任事故\". But that term is used for accidents causing death, often in workplace. Here it's a food service accident. Could still be \"重大责任事故\". But the list includes \"过失致人死亡\". Which is more specific.\n\nGiven the pattern, they might choose \"过失致人死亡\". Let's choose that alone? The question: \"请你模拟法官依据下面事实给出罪名\". Could be multiple. I'd include both \"生产、销售不符合安全标准的食品\" and \"过失致人死亡\". But is \"生产、销售不符合安全标准的食品\" applicable if he didn't intend? The law may still hold. I'd include both.\n\nThus final answer: [罪名]生产、销售不符合安全标准的食品;过失致人死亡<eoa>\n\nReturn JSON.",
+            "reasoning_content": "We need to determine appropriate crime(s) from list.\n\nFacts: A breakfast shop owner mistakenly used a bag of pale yellow particles (likely sodium nitrite?) as sugar, causing 13 people to get sick, one death due to nitrite poisoning. He didn't intend to poison; it was a mistake. Could be \"重大责任事故\" (major responsibility accident) or \"过失致人死亡\". The list includes \"过失致人死亡\" (negligent causing death). Also \"重大责任事故\" is used for accidents with major responsibility, like industrial accidents, traffic accidents, etc. In earlier examples, \"重大责任事故\" used for forklift accident causing death, and for construction accident causing death. Here it's a food safety incident causing death due to negligence. Could be \"过失致人死亡\". Also \"食品安全\" not in list. There's \"生产、销售不符合安全标准的食品\" (production/sale of unsafe food) but not exactly. There's \"生产、销售伪劣产品\" etc. Not in list. There's \"生产、销售假药\". Not relevant.\n\nThe act: He mistakenly used a harmful substance as sugar. Could be \"过失致人死亡\". Also \"重大责任事故\" maybe appropriate if the accident is considered major. In examples, \"重大责任事故\" used for forklift accident, construction accident, etc. The list includes \"重大责任事故\". So we need to decide which label(s) apply.\n\nThe scenario: He didn't have a license for forklift, but here it's a food service. The cause is negligence (mistaking). The death is due to negligence. So \"过失致人死亡\" is appropriate. Also maybe \"食品安全\" not in list. Could also be \"生产、销售不符合安全标准的食品\" but not in list. There's \"生产、销售伪劣产品\" but not exactly. The list includes \"生产、销售不符合安全标准的食品\". Yes, that is present: \"生产、销售不符合安全标准的食品\". That could apply: He sold food that didn't meet safety standards (containing nitrite). However the act was accidental, not intentional. The crime of producing/selling unsafe food may be strict liability. So could be both \"生产、销售不符合安全标准的食品\" and \"过失致人死亡\". But examples didn't combine both. In earlier examples, they used \"失火\" for fire, \"重大责任事故\" for accidents. For food poisoning, maybe \"生产、销售不符合安全标准的食品\". Let's see if any example of food poisoning appears. Not in given examples. But list includes that crime.\n\nThus likely answer: \"生产、销售不符合安全标准的食品;过失致人死亡\". However need to check if \"过失致人死亡\" is separate from \"重大责任事故\". The list includes both. In earlier example with forklift accident, they used \"重大责任事故\". That case involved death due to negligence. So maybe they prefer \"重大责任事故\". But that term is used for accidents causing death, often in workplace. Here it's a food service accident. Could still be \"重大责任事故\". But the list includes \"过失致人死亡\". Which is more specific.\n\nGiven the pattern, they might choose \"过失致人死亡\". Let's choose that alone? The question: \"请你模拟法官依据下面事实给出罪名\". Could be multiple. I'd include both \"生产、销售不符合安全标准的食品\" and \"过失致人死亡\". But is \"生产、销售不符合安全标准的食品\" applicable if he didn't intend? The law may still hold. I'd include both.\n\nThus final answer: [罪名]生产、销售不符合安全标准的食品;过失致人死亡<eoa>\n\nReturn JSON."
+          }
+        },
+        "provider_specific_fields": {
+          "native_finish_reason": "stop"
+        }
+      }
+    ],
+    "usage": {
+      "completion_tokens": 911,
+      "prompt_tokens": 22930,
+      "total_tokens": 23841,
+      "completion_tokens_details": {
+        "accepted_prediction_tokens": null,
+        "audio_tokens": 0,
+        "reasoning_tokens": 974,
+        "rejected_prediction_tokens": null,
+        "text_tokens": null,
+        "image_tokens": 0,
+        "video_tokens": null
+      },
+      "prompt_tokens_details": {
+        "audio_tokens": 0,
+        "cache_write_tokens": 0,
+        "cached_tokens": 0,
+        "text_tokens": null,
+        "image_tokens": null,
+        "video_tokens": 0
+      },
+      "cost": 0.00100328,
+      "is_byok": false,
+      "cost_details": {
+        "upstream_inference_cost": 0.00100328,
+        "upstream_inference_prompt_cost": 0.00084841,
+        "upstream_inference_completions_cost": 0.00015487
+      }
+    }
+  },
+  "raw_response_missing": false
+}
